@@ -9,5 +9,5 @@ Author: Brian O'Meara
 Maintainer: Brian O'Meara <bcomeara@nescent.org>
 Description: A package containing various functions I've created for using and modifying trees and trait data
 License: GPL
-Collage: brownie.R
+Collage: brownie.R transforms.R
 URL: http://treevo.R-forge.R-project.org
