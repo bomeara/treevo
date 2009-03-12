@@ -3,8 +3,8 @@ Type: Package
 Title: Using phylogenetic trees to understand evolution
 Version: 0.1
 Date: 2008-07-25
-Depends: phylobase
-Suggests: geiger, ape, ouch
+Depends:
+Suggests: geiger, ape, ouch, phylobase
 Author: Brian O'Meara
 Maintainer: Brian O'Meara <bcomeara@nescent.org>
 Description: A package containing various functions I've created for using and modifying trees and trait data
