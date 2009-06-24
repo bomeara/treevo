@@ -1,15 +1,36 @@
 bigcontinuous<-function(firstlevel=1000,secondlevel=500,nchar=2) {
-	basalportion<-evolve.phylo(birthdeath.tree(b=1,d=0,taxa.stop=firstlevel),value=c(0,0),var=1)
+	tipsexamined<-0;
+	basalportion<-birthdeath.tree(b=1,d=0,taxa.stop=firstlevel)
+	class(basalportion)<-"phylo"
+	basalportion<-chronogram(basalportion,scale=1,minEdgeLength=1.0/(firstlevel*10))
+	#basalportion<-evolve.phylo(basalportion,value=c(0,0),var=1)
+		#print(dput(basalportion))	#class(basalportion)<-"phylo"
 	derivedportion<-lapply(1:firstlevel,maketreeandchars,ntax=secondlevel, parenttree= basalportion)
 	#use runif for seed rather than geiger's default (time-based) just in case
-	
+	basalportion$tip.label<-paste("b", basalportion $tip.label,sep="")
+	for (i in 1:firstlevel) {
+		toadd<-derivedportion[[i]]
+		class(toadd)<-"phylo"
+		toadd$tip.label<-paste("taxon",as.character(tipsexamined+as.numeric(toadd$tip.label)),sep="") #birthdeath.tree results in trees with labels 1, 2, 3...
+		tipsexamined<-secondlevel+tipsexamined
+		basalportionTEMP<-bind.tree(x=basalportion,y=toadd,where=match(x=paste("b",i,sep=""),table=basalportion$tip.label))
+		basalportion<-basalportionTEMP
+		plot(basalportion)
+		print(c(i,tipsexamined))
+		}
+		basalportion
 }
 
 maketreeandchars<-function(parenttaxon,ntax, parenttree) {
-	print(parenttaxon)
-	ancestralstates<-as.numeric(parenttree$tip.character[parenttaxon,])
-	print(ancestralstates)
-	a<-evolve.phylo(birthdeath.tree(b=1,d=0,taxa.stop=ntax,seed=round(runif(n=1,min=1,max=10000000))),value= ancestralstates,var=1)
-	print(mean(as.numeric(a$tip.character)))
-	a
+	#print(parenttaxon)
+	#ancestralstates<-as.numeric(parenttree$tip.character[parenttaxon,])
+	#print(ancestralstates)
+	newtree<-birthdeath.tree(b=1,d=0,taxa.stop=ntax,seed=round(runif(n=1,min=1,max=10000000)))
+	class(newtree)<-"phylo"
+	newtree<-chronogram(newtree,scale=1,minEdgeLength=1.0/(ntax*10))
+	#a<-evolve.phylo(newtree,value= ancestralstates,var=1)
+		#class(a)<-"phylo"
+
+	#print(mean(as.numeric(a$tip.character)))
+	newtree
 	}
