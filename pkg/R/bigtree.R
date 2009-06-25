@@ -70,7 +70,7 @@ maketreesaving<-function(parenttaxon,ntax) {
 	newtree<-chronogram(newtree,scale=1,minEdgeLength=1.0/(ntax*10))
 	#a<-evolve.phylo(newtree,value= ancestralstates,var=1)
 		#class(a)<-"phylo"
-		newtree$tip.label<-paste("taxon",as.character(parenttaxon +as.numeric(newtree$tip.label)),sep="") #birthdeath.tree results in trees with labels 1, 2, 3...
+		newtree$tip.label<-paste("taxon",as.character((parenttaxon-1)*ntax +as.numeric(newtree$tip.label)),sep="") #birthdeath.tree results in trees with labels 1, 2, 3...
 
 write.tree(newtree,file=paste("derived",as.character(parenttaxon),".tre",sep=""))
 	#print(mean(as.numeric(a$tip.character)))
