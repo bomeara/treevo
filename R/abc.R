@@ -188,7 +188,7 @@ doSimulation<-function(splits,intrinsicFn,extrinsicFn,startingStates,intrinsicVa
 		}
 #trait evolution step
 		for (i in 1:length(taxa)) {
-			otherstatesvector<-c()
+			otherstatesvector<-c()))
 			for (j in 1:length(taxa)) {
 				if (j!=i) {
 					otherstatesvector<-c(otherstatesvector,states(taxa[[j]]))
@@ -270,3 +270,27 @@ cat(xvalues[i]," ",yvalues[i])
 		plot(x=xvalues,y=yvalues)
 	}
 	
+	convertTaxonFrameToGeigerData<-function(taxonframe,phy) {
+		ntax<-dim(taxonframe)[1]
+		newmatrix<-matrix(data=taxonframe[,4:(dim(taxonframe)[2])], nrow= ntax)
+		newrownames<-c(rep(0, ntax))
+		for (i in 1:ntax) {
+			newrownames[i]<-phy$tip.label[(taxonframe$taxonid[i])]
+			}
+		geigerframe<-data.frame(newmatrix,row.names= newrownames, stringsAsFactors=F)
+		geigerframe
+		}
+	
+	geigerUnivariateSummaryStats<-function(phy, data) {
+		#uses a bunch of stats from geiger. Only works for one character right now
+		brownian<-fitContinuous(phy=phy,data= data,model="BM")
+		white<-fitContinuous(phy=phy,data= data,model="white")
+		lambda<-fitContinuous(phy=phy,data= data,model="lambda")
+		kappa<-fitContinuous(phy=phy,data= data,model="kappa")
+		delta<-fitContinuous(phy=phy,data= data,model="delta")
+		EB<-fitContinuous(phy=phy,data= data,model="EB")
+		summarystats<-c(brownian$Trait1$lnl, brownian$Trait1$beta, white$Trait1$lnl, white$Trait1$mean, lambda$Trait1$lambda, kappa$Trait1$lambda, delta$Trait1$delta, EB$Trait1$a)
+		summarystats
+		}
+		
+		
