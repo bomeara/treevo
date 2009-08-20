@@ -11,7 +11,121 @@ timeSinceSpeciation="numeric"
 prototype(id=0,name="taxon0",timeSinceSpeciation=0)
 )
 
+setGeneric("id", function(object) {
+	standardGeneric("id")
+	})
 
+setGeneric("id<-", function(object, value) {
+	standardGeneric("id<-")
+	})
+
+
+setMethod("id","abctaxon",function(object) {
+	object@id
+	})
+
+setReplaceMethod("id", signature(object="abctaxon", value="numeric") ,
+	function(object, value) {
+		object@id <- value
+		object
+	}
+)
+
+setGeneric("name", function(object) {
+	standardGeneric("name")
+	})
+
+setGeneric("name<-", function(object, value) {
+	standardGeneric("name<-")
+	})
+
+
+setMethod("name","abctaxon",function(object) {
+	object@name
+	})
+
+setReplaceMethod("name", signature(object="abctaxon", value="character") ,
+	function(object, value) {
+		object@name <- value
+		object
+	}
+)
+
+
+
+setGeneric("states", function(object) {
+	standardGeneric("states")
+	})
+
+setGeneric("states<-", function(object, value) {
+	standardGeneric("states<-")
+	})
+
+
+setMethod("states","abctaxon",function(object) {
+	object@states
+	})
+
+setReplaceMethod("states", signature(object="abctaxon", value="numeric") ,
+	function(object, value) {
+		object@states <- value
+		object
+	}
+)
+
+
+
+setGeneric("nextstates", function(object) {
+	standardGeneric("nextstates")
+	})
+
+setGeneric("nextstates<-", function(object, value) {
+	standardGeneric("nextstates<-")
+	})
+
+
+setMethod("nextstates","abctaxon",function(object) {
+	object@nextstates
+	})
+
+setReplaceMethod("nextstates", signature(object="abctaxon", value="numeric") ,
+	function(object, value) {
+		object@nextstates <- value
+		object
+	}
+)
+
+
+setGeneric("timeSinceSpeciation", function(object) {
+	standardGeneric("timeSinceSpeciation")
+	})
+
+setGeneric("timeSinceSpeciation<-", function(object, value) {
+	standardGeneric("timeSinceSpeciation<-")
+	})
+
+
+setMethod("timeSinceSpeciation","abctaxon",function(object) {
+	object@timeSinceSpeciation
+	})
+
+setReplaceMethod("timeSinceSpeciation", signature(object="abctaxon", value="numeric") ,
+	function(object, value) {
+		object@timeSinceSpeciation <- value
+		object
+	}
+)
+
+setGeneric("updateStates", function(object) {
+	standardGeneric("updateStates")
+	})
+
+	
+setMethod("updateStates", signature(object='abctaxon'),
+	function(object) {
+		object@states<-object@nextstates
+		object
+		})
 
 getSimulationSplits<-function(phy) {
 	branchingTimes<-sort(branching.times(phy),decreasing=T)
@@ -51,14 +165,13 @@ doSimulation<-function(splits,intrinsicFn,extrinsicFn,startingStates,intrinsicVa
 			originallength<-length(taxa)
 			taxontodelete<-Inf
 			for (i in 1:originallength) {
-									#cat("taxa[[i]]@id = ",taxa[[i]]@id, " splits[1,2] = ",splits[1,2],"\n")
-				if (taxa[[i]]@id==splits[1,2]) {
+				if (id(taxa[[i]])==splits[1,2]) {
 					taxontodelete<-i
 					taxa<-c(taxa,taxa[[i]],taxa[[i]])
-					taxa[[originallength+1]]@id<-splits[1,3]
-					taxa[[originallength+1]]@timeSinceSpeciation<-0
-					taxa[[originallength+2]]@id<-splits[1,4]
-					taxa[[originallength+2]]@timeSinceSpeciation<-0
+					id(taxa[[originallength+1]])<-splits[1,3]
+					timeSinceSpeciation(taxa[[originallength+1]])<-0
+					id(taxa[[originallength+2]])<-splits[1,4]
+					timeSinceSpeciation(taxa[[originallength+2]])<-0
 				}
 			}
 			#cat("taxontodelete = ",taxontodelete)
@@ -78,15 +191,15 @@ doSimulation<-function(splits,intrinsicFn,extrinsicFn,startingStates,intrinsicVa
 			otherstatesvector<-c()
 			for (j in 1:length(taxa)) {
 				if (j!=i) {
-					otherstatesvector<-c(otherstatesvector,taxa[[j]]@states)
+					otherstatesvector<-c(otherstatesvector,states(taxa[[j]]))
 				}
 			}
-			otherstatesmatrix<-matrix(otherstatesvector,ncol=length(taxa[[i]]@states),byrow=T) #each row represents one taxon
-			newvalues<-intrinsicFn(params=intrinsicValues,states=taxa[[i]]@states)+extrinsicFn(params=extrinsicValues,selfstates=taxa[[i]]@states,otherstates=otherstatesmatrix)
-			taxa[[i]]@nextstates<-newvalues
+			otherstatesmatrix<-matrix(otherstatesvector,ncol=length(states(taxa[[i]])),byrow=T) #each row represents one taxon
+			newvalues<-intrinsicFn(params=intrinsicValues,states=states(taxa[[i]]))+extrinsicFn(params=extrinsicValues,selfstates=states(taxa[[i]]),otherstates=otherstatesmatrix)
+			nextstates(taxa[[i]])<-newvalues
 		}
 		for (i in 1:length(taxa)) {
-			taxa[[i]]@states<-taxa[[i]]@nextstates
+			updateStates(taxa[[i]])
 		}
 		#print("------------------- step -------------------")
 #print(taxa)
@@ -94,7 +207,7 @@ doSimulation<-function(splits,intrinsicFn,extrinsicFn,startingStates,intrinsicVa
 		
 		timefrompresent<-timefrompresent-timeStep
 		for (i in 1:length(taxa)) {
-			taxa[[i]]@timeSinceSpeciation<-taxa[[i]]@timeSinceSpeciation+timeStep
+			timeSinceSpeciation(taxa[[i]])<-timeSinceSpeciation(taxa[[i]])+timeStep
 		}
 	}
 	return(summarizeTaxonStates(taxa))
@@ -109,16 +222,16 @@ summarizeTaxonStates<-function(taxa) {
 	for (i in 1:length(taxa)) {
 #print(i)
 #		print(taxa)
-		statesvector<-c(statesvector, taxa[[i]]@states)
+		statesvector<-c(statesvector, states(taxa[[i]]))
 		#print("statesvector")
-		taxonid<-c(taxonid, taxa[[i]]@id )
+		taxonid<-c(taxonid, id(taxa[[i]]) )
 		#print("taxonid")
-		taxonname<-c(taxonname, taxa[[i]]@name )
+		taxonname<-c(taxonname, name(taxa[[i]]) )
 		#print("taxonname")
-		taxontimesincespeciation<-c(taxontimesincespeciation, taxa[[i]]@timeSinceSpeciation)
+		taxontimesincespeciation<-c(taxontimesincespeciation, timeSinceSpeciation(taxa[[i]]))
 		#print("finished ",i)
 	}
-	statesmatrix<-matrix(statesvector,ncol=length(taxa[[1]]@states),byrow=T) #each row represents one taxon
+	statesmatrix<-matrix(statesvector,ncol=length(states(taxa[[1]])),byrow=T) #each row represents one taxon
 	taxonframe<-data.frame(taxonid,taxonname,taxontimesincespeciation,statesmatrix)
 	return(taxonframe)
 }
@@ -143,6 +256,17 @@ computeDistance<-function(simulationOutput,originalValues) {
 	names(simulatedTraits)<-NULL
 	originalTraits<-unlist(originalValues)
 	names(originalTraits)<-NULL
-	euclideandistance<-dist(matrix(c(simulatedTraits, originalTraits),nrow=2))[1]
+	euclideandistance<-dist(matrix(c(simulatedTraits, originalTraits),nrow=2,byrow=T))[1]
 	return(euclideandistance)
 	}
+	
+plotdistance1D<-function(xmin=0,xmax=1,numpoints=10,numreplicates=50) {
+	xvalues<-seq(from=xmin,to=xmax,length.out=numpoints)
+	yvalues<-seq(from=0,to=0,length.out=numpoints)
+	for (i in 1:numpoints) { 
+yvalues[i]<-median(replicate(numreplicates,computeDistance(doSimulation(splits=physplits,intrinsicFn=brownianIntrinsic,extrinsicFn=brownianExtrinsic,startingStates=c(xvalues[i]),intrinsicValues=0.5,extrinsicValues=0,timeStep=0.001),true)))
+cat(xvalues[i]," ",yvalues[i])
+		}
+		plot(x=xvalues,y=yvalues)
+	}
+	
