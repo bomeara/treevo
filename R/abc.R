@@ -188,7 +188,7 @@ doSimulation<-function(splits,intrinsicFn,extrinsicFn,startingStates,intrinsicVa
 		}
 #trait evolution step
 		for (i in 1:length(taxa)) {
-			otherstatesvector<-c()))
+			otherstatesvector<-c()
 			for (j in 1:length(taxa)) {
 				if (j!=i) {
 					otherstatesvector<-c(otherstatesvector,states(taxa[[j]]))
@@ -293,4 +293,49 @@ cat(xvalues[i]," ",yvalues[i])
 		summarystats
 		}
 		
-		
+		profileAcrossUniform<-function(phy,originalData,intrinsicFn,extrinsicFn,startingMatrix,intrinsicMatrix,extrinsicMatrix,timeStep,numreps=100) {
+			#*matrix entries have lower (first row) and upper (second row) values for each parameter. Actual values are drawn from a uniform distribution for each parameter. If you want a parameter set, have max and min values the same number
+			print("cow")
+			splits<-getSimulationSplits(phy)
+			print(splits)
+			originalSummaryStats<-geigerUnivariateSummaryStats(phy,originalData)
+			print(originalSummaryStats)
+			resultsMatrix<-matrix(nrow=numreps,ncol=length(originalSummaryStats) + dim(startingMatrix)[2] +  dim(intrinsicMatrix)[2] + dim(extrinsicMatrix)[2]+1);
+			for (i in 1:numreps) {
+				startingStates<-rep(NA,dim(startingMatrix)[2])
+				intrinsicValues<-rep(NA,dim(intrinsicMatrix)[2])
+				extrinsicValues<-rep(NA,dim(extrinsicMatrix)[2])
+				placementCounter=1;
+				for (j in 1:length(startingStates)) {
+					startingStates[j]=runif(n=1,min=min(startingMatrix[,j]),max=max(startingMatrix[,j]))
+					resultsMatrix[i,placementCounter]<-startingStates[j]
+					placementCounter<-placementCounter+1
+					}
+				for (j in 1:length(intrinsicValues)) {
+					intrinsicValues[j]=runif(n=1,min=min(intrinsicMatrix[,j]),max=max(intrinsicMatrix[,j]))
+					resultsMatrix[i,placementCounter]<-intrinsicValues[j]
+					placementCounter<-placementCounter+1
+
+					}
+				for (j in 1:length(extrinsicValues)) {
+					extrinsicValues[j]=runif(n=1,min=min(extrinsicMatrix[,j]),max=max(extrinsicMatrix[,j]))
+					resultsMatrix[i,placementCounter]<-extrinsicValues[j]
+					placementCounter<-placementCounter+1
+					}
+					individualResult<-geigerUnivariateSummaryStats(phy, convertTaxonFrameToGeigerData(doSimulation(splits,intrinsicFn,extrinsicFn,startingStates,intrinsicValues,extrinsicValues,timeStep),phy))
+					for (j in 1:length(individualResult)) {
+						resultsMatrix[i,placementCounter]<-individualResult[j]
+						placementCounter<-placementCounter+1
+						}
+						resultsMatrix[i,placementCounter]<-dist(matrix(c(individualResult, originalSummaryStats),nrow=2,byrow=T))[1]
+						placementCounter<-placementCounter+1
+						print(resultsMatrix[i,])
+				}
+				return(resultsMatrix)
+			}
+			
+			#test code
+			library(geiger)
+			phy<-rcoal(6)
+			char<-data.frame(5+sim.char(phy,model.matrix=matrix(0.5),1))
+			profile<-profileAcrossUniform(phy=phy,originalData=char,intrinsicFn= brownianIntrinsic,extrinsicFn= brownianExtrinsic,startingMatrix=matrix(data=c(0,15),nrow=2),intrinsicMatrix=matrix(data=c(0.001,1),nrow=2),extrinsicMatrix=matrix(data=c(0,0),nrow=2),timeStep=0.001,numreps=10)
