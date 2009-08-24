@@ -300,7 +300,8 @@ cat(xvalues[i]," ",yvalues[i])
 			print(splits)
 			originalSummaryStats<-geigerUnivariateSummaryStats(phy,originalData)
 			print(originalSummaryStats)
-			resultsMatrix<-matrix(nrow=numreps,ncol=length(originalSummaryStats) + dim(startingMatrix)[2] +  dim(intrinsicMatrix)[2] + dim(extrinsicMatrix)[2]+1);
+			resultsMatrix<-matrix(nrow=numreps,ncol=length(originalSummaryStats) + dim(startingMatrix)[2] +  dim(intrinsicMatrix)[2] + dim(extrinsicMatrix)[2]+1)
+			namesVector<-rep(NA,length(originalSummaryStats) + dim(startingMatrix)[2] +  dim(intrinsicMatrix)[2] + dim(extrinsicMatrix)[2]+1)
 			for (i in 1:numreps) {
 				startingStates<-rep(NA,dim(startingMatrix)[2])
 				intrinsicValues<-rep(NA,dim(intrinsicMatrix)[2])
@@ -309,33 +310,50 @@ cat(xvalues[i]," ",yvalues[i])
 				for (j in 1:length(startingStates)) {
 					startingStates[j]=runif(n=1,min=min(startingMatrix[,j]),max=max(startingMatrix[,j]))
 					resultsMatrix[i,placementCounter]<-startingStates[j]
+					if (i==1) {
+						namesVector[placementCounter]<-paste("startingValue",j,sep="")
+						}
 					placementCounter<-placementCounter+1
 					}
 				for (j in 1:length(intrinsicValues)) {
 					intrinsicValues[j]=runif(n=1,min=min(intrinsicMatrix[,j]),max=max(intrinsicMatrix[,j]))
 					resultsMatrix[i,placementCounter]<-intrinsicValues[j]
+					if (i==1) {
+						namesVector[placementCounter]<-paste("intrinsicValue",j,sep="")
+						}
 					placementCounter<-placementCounter+1
 
 					}
 				for (j in 1:length(extrinsicValues)) {
 					extrinsicValues[j]=runif(n=1,min=min(extrinsicMatrix[,j]),max=max(extrinsicMatrix[,j]))
 					resultsMatrix[i,placementCounter]<-extrinsicValues[j]
+					if (i==1) {
+						namesVector[placementCounter]<-paste("extrinsicValue",j,sep="")
+						}
 					placementCounter<-placementCounter+1
 					}
 					individualResult<-geigerUnivariateSummaryStats(phy, convertTaxonFrameToGeigerData(doSimulation(splits,intrinsicFn,extrinsicFn,startingStates,intrinsicValues,extrinsicValues,timeStep),phy))
 					for (j in 1:length(individualResult)) {
 						resultsMatrix[i,placementCounter]<-individualResult[j]
+						if (i==1) {
+						namesVector[placementCounter]<-paste("SummaryStat",j,sep="")
+						}
 						placementCounter<-placementCounter+1
 						}
 						resultsMatrix[i,placementCounter]<-dist(matrix(c(individualResult, originalSummaryStats),nrow=2,byrow=T))[1]
+						if (i==1) {
+						namesVector[placementCounter]<-"distance"
+						}
 						placementCounter<-placementCounter+1
 						print(resultsMatrix[i,])
 				}
-				return(resultsMatrix)
+				resultsDataFrame<-data.frame(resultsMatrix)
+				names(resultsDataFrame)<-namesVector
+				return(resultsDataFrame)
 			}
 			
 			#test code
 			library(geiger)
 			phy<-rcoal(6)
-			char<-data.frame(5+sim.char(phy,model.matrix=matrix(0.5),1))
-			profile<-profileAcrossUniform(phy=phy,originalData=char,intrinsicFn= brownianIntrinsic,extrinsicFn= brownianExtrinsic,startingMatrix=matrix(data=c(0,15),nrow=2),intrinsicMatrix=matrix(data=c(0.001,1),nrow=2),extrinsicMatrix=matrix(data=c(0,0),nrow=2),timeStep=0.001,numreps=10)
+			char<-data.frame(5+sim.char(phy,model.matrix=matrix(10),1))
+			profile<-profileAcrossUniform(phy=phy,originalData=char,intrinsicFn= brownianIntrinsic,extrinsicFn= brownianExtrinsic,startingMatrix=matrix(data=c(0,15),nrow=2),intrinsicMatrix=matrix(data=c(0.001,10),nrow=2),extrinsicMatrix=matrix(data=c(0,0),nrow=2),timeStep=0.001,numreps=10)
