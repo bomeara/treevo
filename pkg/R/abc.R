@@ -354,6 +354,11 @@ cat(xvalues[i]," ",yvalues[i])
 			
 			#test code
 			library(geiger)
-			phy<-rcoal(6)
+			phy<-rcoal(9)
 			char<-data.frame(5+sim.char(phy,model.matrix=matrix(10),1))
-			profile<-profileAcrossUniform(phy=phy,originalData=char,intrinsicFn= brownianIntrinsic,extrinsicFn= brownianExtrinsic,startingMatrix=matrix(data=c(0,15),nrow=2),intrinsicMatrix=matrix(data=c(0.001,10),nrow=2),extrinsicMatrix=matrix(data=c(0,0),nrow=2),timeStep=0.001,numreps=10)
+			Rprof()
+			profile<-profileAcrossUniform(phy=phy,originalData=char,intrinsicFn= brownianIntrinsic,extrinsicFn= brownianExtrinsic,startingMatrix=matrix(data=c(0,15),nrow=2),intrinsicMatrix=matrix(data=c(0.0001,10),nrow=2),extrinsicMatrix=matrix(data=c(0,0),nrow=2),timeStep=0.001,numreps=10)
+			Rprof(NULL)
+			summaryRprof()
+			profile
+			plot(profile$startingValue1,profile$distance)
