@@ -1,132 +1,3 @@
-
-setClass(
-Class="abctaxon",
-representation=representation(
-id="numeric",
-name="character",
-states="numeric",
-nextstates="numeric",
-timeSinceSpeciation="numeric"
-),
-prototype(id=0,name="taxon0",timeSinceSpeciation=0)
-)
-
-setGeneric("id", function(object) {
-	standardGeneric("id")
-	})
-
-setGeneric("id<-", function(object, value) {
-	standardGeneric("id<-")
-	})
-
-
-setMethod("id","abctaxon",function(object) {
-	object@id
-	})
-
-setReplaceMethod("id", signature(object="abctaxon", value="numeric") ,
-	function(object, value) {
-		object@id <- value
-		object
-	}
-)
-
-setGeneric("name", function(object) {
-	standardGeneric("name")
-	})
-
-setGeneric("name<-", function(object, value) {
-	standardGeneric("name<-")
-	})
-
-
-setMethod("name","abctaxon",function(object) {
-	object@name
-	})
-
-setReplaceMethod("name", signature(object="abctaxon", value="character") ,
-	function(object, value) {
-		object@name <- value
-		object
-	}
-)
-
-
-
-setGeneric("states", function(object) {
-	standardGeneric("states")
-	})
-
-setGeneric("states<-", function(object, value) {
-	standardGeneric("states<-")
-	})
-
-
-setMethod("states","abctaxon",function(object) {
-	object@states
-	})
-
-setReplaceMethod("states", signature(object="abctaxon", value="numeric") ,
-	function(object, value) {
-		object@states <- value
-		object
-	}
-)
-
-
-
-setGeneric("nextstates", function(object) {
-	standardGeneric("nextstates")
-	})
-
-setGeneric("nextstates<-", function(object, value) {
-	standardGeneric("nextstates<-")
-	})
-
-
-setMethod("nextstates","abctaxon",function(object) {
-	object@nextstates
-	})
-
-setReplaceMethod("nextstates", signature(object="abctaxon", value="numeric") ,
-	function(object, value) {
-		object@nextstates <- value
-		object
-	}
-)
-
-
-setGeneric("timeSinceSpeciation", function(object) {
-	standardGeneric("timeSinceSpeciation")
-	})
-
-setGeneric("timeSinceSpeciation<-", function(object, value) {
-	standardGeneric("timeSinceSpeciation<-")
-	})
-
-
-setMethod("timeSinceSpeciation","abctaxon",function(object) {
-	object@timeSinceSpeciation
-	})
-
-setReplaceMethod("timeSinceSpeciation", signature(object="abctaxon", value="numeric") ,
-	function(object, value) {
-		object@timeSinceSpeciation <- value
-		object
-	}
-)
-
-setGeneric("updateStates", function(object) {
-	standardGeneric("updateStates")
-	})
-
-	
-setMethod("updateStates", signature(object='abctaxon'),
-	function(object) {
-		object@states<-object@nextstates
-		object
-		})
-
 getSimulationSplits<-function(phy) {
 	branchingTimes<-sort(branching.times(phy),decreasing=T)
 	branchingTimesNames<-names(branchingTimes)
@@ -174,7 +45,7 @@ doSimulation<-function(splits,intrinsicFn,extrinsicFn,startingStates,intrinsicVa
 					timeSinceSpeciation(taxa[[originallength+2]])<-0
 				}
 			}
-			#cat("taxontodelete = ",taxontodelete)
+#cat("taxontodelete = ",taxontodelete)
 			taxa<-taxa[-1*taxontodelete]
 			if(dim(splits)[1]>1) {
 				splits<-splits[2:(dim(splits)[1]),] #pop off top value
@@ -182,9 +53,9 @@ doSimulation<-function(splits,intrinsicFn,extrinsicFn,startingStates,intrinsicVa
 			else {
 				splits[1,]<-c(-1,0,0,0)
 			}
-			#print("------------------- speciation -------------------")
+#print("------------------- speciation -------------------")
 #print(taxa)
-			#summarizeTaxonStates(taxa)
+#summarizeTaxonStates(taxa)
 		}
 #trait evolution step
 		for (i in 1:length(taxa)) {
@@ -201,9 +72,9 @@ doSimulation<-function(splits,intrinsicFn,extrinsicFn,startingStates,intrinsicVa
 		for (i in 1:length(taxa)) {
 			updateStates(taxa[[i]])
 		}
-		#print("------------------- step -------------------")
+#print("------------------- step -------------------")
 #print(taxa)
-		#summarizeTaxonStates(taxa)
+#summarizeTaxonStates(taxa)
 		
 		timefrompresent<-timefrompresent-timeStep
 		for (i in 1:length(taxa)) {
@@ -214,7 +85,7 @@ doSimulation<-function(splits,intrinsicFn,extrinsicFn,startingStates,intrinsicVa
 }
 
 summarizeTaxonStates<-function(taxa) {
-	#print("in summarizeTaxonStates")
+#print("in summarizeTaxonStates")
 	statesvector<-c()
 	taxonid<-c()
 	taxonname<-c()
@@ -223,13 +94,13 @@ summarizeTaxonStates<-function(taxa) {
 #print(i)
 #		print(taxa)
 		statesvector<-c(statesvector, states(taxa[[i]]))
-		#print("statesvector")
+#print("statesvector")
 		taxonid<-c(taxonid, id(taxa[[i]]) )
-		#print("taxonid")
+#print("taxonid")
 		taxonname<-c(taxonname, name(taxa[[i]]) )
-		#print("taxonname")
+#print("taxonname")
 		taxontimesincespeciation<-c(taxontimesincespeciation, timeSinceSpeciation(taxa[[i]]))
-		#print("finished ",i)
+#print("finished ",i)
 	}
 	statesmatrix<-matrix(statesvector,ncol=length(states(taxa[[1]])),byrow=T) #each row represents one taxon
 	taxonframe<-data.frame(taxonid,taxonname,taxontimesincespeciation,statesmatrix)
@@ -251,114 +122,225 @@ brownianExtrinsic<-function(params,selfstates,otherstates) {
 }
 
 computeDistance<-function(simulationOutput,originalValues) {
-	#both must have taxa on rows and chars in cols
+#both must have taxa on rows and chars in cols
 	simulatedTraits<-unlist(simulationOutput[,4:dim(simulationOutput)[2]])
 	names(simulatedTraits)<-NULL
 	originalTraits<-unlist(originalValues)
 	names(originalTraits)<-NULL
 	euclideandistance<-dist(matrix(c(simulatedTraits, originalTraits),nrow=2,byrow=T))[1]
 	return(euclideandistance)
-	}
-	
+}
+
 plotdistance1D<-function(xmin=0,xmax=1,numpoints=10,numreplicates=50) {
 	xvalues<-seq(from=xmin,to=xmax,length.out=numpoints)
 	yvalues<-seq(from=0,to=0,length.out=numpoints)
 	for (i in 1:numpoints) { 
-yvalues[i]<-median(replicate(numreplicates,computeDistance(doSimulation(splits=physplits,intrinsicFn=brownianIntrinsic,extrinsicFn=brownianExtrinsic,startingStates=c(xvalues[i]),intrinsicValues=0.5,extrinsicValues=0,timeStep=0.001),true)))
-cat(xvalues[i]," ",yvalues[i])
-		}
-		plot(x=xvalues,y=yvalues)
+		yvalues[i]<-median(replicate(numreplicates,computeDistance(doSimulation(splits=physplits,intrinsicFn=brownianIntrinsic,extrinsicFn=brownianExtrinsic,startingStates=c(xvalues[i]),intrinsicValues=0.5,extrinsicValues=0,timeStep=0.001),true)))
+		cat(xvalues[i]," ",yvalues[i])
 	}
-	
-	convertTaxonFrameToGeigerData<-function(taxonframe,phy) {
-		ntax<-dim(taxonframe)[1]
-		newmatrix<-matrix(data=taxonframe[,4:(dim(taxonframe)[2])], nrow= ntax)
-		newrownames<-c(rep(0, ntax))
-		for (i in 1:ntax) {
-			newrownames[i]<-phy$tip.label[(taxonframe$taxonid[i])]
-			}
-		geigerframe<-data.frame(newmatrix,row.names= newrownames, stringsAsFactors=F)
-		geigerframe
-		}
-	
-	geigerUnivariateSummaryStats<-function(phy, data) {
-		#uses a bunch of stats from geiger. Only works for one character right now
-		brownian<-fitContinuous(phy=phy,data= data,model="BM")
-		white<-fitContinuous(phy=phy,data= data,model="white")
-		lambda<-fitContinuous(phy=phy,data= data,model="lambda")
-		kappa<-fitContinuous(phy=phy,data= data,model="kappa")
-		delta<-fitContinuous(phy=phy,data= data,model="delta")
-		EB<-fitContinuous(phy=phy,data= data,model="EB")
-		summarystats<-c(brownian$Trait1$lnl, brownian$Trait1$beta, white$Trait1$lnl, white$Trait1$mean, lambda$Trait1$lambda, kappa$Trait1$lambda, delta$Trait1$delta, EB$Trait1$a)
-		summarystats
-		}
-		
-		profileAcrossUniform<-function(phy,originalData,intrinsicFn,extrinsicFn,startingMatrix,intrinsicMatrix,extrinsicMatrix,timeStep,numreps=100) {
-			#*matrix entries have lower (first row) and upper (second row) values for each parameter. Actual values are drawn from a uniform distribution for each parameter. If you want a parameter set, have max and min values the same number
-			print("cow")
-			splits<-getSimulationSplits(phy)
-			print(splits)
-			originalSummaryStats<-geigerUnivariateSummaryStats(phy,originalData)
-			print(originalSummaryStats)
-			resultsMatrix<-matrix(nrow=numreps,ncol=length(originalSummaryStats) + dim(startingMatrix)[2] +  dim(intrinsicMatrix)[2] + dim(extrinsicMatrix)[2]+1)
-			namesVector<-rep(NA,length(originalSummaryStats) + dim(startingMatrix)[2] +  dim(intrinsicMatrix)[2] + dim(extrinsicMatrix)[2]+1)
-			for (i in 1:numreps) {
-				startingStates<-rep(NA,dim(startingMatrix)[2])
-				intrinsicValues<-rep(NA,dim(intrinsicMatrix)[2])
-				extrinsicValues<-rep(NA,dim(extrinsicMatrix)[2])
-				placementCounter=1;
-				for (j in 1:length(startingStates)) {
-					startingStates[j]=runif(n=1,min=min(startingMatrix[,j]),max=max(startingMatrix[,j]))
-					resultsMatrix[i,placementCounter]<-startingStates[j]
-					if (i==1) {
-						namesVector[placementCounter]<-paste("startingValue",j,sep="")
-						}
-					placementCounter<-placementCounter+1
-					}
-				for (j in 1:length(intrinsicValues)) {
-					intrinsicValues[j]=runif(n=1,min=min(intrinsicMatrix[,j]),max=max(intrinsicMatrix[,j]))
-					resultsMatrix[i,placementCounter]<-intrinsicValues[j]
-					if (i==1) {
-						namesVector[placementCounter]<-paste("intrinsicValue",j,sep="")
-						}
-					placementCounter<-placementCounter+1
+	plot(x=xvalues,y=yvalues)
+}
 
-					}
-				for (j in 1:length(extrinsicValues)) {
-					extrinsicValues[j]=runif(n=1,min=min(extrinsicMatrix[,j]),max=max(extrinsicMatrix[,j]))
-					resultsMatrix[i,placementCounter]<-extrinsicValues[j]
-					if (i==1) {
-						namesVector[placementCounter]<-paste("extrinsicValue",j,sep="")
-						}
-					placementCounter<-placementCounter+1
-					}
-					individualResult<-geigerUnivariateSummaryStats(phy, convertTaxonFrameToGeigerData(doSimulation(splits,intrinsicFn,extrinsicFn,startingStates,intrinsicValues,extrinsicValues,timeStep),phy))
-					for (j in 1:length(individualResult)) {
-						resultsMatrix[i,placementCounter]<-individualResult[j]
-						if (i==1) {
-						namesVector[placementCounter]<-paste("SummaryStat",j,sep="")
-						}
-						placementCounter<-placementCounter+1
-						}
-						resultsMatrix[i,placementCounter]<-dist(matrix(c(individualResult, originalSummaryStats),nrow=2,byrow=T))[1]
-						if (i==1) {
-						namesVector[placementCounter]<-"distance"
-						}
-						placementCounter<-placementCounter+1
-						print(resultsMatrix[i,])
-				}
-				resultsDataFrame<-data.frame(resultsMatrix)
-				names(resultsDataFrame)<-namesVector
-				return(resultsDataFrame)
-			}
+convertTaxonFrameToGeigerData<-function(taxonframe,phy) {
+	ntax<-dim(taxonframe)[1]
+	newmatrix<-matrix(data=taxonframe[,4:(dim(taxonframe)[2])], nrow= ntax)
+	newrownames<-c(rep(0, ntax))
+	for (i in 1:ntax) {
+		newrownames[i]<-phy$tip.label[(taxonframe$taxonid[i])]
+	}
+	geigerframe<-data.frame(newmatrix,row.names= newrownames, stringsAsFactors=F)
+	geigerframe
+}
+
+geigerUnivariateSummaryStats<-function(phy, data) {
+#uses a bunch of stats from geiger. Only works for one character right now
+	brownian<-fitContinuous(phy=phy,data= data,model="BM")
+	white<-fitContinuous(phy=phy,data= data,model="white")
+	lambda<-fitContinuous(phy=phy,data= data,model="lambda")
+	kappa<-fitContinuous(phy=phy,data= data,model="kappa")
+	delta<-fitContinuous(phy=phy,data= data,model="delta")
+	EB<-fitContinuous(phy=phy,data= data,model="EB")
+	summarystats<-c(brownian$Trait1$lnl, brownian$Trait1$beta, white$Trait1$lnl, white$Trait1$mean, lambda$Trait1$lambda, kappa$Trait1$lambda, delta$Trait1$delta, EB$Trait1$a)
+	summarystats
+}
+
+abcprc2<-function(phy,originalData,intrinsicFn,extrinsicFn,summaryFn,startingMatrix,intrinsicMatrix,extrinsicMatrix,timeStep,toleranceVector,numParticles=10) {
+#*matrix entries have lower (first row) and upper (second row) values for each parameter. Actual values are drawn from a uniform distribution for each parameter. If you want a parameter set, have max and min values the same number
+#other things as in Sisson et al. Sequential Monte Carlo without likelihoods. P Natl Acad Sci Usa (2007) vol. 104 (6) pp. 1760-1765
+#toleranceVector=vector of epsilons
+#this implementation assumes flat priors
+	splits<-getSimulationSplits(phy)
+	originalSummary <-summaryFn(phy,originalData)
+	
+	particleWeights=rep(0,numParticles) #stores weights for each particle. Initially, assume infinite number of possible particles (so might not apply in discrete case), uniform prior on each
+	particleParameters<-matrix(nrow=numParticles,ncol=dim(startingMatrix)[2] +  dim(intrinsicMatrix)[2] + dim(extrinsicMatrix)[2]) #stores parameters in model for each particle
+	particleDistance=rep(NA,numParticles)
+	particle<-1
+	attempts<-0
+	cat("successes","attempts","expected number of attempts required")
+	while (particle<=numParticles) {
+		attempts<-attempts+1
+
+		newparticle<-new(abcparticle(id=particle,generation=1))
+		newparticle<-initializeStatesFromMatrices(newparticle,startingMatrix, intrinsicMatrix, ExtrinsicMatrix)
+		newparticle<-computeDistance(x, summaryFn, originalSummary, splits, phy, intrinsicFn, extrinsicFn, timeStep)
+		if (newparticle$distance<toleranceVector[1]) {
+			particleWeights[particle]<-1/numParticles
+			particle<-particle+1
+		}
+		cat(particle-1,attempts,floor(numParticles*attempts/particle))
+
+	}
+
+	for (dataGenerationStep in 2:length(toleranceVector)) {
+	}
+}
+
+
+abcprc<-function(phy,originalData,intrinsicFn,extrinsicFn,summaryFn,startingMatrix,intrinsicMatrix,extrinsicMatrix,timeStep,toleranceVector,numParticles=1000) {
+#*matrix entries have lower (first row) and upper (second row) values for each parameter. Actual values are drawn from a uniform distribution for each parameter. If you want a parameter set, have max and min values the same number
+#other things as in Sisson et al. Sequential Monte Carlo without likelihoods. P Natl Acad Sci Usa (2007) vol. 104 (6) pp. 1760-1765
+#toleranceVector=vector of epsilons
+#this implementation assumes flat priors
+	splits<-getSimulationSplits(phy)
+	originalSummaryStats<-summaryFn(phy,originalData)
+	
+	particleWeights=rep(0,numParticles) #stores weights for each particle. Initially, assume infinite number of possible particles (so might not apply in discrete case), uniform prior on each
+	particleParameters<-matrix(nrow=numParticles,ncol=dim(startingMatrix)[2] +  dim(intrinsicMatrix)[2] + dim(extrinsicMatrix)[2]) #stores parameters in model for each particle
+	particleDistance=rep(NA,numParticles)
+	particle<-1
+	attempts<-0
+	cat("successes","attempts","expected number of attempts required")
+	while (particle<=numParticles) {
+		attempts<-attempts+1)))
+		startingStates<-rep(NA,dim(startingMatrix)[2])
+		intrinsicValues<-rep(NA,dim(intrinsicMatrix)[2])
+		extrinsicValues<-rep(NA,dim(extrinsicMatrix)[2])
+		placementCounter=1;
+		for (j in 1:length(startingStates)) {
+			startingStates[j]=runif(n=1,min=min(startingMatrix[,j]),max=max(startingMatrix[,j]))
+			particleParameters[particle,placementCounter]<-startingStates[j]
+			placementCounter<-placementCounter+1
+		}
+		for (j in 1:length(intrinsicValues)) {
+			intrinsicValues[j]=runif(n=1,min=min(intrinsicMatrix[,j]),max=max(intrinsicMatrix[,j]))
+			particleParameters[particle,placementCounter]<-intrinsicValues[j]
+			placementCounter<-placementCounter+1
 			
-			#test code
-			library(geiger)
-			phy<-rcoal(9)
-			char<-data.frame(5+sim.char(phy,model.matrix=matrix(10),1))
-			Rprof()
-			profile<-profileAcrossUniform(phy=phy,originalData=char,intrinsicFn= brownianIntrinsic,extrinsicFn= brownianExtrinsic,startingMatrix=matrix(data=c(0,15),nrow=2),intrinsicMatrix=matrix(data=c(0.0001,10),nrow=2),extrinsicMatrix=matrix(data=c(0,0),nrow=2),timeStep=0.001,numreps=10)
-			Rprof(NULL)
-			summaryRprof()
-			profile
-			plot(profile$startingValue1,profile$distance)
+		}
+		for (j in 1:length(extrinsicValues)) {
+			extrinsicValues[j]=runif(n=1,min=min(extrinsicMatrix[,j]),max=max(extrinsicMatrix[,j]))
+			particleParameters[particle,placementCounter]<-extrinsicValues[j]
+			placementCounter<-placementCounter+1
+		}
+		particleDistance[particle]<-dist(matrix(c(summaryFn(phy, convertTaxonFrameToGeigerData(doSimulation(splits,intrinsicFn,extrinsicFn,startingStates,intrinsicValues,extrinsicValues,timeStep),phy)), originalSummaryStats),nrow=2,byrow=T))[1]
+		if (particleDistance[particle]<toleranceVector[1]) {
+			particleWeights[particle]<-1/numParticles
+			particle<-particle+1
+		}
+		cat(particle-1,attempts,floor(numParticles*attempts/particle))
+	}
+
+	for (dataGenerationStep in 2:length(toleranceVector)) {
+	}
+}
+
+generateRandomSampleFromMatrices<-function(startingMatrix,intrinsicMatrix,ExtrinsicMatrix) {
+		startingStates<-rep(NA,dim(startingMatrix)[2])
+		intrinsicValues<-rep(NA,dim(intrinsicMatrix)[2])
+		extrinsicValues<-rep(NA,dim(extrinsicMatrix)[2])
+		for (j in 1:length(startingStates)) {
+			startingStates[j]=runif(n=1,min=min(startingMatrix[,j]),max=max(startingMatrix[,j]))
+		}
+		for (j in 1:length(intrinsicValues)) {
+			intrinsicValues[j]=runif(n=1,min=min(intrinsicMatrix[,j]),max=max(intrinsicMatrix[,j]))
+			
+		}
+		for (j in 1:length(extrinsicValues)) {
+			extrinsicValues[j]=runif(n=1,min=min(extrinsicMatrix[,j]),max=max(extrinsicMatrix[,j]))
+		}
+
+	
+	}
+
+
+
+
+
+
+profileAcrossUniform<-function(phy,originalData,intrinsicFn,extrinsicFn,startingMatrix,intrinsicMatrix,extrinsicMatrix,timeStep,numreps=100) {
+#*matrix entries have lower (first row) and upper (second row) values for each parameter. Actual values are drawn from a uniform distribution for each parameter. If you want a parameter set, have max and min values the same number
+	print("cow")
+	splits<-getSimulationSplits(phy)
+	print(splits)
+	originalSummaryStats<-geigerUnivariateSummaryStats(phy,originalData)
+	print(originalSummaryStats)
+	resultsMatrix<-matrix(nrow=numreps,ncol=length(originalSummaryStats) + dim(startingMatrix)[2] +  dim(intrinsicMatrix)[2] + dim(extrinsicMatrix)[2]+1)
+	namesVector<-rep(NA,length(originalSummaryStats) + dim(startingMatrix)[2] +  dim(intrinsicMatrix)[2] + dim(extrinsicMatrix)[2]+1)
+	for (i in 1:numreps) {
+		startingStates<-rep(NA,dim(startingMatrix)[2])
+		intrinsicValues<-rep(NA,dim(intrinsicMatrix)[2])
+		extrinsicValues<-rep(NA,dim(extrinsicMatrix)[2])
+		placementCounter=1;
+		for (j in 1:length(startingStates)) {
+			startingStates[j]=runif(n=1,min=min(startingMatrix[,j]),max=max(startingMatrix[,j]))
+			resultsMatrix[i,placementCounter]<-startingStates[j]
+			if (i==1) {
+				namesVector[placementCounter]<-paste("startingValue",j,sep="")
+			}
+			placementCounter<-placementCounter+1
+		}
+		for (j in 1:length(intrinsicValues)) {
+			intrinsicValues[j]=runif(n=1,min=min(intrinsicMatrix[,j]),max=max(intrinsicMatrix[,j]))
+			resultsMatrix[i,placementCounter]<-intrinsicValues[j]
+			if (i==1) {
+				namesVector[placementCounter]<-paste("intrinsicValue",j,sep="")
+			}
+			placementCounter<-placementCounter+1
+			
+		}
+		for (j in 1:length(extrinsicValues)) {
+			extrinsicValues[j]=runif(n=1,min=min(extrinsicMatrix[,j]),max=max(extrinsicMatrix[,j]))
+			resultsMatrix[i,placementCounter]<-extrinsicValues[j]
+			if (i==1) {
+				namesVector[placementCounter]<-paste("extrinsicValue",j,sep="")
+			}
+			placementCounter<-placementCounter+1
+		}
+		individualResult<-geigerUnivariateSummaryStats(phy, convertTaxonFrameToGeigerData(doSimulation(splits,intrinsicFn,extrinsicFn,startingStates,intrinsicValues,extrinsicValues,timeStep),phy))
+		for (j in 1:length(individualResult)) {
+			resultsMatrix[i,placementCounter]<-individualResult[j]
+			if (i==1) {
+				namesVector[placementCounter]<-paste("SummaryStat",j,sep="")
+			}
+			placementCounter<-placementCounter+1
+		}
+		resultsMatrix[i,placementCounter]<-dist(matrix(c(individualResult, originalSummaryStats),nrow=2,byrow=T))[1]
+		if (i==1) {
+			namesVector[placementCounter]<-"distance"
+		}
+		placementCounter<-placementCounter+1
+		print(resultsMatrix[i,])
+	}
+	resultsDataFrame<-data.frame(resultsMatrix)
+	names(resultsDataFrame)<-namesVector
+	return(resultsDataFrame)
+}
+
+
+#test code
+library(geiger)
+phy<-rcoal(9)
+char<-data.frame(5+sim.char(phy,model.matrix=matrix(10),1))
+Rprof()
+profile<-profileAcrossUniform(phy=phy,originalData=char,intrinsicFn= brownianIntrinsic,extrinsicFn= brownianExtrinsic,startingMatrix=matrix(data=c(0,15),nrow=2),intrinsicMatrix=matrix(data=c(0.0001,10),nrow=2),extrinsicMatrix=matrix(data=c(0,0),nrow=2),timeStep=0.001,numreps=10)
+Rprof(NULL)
+summaryRprof()
+profile
+plot(profile$startingValue1,profile$distance)
+
+#test code2
+library(geiger)
+phy<-rcoal(9)
+char<-data.frame(5+sim.char(phy,model.matrix=matrix(10),1))
+abcprc2(phy=phy,originalData=char,intrinsicFn= brownianIntrinsic,extrinsicFn= brownianExtrinsic,startingMatrix=matrix(data=c(0,15),nrow=2),intrinsicMatrix=matrix(data=c(0.0001,10),nrow=2),extrinsicMatrix=matrix(data=c(0,0),nrow=2),timeStep=0.001, toleranceVector=c(50,2),summaryFn= geigerUnivariateSummaryStats)
