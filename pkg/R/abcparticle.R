@@ -7,8 +7,8 @@ setClass(
 		weight="numeric",
 		distance="numeric",
 		startingStates="numeric",
-		intrinsicStates="numeric",
-		extrinsicStates="numeric"
+		intrinsicValues="numeric",
+		extrinsicValues="numeric"
 	)
 )
 
@@ -113,52 +113,52 @@ function(object, value) {
 }
 )
 
-setGeneric("intrinsicStates", function(object) {
-	standardGeneric("intrinsicStates")
+setGeneric("intrinsicValues", function(object) {
+	standardGeneric("intrinsicValues")
 })
 
-setGeneric("intrinsicStates<-", function(object, value) {
-	standardGeneric("intrinsicStates<-")
+setGeneric("intrinsicValues<-", function(object, value) {
+	standardGeneric("intrinsicValues<-")
 })
 
 
-setMethod("intrinsicStates","abcparticle",function(object) {
-	object@intrinsicStates
+setMethod("intrinsicValues","abcparticle",function(object) {
+	object@intrinsicValues
 })
 
-setReplaceMethod("intrinsicStates", signature(object="abcparticle", value="numeric") ,
+setReplaceMethod("intrinsicValues", signature(object="abcparticle", value="numeric") ,
 function(object, value) {
-	object@intrinsicStates <- value
+	object@intrinsicValues <- value
 	object
 }
 )
 
-setGeneric("extrinsicStates", function(object) {
-	standardGeneric("extrinsicStates")
+setGeneric("extrinsicValues", function(object) {
+	standardGeneric("extrinsicValues")
 })
 
-setGeneric("extrinsicStates<-", function(object, value) {
-	standardGeneric("extrinsicStates<-")
+setGeneric("extrinsicValues<-", function(object, value) {
+	standardGeneric("extrinsicValues<-")
 })
 
 
-setMethod("extrinsicStates","abcparticle",function(object) {
-	object@extrinsicStates
+setMethod("extrinsicValues","abcparticle",function(object) {
+	object@extrinsicValues
 })
 
-setReplaceMethod("extrinsicStates", signature(object="abcparticle", value="numeric") ,
+setReplaceMethod("extrinsicValues", signature(object="abcparticle", value="numeric") ,
 function(object, value) {
-	object@extrinsicStates <- value
+	object@extrinsicValues <- value
 	object
 }
 )
 
-setGeneric("initializeStatesFromMatrices",function(x, startingMatrix, intrinsicMatrix, ExtrinsicMatrix){standardGeneric("initializeStatesFromMatrices")})
+setGeneric("initializeStatesFromMatrices",function(x, startingMatrix, intrinsicMatrix, extrinsicMatrix){standardGeneric("initializeStatesFromMatrices")})
 
-setMethod("initializeStatesFromMatrices",signature="abcparticle",definition=function(x, startingMatrix, intrinsicMatrix, ExtrinsicMatrix) {
-		x@startingStates<-rep(NA,dim(startingMatrix)[2])
-		x@intrinsicValues<-rep(NA,dim(intrinsicMatrix)[2])
-		x@extrinsicValues<-rep(NA,dim(extrinsicMatrix)[2])
+setMethod("initializeStatesFromMatrices",signature="abcparticle",definition=function(x, startingMatrix, intrinsicMatrix, extrinsicMatrix) {
+		x@startingStates<-vector(mode="numeric",length=dim(startingMatrix)[2])
+		x@intrinsicValues<-vector(mode="numeric",length=dim(intrinsicMatrix)[2])
+		x@extrinsicValues <-vector(mode="numeric",length=dim(extrinsicMatrix)[2])
 		for (j in 1:length(startingStates)) {
 			x@startingStates[j]=runif(n=1,min=min(startingMatrix[,j]),max=max(startingMatrix[,j]))
 		}
@@ -169,6 +169,8 @@ setMethod("initializeStatesFromMatrices",signature="abcparticle",definition=func
 		for (j in 1:length(extrinsicValues)) {
 			x@extrinsicValues[j]=runif(n=1,min=min(extrinsicMatrix[,j]),max=max(extrinsicMatrix[,j]))
 		}
+		#print(x)
+		x
 		}
 )
 
@@ -189,12 +191,16 @@ setMethod("transformStates",signature="abcparticle",definition=function(x, sdVec
 		x@extrinsicValues[j]=rnorm(n=1,mean=extrinsicValues[j],sd=sdVector[positioncount])
 			positioncount<-positioncount+1
 		}
+		x
 	})
 	
-setGeneric("computeDistance",function(x, summaryFn, originalSummary, splits, phy, intrinsicFn, extrinsicFn, timeStep){standardGeneric("computeDistance")})
+setGeneric("computeABCDistance",function(x, summaryFn, originalSummary, splits, phy, intrinsicFn, extrinsicFn, timeStep){standardGeneric("computeABCDistance")})
 	
-setMethod("computeDistance",signature="abcparticle",definition=function(x, summaryFn, originalSummary, splits, phy, intrinsicFn, extrinsicFn, timeStep) {
-	x@distance<-dist(matrix(c(summaryFn(phy, convertTaxonFrameToGeigerData(doSimulation(splits,intrinsicFn,extrinsicFn,x@startingStates,x@intrinsicStates,x@extrinsicStates,timeStep),phy)), originalSummary),nrow=2,byrow=T))[1]
+setMethod("computeABCDistance",signature="abcparticle",definition=function(x, summaryFn, originalSummary, splits, phy, intrinsicFn, extrinsicFn, timeStep) {
+	x@distance<-dist(matrix(c(summaryFn(phy, convertTaxonFrameToGeigerData(doSimulation(splits,intrinsicFn,extrinsicFn,x@startingStates,x@intrinsicValues,x@extrinsicValues,timeStep),phy)), originalSummary),nrow=2,byrow=T))[1]
+	#print("computeABCDistance")
+	#print(x)
+	x
 	})
 
 	

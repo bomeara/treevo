@@ -65,12 +65,19 @@ doSimulation<-function(splits,intrinsicFn,extrinsicFn,startingStates,intrinsicVa
 					otherstatesvector<-c(otherstatesvector,states(taxa[[j]]))
 				}
 			}
+			#print(taxa)
+			#print(length(otherstatesvector))
 			otherstatesmatrix<-matrix(otherstatesvector,ncol=length(states(taxa[[i]])),byrow=T) #each row represents one taxon
 			newvalues<-intrinsicFn(params=intrinsicValues,states=states(taxa[[i]]))+extrinsicFn(params=extrinsicValues,selfstates=states(taxa[[i]]),otherstates=otherstatesmatrix)
 			nextstates(taxa[[i]])<-newvalues
 		}
 		for (i in 1:length(taxa)) {
-			updateStates(taxa[[i]])
+			#print("\nbefore\n")
+			#print(taxa[[i]])
+			states(taxa[[i]])<-nextstates(taxa[[i]])
+			#print("\nafter\n")
+			#print(taxa[[i]])
+
 		}
 #print("------------------- step -------------------")
 #print(taxa)
@@ -153,6 +160,7 @@ convertTaxonFrameToGeigerData<-function(taxonframe,phy) {
 }
 
 geigerUnivariateSummaryStats<-function(phy, data) {
+	#sink(file="/dev/null") #because I really don't need output of which model I'm fitting. I already know.
 #uses a bunch of stats from geiger. Only works for one character right now
 	brownian<-fitContinuous(phy=phy,data= data,model="BM")
 	white<-fitContinuous(phy=phy,data= data,model="white")
@@ -161,6 +169,21 @@ geigerUnivariateSummaryStats<-function(phy, data) {
 	delta<-fitContinuous(phy=phy,data= data,model="delta")
 	EB<-fitContinuous(phy=phy,data= data,model="EB")
 	summarystats<-c(brownian$Trait1$lnl, brownian$Trait1$beta, white$Trait1$lnl, white$Trait1$mean, lambda$Trait1$lambda, kappa$Trait1$lambda, delta$Trait1$delta, EB$Trait1$a)
+	#sink() #turns output back on
+	summarystats
+}
+
+geigerUnivariateSummaryStats2<-function(phy,data) {
+	#sink(file="/dev/null") #because I really don't need output of which model I'm fitting. I already know.
+#uses a bunch of stats from geiger. Only works for one character right now
+	brownian<-fitContinuous(phy=phy,data= data,model="BM")
+	white<-fitContinuous(phy=phy,data= data,model="white")
+	lambda<-fitContinuous(phy=phy,data= data,model="lambda")
+	kappa<-fitContinuous(phy=phy,data= data,model="kappa")
+	delta<-fitContinuous(phy=phy,data= data,model="delta")
+	EB<-fitContinuous(phy=phy,data= data,model="EB")
+	summarystats<-c(brownian$Trait1$beta, white$Trait1$mean, lambda$Trait1$lambda, kappa$Trait1$lambda, delta$Trait1$delta, EB$Trait1$a)
+	#sink() #turns output back on
 	summarystats
 }
 
@@ -169,26 +192,56 @@ abcprc2<-function(phy,originalData,intrinsicFn,extrinsicFn,summaryFn,startingMat
 #other things as in Sisson et al. Sequential Monte Carlo without likelihoods. P Natl Acad Sci Usa (2007) vol. 104 (6) pp. 1760-1765
 #toleranceVector=vector of epsilons
 #this implementation assumes flat priors
+	nameVector<-c("generation","attempt","id","parentid","distance","weight")
+	for (i in 1:dim(startingMatrix)[2]) {
+		nameVector<-append(nameVector,paste("StartingStates",i,sep=""))
+	}
+	for (i in 1:dim(intrinsicMatrix)[2]) {
+		nameVector<-append(nameVector,paste("IntrinsicValue",i,sep=""))
+	}
+	for (i in 1:dim(extrinsicMatrix)[2]) {
+		nameVector<-append(nameVector,paste("ExtrinsicValue",i,sep=""))
+	}
+	#for (i in 1:Ntip(phy)) {
+	#	nameVector<-append(nameVector,paste("Tip_",i,sep=""))
+	#}
+	
 	splits<-getSimulationSplits(phy)
 	originalSummary <-summaryFn(phy,originalData)
-	
 	particleWeights=rep(0,numParticles) #stores weights for each particle. Initially, assume infinite number of possible particles (so might not apply in discrete case), uniform prior on each
 	particleParameters<-matrix(nrow=numParticles,ncol=dim(startingMatrix)[2] +  dim(intrinsicMatrix)[2] + dim(extrinsicMatrix)[2]) #stores parameters in model for each particle
 	particleDistance=rep(NA,numParticles)
 	particle<-1
 	attempts<-0
+	sink()
 	cat("successes","attempts","expected number of attempts required")
 	while (particle<=numParticles) {
 		attempts<-attempts+1
 
-		newparticle<-new(abcparticle(id=particle,generation=1))
-		newparticle<-initializeStatesFromMatrices(newparticle,startingMatrix, intrinsicMatrix, ExtrinsicMatrix)
-		newparticle<-computeDistance(x, summaryFn, originalSummary, splits, phy, intrinsicFn, extrinsicFn, timeStep)
-		if (newparticle$distance<toleranceVector[1]) {
+		newparticleVector<-c(new("abcparticle",id=particle,generation=1))
+		#print("new particle 1 = ")
+		#print(newparticleVector[[1]])
+		newparticleVector[[1]]<-initializeStatesFromMatrices(newparticleVector[[1]],startingMatrix, intrinsicMatrix, extrinsicMatrix)
+		#print("new particle 2 = ")
+		#print(newparticleVector[[1]])
+		#print("new particle 3 = ")
+		#print(newparticleVector[[1]])
+		newparticleVector[[1]]<-computeABCDistance(newparticleVector[[1]], summaryFn, originalSummary, splits, phy, intrinsicFn, extrinsicFn, timeStep)
+		#print("new particle 4 = ")
+		#print(newparticleVector[[1]])
+		if (distance(newparticleVector[[1]])<toleranceVector[1]) {
+			id(newparticleVector[[1]])<-particle
+			weight(newparticleVector[[1]])<-1/numParticles
 			particleWeights[particle]<-1/numParticles
 			particle<-particle+1
 		}
-		cat(particle-1,attempts,floor(numParticles*attempts/particle))
+		vectorForDataFrame<-c(1,attempts,id(newparticleVector[[1]]),0,distance(newparticleVector[[1]]),weight(newparticleVector[[1]]),startingStates(newparticleVector[[1]]),intrinsicValues(newparticleVector[[1]]),extrinsicValues(newparticleVector[[1]]))
+		
+		STICK THE ABOVE IN A DATA FRAME USING THE NAMEVECTOR. NOTE THAT PARTICLES NOT SELECTED WILL HAVE ID==0
+		
+		
+		
+		cat(particle-1,attempts,floor(numParticles*attempts/particle),startingStates(newparticleVector[[1]]),intrinsicValues(newparticleVector[[1]]),extrinsicValues(newparticleVector[[1]]),distance(newparticleVector[[1]]),"\n")
 
 	}
 
@@ -197,7 +250,7 @@ abcprc2<-function(phy,originalData,intrinsicFn,extrinsicFn,summaryFn,startingMat
 }
 
 
-abcprc<-function(phy,originalData,intrinsicFn,extrinsicFn,summaryFn,startingMatrix,intrinsicMatrix,extrinsicMatrix,timeStep,toleranceVector,numParticles=1000) {
+abcprc<-function(phy,originalData,intrinsicFn,extrinsicFn,summaryFn,startingMatrix,intrinsicMatrix,extrinsicMatrix,timeStep,toleranceVector,numParticles=50) {
 #*matrix entries have lower (first row) and upper (second row) values for each parameter. Actual values are drawn from a uniform distribution for each parameter. If you want a parameter set, have max and min values the same number
 #other things as in Sisson et al. Sequential Monte Carlo without likelihoods. P Natl Acad Sci Usa (2007) vol. 104 (6) pp. 1760-1765
 #toleranceVector=vector of epsilons
@@ -213,9 +266,11 @@ abcprc<-function(phy,originalData,intrinsicFn,extrinsicFn,summaryFn,startingMatr
 	cat("successes","attempts","expected number of attempts required")
 	while (particle<=numParticles) {
 		attempts<-attempts+1)))
-		startingStates<-rep(NA,dim(startingMatrix)[2])
-		intrinsicValues<-rep(NA,dim(intrinsicMatrix)[2])
-		extrinsicValues<-rep(NA,dim(extrinsicMatrix)[2])
+		startingStates<-vector(mode="numeric",length=dim(startingMatrix)[2])
+		intrinsicValues<-vector(mode="numeric",length=dim(intrinsicMatrix)[2])
+		extrinsicValues <-vector(mode="numeric",length=dim(extrinsicMatrix)[2])
+		#print(intrinsicValues)
+		#print(extrinsicValues)
 		placementCounter=1;
 		for (j in 1:length(startingStates)) {
 			startingStates[j]=runif(n=1,min=min(startingMatrix[,j]),max=max(startingMatrix[,j]))
@@ -245,18 +300,23 @@ abcprc<-function(phy,originalData,intrinsicFn,extrinsicFn,summaryFn,startingMatr
 	}
 }
 
-generateRandomSampleFromMatrices<-function(startingMatrix,intrinsicMatrix,ExtrinsicMatrix) {
-		startingStates<-rep(NA,dim(startingMatrix)[2])
-		intrinsicValues<-rep(NA,dim(intrinsicMatrix)[2])
-		extrinsicValues<-rep(NA,dim(extrinsicMatrix)[2])
+generateRandomSampleFromMatrices<-function(startingMatrix,intrinsicMatrix,extrinsicMatrix) {
+		startingStates<-vector(mode="numeric",length=dim(startingMatrix)[2])
+		intrinsicValues<-vector(mode="numeric",length=dim(intrinsicMatrix)[2])
+		extrinsicValues <-vector(mode="numeric",length=dim(extrinsicMatrix)[2])
+		#startingStates=rep(NA,dim(startingMatrix)[2])
+		#intrinsicValues=rep(NA,dim(intrinsicMatrix)[2])
+		#extrinsicValues=rep(NA,dim(extrinsicMatrix)[2])
 		for (j in 1:length(startingStates)) {
 			startingStates[j]=runif(n=1,min=min(startingMatrix[,j]),max=max(startingMatrix[,j]))
 		}
 		for (j in 1:length(intrinsicValues)) {
+			#print(intrinsicValues)
 			intrinsicValues[j]=runif(n=1,min=min(intrinsicMatrix[,j]),max=max(intrinsicMatrix[,j]))
 			
 		}
 		for (j in 1:length(extrinsicValues)) {
+			#print(extrinsicValues)
 			extrinsicValues[j]=runif(n=1,min=min(extrinsicMatrix[,j]),max=max(extrinsicMatrix[,j]))
 		}
 
@@ -278,9 +338,9 @@ profileAcrossUniform<-function(phy,originalData,intrinsicFn,extrinsicFn,starting
 	resultsMatrix<-matrix(nrow=numreps,ncol=length(originalSummaryStats) + dim(startingMatrix)[2] +  dim(intrinsicMatrix)[2] + dim(extrinsicMatrix)[2]+1)
 	namesVector<-rep(NA,length(originalSummaryStats) + dim(startingMatrix)[2] +  dim(intrinsicMatrix)[2] + dim(extrinsicMatrix)[2]+1)
 	for (i in 1:numreps) {
-		startingStates<-rep(NA,dim(startingMatrix)[2])
-		intrinsicValues<-rep(NA,dim(intrinsicMatrix)[2])
-		extrinsicValues<-rep(NA,dim(extrinsicMatrix)[2])
+		startingStates<-vector(mode="numeric",length=dim(startingMatrix)[2])
+		intrinsicValues<-vector(mode="numeric",length=dim(intrinsicMatrix)[2])
+		extrinsicValues <-vector(mode="numeric",length=dim(extrinsicMatrix)[2])
 		placementCounter=1;
 		for (j in 1:length(startingStates)) {
 			startingStates[j]=runif(n=1,min=min(startingMatrix[,j]),max=max(startingMatrix[,j]))
@@ -343,4 +403,4 @@ plot(profile$startingValue1,profile$distance)
 library(geiger)
 phy<-rcoal(9)
 char<-data.frame(5+sim.char(phy,model.matrix=matrix(10),1))
-abcprc2(phy=phy,originalData=char,intrinsicFn= brownianIntrinsic,extrinsicFn= brownianExtrinsic,startingMatrix=matrix(data=c(0,15),nrow=2),intrinsicMatrix=matrix(data=c(0.0001,10),nrow=2),extrinsicMatrix=matrix(data=c(0,0),nrow=2),timeStep=0.001, toleranceVector=c(50,2),summaryFn= geigerUnivariateSummaryStats)
+abcprc2(phy=phy,originalData=char,intrinsicFn= brownianIntrinsic,extrinsicFn= brownianExtrinsic,startingMatrix=matrix(data=c(0,15),nrow=2),intrinsicMatrix=matrix(data=c(0.0001,10),nrow=2),extrinsicMatrix=matrix(data=c(0,0),nrow=2),timeStep=0.001, toleranceVector=c(50,2),summaryFn= geigerUnivariateSummaryStats2)
