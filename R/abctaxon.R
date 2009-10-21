@@ -115,13 +115,14 @@ function(object, value) {
 }
 )
 
-setGeneric("updateStates", function(object) {
-	standardGeneric("updateStates")
-})
+#update states doesn't work
+#setGeneric("updateStates", function(object) {
+#	standardGeneric("updateStates")
+#})
 
 
-setMethod("updateStates", signature(object='abctaxon'),
-function(object) {
-	object@states<-object@nextstates
-	object
-})
+#setMethod("updateStates", signature(object='abctaxon'),
+#function(object) {
+#	object@states<-object@nextstates
+#	object
+#})
