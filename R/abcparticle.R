@@ -12,11 +12,11 @@ setClass(
 	)
 )
 
-setGeneric("id", "abcparticle",function(object) {
+setGeneric("id",function(object) {
 	standardGeneric("id")
 })
 
-setGeneric("id<-", "abcparticle", function(object, value) {
+setGeneric("id<-", function(object, value) {
 	standardGeneric("id<-")
 })
 
@@ -31,6 +31,40 @@ function(object, value) {
 	object
 }
 )
+
+setGeneric("setId", function(object, value) {
+	standardGeneric("setId")
+})
+
+setMethod("setId","abcparticle",function(object,value) {
+	object@id<-value
+	object
+})
+
+setGeneric("getId", function(object) {
+	standardGeneric("getId")
+})
+
+setMethod("getId","abcparticle",function(object) {
+	object@id
+})
+
+setGeneric("setWeight", function(object, value) {
+	standardGeneric("setWeight")
+})
+
+setMethod("setWeight","abcparticle",function(object,value) {
+	object@weight<-value
+	object
+})
+
+setGeneric("getWeight", function(object) {
+	standardGeneric("getWeight")
+})
+
+setMethod("getWeight","abcparticle",function(object) {
+	object@weight
+})
 
 setGeneric("generation", function(object) {
 	standardGeneric("generation")
