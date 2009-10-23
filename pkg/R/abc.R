@@ -213,6 +213,7 @@ abcprc2<-function(phy,originalData,intrinsicFn,extrinsicFn,summaryFn,startingMat
 	particleDistance=rep(NA,numParticles)
 	particle<-1
 	attempts<-0
+	particleDataFrame<-data.frame()
 	sink()
 	cat("successes","attempts","expected number of attempts required")
 	while (particle<=numParticles) {
@@ -236,17 +237,14 @@ abcprc2<-function(phy,originalData,intrinsicFn,extrinsicFn,summaryFn,startingMat
 			particle<-particle+1
 		}
 		vectorForDataFrame<-c(1,attempts,id(newparticleVector[[1]]),0,distance(newparticleVector[[1]]),weight(newparticleVector[[1]]),startingStates(newparticleVector[[1]]),intrinsicValues(newparticleVector[[1]]),extrinsicValues(newparticleVector[[1]]))
-		
-		STICK THE ABOVE IN A DATA FRAME USING THE NAMEVECTOR. NOTE THAT PARTICLES NOT SELECTED WILL HAVE ID==0
-		
-		
-		
+		particleDataFrame<-rbind(particleDataFrame,data.frame(vectorForDataFrame))
 		cat(particle-1,attempts,floor(numParticles*attempts/particle),startingStates(newparticleVector[[1]]),intrinsicValues(newparticleVector[[1]]),extrinsicValues(newparticleVector[[1]]),distance(newparticleVector[[1]]),"\n")
 
 	}
 
 	for (dataGenerationStep in 2:length(toleranceVector)) {
 	}
+	particleDataFrame
 }
 
 

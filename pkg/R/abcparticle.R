@@ -12,11 +12,11 @@ setClass(
 	)
 )
 
-setGeneric("id", function(object) {
+setGeneric("id", "abcparticle",function(object) {
 	standardGeneric("id")
 })
 
-setGeneric("id<-", function(object, value) {
+setGeneric("id<-", "abcparticle", function(object, value) {
 	standardGeneric("id<-")
 })
 
