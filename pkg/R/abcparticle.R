@@ -208,6 +208,41 @@ setMethod("initializeStatesFromMatrices",signature="abcparticle",definition=func
 		}
 )
 
+setGeneric("mutateStates",function(x, startingMatrix, intrinsicMatrix, extrinsicMatrix, standardDevFactor){standardGeneric("mutateStates")})
+
+setMethod("mutateStates",signature="abcparticle",definition=function(x, startingMatrix, intrinsicMatrix, extrinsicMatrix, standardDevFactor) {
+	dput(x)
+	dput(x@startingStates)
+	typeof(x)
+	typeof(x@startingStates)
+		for (j in 1:length(startingStates)) {
+			newvalue<-rnorm(n=1,mean= startingStates[j],sd=standardDevFactor*(max(startingMatrix[,j])-min(startingMatrix[,j])))
+			#cat("x@startingStates[j] = ")
+			#cat(x@startingStates[j])
+			if (newvalue>=min(startingMatrix[,j]) && newvalue<=max(startingMatrix[,j])) {
+				#x@startingStates[j]=newvalue
+
+			}
+		}
+		for (j in 1:length(intrinsicValues)) {
+			newvalue<-rnorm(n=1,mean=intrinsicValues[j],sd=standardDevFactor*(max(intrinsicMatrix[,j])-min(intrinsicMatrix[,j])))
+			if (newvalue>=min(intrinsicMatrix[,j]) && newvalue<=max(intrinsicMatrix[,j])) {
+				#x@intrinsicValues[j]=newvalue
+
+			}
+		}
+		for (j in 1:length(extrinsicValues)) {
+			newvalue<-rnorm(n=1,mean=extrinsicValues[j],sd=standardDevFactor*(max(extrinsicMatrix[,j])-min(extrinsicMatrix[,j])))
+			if (newvalue>=min(extrinsicMatrix[,j]) && newvalue<=max(extrinsicMatrix[,j])) {
+				#x@extrinsicValues[j]=newvalue
+
+			}
+		}
+		#print(x)
+		x
+		}
+)
+
 setGeneric("transformStates",function(x, sdVector ){standardGeneric("transformStates")})
 
 setMethod("transformStates",signature="abcparticle",definition=function(x, sdVector) {

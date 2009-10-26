@@ -187,7 +187,7 @@ geigerUnivariateSummaryStats2<-function(phy,data) {
 	summarystats
 }
 
-abcprc2<-function(phy,originalData,intrinsicFn,extrinsicFn,summaryFn,startingMatrix,intrinsicMatrix,extrinsicMatrix,timeStep,toleranceVector,numParticles=10) {
+abcprc2<-function(phy,originalData,intrinsicFn,extrinsicFn,summaryFn,startingMatrix,intrinsicMatrix,extrinsicMatrix,timeStep,toleranceVector,numParticles=10, standardDevFactor=0.05) {
 #*matrix entries have lower (first row) and upper (second row) values for each parameter. Actual values are drawn from a uniform distribution for each parameter. If you want a parameter set, have max and min values the same number
 #other things as in Sisson et al. Sequential Monte Carlo without likelihoods. P Natl Acad Sci Usa (2007) vol. 104 (6) pp. 1760-1765
 #toleranceVector=vector of epsilons
@@ -249,13 +249,15 @@ abcprc2<-function(phy,originalData,intrinsicFn,extrinsicFn,summaryFn,startingMat
 		while (particle<=numParticles) {
 			attempts<-attempts+1
 			particleToSelect<-which.max(as.vector(rmultinom(1, size = 1, prob=oldParticleWeights)))
-			
-			NOW ADD MUTATION OF THE PARTICLE TO GET NEW PARTICLE, INSTEAD OF NEXT TWO STEPS BELOW
-			
-			newparticleVector<-c(new("abcparticle",id=particle,generation=dataGenerationStep,weight=0))
-			newparticleVector[[1]]<-initializeStatesFromMatrices(newparticleVector[[1]],startingMatrix, intrinsicMatrix, extrinsicMatrix)
+			dput(oldParticleVector)
+			dput(oldParticleVector[particleToSelect])
+			dput(oldParticleVector[[particleToSelect]])
+			newparticleVector<-oldParticleVector[particleToSelect]
+			dput(newparticleVector[[1]])
+			newparticleVector[[1]]<-mutateStates(newparticleVector[[1]],startingMatrix, intrinsicMatrix, extrinsicMatrix, standardDevFactor)
+			dput(newparticleVector[[1]])
 			newparticleVector[[1]]<-computeABCDistance(newparticleVector[[1]], summaryFn, originalSummary, splits, phy, intrinsicFn, extrinsicFn, timeStep)
-			
+			dput(newparticleVector[[1]])
 			
 			if (distance(newparticleVector[[1]])<toleranceVector[dataGenerationStep]) {
 				newparticleVector[[1]]<-setId(newparticleVector[[1]],particle)
@@ -422,14 +424,14 @@ profileAcrossUniform<-function(phy,originalData,intrinsicFn,extrinsicFn,starting
 library(geiger)
 phy<-rcoal(9)
 char<-data.frame(5+sim.char(phy,model.matrix=matrix(10),1))
-particledata<-abcprc2(phy=phy,originalData=char,intrinsicFn= brownianIntrinsic,extrinsicFn= brownianExtrinsic,startingMatrix=matrix(data=c(0,15),nrow=2),intrinsicMatrix=matrix(data=c(0.0001,10),nrow=2),extrinsicMatrix=matrix(data=c(0,0),nrow=2),timeStep=0.001, toleranceVector=c(50,2),summaryFn= geigerUnivariateSummaryStats2)
+particledata<-abcprc2(phy=phy,originalData=char,intrinsicFn= brownianIntrinsic,extrinsicFn= brownianExtrinsic,startingMatrix=matrix(data=c(0,15),nrow=2),intrinsicMatrix=matrix(data=c(0.0001,10),nrow=2),extrinsicMatrix=matrix(data=c(0,0),nrow=2),timeStep=0.001, toleranceVector=c(500,2),summaryFn= geigerUnivariateSummaryStats2)
 
 #test code
 #library(geiger)
 #phy<-rcoal(9)
 #char<-data.frame(5+sim.char(phy,model.matrix=matrix(10),1))
 #Rprof()
-#profile<-profileAcrossUniform(phy=phy,originalData=char,intrinsicFn= brownianIntrinsic,extrinsicFn= brownianExtrinsic,startingMatrix=matrix(data=c(0,15),nrow=2),intrinsicMatrix=matrix(data=c(0.0001,10),nrow=2),extrinsicMatrix=matrix(data=c(0,0),nrow=2),timeStep=0.001,numreps=10)
+#profile<-profileAcrossUniform(phy=phy,originalData=char,intrinsicFn= brownianIntrinsic,extrinsicFn= brownianExtrinsic,startingMatrix=matrix(data=c(0,15,0,15),nrow=2),intrinsicMatrix=matrix(data=c(0.0001,10),nrow=2),extrinsicMatrix=matrix(data=c(0,0),nrow=2),timeStep=0.001,numreps=10)
 #Rprof(NULL)
 #summaryRprof()
 #profile
