@@ -424,7 +424,10 @@ profileAcrossUniform<-function(phy,originalData,intrinsicFn,extrinsicFn,starting
 library(geiger)
 phy<-rcoal(9)
 char<-data.frame(5+sim.char(phy,model.matrix=matrix(10),1))
+Rprof()
 particledata<-abcprc2(phy=phy,originalData=char,intrinsicFn= brownianIntrinsic,extrinsicFn= brownianExtrinsic,startingMatrix=matrix(data=c(0,15),nrow=2),intrinsicMatrix=matrix(data=c(0.0001,10),nrow=2),extrinsicMatrix=matrix(data=c(0,0),nrow=2),timeStep=0.001, toleranceVector=c(500,2),summaryFn= geigerUnivariateSummaryStats2)
+Rprof(NULL)
+summaryRprof()
 
 #test code
 #library(geiger)
