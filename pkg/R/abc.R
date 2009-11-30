@@ -229,6 +229,8 @@ abcprc2<-function(phy,originalData,intrinsicFn,extrinsicFn,summaryFn,startingMat
 			particle<-particle+1
 			particleVector<-append(particleVector,newparticleVector)
 		}
+		sink()
+		print(newparticleVector)
 		vectorForDataFrame<-c(1,attempts,getId(newparticleVector[[1]]),0,distance(newparticleVector[[1]]),getWeight(newparticleVector[[1]]),startingStates(newparticleVector[[1]]),intrinsicValues(newparticleVector[[1]]),extrinsicValues(newparticleVector[[1]]))
 #cat("\n\nlength of vectorForDataFrame = ",length(vectorForDataFrame),"\n","length of startingStates = ",length(startingStates),"\nlength of intrinsicValues = ",length(intrinsicValues),"\nlength of extrinsicValues = ",length(extrinsicValues),"\ndistance = ",distance(newparticleVector[[1]]),"\nweight = ",getWeight(newparticleVector[[1]]),"\n",vectorForDataFrame,"\n")
 		particleDataFrame<-rbind(particleDataFrame,data.frame(rbind(vectorForDataFrame)))
@@ -237,6 +239,7 @@ abcprc2<-function(phy,originalData,intrinsicFn,extrinsicFn,summaryFn,startingMat
 	}
 	
 	for (dataGenerationStep in 2:length(toleranceVector)) {
+		cat("\n\n\n", "STARTING DATA GENERATION STEP ", dataGenerationStep,  "\n\n\n")
 		oldParticleVector<-particleVector
 		oldParticleWeights<-particleWeights
 		particleWeights=rep(0,numParticles) #stores weights for each particle. Initially, assume infinite number of possible particles (so might not apply in discrete case), uniform prior on each
@@ -249,14 +252,22 @@ abcprc2<-function(phy,originalData,intrinsicFn,extrinsicFn,summaryFn,startingMat
 		while (particle<=numParticles) {
 			attempts<-attempts+1
 			particleToSelect<-which.max(as.vector(rmultinom(1, size = 1, prob=oldParticleWeights)))
+			cat("particle to select = ", particleToSelect, "\n")
+			cat("dput(oldParticleVector)\n")
 			dput(oldParticleVector)
+			cat("dput(oldParticleVector[particleToSelect])\n")
 			dput(oldParticleVector[particleToSelect])
+			cat("dput(oldParticleVector[[particleToSelect]])\n")
 			dput(oldParticleVector[[particleToSelect]])
 			newparticleVector<-oldParticleVector[particleToSelect]
+			cat("dput(newparticleVector[[1]])\n")
 			dput(newparticleVector[[1]])
+			cat("mutateStates\n")
 			newparticleVector[[1]]<-mutateStates(newparticleVector[[1]],startingMatrix, intrinsicMatrix, extrinsicMatrix, standardDevFactor)
+			cat("dput(newparticleVector[[1]]) AFTER MUTATE STATES\n")
 			dput(newparticleVector[[1]])
 			newparticleVector[[1]]<-computeABCDistance(newparticleVector[[1]], summaryFn, originalSummary, splits, phy, intrinsicFn, extrinsicFn, timeStep)
+			cat("dput(newparticleVector[[1]]) AFTER computeABCDistance\n")
 			dput(newparticleVector[[1]])
 			
 			if (distance(newparticleVector[[1]])<toleranceVector[dataGenerationStep]) {
@@ -266,6 +277,8 @@ abcprc2<-function(phy,originalData,intrinsicFn,extrinsicFn,summaryFn,startingMat
 				particle<-particle+1
 				particleVector<-append(particleVector,newparticleVector)
 			}
+			sink()
+			print(newparticleVector)
 			vectorForDataFrame<-c(dataGenerationStep,attempts,getId(newparticleVector[[1]]),0,distance(newparticleVector[[1]]),getWeight(newparticleVector[[1]]),startingStates(newparticleVector[[1]]),intrinsicValues(newparticleVector[[1]]),extrinsicValues(newparticleVector[[1]]))
 #cat("\n\nlength of vectorForDataFrame = ",length(vectorForDataFrame),"\n","length of startingStates = ",length(startingStates),"\nlength of intrinsicValues = ",length(intrinsicValues),"\nlength of extrinsicValues = ",length(extrinsicValues),"\ndistance = ",distance(newparticleVector[[1]]),"\nweight = ",getWeight(newparticleVector[[1]]),"\n",vectorForDataFrame,"\n")
 			particleDataFrame<-rbind(particleDataFrame,data.frame(rbind(vectorForDataFrame)))
@@ -301,6 +314,8 @@ abcprc<-function(phy,originalData,intrinsicFn,extrinsicFn,summaryFn,startingMatr
 		startingStates<-vector(mode="numeric",length=dim(startingMatrix)[2])
 		intrinsicValues<-vector(mode="numeric",length=dim(intrinsicMatrix)[2])
 		extrinsicValues <-vector(mode="numeric",length=dim(extrinsicMatrix)[2])
+		sink()
+		print(newparticleVector)
 #print(intrinsicValues)
 #print(extrinsicValues)
 		placementCounter=1;
