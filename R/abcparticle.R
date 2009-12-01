@@ -8,7 +8,8 @@ setClass(
 		distance="numeric",
 		startingStates="numeric",
 		intrinsicValues="numeric",
-		extrinsicValues="numeric"
+		extrinsicValues="numeric",
+		kernel="numeric"
 	)
 )
 
@@ -126,6 +127,26 @@ function(object, value) {
 }
 )
 
+setGeneric("kernel", function(object) {
+	standardGeneric("kernel")
+})
+
+setGeneric("kernel<-", function(object, value) {
+	standardGeneric("kernel<-")
+})
+
+
+setMethod("kernel","abcparticle",function(object) {
+	object@kernel
+})
+
+setReplaceMethod("kernel", signature(object="abcparticle", value="numeric") ,
+function(object, value) {
+	object@kernel <- value
+	object
+}
+)
+
 
 setGeneric("startingStates", function(object) {
 	standardGeneric("startingStates")
@@ -211,34 +232,47 @@ setMethod("initializeStatesFromMatrices",signature="abcparticle",definition=func
 setGeneric("mutateStates",function(x, startingMatrix, intrinsicMatrix, extrinsicMatrix, standardDevFactor){standardGeneric("mutateStates")})
 
 setMethod("mutateStates",signature="abcparticle",definition=function(x, startingMatrix, intrinsicMatrix, extrinsicMatrix, standardDevFactor) {
-	dput(x)
-	dput(x@startingStates)
+	#dput(x)
+	#dput(x@startingStates)
 	#typeof(x)
 	#typeof(x@startingStates)
+		replacementVector<-rep(NA, length(x@startingStates))
 		for (j in 1:length(x@startingStates)) {
-			newvalue<-rnorm(n=1,mean= x@startingStates[j],sd=standardDevFactor*(max(startingMatrix[,j])-min(startingMatrix[,j])))
-			#cat("x@startingStates[j] = ")
-			#cat(x@startingStates[j])
-			if (newvalue>=min(startingMatrix[,j]) && newvalue<=max(startingMatrix[,j])) {
-				#x@startingStates[j]=newvalue
-
+			newvalue<-Inf
+			meantouse=x@startingStates[j]
+			sdtouse=standardDevFactor*(max(startingMatrix[,j])-min(startingMatrix[,j]))
+			while (newvalue<min(startingMatrix[,j]) || newvalue>max(startingMatrix[,j])) {
+				newvalue<-rnorm(n=1,mean= meantouse ,sd= sdtouse)
+				replacementVector[j]=newvalue
 			}
 		}
+		x@startingStates<-replacementVector
+		
+		replacementVector<-rep(NA, length(x@intrinsicValues))
 		for (j in 1:length(x@intrinsicValues)) {
-			newvalue<-rnorm(n=1,mean=x@intrinsicValues[j],sd=standardDevFactor*(max(intrinsicMatrix[,j])-min(intrinsicMatrix[,j])))
-			if (newvalue>=min(intrinsicMatrix[,j]) && newvalue<=max(intrinsicMatrix[,j])) {
-				#x@intrinsicValues[j]=newvalue
-
+			newvalue<-Inf
+			meantouse=x@intrinsicValues[j]
+			sdtouse=standardDevFactor*(max(intrinsicMatrix[,j])-min(intrinsicMatrix[,j]))
+			while (newvalue<min(intrinsicMatrix[,j]) || newvalue>max(intrinsicMatrix[,j])) {
+				newvalue<-rnorm(n=1,mean= meantouse ,sd= sdtouse)
+				replacementVector[j]=newvalue
 			}
 		}
+		x@intrinsicValues <-replacementVector
+
+		replacementVector<-rep(NA, length(x@extrinsicValues))
 		for (j in 1:length(x@extrinsicValues)) {
-			newvalue<-rnorm(n=1,mean=x@extrinsicValues[j],sd=standardDevFactor*(max(extrinsicMatrix[,j])-min(extrinsicMatrix[,j])))
-			if (newvalue>=min(extrinsicMatrix[,j]) && newvalue<=max(extrinsicMatrix[,j])) {
-				#x@extrinsicValues[j]=newvalue
-
+			newvalue<-Inf
+			meantouse=x@extrinsicValues[j]
+			sdtouse=standardDevFactor*(max(extrinsicMatrix[,j])-min(extrinsicMatrix[,j]))
+			while (newvalue<min(extrinsicMatrix[,j]) || newvalue>max(extrinsicMatrix[,j])) {
+				newvalue<-rnorm(n=1,mean= meantouse ,sd= sdtouse)
+				replacementVector[j]=newvalue
 			}
 		}
-		#print(x)
+		x@extrinsicValues <-replacementVector
+		
+		kernel(x)<-lnTransitionProb
 		x
 		}
 )
@@ -271,5 +305,7 @@ setMethod("computeABCDistance",signature="abcparticle",definition=function(x, su
 	#print(x)
 	x
 	})
+	
+	
 
 	
