@@ -187,11 +187,23 @@ geigerUnivariateSummaryStats2<-function(phy,data) {
 	summarystats
 }
 
-abcprc2<-function(phy,originalData,intrinsicFn,extrinsicFn,summaryFn,startingMatrix,intrinsicMatrix,extrinsicMatrix,timeStep,toleranceVector,numParticles=10, standardDevFactor=0.05) {
+rawValuesSummaryStats<-function(phy,data) {
+	nrow=dim(data[1])[1]
+	summarystats<-rep(NA,nrow)
+	for (i in 1:nrow) {
+		summarystats[i]<-data[i,1]
+	}
+	summarystats
+}
+
+abcprc2<-function(phy,originalData,intrinsicFn,extrinsicFn,summaryFn,startingMatrix,intrinsicMatrix,extrinsicMatrix,timeStep,toleranceVector,numParticles=10, standardDevFactor=0.05, plot=F) {
 #*matrix entries have lower (first row) and upper (second row) values for each parameter. Actual values are drawn from a uniform distribution for each parameter. If you want a parameter set, have max and min values the same number
 #other things as in Sisson et al. Sequential Monte Carlo without likelihoods. P Natl Acad Sci Usa (2007) vol. 104 (6) pp. 1760-1765
 #toleranceVector=vector of epsilons
 #this implementation assumes flat priors
+if (plot) {
+	plot(x=c(min(intrinsicMatrix),max(intrinsicMatrix)),y=c(0,5*max(toleranceVector)),type="n")
+	}
 	nameVector<-c("generation","attempt","id","parentid","distance","weight")
 	for (i in 1:dim(startingMatrix)[2]) {
 		nameVector<-append(nameVector,paste("StartingStates",i,sep=""))
@@ -229,8 +241,15 @@ abcprc2<-function(phy,originalData,intrinsicFn,extrinsicFn,summaryFn,startingMat
 			particle<-particle+1
 			particleVector<-append(particleVector,newparticleVector)
 		}
+		if (plot) {
+			plotcol="grey"
+			if (distance(newparticleVector[[1]])<toleranceVector[1]) {
+				plotcol="black"
+				}
+			text(x=intrinsicValues(newparticleVector[[1]]),y=distance(newparticleVector[[1]]),labels=1,col=plotcol) 
+			}
 		sink()
-		print(newparticleVector)
+		#print(newparticleVector)
 		vectorForDataFrame<-c(1,attempts,getId(newparticleVector[[1]]),0,distance(newparticleVector[[1]]),getWeight(newparticleVector[[1]]),startingStates(newparticleVector[[1]]),intrinsicValues(newparticleVector[[1]]),extrinsicValues(newparticleVector[[1]]))
 #cat("\n\nlength of vectorForDataFrame = ",length(vectorForDataFrame),"\n","length of startingStates = ",length(startingStates),"\nlength of intrinsicValues = ",length(intrinsicValues),"\nlength of extrinsicValues = ",length(extrinsicValues),"\ndistance = ",distance(newparticleVector[[1]]),"\nweight = ",getWeight(newparticleVector[[1]]),"\n",vectorForDataFrame,"\n")
 		particleDataFrame<-rbind(particleDataFrame,data.frame(rbind(vectorForDataFrame)))
@@ -240,6 +259,8 @@ abcprc2<-function(phy,originalData,intrinsicFn,extrinsicFn,summaryFn,startingMat
 	
 	for (dataGenerationStep in 2:length(toleranceVector)) {
 		cat("\n\n\n", "STARTING DATA GENERATION STEP ", dataGenerationStep,  "\n\n\n")
+		particleWeights<-particleWeights/(sum(particleWeights)) #normalize to one
+		cat("particleWeights\n", particleWeights,"\n\n")
 		oldParticleVector<-particleVector
 		oldParticleWeights<-particleWeights
 		particleWeights=rep(0,numParticles) #stores weights for each particle. Initially, assume infinite number of possible particles (so might not apply in discrete case), uniform prior on each
@@ -249,42 +270,95 @@ abcprc2<-function(phy,originalData,intrinsicFn,extrinsicFn,summaryFn,startingMat
 		attempts<-0
 		cat("successes","attempts","expected number of attempts required\n")
 		particleVector<-c()
+		weightScaling=0;
 		while (particle<=numParticles) {
 			attempts<-attempts+1
 			particleToSelect<-which.max(as.vector(rmultinom(1, size = 1, prob=oldParticleWeights)))
-			cat("particle to select = ", particleToSelect, "\n")
-			cat("dput(oldParticleVector)\n")
-			dput(oldParticleVector)
-			cat("dput(oldParticleVector[particleToSelect])\n")
-			dput(oldParticleVector[particleToSelect])
-			cat("dput(oldParticleVector[[particleToSelect]])\n")
-			dput(oldParticleVector[[particleToSelect]])
+			#cat("particle to select = ", particleToSelect, "\n")
+			#cat("dput(oldParticleVector)\n")
+			#dput(oldParticleVector)
+			#cat("dput(oldParticleVector[particleToSelect])\n")
+			#dput(oldParticleVector[particleToSelect])
+			#cat("dput(oldParticleVector[[particleToSelect]])\n")
+			#dput(oldParticleVector[[particleToSelect]])
 			newparticleVector<-oldParticleVector[particleToSelect]
-			cat("dput(newparticleVector[[1]])\n")
-			dput(newparticleVector[[1]])
-			cat("mutateStates\n")
+			#cat("dput(newparticleVector[[1]])\n")
+			#dput(newparticleVector[[1]])
+			#cat("mutateStates\n")
 			newparticleVector[[1]]<-mutateStates(newparticleVector[[1]],startingMatrix, intrinsicMatrix, extrinsicMatrix, standardDevFactor)
-			cat("dput(newparticleVector[[1]]) AFTER MUTATE STATES\n")
-			dput(newparticleVector[[1]])
+			#cat("dput(newparticleVector[[1]]) AFTER MUTATE STATES\n")
+			#dput(newparticleVector[[1]])
 			newparticleVector[[1]]<-computeABCDistance(newparticleVector[[1]], summaryFn, originalSummary, splits, phy, intrinsicFn, extrinsicFn, timeStep)
-			cat("dput(newparticleVector[[1]]) AFTER computeABCDistance\n")
-			dput(newparticleVector[[1]])
+			if (plot) {
+				plotcol="grey"
+			if (distance(newparticleVector[[1]])<toleranceVector[dataGenerationStep]) {
+				plotcol="black"
+				if (dataGenerationStep==length(toleranceVector)) 
+				{
+					plotcol="red"
+					}
+				}
+				text(x=intrinsicValues(newparticleVector[[1]]),y=distance(newparticleVector[[1]]),labels= dataGenerationStep,col=plotcol) 
+			}
+			#dput(convertTaxonFrameToGeigerData(doSimulation(splits,intrinsicFn,extrinsicFn,newparticleVector[[1]]@startingStates,newparticleVector[[1]]@intrinsicValues,newparticleVector[[1]]@extrinsicValues,timeStep),phy))
+			#cat("dput(newparticleVector[[1]]) AFTER computeABCDistance\n")
+			#dput(newparticleVector[[1]])
 			
 			if (distance(newparticleVector[[1]])<toleranceVector[dataGenerationStep]) {
 				newparticleVector[[1]]<-setId(newparticleVector[[1]],particle)
-				newparticleVector[[1]]<-setWeight(newparticleVector[[1]],1/numParticles)
-				particleWeights[particle]<-1/numParticles
 				particle<-particle+1
 				particleVector<-append(particleVector,newparticleVector)
-			}
+				#now get weights, using correction in sisson et al. 2007
+				newWeight=0
+				for (i in 1:length(oldParticleVector)) {
+					lnTransitionProb=log(1)
+					for (j in 1:length(newparticleVector[[1]]@startingStates)) {
+						newvalue<-newparticleVector[[1]]@startingStates[j]
+						meantouse= oldParticleVector[[i]]@startingStates[j]
+						sdtouse=standardDevFactor*(max(startingMatrix[,j])-min(startingMatrix[,j]))
+						localTransitionProb=dnorm(newvalue,mean= meantouse,sd= sdtouse)/(1-pnorm(min(startingMatrix[,j]),mean= meantouse ,sd= sdtouse,lower.tail=T)+pnorm(max(startingMatrix[,j]),mean= meantouse ,sd= sdtouse,lower.tail=F))
+						if (min(startingMatrix[,j])==max(startingMatrix[,j])) {
+							localTransitionProb=1
+						} 
+						lnTransitionProb<-lnTransitionProb+log(localTransitionProb)
+					}	
+					for (j in 1:length(newparticleVector[[1]]@intrinsicValues)) {
+						newvalue<-newparticleVector[[1]]@intrinsicValues[j]
+						meantouse= oldParticleVector[[i]]@intrinsicValues[j]
+						sdtouse=standardDevFactor*(max(intrinsicMatrix[,j])-min(intrinsicMatrix[,j]))
+						localTransitionProb=dnorm(newvalue,mean= meantouse,sd= sdtouse)/(1-pnorm(min(intrinsicMatrix[,j]),mean= meantouse ,sd= sdtouse,lower.tail=T)+pnorm(max(intrinsicMatrix[,j]),mean= meantouse ,sd= sdtouse,lower.tail=F))
+						if (min(intrinsicMatrix[,j])==max(intrinsicMatrix[,j])) {
+							localTransitionProb=1
+						} 						
+						lnTransitionProb<-lnTransitionProb+log(localTransitionProb)
+					}	
+					for (j in 1:length(newparticleVector[[1]]@extrinsicValues)) {
+						newvalue<-newparticleVector[[1]]@extrinsicValues[j]
+						meantouse= oldParticleVector[[i]]@extrinsicValues[j]
+						sdtouse=standardDevFactor*(max(extrinsicMatrix[,j])-min(extrinsicMatrix[,j]))
+						localTransitionProb=dnorm(newvalue,mean= meantouse,sd= sdtouse)/(1-pnorm(min(extrinsicMatrix[,j]),mean= meantouse ,sd= sdtouse,lower.tail=T)+pnorm(max(extrinsicMatrix[,j]),mean= meantouse ,sd= sdtouse,lower.tail=F))
+						if (min(extrinsicMatrix[,j])==max(extrinsicMatrix[,j])) {
+							localTransitionProb=1
+						} 						
+						lnTransitionProb<-lnTransitionProb+log(localTransitionProb)
+					}					
+					newWeight<-newWeight+getWeight(oldParticleVector[[i]])*exp(lnTransitionProb)
+				
+				
+				}
+				newparticleVector[[1]]<-setWeight(newparticleVector[[1]], newWeight)
+				particleWeights[particle-1]<-newWeight
+				weightScaling<-weightScaling+getWeight(newparticleVector[[1]])
+		}
 			sink()
-			print(newparticleVector)
-			vectorForDataFrame<-c(dataGenerationStep,attempts,getId(newparticleVector[[1]]),0,distance(newparticleVector[[1]]),getWeight(newparticleVector[[1]]),startingStates(newparticleVector[[1]]),intrinsicValues(newparticleVector[[1]]),extrinsicValues(newparticleVector[[1]]))
+			#print(newparticleVector)
+			vectorForDataFrame<-c(dataGenerationStep,attempts,getId(newparticleVector[[1]]), particleToSelect,distance(newparticleVector[[1]]),getWeight(newparticleVector[[1]]),startingStates(newparticleVector[[1]]),intrinsicValues(newparticleVector[[1]]),extrinsicValues(newparticleVector[[1]]))
 #cat("\n\nlength of vectorForDataFrame = ",length(vectorForDataFrame),"\n","length of startingStates = ",length(startingStates),"\nlength of intrinsicValues = ",length(intrinsicValues),"\nlength of extrinsicValues = ",length(extrinsicValues),"\ndistance = ",distance(newparticleVector[[1]]),"\nweight = ",getWeight(newparticleVector[[1]]),"\n",vectorForDataFrame,"\n")
-			particleDataFrame<-rbind(particleDataFrame,data.frame(rbind(vectorForDataFrame)))
+			particleDataFrame<-rbind(particleDataFrame,data.frame(rbind(vectorForDataFrame))) #NOTE THAT WEIGHTS AREN'T NORMALIZED IN THIS DATAFRAME
 			cat(particle-1,attempts,floor(numParticles*attempts/particle),startingStates(newparticleVector[[1]]),intrinsicValues(newparticleVector[[1]]),extrinsicValues(newparticleVector[[1]]),distance(newparticleVector[[1]]),"\n")
 			
 		}
+		
 		
 		
 		
@@ -342,6 +416,7 @@ abcprc<-function(phy,originalData,intrinsicFn,extrinsicFn,summaryFn,startingMatr
 		}
 		cat(particle-1,attempts,floor(numParticles*attempts/particle))
 	}
+	
 	
 	for (dataGenerationStep in 2:length(toleranceVector)) {
 	}
@@ -438,11 +513,14 @@ profileAcrossUniform<-function(phy,originalData,intrinsicFn,extrinsicFn,starting
 #test code2
 library(geiger)
 phy<-rcoal(9)
-char<-data.frame(5+sim.char(phy,model.matrix=matrix(10),1))
-Rprof()
-particledata<-abcprc2(phy=phy,originalData=char,intrinsicFn= brownianIntrinsic,extrinsicFn= brownianExtrinsic,startingMatrix=matrix(data=c(0,15),nrow=2),intrinsicMatrix=matrix(data=c(0.0001,10),nrow=2),extrinsicMatrix=matrix(data=c(0,0),nrow=2),timeStep=0.001, toleranceVector=c(500,2),summaryFn= geigerUnivariateSummaryStats2)
-Rprof(NULL)
-summaryRprof()
+char<-data.frame(5+sim.char(phy,model.matrix=matrix(20),1))
+#Rprof()
+#particledata<-abcprc2(phy=phy,originalData=char,intrinsicFn= brownianIntrinsic,extrinsicFn= brownianExtrinsic,startingMatrix=matrix(data=c(0,15),nrow=2),intrinsicMatrix=matrix(data=c(0.0001,10),nrow=2),extrinsicMatrix=matrix(data=c(0,0),nrow=2),timeStep=0.001, toleranceVector=c(500,2),summaryFn= geigerUnivariateSummaryStats2)
+
+particledata<-abcprc2(phy=phy,originalData=char,intrinsicFn= brownianIntrinsic,extrinsicFn= brownianExtrinsic,startingMatrix=matrix(data=c(0,15),nrow=2),intrinsicMatrix=matrix(data=c(0.0001,10),nrow=2),extrinsicMatrix=matrix(data=c(0,0),nrow=2),timeStep=0.001, toleranceVector=c(500,400,300, 200, 100),standardDevFactor=0.1, summaryFn= rawValuesSummaryStats,plot=T,numParticles=15)
+
+#Rprof(NULL)
+#summaryRprof()
 
 #test code
 #library(geiger)
