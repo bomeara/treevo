@@ -365,6 +365,15 @@ if (plot) {
 		
 	}
 	names(particleDataFrame)<-nameVector
+	if(plot) {
+		quartz()
+		plot(x=c(min(intrinsicMatrix),max(intrinsicMatrix)),y=c(0,1),type="n")
+		for (i in 1:(length(toleranceVector)-1)) {
+			graycolor<-gray(0.5*(length(toleranceVector)-i)/length(toleranceVector))
+			lines(density(subset(particledata,generation==i)[,8]),col= graycolor)
+		}
+		lines(density(subset(particledata,generation==length(toleranceVector))[,8]),col= "red")
+	}
 	particleDataFrame
 }
 
@@ -517,7 +526,7 @@ char<-data.frame(5+sim.char(phy,model.matrix=matrix(20),1))
 #Rprof()
 #particledata<-abcprc2(phy=phy,originalData=char,intrinsicFn= brownianIntrinsic,extrinsicFn= brownianExtrinsic,startingMatrix=matrix(data=c(0,15),nrow=2),intrinsicMatrix=matrix(data=c(0.0001,10),nrow=2),extrinsicMatrix=matrix(data=c(0,0),nrow=2),timeStep=0.001, toleranceVector=c(500,2),summaryFn= geigerUnivariateSummaryStats2)
 
-particledata<-abcprc2(phy=phy,originalData=char,intrinsicFn= brownianIntrinsic,extrinsicFn= brownianExtrinsic,startingMatrix=matrix(data=c(0,15),nrow=2),intrinsicMatrix=matrix(data=c(0.0001,10),nrow=2),extrinsicMatrix=matrix(data=c(0,0),nrow=2),timeStep=0.001, toleranceVector=c(500,400,300, 200, 100),standardDevFactor=0.1, summaryFn= rawValuesSummaryStats,plot=T,numParticles=15)
+particledata<-abcprc2(phy=phy,originalData=char,intrinsicFn= brownianIntrinsic,extrinsicFn= brownianExtrinsic,startingMatrix=matrix(data=c(0,15),nrow=2),intrinsicMatrix=matrix(data=c(0.0001,10),nrow=2),extrinsicMatrix=matrix(data=c(0,0),nrow=2),timeStep=0.001, toleranceVector=c(500,400,300, 200, 100),standardDevFactor=0.1, summaryFn= rawValuesSummaryStats,plot=T,numParticles=30)
 
 #Rprof(NULL)
 #summaryRprof()
