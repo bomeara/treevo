@@ -518,15 +518,145 @@ profileAcrossUniform<-function(phy,originalData,intrinsicFn,extrinsicFn,starting
 	return(resultsDataFrame)
 }
 
+estimateMeanAndSigma<-function(splits,intrinsicFn,extrinsicFn,startingStates,intrinsicValues,extrinsicValues,timeStep,nrep=10,phy,returnTraits=F) {
+	#calculates mean and sample covariance
+	simulatedValues<-replicate(n=nrep,expr=convertTaxonFrameToGeigerData (doSimulation(splits=splits,intrinsicFn= intrinsicFn,extrinsicFn= extrinsicFn,startingStates= startingStates,intrinsicValues= intrinsicValues,extrinsicValues= extrinsicValues,timeStep=timeStep),phy))
+	simulatedMatrix<-as.matrix(as.data.frame(simulatedValues,row.names=phy$tip.label))
+	ntax<-dim(simulatedMatrix)[1]
+	means<-rep(NA, ntax)
+	for (i in 1:ntax) {
+		means[i]<-mean(simulatedMatrix[i,])
+	}
+	names(means)<-phy$tip.label
+	sigma<-matrix(data=NA,nrow=ntax,ncol=ntax,dimnames=list(phy$tip.label, phy$tip.label))
+	for (i in 1:ntax) {
+		for (j in i:ntax) {
+			if (i!=j) {
+				sigma[i,j]<-cov(x=simulatedMatrix[i,],y=simulatedMatrix[j,])
+				sigma[j,i]<-sigma[i,j]
+			}	
+			else {
+				sigma[i,j]<-var(x=simulatedMatrix[i,])
+			}
+		}	
+	}
+	estimatedMeanAndSigma<-list(mean=means,sigma=sigma)
+	if (returnTraits) {
+		estimatedMeanAndSigma<-list(mean=means, sigma=sigma, traits=simulatedMatrix)
+	}
+	return(estimatedMeanAndSigma)
+}
+
+GeigerEstimateMeanAndSigma<-function(nrep=10,phy,returnTraits=F) {
+	#calculates mean and sample covariance
+	simulatedValues<-replicate(n=nrep,expr=data.frame(5+sim.char(phy,model.matrix=matrix(10),1)))
+	simulatedMatrix<-as.matrix(as.data.frame(simulatedValues,row.names=phy$tip.label))
+	ntax<-dim(simulatedMatrix)[1]
+	means<-rep(NA, ntax)
+	for (i in 1:ntax) {
+		means[i]<-mean(simulatedMatrix[i,])
+	}
+	names(means)<-phy$tip.label
+	sigma<-matrix(data=NA,nrow=ntax,ncol=ntax,dimnames=list(phy$tip.label, phy$tip.label))
+	for (i in 1:ntax) {
+		for (j in i:ntax) {
+			if (i!=j) {
+				sigma[i,j]<-cov(x=simulatedMatrix[i,],y=simulatedMatrix[j,])
+				sigma[j,i]<-sigma[i,j]
+			}	
+			else {
+				sigma[i,j]<-var(x=simulatedMatrix[i,])
+			}
+		}	
+	}
+	estimatedMeanAndSigma<-list(mean=means,sigma=sigma)
+	if (returnTraits) {
+		estimatedMeanAndSigma<-list(mean=means, sigma=sigma, traits=simulatedMatrix)
+	}
+	return(estimatedMeanAndSigma)
+}
+
+estimateLnLikelihoodDmvnorm <-function(x, mean,sigma) {
+	if (!is.vector(x)) {
+		ntax<-dim(x)[1]
+		newvector<-rep(NA,ntax)
+		for (i in 1:ntax) {
+			newvector[i]<-x[i,1]	
+		}	
+		x<-newvector
+	}
+	if (!is.vector(mean)) {
+		ntax<-dim(mean)[1]
+		newvector<-rep(NA,ntax)
+		for (i in 1:ntax) {
+			newvector[i]<-mean[i,1]	
+		}	
+		mean <-newvector
+	}
+	if (is.vector(mean)) {
+       mean <- matrix(mean, ncol = length(mean))
+    }
+    if (is.vector(x)) {
+        x <- matrix(x, ncol = length(x))
+    }
+ 	return(dmvnorm(x=x,mean=mean,sigma=sigma, log=T))
+}
+
+
+
+estimateLnLikelihood<-function(x, mean,sigma,forcePositiveDet=F) {
+	ntax<-dim(sigma)[1]
+	
+	#this rigamarole is to deal with weird input
+	diff<-rep(NA,ntax)
+		if (!is.vector(x)) {
+		ntax<-dim(x)[1]
+		newvector<-rep(NA,ntax)
+		for (i in 1:ntax) {
+			newvector[i]<-x[i,1]	
+		}	
+		x<-newvector
+	}
+	if (!is.vector(mean)) {
+		ntax<-dim(mean)[1]
+		newvector<-rep(NA,ntax)
+		for (i in 1:ntax) {
+			newvector[i]<-mean[i,1]	
+		}	
+		mean <-newvector
+	}
+	for (i in 1:ntax) {
+		diff[i]<-x[i]-mean[i]	
+	}
+	
+	#now to business
+	#invV<-chol2inv(chol(sigma))
+	invV<-ginv(sigma) #gotta use this as have problems with non-invertible matrices
+	detV<-det(sigma)
+	if(forcePositiveDet && detV<0) {
+		detV<-abs(detV)	
+		warningtext<-paste("detV = ",detV,", used in estimateLnLikelihood, is negative, which will make taking the squareroot difficult. abs(detV) taken instead.",sep="")
+		warning(warningtext)
+	}
+	lnL<-((-0.5*(diff)%*%invV%*%(diff))-log(sqrt(((2*pi)^ntax)*detV)))
+	as.vector(lnL)
+
+}
+
+simulateForLnL<-function(data,splits,intrinsicFn,extrinsicFn,startingStates,intrinsicValues,extrinsicValues,timeStep,nrep=10,phy) {
+	estimatedMeanAndSigma<-estimateMeanAndSigma(splits,intrinsicFn,extrinsicFn,startingStates,intrinsicValues,extrinsicValues,timeStep,nrep,phy,returnTraits=F)
+	lnL<-estimateLnLikelihood(x=data,sigma=estimatedMeanAndSigma$sigma,mean=estimatedMeanAndSigma$mean,forcePositiveDet=T)
+	lnL
+}
 
 #test code2
-library(geiger)
-phy<-rcoal(9)
-char<-data.frame(5+sim.char(phy,model.matrix=matrix(20),1))
+#library(geiger)
+#phy<-rcoal(9)
+#char<-data.frame(5+sim.char(phy,model.matrix=matrix(20),1))
 #Rprof()
 #particledata<-abcprc2(phy=phy,originalData=char,intrinsicFn= brownianIntrinsic,extrinsicFn= brownianExtrinsic,startingMatrix=matrix(data=c(0,15),nrow=2),intrinsicMatrix=matrix(data=c(0.0001,10),nrow=2),extrinsicMatrix=matrix(data=c(0,0),nrow=2),timeStep=0.001, toleranceVector=c(500,2),summaryFn= geigerUnivariateSummaryStats2)
 
-particledata<-abcprc2(phy=phy,originalData=char,intrinsicFn= brownianIntrinsic,extrinsicFn= brownianExtrinsic,startingMatrix=matrix(data=c(0,15),nrow=2),intrinsicMatrix=matrix(data=c(0.0001,10),nrow=2),extrinsicMatrix=matrix(data=c(0,0),nrow=2),timeStep=0.001, toleranceVector=c(500,400,300, 200, 100),standardDevFactor=0.1, summaryFn= rawValuesSummaryStats,plot=T,numParticles=30)
+#particledata<-abcprc2(phy=phy,originalData=char,intrinsicFn= brownianIntrinsic,extrinsicFn= brownianExtrinsic,startingMatrix=matrix(data=c(0,15),nrow=2),intrinsicMatrix=matrix(data=c(0.0001,10),nrow=2),extrinsicMatrix=matrix(data=c(0,0),nrow=2),timeStep=0.001, toleranceVector=c(500,400,300, 200, 100),standardDevFactor=0.1, summaryFn= rawValuesSummaryStats,plot=T,numParticles=10)
 
 #Rprof(NULL)
 #summaryRprof()
@@ -542,4 +672,11 @@ particledata<-abcprc2(phy=phy,originalData=char,intrinsicFn= brownianIntrinsic,e
 #profile
 #plot(profile$startingValue1,profile$distance)
 
+#test code3
+library(geiger)
+
+phy<-rcoal(20)
+splits<-getSimulationSplits(phy)
+char<-convertTaxonFrameToGeigerData (doSimulation(splits=splits,intrinsicFn=brownianIntrinsic,extrinsicFn=brownianExtrinsic,startingStates=c(3),intrinsicValues=3,extrinsicValues=0,timeStep=0.001),phy)
+particledata<-abcprc2(phy=phy,originalData=char,intrinsicFn= brownianIntrinsic,extrinsicFn= brownianExtrinsic,startingMatrix=matrix(data=c(0,15),nrow=2),intrinsicMatrix=matrix(data=c(0.0001,10),nrow=2),extrinsicMatrix=matrix(data=c(0,0),nrow=2),timeStep=0.001, toleranceVector=c(500,400,300, 200, 100),standardDevFactor=0.1, summaryFn= rawValuesSummaryStats,plot=T,numParticles=20)
 
