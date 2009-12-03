@@ -272,7 +272,7 @@ setMethod("mutateStates",signature="abcparticle",definition=function(x, starting
 		}
 		x@extrinsicValues <-replacementVector
 		
-		kernel(x)<-lnTransitionProb
+		#kernel(x)<-lnTransitionProb
 		x
 		}
 )
@@ -305,7 +305,13 @@ setMethod("computeABCDistance",signature="abcparticle",definition=function(x, su
 	#print(x)
 	x
 	})
+
+setGeneric("simulateTips",function(x, splits, phy, intrinsicFn, extrinsicFn, timeStep){standardGeneric("simulateTips")})
 	
+setMethod("simulateTips",signature="abcparticle",definition=function(x, splits, phy, intrinsicFn, extrinsicFn, timeStep) {
+	newtips<-convertTaxonFrameToGeigerData(doSimulation(splits,intrinsicFn,extrinsicFn,x@startingStates,x@intrinsicValues,x@extrinsicValues,timeStep),phy)
+	return(newtips)
+	})	
 	
 
 	
