@@ -649,6 +649,112 @@ simulateForLnL<-function(data,splits,intrinsicFn,extrinsicFn,startingStates,intr
 	lnL
 }
 
+testApproach<-function(phy,originalData,intrinsicFn,extrinsicFn,summaryFns=c(rawValuesSummaryStats, geigerUnivariateSummaryStats2),startingMatrix,intrinsicMatrix,extrinsicMatrix,startingStatesGuess,intrinsicValuesGuess,extrinsicValuesGuess,timeStep,toleranceVector,nrepSim=100, nrepEst=1000, standardDevFactor=0.05, plot=T) {
+	#here, startingStatesGuess, intrinsicValuesGuess, and extrinsicValuesGuess are set to a hypothesized true value
+		numberParametersTotal<-dim(startingMatrix)[2] +  dim(intrinsicMatrix)[2] + dim(extrinsicMatrix)[2]
+		numberParametersFree<-numberParametersTotal
+		numberParametersStarting<-0
+		numberParametersIntrinsic<-0
+		numberParametersExtrinsic<-0
+		freevariables<-matrix(data=NA, nrow=2,ncol=0)
+		
+		titlevector<-c()
+		freevector<-c()
+		
+		for (i in 1:dim(startingMatrix)[2]) {
+			if (startingMatrix[1,i]== startingMatrix[2,i]) {
+				numberParametersFree<-numberParametersFree-1
+				freevector<-c(freevector,FALSE)
+			}	
+			else {
+				numberParametersStarting<-numberParametersStarting+1
+				freevariables<-cbind(freevariables,startingMatrix[,i])
+				titlevector <-c(titlevector,paste("Starting", numberParametersStarting))
+				freevector<-c(freevector,TRUE)
+			}
+		}
+		for (i in 1:dim(intrinsicMatrix)[2]) {
+			if (intrinsicMatrix[1,i]== intrinsicMatrix[2,i]) {
+				numberParametersFree<-numberParametersFree-1
+				freevector<-c(freevector,FALSE)
+			}	
+			else {
+				numberParametersIntrinsic <-numberParametersIntrinsic +1
+				freevariables<-cbind(freevariables, intrinsicMatrix[,i])
+				titlevector <-c(titlevector,paste("Intrinsic", numberParametersIntrinsic))
+				freevector<-c(freevector,TRUE)
+			}
+
+		}
+		for (i in 1:dim(extrinsicMatrix)[2]) {
+			if (extrinsicMatrix[1,i]== extrinsicMatrix[2,i]) {
+				numberParametersFree<-numberParametersFree-1
+				freevector<-c(freevector,FALSE)
+			}	
+			else {
+				numberParametersExtrinsic <-numberParametersExtrinsic +1
+				freevariables<-cbind(freevariables, extrinsicMatrix[,i])
+				titlevector <-c(titlevector,paste("Extrinsic", numberParametersExtrinsic))
+				freevector<-c(freevector,TRUE)
+			}
+
+		}
+		#numberValuesPerParameter<-floor(nrep^(1/numberParametersFree))
+		#cat("\n\nThis will try ", numberValuesPerParameter," unique values for each of ", numberParametersFree, " free parameters in a grid\n\n")
+		particleDataFrame<-data.frame()
+		splits<-getSimulationSplits(phy)
+		simulatedValues<-as.data.frame(replicate(n=nrepSim+1,expr=convertTaxonFrameToGeigerData (doSimulation(splits=splits,intrinsicFn= intrinsicFn,extrinsicFn= extrinsicFn,startingStates= startingStatesGuess,intrinsicValues= intrinsicValuesGuess,extrinsicValues= extrinsicValuesGuess,timeStep=timeStep),phy)),row.names=phy$tip.label)
+		print(simulatedValues)
+		guessSummaries<-matrix(nrow=nrepSim,ncol=2)
+		toOrigSummaries<-matrix(nrow=nrepSim,ncol=2)
+		print(guessSummaries)
+		for (i in 1:length(summaryFns)) {
+			for (j in 1:nrepSim) {
+				guessSummaries[j,i]<-dist(matrix(c(summaryFns[i][[1]](phy, simulatedValues[j]), summaryFns[i][[1]](phy, simulatedValues[j+1])),nrow=2,byrow=T))[1]
+				toOrigSummaries[j,i]<-dist(matrix(c(summaryFns[i][[1]](phy, simulatedValues[j]), summaryFns[i][[1]](phy, originalData)),nrow=2,byrow=T))[1]
+
+			}	
+			print(guessSummaries)
+		}
+		quartz()
+		par(mfcol=c(1,length(summaryFns)))
+		for(i in 1:length(summaryFns)) {
+			dguess<-density(guessSummaries[,i])
+			dorig<-density(toOrigSummaries[,i])
+			plot(x=c(min(dguess$x,dorig$x),max(dguess$x,dorig$x)),y=c(min(dguess$y,dorig$y),max(dguess$y,dorig$y)),type="n")
+			lines(dguess)
+			lines(dorig,col="red")
+			
+			#title(main=as.character(summmaryFns[i]))
+		}
+		quartz()
+		par(mfrow=c(length(summaryFns),numberParametersFree))
+		for(i in 1:length(summaryFns)) {
+			for (j in 1:numberParametersFree) {
+				plot(x=c(min(freevariables[,j]),max(freevariables[,j])),y=c(0,5*max(guessSummaries[,i],toOrigSummaries[,i])),type="n",main= titlevector[j],xlab="parameter value",ylab="distance")
+				lines(x=c(min(freevariables[,j]),max(freevariables[,j])),y=rep(quantile(guessSummaries[,i],probs=0.5),2))
+				lines(x=c(min(freevariables[,j]),max(freevariables[,j])),y=rep(quantile(guessSummaries[,i],probs=0.25),2))
+				lines(x=c(min(freevariables[,j]),max(freevariables[,j])),y=rep(quantile(guessSummaries[,i],probs=0.75),2))	
+			}
+		}
+		for (i in 1:nrepEst) {
+			newparticleVector<-c(new("abcparticle",id=1,generation=0,weight=0))
+			newparticleVector[[1]]<-initializeStatesFromMatrices(newparticleVector[[1]],startingMatrix, intrinsicMatrix, extrinsicMatrix)
+			simulatedTips<-simulateTips(newparticleVector[[1]], splits, phy, intrinsicFn, extrinsicFn, timeStep)
+			for(i in 1:length(summaryFns)) {
+				newGuessDistance<-dist(matrix(c(summaryFns[i][[1]](phy, simulatedValues[1]), summaryFns[i][[1]](phy, simulatedTips)),nrow=2,byrow=T))[1]
+				newOriginalDistance<-dist(matrix(c(summaryFns[i][[1]](phy, originalData), summaryFns[i][[1]](phy, simulatedTips)),nrow=2,byrow=T))[1]
+				values<-c(startingStates (newparticleVector),intrinsicValues(newparticleVector),extrinsicValues(newparticleVector))
+				values<-values[freevector]
+				for (j in 1:numberParametersFree) {
+					par(mfg=c(i,j))
+					points(x=c(values[j]),y=c(newGuessDistance),pch=".",col="black")
+					points(x=c(values[j]),y=c(newOriginalDistance),pch=".",col="red")
+				}
+			}
+		}
+}
+
 #test code2
 #library(geiger)
 #phy<-rcoal(9)
@@ -677,6 +783,13 @@ library(geiger)
 
 phy<-rcoal(20)
 splits<-getSimulationSplits(phy)
-char<-convertTaxonFrameToGeigerData (doSimulation(splits=splits,intrinsicFn=brownianIntrinsic,extrinsicFn=brownianExtrinsic,startingStates=c(3),intrinsicValues=3,extrinsicValues=0,timeStep=0.001),phy)
-particledata<-abcprc2(phy=phy,originalData=char,intrinsicFn= brownianIntrinsic,extrinsicFn= brownianExtrinsic,startingMatrix=matrix(data=c(0,15),nrow=2),intrinsicMatrix=matrix(data=c(0.0001,10),nrow=2),extrinsicMatrix=matrix(data=c(0,0),nrow=2),timeStep=0.001, toleranceVector=c(500,400,300, 200, 100),standardDevFactor=0.1, summaryFn= rawValuesSummaryStats,plot=T,numParticles=20)
+char<-convertTaxonFrameToGeigerData (doSimulation(splits=splits,intrinsicFn=brownianIntrinsic,extrinsicFn=brownianExtrinsic,startingStates=c(3),intrinsicValues=.06,extrinsicValues=0,timeStep=0.001),phy)
+fitContinuous(phy,char)
+particledata<-abcprc2(phy=phy,originalData=char,intrinsicFn= brownianIntrinsic,extrinsicFn= brownianExtrinsic,startingMatrix=matrix(data=c(0,15),nrow=2),intrinsicMatrix=matrix(data=c(0.0001,.1),nrow=2),extrinsicMatrix=matrix(data=c(0,0),nrow=2),timeStep=0.001, toleranceVector=c(100,50,25,10,5),standardDevFactor=0.05, summaryFn= rawValuesSummaryStats,plot=T,numParticles=50)
 
+phy<-rcoal(5)
+
+splits<-getSimulationSplits(phy)
+char<-convertTaxonFrameToGeigerData (doSimulation(splits=splits,intrinsicFn=brownianIntrinsic,extrinsicFn=brownianExtrinsic,startingStates=c(3),intrinsicValues=.06,extrinsicValues=0,timeStep=0.001),phy)
+
+testApproach(phy=phy,originalData=char,intrinsicFn= brownianIntrinsic,extrinsicFn= brownianExtrinsic,startingMatrix=matrix(data=c(0,15),nrow=2),intrinsicMatrix=matrix(data=c(0.0001,.1),nrow=2),extrinsicMatrix=matrix(data=c(0,0),nrow=2),timeStep=0.001,standardDevFactor=0.05, plot=T,nrepSim=4,startingStatesGuess=c(2),intrinsicValuesGuess=c(0.06),extrinsicValuesGuess=c(0))
