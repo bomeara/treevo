@@ -657,7 +657,7 @@ testApproach<-function(phy,originalData,intrinsicFn,extrinsicFn,summaryFns=c(raw
 		numberParametersIntrinsic<-0
 		numberParametersExtrinsic<-0
 		freevariables<-matrix(data=NA, nrow=2,ncol=0)
-		
+		truthvector<-cbind(startingStatesGuess, intrinsicValuesGuess, extrinsicValuesGuess) #includes free and fixed parameters
 		titlevector<-c()
 		freevector<-c()
 		
@@ -699,22 +699,23 @@ testApproach<-function(phy,originalData,intrinsicFn,extrinsicFn,summaryFns=c(raw
 			}
 
 		}
+		truthvector<-truthvector[freevector] #so it now includes free params only
 		#numberValuesPerParameter<-floor(nrep^(1/numberParametersFree))
 		#cat("\n\nThis will try ", numberValuesPerParameter," unique values for each of ", numberParametersFree, " free parameters in a grid\n\n")
 		particleDataFrame<-data.frame()
 		splits<-getSimulationSplits(phy)
 		simulatedValues<-as.data.frame(replicate(n=nrepSim+1,expr=convertTaxonFrameToGeigerData (doSimulation(splits=splits,intrinsicFn= intrinsicFn,extrinsicFn= extrinsicFn,startingStates= startingStatesGuess,intrinsicValues= intrinsicValuesGuess,extrinsicValues= extrinsicValuesGuess,timeStep=timeStep),phy)),row.names=phy$tip.label)
-		print(simulatedValues)
+		#print(simulatedValues)
 		guessSummaries<-matrix(nrow=nrepSim,ncol=2)
 		toOrigSummaries<-matrix(nrow=nrepSim,ncol=2)
-		print(guessSummaries)
+		#print(guessSummaries)
 		for (i in 1:length(summaryFns)) {
 			for (j in 1:nrepSim) {
 				guessSummaries[j,i]<-dist(matrix(c(summaryFns[i][[1]](phy, simulatedValues[j]), summaryFns[i][[1]](phy, simulatedValues[j+1])),nrow=2,byrow=T))[1]
 				toOrigSummaries[j,i]<-dist(matrix(c(summaryFns[i][[1]](phy, simulatedValues[j]), summaryFns[i][[1]](phy, originalData)),nrow=2,byrow=T))[1]
 
 			}	
-			print(guessSummaries)
+			#print(guessSummaries)
 		}
 		quartz()
 		par(mfcol=c(1,length(summaryFns)))
@@ -729,28 +730,70 @@ testApproach<-function(phy,originalData,intrinsicFn,extrinsicFn,summaryFns=c(raw
 		}
 		quartz()
 		par(mfrow=c(length(summaryFns),numberParametersFree))
-		for(i in 1:length(summaryFns)) {
-			for (j in 1:numberParametersFree) {
-				plot(x=c(min(freevariables[,j]),max(freevariables[,j])),y=c(0,5*max(guessSummaries[,i],toOrigSummaries[,i])),type="n",main= titlevector[j],xlab="parameter value",ylab="distance")
-				lines(x=c(min(freevariables[,j]),max(freevariables[,j])),y=rep(quantile(guessSummaries[,i],probs=0.5),2))
-				lines(x=c(min(freevariables[,j]),max(freevariables[,j])),y=rep(quantile(guessSummaries[,i],probs=0.25),2))
-				lines(x=c(min(freevariables[,j]),max(freevariables[,j])),y=rep(quantile(guessSummaries[,i],probs=0.75),2))	
-			}
-		}
-		for (i in 1:nrepEst) {
+		infomatrix<-matrix(nrow=0,ncol=3+numberParametersFree) #will store c(summaryindex, summaryX_newguessdistance, summaryX_neworiginaldistance, summaryX_freeparam1, summaryS_freeparam2,... summaryS_newguessdistance, ....)
+		for (currentrep in 1:nrepEst) {
+			cat(currentrep,"\n")
 			newparticleVector<-c(new("abcparticle",id=1,generation=0,weight=0))
 			newparticleVector[[1]]<-initializeStatesFromMatrices(newparticleVector[[1]],startingMatrix, intrinsicMatrix, extrinsicMatrix)
 			simulatedTips<-simulateTips(newparticleVector[[1]], splits, phy, intrinsicFn, extrinsicFn, timeStep)
+			
 			for(i in 1:length(summaryFns)) {
 				newGuessDistance<-dist(matrix(c(summaryFns[i][[1]](phy, simulatedValues[1]), summaryFns[i][[1]](phy, simulatedTips)),nrow=2,byrow=T))[1]
 				newOriginalDistance<-dist(matrix(c(summaryFns[i][[1]](phy, originalData), summaryFns[i][[1]](phy, simulatedTips)),nrow=2,byrow=T))[1]
-				values<-c(startingStates (newparticleVector),intrinsicValues(newparticleVector),extrinsicValues(newparticleVector))
+				values<-c(startingStates (newparticleVector[[1]]),intrinsicValues(newparticleVector[[1]]),extrinsicValues(newparticleVector[[1]]))
 				values<-values[freevector]
-				for (j in 1:numberParametersFree) {
-					par(mfg=c(i,j))
-					points(x=c(values[j]),y=c(newGuessDistance),pch=".",col="black")
-					points(x=c(values[j]),y=c(newOriginalDistance),pch=".",col="red")
-				}
+				infomatrix<-rbind(infomatrix,c(i, newGuessDistance, newOriginalDistance, values))
+				#for (j in 1:numberParametersFree) {
+				#	par(mfg=c(i,j))
+				#	sink()
+				#	sink()
+				#	cat(i," ",j, " ",values[j],"\n")
+				#	points(x=c(values[j]),y=c(newGuessDistance),pch=1,col=rgb(0,0,0,,0.7))
+				#	points(x=c(values[j]),y=c(newOriginalDistance),pch=".",col="red")
+				#}
+			}
+			if(currentrep>2) {
+				sink()
+				sink()
+				sink()
+				#cat("infomatrix\n")
+				#print(infomatrix)
+				for(i in 1:length(summaryFns)) {
+					
+					infomatrixA<-subset(infomatrix,infomatrix[,1]==i) #pulls out rows with correct summary fn
+					#cat("infomatrixA\n")
+					#print(infomatrixA)
+					
+					cutoffs<-c(0.05,0.1,.25,.50,1)
+					for (j in 1:numberParametersFree) {
+						#par(mfg=c(i,j))
+						par(bg="white")
+					plot(x=c(min(freevariables[,j]),max(freevariables[,j])),y=c(0,1.25*max(infomatrixA[,2:3])),type="n",main= paste("Summary fn",i,titlevector[j]),xlab="parameter value",ylab="distance",frame.plot=FALSE)
+
+						
+						densityheight=0.15*max(infomatrixA[,2:3])
+						
+						lines(x=c(truthvector[j],truthvector[j]),y=c(-0.2*max(infomatrixA[,2:3]),1.25*max(infomatrix[,2:3])),col="red")
+						for (cutoffid in 1:length(cutoffs)) {
+							cutoff<-cutoffs[cutoffid]
+							if (1/cutoff < currentrep) {
+								mindistance<-quantile(infomatrixA[,2],probs=cutoff)
+								infomatrixB<-subset(infomatrixA,infomatrixA[,2]<mindistance)
+								#cat("infomatrixB\n")
+								#print(infomatrixB)
+								if (dim(infomatrixB)[1]>=2) {
+									densityvalues<-density(infomatrixB[,j+3],from=min(freevariables[,j]),to=max(freevariables[,j]))
+									densityvalues$y<-densityvalues$y*densityheight/max(densityvalues$y) + mindistance
+									
+									lines(densityvalues)
+									
+									points(x=infomatrixB[,j+3] , y=rep(mindistance, dim(infomatrixB)[1]), pch=".", col=rgb(0,0,0,.5))
+									
+								}
+							}
+						}	
+					}
+				}	
 			}
 		}
 }
@@ -792,4 +835,4 @@ phy<-rcoal(5)
 splits<-getSimulationSplits(phy)
 char<-convertTaxonFrameToGeigerData (doSimulation(splits=splits,intrinsicFn=brownianIntrinsic,extrinsicFn=brownianExtrinsic,startingStates=c(3),intrinsicValues=.06,extrinsicValues=0,timeStep=0.001),phy)
 
-testApproach(phy=phy,originalData=char,intrinsicFn= brownianIntrinsic,extrinsicFn= brownianExtrinsic,startingMatrix=matrix(data=c(0,15),nrow=2),intrinsicMatrix=matrix(data=c(0.0001,.1),nrow=2),extrinsicMatrix=matrix(data=c(0,0),nrow=2),timeStep=0.001,standardDevFactor=0.05, plot=T,nrepSim=4,startingStatesGuess=c(2),intrinsicValuesGuess=c(0.06),extrinsicValuesGuess=c(0))
+testApproach(phy=phy,originalData=char,intrinsicFn= brownianIntrinsic,extrinsicFn= brownianExtrinsic,startingMatrix=matrix(data=c(0,15),nrow=2),intrinsicMatrix=matrix(data=c(0.0001,.1),nrow=2),extrinsicMatrix=matrix(data=c(0,0),nrow=2),timeStep=0.001,standardDevFactor=0.05, plot=T,nrepSim=3,startingStatesGuess=c(2),intrinsicValuesGuess=c(0.06),extrinsicValuesGuess=c(0))
