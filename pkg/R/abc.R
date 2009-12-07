@@ -176,14 +176,20 @@ geigerUnivariateSummaryStats<-function(phy, data) {
 geigerUnivariateSummaryStats2<-function(phy,data) {
 	sink(file="/dev/null") #because I really don't need output of which model I'm fitting. I already know.
 #uses a bunch of stats from geiger. Only works for one character right now
-	brownian<-fitContinuous(phy=phy,data= data,model="BM")
-	white<-fitContinuous(phy=phy,data= data,model="white")
-	lambda<-fitContinuous(phy=phy,data= data,model="lambda")
-	kappa<-fitContinuous(phy=phy,data= data,model="kappa")
-	delta<-fitContinuous(phy=phy,data= data,model="delta")
-	EB<-fitContinuous(phy=phy,data= data,model="EB")
-	summarystats<-c(brownian$Trait1$beta, white$Trait1$mean, lambda$Trait1$lambda, kappa$Trait1$lambda, delta$Trait1$delta, EB$Trait1$a)
+
+#uses try to deal with rare errors (singular matrices, for example) in Geiger. Rather than aborting the entire run, just gives back an NA, and dist fn can deal with NAs (though this introduces a bias in creating small distances when something fails)
+	summarystats<-as.numeric(
+		c(
+			try(fitContinuous(phy=phy,data= data,model="BM")$Trait1$beta,silent=T),  
+			try(fitContinuous(phy=phy,data= data,model="white")$Trait1$mean,silent=T), 
+			try(fitContinuous(phy=phy,data= data,model="lambda")$Trait1$lambda,silent=T), 
+			try(fitContinuous(phy=phy,data= data,model="kappa")$Trait1$lambda,silent=T), 
+			try(fitContinuous(phy=phy,data= data,model="delta")$Trait1$delta,silent=T), 
+			try(fitContinuous(phy=phy,data= data,model="EB")$Trait1$a,silent=T)
+		)
+	)
 	sink() #turns output back on
+	sink() #do it again, as it seems to require more than once
 	summarystats
 }
 
@@ -796,6 +802,72 @@ testApproach<-function(phy,originalData,intrinsicFn,extrinsicFn,summaryFns=c(raw
 				}	
 			}
 		}
+}
+
+
+#the doRun function takes input from the user and then automatically guesses optimal parameters, though user overriding is also possible.
+#the guesses are used to do simulations near the expected region. If omitted, they are set to the midpoint of the input parameter matrices
+
+doRun<-function(phy,traits,intrinsicFn,extrinsicFn,summaryFns=c(rawValuesSummaryStats, geigerUnivariateSummaryStats2),startingMatrix,intrinsicMatrix,extrinsicMatrix,startingStatesGuess=c(),intrinsicValuesGuess=c(),extrinsicValuesGuess=c(),timeStep,toleranceVector=c(), numParticles=1000, standardDevFactor=0.05, nrepSim=100, nrepEst=1000, plot=T) {
+	splits<-getSimulationSplits(phy) #initialize this info
+
+	#initialize guesses, if needed
+	if (length(startingStatesGuess)==0) { #if no user guesses, try midpoint of the flat prior
+		startingStatesGuess<-colMeans(startingMatrix)
+	}
+	if (length(intrinsicValuesGuess)==0) { #if no user guesses, try midpoint of the flat prior
+		intrinsicValuesGuess<-colMeans(intrinsicMatrix)
+	}
+	if (length(extrinsicValuesGuess)==0) { #if no user guesses, try midpoint of the flat prior
+		extrinsicValuesGuess<-colMeans(extrinsicMatrix)
+	}
+	
+	distanceScaling<-rep(NaN, length(summaryFns))
+	
+	for (summaryIndex in 1:length(summaryFns)) {
+		distanceScaling[summaryIndex]<-summaryFns[summaryIndex][[1]](phy, traits) #we scale the summary fns by the observed summary fns
+	}
+	
+	distancesDataFrame<-data.frame()
+	#basic idea here is to choose between summary functions. Want a measure where distance between two simulations with the same parameters is small but distance between two simulations with different parameters is large. Different summary stats will have different magnitudes, so scale everything by the summarystats of the original data
+	for (simRep in 1:nrepSim) {
+		trueStarting<-rep(NaN,dim(startingMatrix)[2])
+		trueIntrinsic<-rep(NaN,dim(intrinsicMatrix)[2])
+		trueExtrinsic<-rep(NaN,dim(extrinsicMatrix)[2])
+		for (j in 1:dim(startingMatrix)[2]) {
+			trueStarting[j]=runif(n=1,min=min(startingMatrix[,j]),max=max(startingMatrix[,j]))
+		}
+		for (j in 1:dim(intrinsicMatrix)[2]) {
+			trueIntrinsic[j]=runif(n=1,min=min(intrinsicMatrix[,j]),max=max(intrinsicMatrix[,j]))
+		}
+		for (j in 1:dim(extrinsicMatrix)[2]) {
+			trueExtrinsic[j]=runif(n=1,min=min(extrinsicMatrix[,j]),max=max(extrinsicMatrix[,j]))
+		}
+		otherStarting<-rep(NaN,dim(startingMatrix)[2])
+		otherIntrinsic<-rep(NaN,dim(intrinsicMatrix)[2])
+		otherExtrinsic<-rep(NaN,dim(extrinsicMatrix)[2])
+		for (j in 1:dim(startingMatrix)[2]) {
+			otherStarting[j]=runif(n=1,min=min(startingMatrix[,j]),max=max(startingMatrix[,j]))
+		}
+		for (j in 1:dim(intrinsicMatrix)[2]) {
+			otherIntrinsic[j]=runif(n=1,min=min(intrinsicMatrix[,j]),max=max(intrinsicMatrix[,j]))
+		}
+		for (j in 1:dim(extrinsicMatrix)[2]) {
+			otherExtrinsic[j]=runif(n=1,min=min(extrinsicMatrix[,j]),max=max(extrinsicMatrix[,j]))
+		}
+		sampleA1<-convertTaxonFrameToGeigerData (doSimulation(splits=splits,intrinsicFn= intrinsicFn,extrinsicFn= extrinsicFn,startingStates= trueStarting,intrinsicValues= trueIntrinsic,extrinsicValues= trueExtrinsic,timeStep=timeStep),phy)
+		sampleA2<-convertTaxonFrameToGeigerData (doSimulation(splits=splits,intrinsicFn= intrinsicFn,extrinsicFn= extrinsicFn,startingStates= trueStarting,intrinsicValues= trueIntrinsic,extrinsicValues= trueExtrinsic,timeStep=timeStep),phy)
+		sampleB1<-convertTaxonFrameToGeigerData (doSimulation(splits=splits,intrinsicFn= intrinsicFn,extrinsicFn= extrinsicFn,startingStates= otherStarting,intrinsicValues= otherIntrinsic,extrinsicValues= otherExtrinsic,timeStep=timeStep),phy)
+		resultVector<-cbind(trueStarting,trueIntrinsic,trueExtrinsic,otherStarting,otherIntrinsic,otherExtrinsic)
+		for (summaryIndex in 1:length(summaryFns)) {
+		#c( dist(A1,A2)/standard, dist(A1,B1)/standard)
+			distanceVector<-c(dist(matrix(c(summaryFns[summaryIndex][[1]](phy, sampleA1), summaryFns[summaryIndex][[1]](phy, sampleA2)),nrow=2,byrow=T))[1],dist(matrix(c(summaryFns[summaryIndex][[1]](phy, sampleA1), summaryFns[summaryIndex][[1]](phy, sampleB1)),nrow=2,byrow=T))[1])
+			distanceVector<-distanceVector/distanceScaling[summaryIndex]
+			cat(simRep,summaryIndex,distanceVector,"\n")
+			resultVector<-c(resultVector,distanceVector)
+		}
+		distancesDataFrame<-rbind(resultVector)
+	}
 }
 
 #test code2
