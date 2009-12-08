@@ -811,6 +811,56 @@ testApproach<-function(phy,originalData,intrinsicFn,extrinsicFn,summaryFns=c(raw
 doRun<-function(phy,traits,intrinsicFn,extrinsicFn,summaryFns=c(rawValuesSummaryStats, geigerUnivariateSummaryStats2),startingMatrix,intrinsicMatrix,extrinsicMatrix,startingStatesGuess=c(),intrinsicValuesGuess=c(),extrinsicValuesGuess=c(),timeStep,toleranceVector=c(), numParticles=1000, standardDevFactor=0.05, nrepSim=100, nrepEst=1000, plot=T) {
 	splits<-getSimulationSplits(phy) #initialize this info
 
+
+	#figure out number of free params
+	numberParametersTotal<-dim(startingMatrix)[2] +  dim(intrinsicMatrix)[2] + dim(extrinsicMatrix)[2]
+	numberParametersFree<-numberParametersTotal
+	numberParametersStarting<-0
+	numberParametersIntrinsic<-0
+	numberParametersExtrinsic<-0
+	freevariables<-matrix(data=NA, nrow=2,ncol=0)
+	titlevector<-c()
+	freevector<-c()
+		
+	for (i in 1:dim(startingMatrix)[2]) {
+		if (startingMatrix[1,i]== startingMatrix[2,i]) {
+			numberParametersFree<-numberParametersFree-1
+			freevector<-c(freevector,FALSE)
+		}	
+		else {
+			numberParametersStarting<-numberParametersStarting+1
+			freevariables<-cbind(freevariables,startingMatrix[,i])
+			titlevector <-c(titlevector,paste("Starting", numberParametersStarting))
+			freevector<-c(freevector,TRUE)
+		}
+	}
+	for (i in 1:dim(intrinsicMatrix)[2]) {
+		if (intrinsicMatrix[1,i]== intrinsicMatrix[2,i]) {
+			numberParametersFree<-numberParametersFree-1
+			freevector<-c(freevector,FALSE)
+		}	
+		else {
+			numberParametersIntrinsic <-numberParametersIntrinsic +1
+			freevariables<-cbind(freevariables, intrinsicMatrix[,i])
+			titlevector <-c(titlevector,paste("Intrinsic", numberParametersIntrinsic))
+			freevector<-c(freevector,TRUE)
+		}
+	}
+	for (i in 1:dim(extrinsicMatrix)[2]) {
+		if (extrinsicMatrix[1,i]== extrinsicMatrix[2,i]) {
+			numberParametersFree<-numberParametersFree-1
+			freevector<-c(freevector,FALSE)
+		}	
+		else {
+			numberParametersExtrinsic <-numberParametersExtrinsic +1
+			freevariables<-cbind(freevariables, extrinsicMatrix[,i])
+			titlevector <-c(titlevector,paste("Extrinsic", numberParametersExtrinsic))
+			freevector<-c(freevector,TRUE)
+		}
+	}
+
+	
+
 	#initialize guesses, if needed
 	if (length(startingStatesGuess)==0) { #if no user guesses, try midpoint of the flat prior
 		startingStatesGuess<-colMeans(startingMatrix)
@@ -868,6 +918,23 @@ doRun<-function(phy,traits,intrinsicFn,extrinsicFn,summaryFns=c(rawValuesSummary
 		}
 		distancesDataFrame<-rbind(resultVector)
 	}
+	
+	#now plot this
+	if (plot) {
+		quartz()
+		par(mfrow=c(1,length(summaryFns)))
+		differencesDataFrame<-data.frame(matrix(c(1:dim(distancesDataFrame)[1],ncol=1)))
+		startingindex=1+dim(distancesDataFrame)[2]-2*length(summaryFns)
+		for (summaryIndex in 1:length(summaryFns)) {
+			differencesDataFrame<-cbind(differencesDataFrame, distancesDataFrame[,startingindex+2*(summaryIndex-1)+1]-distancesDataFrame[,startingindex+2*(summaryIndex-1)]) #b1-a1 - (a2-a1)
+		}
+		differencesDataFrame<-differencesDataFrame[,2:dim(differencesDataFrame)[2]]
+		for (summaryIndex in 1:length(summaryFns)) {
+			plot(x<-c(min(differencesDataFrame),max(differencesDataFrame)),y=c(0,1),type="n",xlab="(b1-a1) - (a2-a1)",title=paste("summary fn ",summaryIndex))
+			lines(density(differencesDataFrame[,summaryIndex]))
+		}
+	}
+	
 }
 
 #test code2
