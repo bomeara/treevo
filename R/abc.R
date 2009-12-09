@@ -202,6 +202,40 @@ rawValuesSummaryStats<-function(phy,data) {
 	summarystats
 }
 
+summaryStatsLong<-function(phy,data,todo=c()) {
+	if (length(todo)==0) {
+		todo=rep(1, 23+dim(data)[1]) #by default, include everything -- the 23 summary stats and the raw tip data
+	}
+	brown.lnl<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[1]], model="BM")[[1]]$lnl)) #if todo[i]==0, will cause an error right away, saving on computation time
+	brown.beta<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[2]], model="BM")[[1]]$beta))
+	brown.aicc<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[3]], model="BM")[[1]]$aicc))
+	lambda.lnl<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[4]], model="lambda")[[1]]$lnl))
+	lambda.beta<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[5]], model="lambda")[[1]]$beta))
+	lambda.lambda<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[6]], model="lambda")[[1]]$lambda))
+	lambda.aicc<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[7]], model="lambda")[[1]]$aicc))
+	delta.lnl<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[8]], model="delta")[[1]]$lnl))
+	delta.beta<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[9]], model="delta")[[1]]$beta))
+	delta.delta<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[10]], model="delta")[[1]]$delta))
+	delta.aicc<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[11]], model="delta")[[1]]$aicc))
+	ou.lnl<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[12]], model="ou")[[1]]$lnl))
+	ou.beta<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[13]], model="ou")[[1]]$beta))
+	ou.alpha<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[14]], model="ou")[[1]]$alpha))
+	ou.aicc<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[15]], model="ou")[[1]]$aicc))
+	white.lnl<-as.numeric(try(fitContinuwhites(phy=phy, data=data[todo[16]], model="white")[[1]]$lnl))
+	white.aicc<-as.numeric(try(fitContinuwhites(phy=phy, data=data[todo[17]], model="white")[[1]]$aicc))
+	raw.mean<-as.numeric(try(mean(data[todo[19],])))
+	raw.max<-as.numeric(try(max(data[todo[20],])))
+	raw.min<-as.numeric(try(max(data[todo[21],])))
+	raw.var<-as.numeric(try(var(data[todo[22],])))
+	raw.median<-as.numeric(try(median(data[todo[23],])))
+	summarystats<-c(brown.lnl, brown.beta, brown.aicc,  lambda.lnl, lambda.beta, lambda.lambda, lambda.aicc, delta.lnl, delta.beta, delta.delta, delta.aicc, ou.lnl, ou.beta, ou.alpha, ou.aicc, white.lnl, white.aicc,  raw.mean, raw.max, raw.min, raw.var, raw.median, data[1,] )
+	summarystats[which(todo==0)]<-NA
+	summarystats
+	
+	
+}
+
+
 abcprc2<-function(phy,originalData,intrinsicFn,extrinsicFn,summaryFn,startingMatrix,intrinsicMatrix,extrinsicMatrix,timeStep,toleranceVector,numParticles=10, standardDevFactor=0.05, plot=F) {
 #*matrix entries have lower (first row) and upper (second row) values for each parameter. Actual values are drawn from a uniform distribution for each parameter. If you want a parameter set, have max and min values the same number
 #other things as in Sisson et al. Sequential Monte Carlo without likelihoods. P Natl Acad Sci Usa (2007) vol. 104 (6) pp. 1760-1765
@@ -872,15 +906,11 @@ doRun<-function(phy,traits,intrinsicFn,extrinsicFn,summaryFns=c(rawValuesSummary
 		extrinsicValuesGuess<-colMeans(extrinsicMatrix)
 	}
 	
-	distanceScaling<-rep(NaN, length(summaryFns))
 	
-	for (summaryIndex in 1:length(summaryFns)) {
-		distanceScaling[summaryIndex]<-summaryFns[summaryIndex][[1]](phy, traits) #we scale the summary fns by the observed summary fns
-	}
 	
-	distancesDataFrame<-data.frame()
-	#basic idea here is to choose between summary functions. Want a measure where distance between two simulations with the same parameters is small but distance between two simulations with different parameters is large. Different summary stats will have different magnitudes, so scale everything by the summarystats of the original data
-	for (simRep in 1:nrepSim) {
+	trueFreeValues<-matrix(nrow=0, ncol= numberParametersFree)
+	summaryValues<-matrix(nrow=0, ncol=23+dim(traits)[1]) #there are 23 summary statistics possible, plus the raw data
+	for (simIndex in 1:nrepSim) {
 		trueStarting<-rep(NaN,dim(startingMatrix)[2])
 		trueIntrinsic<-rep(NaN,dim(intrinsicMatrix)[2])
 		trueExtrinsic<-rep(NaN,dim(extrinsicMatrix)[2])
@@ -893,49 +923,20 @@ doRun<-function(phy,traits,intrinsicFn,extrinsicFn,summaryFns=c(rawValuesSummary
 		for (j in 1:dim(extrinsicMatrix)[2]) {
 			trueExtrinsic[j]=runif(n=1,min=min(extrinsicMatrix[,j]),max=max(extrinsicMatrix[,j]))
 		}
-		otherStarting<-rep(NaN,dim(startingMatrix)[2])
-		otherIntrinsic<-rep(NaN,dim(intrinsicMatrix)[2])
-		otherExtrinsic<-rep(NaN,dim(extrinsicMatrix)[2])
-		for (j in 1:dim(startingMatrix)[2]) {
-			otherStarting[j]=runif(n=1,min=min(startingMatrix[,j]),max=max(startingMatrix[,j]))
-		}
-		for (j in 1:dim(intrinsicMatrix)[2]) {
-			otherIntrinsic[j]=runif(n=1,min=min(intrinsicMatrix[,j]),max=max(intrinsicMatrix[,j]))
-		}
-		for (j in 1:dim(extrinsicMatrix)[2]) {
-			otherExtrinsic[j]=runif(n=1,min=min(extrinsicMatrix[,j]),max=max(extrinsicMatrix[,j]))
-		}
-		sampleA1<-convertTaxonFrameToGeigerData (doSimulation(splits=splits,intrinsicFn= intrinsicFn,extrinsicFn= extrinsicFn,startingStates= trueStarting,intrinsicValues= trueIntrinsic,extrinsicValues= trueExtrinsic,timeStep=timeStep),phy)
-		sampleA2<-convertTaxonFrameToGeigerData (doSimulation(splits=splits,intrinsicFn= intrinsicFn,extrinsicFn= extrinsicFn,startingStates= trueStarting,intrinsicValues= trueIntrinsic,extrinsicValues= trueExtrinsic,timeStep=timeStep),phy)
-		sampleB1<-convertTaxonFrameToGeigerData (doSimulation(splits=splits,intrinsicFn= intrinsicFn,extrinsicFn= extrinsicFn,startingStates= otherStarting,intrinsicValues= otherIntrinsic,extrinsicValues= otherExtrinsic,timeStep=timeStep),phy)
-		resultVector<-cbind(trueStarting,trueIntrinsic,trueExtrinsic,otherStarting,otherIntrinsic,otherExtrinsic)
-		for (summaryIndex in 1:length(summaryFns)) {
-		#c( dist(A1,A2)/standard, dist(A1,B1)/standard)
-			distanceVector<-c(dist(matrix(c(summaryFns[summaryIndex][[1]](phy, sampleA1), summaryFns[summaryIndex][[1]](phy, sampleA2)),nrow=2,byrow=T))[1],dist(matrix(c(summaryFns[summaryIndex][[1]](phy, sampleA1), summaryFns[summaryIndex][[1]](phy, sampleB1)),nrow=2,byrow=T))[1])
-			distanceVector<-distanceVector/distanceScaling[summaryIndex]
-			cat(simRep,summaryIndex,distanceVector,"\n")
-			resultVector<-c(resultVector,distanceVector)
-		}
-		distancesDataFrame<-rbind(resultVector)
+		trueInitial<-c(trueStarting, trueIntrinsic, trueExtrinsic)
+		trueFreeValues<-rbind(trueFreeValues, trueInitial[freevector])
+		summaryValues<-rbind(summaryValues,summaryStatsLong(phy,convertTaxonFrameToGeigerData (doSimulation(splits=splits,intrinsicFn= intrinsicFn,extrinsicFn= extrinsicFn,startingStates= trueStarting,intrinsicValues= trueIntrinsic,extrinsicValues= trueExtrinsic,timeStep=timeStep),phy)))
+		cat("rep ",simIndex," ", summaryValues[dim(summaryValues)[1],], "\n")
 	}
 	
-	#now plot this
-	if (plot) {
-		quartz()
-		par(mfrow=c(1,length(summaryFns)))
-		differencesDataFrame<-data.frame(matrix(c(1:dim(distancesDataFrame)[1],ncol=1)))
-		startingindex=1+dim(distancesDataFrame)[2]-2*length(summaryFns)
-		for (summaryIndex in 1:length(summaryFns)) {
-			differencesDataFrame<-cbind(differencesDataFrame, distancesDataFrame[,startingindex+2*(summaryIndex-1)+1]-distancesDataFrame[,startingindex+2*(summaryIndex-1)]) #b1-a1 - (a2-a1)
-		}
-		differencesDataFrame<-differencesDataFrame[,2:dim(differencesDataFrame)[2]]
-		for (summaryIndex in 1:length(summaryFns)) {
-			plot(x<-c(min(differencesDataFrame),max(differencesDataFrame)),y=c(0,1),type="n",xlab="(b1-a1) - (a2-a1)",title=paste("summary fn ",summaryIndex))
-			lines(density(differencesDataFrame[,summaryIndex]))
-		}
-	}
-	
+	now put this into the boxcox function to get best lambda for each summary stat.
+	Transform each summary stat according to its best lambda
+	Use PLS to (function plsr in package pls) using the leave one out validation to find the optimal set of summary stats. Store this info in the todo vector 
+	See Wegmann et al. Efficient Approximate Bayesian Computation Coupled With Markov Chain Monte Carlo Without Likelihood. Genetics (2009) vol. 182 (4) pp. 1207-1218 for more on the method
 }
+
+
+
 
 #test code2
 #library(geiger)
