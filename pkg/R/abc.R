@@ -842,7 +842,7 @@ testApproach<-function(phy,originalData,intrinsicFn,extrinsicFn,summaryFns=c(raw
 #the doRun function takes input from the user and then automatically guesses optimal parameters, though user overriding is also possible.
 #the guesses are used to do simulations near the expected region. If omitted, they are set to the midpoint of the input parameter matrices
 
-doRun<-function(phy,traits,intrinsicFn,extrinsicFn,summaryFns=c(rawValuesSummaryStats, geigerUnivariateSummaryStats2),startingMatrix,intrinsicMatrix,extrinsicMatrix,startingStatesGuess=c(),intrinsicValuesGuess=c(),extrinsicValuesGuess=c(),timeStep,toleranceVector=c(), numParticles=1000, standardDevFactor=0.05, nrepSim=100, nrepEst=1000, plot=T) {
+doRun<-function(phy,traits,intrinsicFn,extrinsicFn,summaryFns=c(rawValuesSummaryStats, geigerUnivariateSummaryStats2),startingMatrix,intrinsicMatrix,extrinsicMatrix,startingStatesGuess=c(),intrinsicValuesGuess=c(),extrinsicValuesGuess=c(),timeStep,toleranceVector=c(), numParticles=1000, standardDevFactor=0.05, nrepSim=100, nrepEst=1000, plot=T,vipthresh=0.8) {
 	splits<-getSimulationSplits(phy) #initialize this info
 
 
@@ -907,7 +907,8 @@ doRun<-function(phy,traits,intrinsicFn,extrinsicFn,summaryFns=c(rawValuesSummary
 	}
 	
 	
-	
+	#----------------- Find best set of summary stats to use for this problem. (start) -----------------
+	#See Wegmann et al. Efficient Approximate Bayesian Computation Coupled With Markov Chain Monte Carlo Without Likelihood. Genetics (2009) vol. 182 (4) pp. 1207-1218 for more on the method
 	trueFreeValues<-matrix(nrow=0, ncol= numberParametersFree)
 	summaryValues<-matrix(nrow=0, ncol=23+dim(traits)[1]) #there are 23 summary statistics possible, plus the raw data
 	for (simIndex in 1:nrepSim) {
@@ -929,10 +930,44 @@ doRun<-function(phy,traits,intrinsicFn,extrinsicFn,summaryFns=c(rawValuesSummary
 		cat("rep ",simIndex," ", summaryValues[dim(summaryValues)[1],], "\n")
 	}
 	
-	now put this into the boxcox function to get best lambda for each summary stat.
-	Transform each summary stat according to its best lambda
-	Use PLS to (function plsr in package pls) using the leave one out validation to find the optimal set of summary stats. Store this info in the todo vector 
-	See Wegmann et al. Efficient Approximate Bayesian Computation Coupled With Markov Chain Monte Carlo Without Likelihood. Genetics (2009) vol. 182 (4) pp. 1207-1218 for more on the method
+	library("car")
+	#now put this into the boxcox function to get best lambda for each summary stat
+	boxcoxLambda<-rep(NA,dim(summaryValues)[2])
+	for (summaryValueIndex in 1:dim(summaryValues)[2]) {
+		summary<-summaryValues[,summaryValueIndex]
+		data<-list(trueFreeValues,summary)
+		boxcoxResult<-boxcox(trueFreeValues ~ summary, data = data, plotit=FALSE)
+		boxcoxLambda[summaryValueIndex]<-boxcoxResult$x[which(boxcoxResult$y==max(boxcoxResult$y))]
+		
+		#Transform each summary stat according to its best lambda
+		summaryValues[,summaryValueIndex]<-box.cox(x=summaryValues[,summaryValueIndex], p=boxcoxLambda[summaryValueIndex])
+	}
+	
+	
+	#Use integrOmics to to find the optimal set of summary stats. Store this info in the todo vector. Note that this uses a different package (integromics rather than pls than that used by Weggman et al. because this package can calculate variable importance in projection and deals fine with NAs)
+	library("integrOmics")
+	plsResult<-pls(trueFreeValues, summaryValues)
+	vipResult<-vip(plsResult)
+	todo<-rep(1,dim(summaryValues)[2])#initialize the vector that indicates which summary stats to include
+	for (summaryIndex in 1:dim(summaryValues)[2]) {
+		if (max(vipResult[summaryIndex,])<vipthresh) {
+				todo[summaryIndex]<-0 #exclude this summary stat, because it's too unimportant
+		}	
+	}
+	prunedSummaryValues<-summaryValues[,which(todo>0)]
+	prunedPlsResult<-pls(treeFreeValues, prunedSummaryValues)
+	#use "valid" fn
+	
+		
+	
+	
+	#----------------- Find best set of summary stats to use for this problem. (end) -----------------
+	
+	
+	
+	
+	
+
 }
 
 
