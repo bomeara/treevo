@@ -208,28 +208,29 @@ summaryStatsLong<-function(phy,data,todo=c()) {
 	}
 	brown.lnl<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[1]], model="BM")[[1]]$lnl)) #if todo[i]==0, will cause an error right away, saving on computation time
 	brown.beta<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[2]], model="BM")[[1]]$beta))
-	brown.aicc<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[3]], model="BM")[[1]]$aicc))
+	brown.aic<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[3]], model="BM")[[1]]$aic))
 	lambda.lnl<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[4]], model="lambda")[[1]]$lnl))
 	lambda.beta<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[5]], model="lambda")[[1]]$beta))
 	lambda.lambda<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[6]], model="lambda")[[1]]$lambda))
-	lambda.aicc<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[7]], model="lambda")[[1]]$aicc))
+	lambda.aic<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[7]], model="lambda")[[1]]$aic))
 	delta.lnl<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[8]], model="delta")[[1]]$lnl))
 	delta.beta<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[9]], model="delta")[[1]]$beta))
 	delta.delta<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[10]], model="delta")[[1]]$delta))
-	delta.aicc<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[11]], model="delta")[[1]]$aicc))
-	ou.lnl<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[12]], model="ou")[[1]]$lnl))
-	ou.beta<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[13]], model="ou")[[1]]$beta))
-	ou.alpha<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[14]], model="ou")[[1]]$alpha))
-	ou.aicc<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[15]], model="ou")[[1]]$aicc))
-	white.lnl<-as.numeric(try(fitContinuwhites(phy=phy, data=data[todo[16]], model="white")[[1]]$lnl))
-	white.aicc<-as.numeric(try(fitContinuwhites(phy=phy, data=data[todo[17]], model="white")[[1]]$aicc))
-	raw.mean<-as.numeric(try(mean(data[todo[19],])))
-	raw.max<-as.numeric(try(max(data[todo[20],])))
-	raw.min<-as.numeric(try(max(data[todo[21],])))
-	raw.var<-as.numeric(try(var(data[todo[22],])))
+	delta.aic<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[11]], model="delta")[[1]]$aic))
+	ou.lnl<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[12]], model="OU")[[1]]$lnl))
+	ou.beta<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[13]], model="OU")[[1]]$beta))
+	ou.alpha<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[14]], model="OU")[[1]]$alpha))
+	ou.aic<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[15]], model="OU")[[1]]$aic))
+	white.lnl<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[16]], model="white")[[1]]$lnl))
+	white.aic<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[17]], model="white")[[1]]$aic))
+	raw.mean<-as.numeric(try(mean(data[todo[19]])))
+	raw.max<-as.numeric(try(max(data[todo[20]])))
+	raw.min<-as.numeric(try(min(data[todo[21]])))
+	raw.var<-as.numeric(try(var(data[todo[22]])))
 	raw.median<-as.numeric(try(median(data[todo[23],])))
-	summarystats<-c(brown.lnl, brown.beta, brown.aicc,  lambda.lnl, lambda.beta, lambda.lambda, lambda.aicc, delta.lnl, delta.beta, delta.delta, delta.aicc, ou.lnl, ou.beta, ou.alpha, ou.aicc, white.lnl, white.aicc,  raw.mean, raw.max, raw.min, raw.var, raw.median, data[1,] )
+	summarystats<-c(brown.lnl, brown.beta, brown.aic,  lambda.lnl, lambda.beta, lambda.lambda, lambda.aic, delta.lnl, delta.beta, delta.delta, delta.aic, ou.lnl, ou.beta, ou.alpha, ou.aic, white.lnl, white.aic,  raw.mean, raw.max, raw.min, raw.var, raw.median, data[1,] )
 	summarystats[which(todo==0)]<-NA
+	summarystats[which(is.finite(summarystats)==FALSE)]<-NA
 	summarystats
 	
 	
@@ -842,7 +843,7 @@ testApproach<-function(phy,originalData,intrinsicFn,extrinsicFn,summaryFns=c(raw
 #the doRun function takes input from the user and then automatically guesses optimal parameters, though user overriding is also possible.
 #the guesses are used to do simulations near the expected region. If omitted, they are set to the midpoint of the input parameter matrices
 
-doRun<-function(phy,traits,intrinsicFn,extrinsicFn,summaryFns=c(rawValuesSummaryStats, geigerUnivariateSummaryStats2),startingMatrix,intrinsicMatrix,extrinsicMatrix,startingStatesGuess=c(),intrinsicValuesGuess=c(),extrinsicValuesGuess=c(),timeStep,toleranceVector=c(), numParticles=1000, standardDevFactor=0.05, nrepSim=100, nrepEst=1000, plot=T,vipthresh=0.8) {
+doRun<-function(phy,traits,intrinsicFn,extrinsicFn,summaryFns=c(rawValuesSummaryStats, geigerUnivariateSummaryStats2),startingMatrix,intrinsicMatrix,extrinsicMatrix,startingStatesGuess=c(),intrinsicValuesGuess=c(),extrinsicValuesGuess=c(),timeStep,toleranceVector=c(), numParticles=1000, standardDevFactor=0.05, nrepSim=100, nrepEst=1000, plot=T,vipthresh=0.8,epsilonProportion=0.2) {
 	splits<-getSimulationSplits(phy) #initialize this info
 
 
@@ -930,41 +931,78 @@ doRun<-function(phy,traits,intrinsicFn,extrinsicFn,summaryFns=c(rawValuesSummary
 		cat("rep ",simIndex," ", summaryValues[dim(summaryValues)[1],], "\n")
 	}
 	
+	cat("1\n")
 	library("car")
 	#now put this into the boxcox function to get best lambda for each summary stat
 	boxcoxLambda<-rep(NA,dim(summaryValues)[2])
+	cat("2 ",dim(summaryValues)[2], "\n")
 	for (summaryValueIndex in 1:dim(summaryValues)[2]) {
+		cat ("3 ", summaryValueIndex, "\n")
 		summary<-summaryValues[,summaryValueIndex]
 		data<-list(trueFreeValues,summary)
+		cat ("4 \n")
+		print(data)
 		boxcoxResult<-boxcox(trueFreeValues ~ summary, data = data, plotit=FALSE)
+		cat ("5","\n")
+		print(boxcoxResult)
 		boxcoxLambda[summaryValueIndex]<-boxcoxResult$x[which(boxcoxResult$y==max(boxcoxResult$y))]
-		
+		cat ("6 ","\n")
+		print(boxcoxLambda)
 		#Transform each summary stat according to its best lambda
 		summaryValues[,summaryValueIndex]<-box.cox(x=summaryValues[,summaryValueIndex], p=boxcoxLambda[summaryValueIndex])
+		cat ("7 \n")
+		print(summaryValues)
+	
 	}
 	
 	
 	#Use integrOmics to to find the optimal set of summary stats. Store this info in the todo vector. Note that this uses a different package (integromics rather than pls than that used by Weggman et al. because this package can calculate variable importance in projection and deals fine with NAs)
 	library("integrOmics")
-	plsResult<-pls(trueFreeValues, summaryValues)
+	plsResult<-pls(Y=trueFreeValues, X=summaryValues)
+	cat("plsResult\n")
+	print(plsResult)
 	vipResult<-vip(plsResult)
+	cat("vipResult\n")
+	print(vipResult)
 	todo<-rep(1,dim(summaryValues)[2])#initialize the vector that indicates which summary stats to include
 	for (summaryIndex in 1:dim(summaryValues)[2]) {
 		if (max(vipResult[summaryIndex,])<vipthresh) {
 				todo[summaryIndex]<-0 #exclude this summary stat, because it's too unimportant
 		}	
 	}
+	cat("todo","\n")
+	print(todo)
+	
 	prunedSummaryValues<-summaryValues[,which(todo>0)]
-	prunedPlsResult<-pls(treeFreeValues, prunedSummaryValues)
-	#use "valid" fn
-	
-		
-	
-	
+	cat("prunedSummaryValues", "\n")
+	print(prunedSummaryValues)
+
+	prunedPlsResult<-pls(Y=trueFreeValues, X=prunedSummaryValues)
+	cat("prunedPlsResult", "\n")
+	print(prunedPlsResult)
+
 	#----------------- Find best set of summary stats to use for this problem. (end) -----------------
 	
+	#----------------- Find distribution of distances (start) ----------------------
+	predictResult<-(predict(prunedPlsResult, prunedSummaryValues)$predict[, , 1])
+	cat("predictResult", "\n")
+	print(predictResult)
+
+	distanceVector<-rep(NA,dim(predictResult)[1])
+	for (simulationIndex in 1:dim(predictResult)[1]) {
+			distanceVector[simulationIndex]<-dist(matrix(c(trueFreeValues[simulationIndex,], predictResult[simulationIndex,]),nrow=2,byrow=T))[1]
+	}
+	cat("distanceVector", "\n")
+	print(distanceVector)
+
+	plot(density(distanceVector))
+	epsilonDistance<-quantile(distanceVector,probs=epsilonProportion) #this gives the distance such that epsilonProportion of the simulations starting from a given set of values will be rejected 
 	
+	#----------------- Find distribution of distances (end) ---------------------
 	
+	#------------------ ABC-PRC (start) ------------------
+	do not forget to both use boxcoxLambda and prunedPlsResult when computing distances
+	#------------------ ABC-PRC (end) ------------------
 	
 	
 
@@ -999,15 +1037,17 @@ doRun<-function(phy,traits,intrinsicFn,extrinsicFn,summaryFns=c(rawValuesSummary
 #test code3
 library(geiger)
 
-phy<-rcoal(20)
-splits<-getSimulationSplits(phy)
-char<-convertTaxonFrameToGeigerData (doSimulation(splits=splits,intrinsicFn=brownianIntrinsic,extrinsicFn=brownianExtrinsic,startingStates=c(3),intrinsicValues=.06,extrinsicValues=0,timeStep=0.001),phy)
+#phy<-rcoal(20)
+#splits<-getSimulationSplits(phy)
+#char<-convertTaxonFrameToGeigerData (doSimulation(splits=splits,intrinsicFn=brownianIntrinsic,extrinsicFn=brownianExtrinsic,startingStates=c(3),intrinsicValues=.06,extrinsicValues=0,timeStep=0.001),phy)
 fitContinuous(phy,char)
-particledata<-abcprc2(phy=phy,originalData=char,intrinsicFn= brownianIntrinsic,extrinsicFn= brownianExtrinsic,startingMatrix=matrix(data=c(0,15),nrow=2),intrinsicMatrix=matrix(data=c(0.0001,.1),nrow=2),extrinsicMatrix=matrix(data=c(0,0),nrow=2),timeStep=0.001, toleranceVector=c(100,50,25,10,5),standardDevFactor=0.05, summaryFn= rawValuesSummaryStats,plot=T,numParticles=50)
+#particledata<-abcprc2(phy=phy,originalData=char,intrinsicFn= brownianIntrinsic,extrinsicFn= brownianExtrinsic,startingMatrix=matrix(data=c(0,15),nrow=2),intrinsicMatrix=matrix(data=c(0.0001,.1),nrow=2),extrinsicMatrix=matrix(data=c(0,0),nrow=2),timeStep=0.001, toleranceVector=c(100,50,25,10,5),standardDevFactor=0.05, summaryFn= rawValuesSummaryStats,plot=T,numParticles=50)
 
 phy<-rcoal(5)
 
 splits<-getSimulationSplits(phy)
 char<-convertTaxonFrameToGeigerData (doSimulation(splits=splits,intrinsicFn=brownianIntrinsic,extrinsicFn=brownianExtrinsic,startingStates=c(3),intrinsicValues=.06,extrinsicValues=0,timeStep=0.001),phy)
 
-testApproach(phy=phy,originalData=char,intrinsicFn= brownianIntrinsic,extrinsicFn= brownianExtrinsic,startingMatrix=matrix(data=c(0,15),nrow=2),intrinsicMatrix=matrix(data=c(0.0001,.1),nrow=2),extrinsicMatrix=matrix(data=c(0,0),nrow=2),timeStep=0.001,standardDevFactor=0.05, plot=T,nrepSim=3,startingStatesGuess=c(2),intrinsicValuesGuess=c(0.06),extrinsicValuesGuess=c(0))
+#testApproach(phy=phy,originalData=char,intrinsicFn= brownianIntrinsic,extrinsicFn= brownianExtrinsic,startingMatrix=matrix(data=c(0,15),nrow=2),intrinsicMatrix=matrix(data=c(0.0001,.1),nrow=2),extrinsicMatrix=matrix(data=c(0,0),nrow=2),timeStep=0.001,standardDevFactor=0.05, plot=T,nrepSim=3,startingStatesGuess=c(2),intrinsicValuesGuess=c(0.06),extrinsicValuesGuess=c(0))
+
+doRun(phy=phy,traits=char,intrinsicFn= brownianIntrinsic,extrinsicFn= brownianExtrinsic,startingMatrix=matrix(data=c(0,15),nrow=2),intrinsicMatrix=matrix(data=c(0.0001,.1),nrow=2),extrinsicMatrix=matrix(data=c(0,0),nrow=2),timeStep=0.001,standardDevFactor=0.05, plot=T,nrepSim=3,startingStatesGuess=c(2),intrinsicValuesGuess=c(0.06),extrinsicValuesGuess=c(0))
