@@ -127,6 +127,15 @@ function(object, value) {
 }
 )
 
+setGeneric("setDistance", function(object, value) {
+	standardGeneric("setDistance")
+})
+
+setMethod("setDistance","abcparticle",function(object,value) {
+	object@distance<-value
+	object
+})
+
 setGeneric("kernel", function(object) {
 	standardGeneric("kernel")
 })
