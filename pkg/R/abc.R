@@ -203,9 +203,12 @@ rawValuesSummaryStats<-function(phy,data) {
 }
 
 summaryStatsLong<-function(phy,data,todo=c()) {
+	sink(file="/dev/null")
 	if (length(todo)==0) {
-		todo=rep(1, 23+dim(data)[1]) #by default, include everything -- the 23 summary stats and the raw tip data
+		todo=rep(1, 22+dim(data)[1]) #by default, include everything -- the 22 summary stats and the raw tip data
 	}
+	
+	#thought here: include brown<-try(fitContinouous()), store brown, then do try(brown$lnl), etc. Faster than calling each fn
 	brown.lnl<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[1]], model="BM")[[1]]$lnl)) #if todo[i]==0, will cause an error right away, saving on computation time
 	brown.beta<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[2]], model="BM")[[1]]$beta))
 	brown.aic<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[3]], model="BM")[[1]]$aic))
@@ -223,14 +226,22 @@ summaryStatsLong<-function(phy,data,todo=c()) {
 	ou.aic<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[15]], model="OU")[[1]]$aic))
 	white.lnl<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[16]], model="white")[[1]]$lnl))
 	white.aic<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[17]], model="white")[[1]]$aic))
-	raw.mean<-as.numeric(try(mean(data[todo[19]])))
-	raw.max<-as.numeric(try(max(data[todo[20]])))
-	raw.min<-as.numeric(try(min(data[todo[21]])))
-	raw.var<-as.numeric(try(var(data[todo[22]])))
-	raw.median<-as.numeric(try(median(data[todo[23],])))
-	summarystats<-c(brown.lnl, brown.beta, brown.aic,  lambda.lnl, lambda.beta, lambda.lambda, lambda.aic, delta.lnl, delta.beta, delta.delta, delta.aic, ou.lnl, ou.beta, ou.alpha, ou.aic, white.lnl, white.aic,  raw.mean, raw.max, raw.min, raw.var, raw.median, data[1,] )
+	raw.mean<-as.numeric(try(mean(data[todo[18]])))
+	raw.max<-as.numeric(try(max(data[todo[19]])))
+	raw.min<-as.numeric(try(min(data[todo[20]])))
+	raw.var<-as.numeric(try(var(data[todo[21]])))
+	raw.median<-as.numeric(try(median(data[todo[22],])))
+	#cat("summaryStatsLong")
+	summarystats<-c(brown.lnl, brown.beta, brown.aic,  lambda.lnl, lambda.beta, lambda.lambda, lambda.aic, delta.lnl, delta.beta, delta.delta, delta.aic, ou.lnl, ou.beta, ou.alpha, ou.aic, white.lnl, white.aic,  raw.mean, raw.max, raw.min, raw.var, raw.median, data[[1]] )
+	#cat("\n summaryStatsLong summarystats1\n")
+	#print(summarystats)
 	summarystats[which(todo==0)]<-NA
+	#cat("\n summaryStatsLong summarystats2\n")
+	#print(summarystats)
 	summarystats[which(is.finite(summarystats)==FALSE)]<-NA
+	#cat("\n summaryStatsLong summarystats3\n")
+	#print(summarystats)
+	sink()
 	summarystats
 	
 	
@@ -840,10 +851,41 @@ testApproach<-function(phy,originalData,intrinsicFn,extrinsicFn,summaryFns=c(raw
 }
 
 
+boxcoxplsSummary<-function(todo,rawSummaryValues,prunedPlsResult, boxcoxLambda, boxcoxAddition) {
+	#cat("\n\n boxcoxplsSummary \ntodo\n")
+	#print(todo)
+	#cat("\n rawSummaryValues\n")
+	#print(rawSummaryValues)
+	#cat("\n prunedPlsResult\n")
+	#print(prunedPlsResult)
+	#cat("\n boxcoxLambda\n")
+	#print(boxcoxLambda)
+	#cat("\n boxcoxAddition\n")
+	#print(boxcoxAddition)
+	summaryValues<-boxcoxAddition+rawSummaryValues #for boxcox, need positive numbers
+	#cat("\n summaryValues\n")
+	#print(summaryValues)
+
+	for (summaryValueIndex in 1:length(summaryValues)) {
+		summaryValues[summaryValueIndex]<-box.cox(x=summaryValues[summaryValueIndex], p=boxcoxLambda[summaryValueIndex])
+	}
+	#cat("\n summaryValues\n")
+	#print(summaryValues)
+	prunedSummaryValues<-summaryValues[which(todo>0)]
+	#cat("\n prunedSummaryValues\n")
+	#print(prunedSummaryValues)
+	predictResult<-(predict(prunedPlsResult, matrix(prunedSummaryValues,nrow=1))$predict[, , 1])
+	#cat("\n predictResult\n")
+	#print(predictResult)
+
+	predictResult
+}
+
 #the doRun function takes input from the user and then automatically guesses optimal parameters, though user overriding is also possible.
 #the guesses are used to do simulations near the expected region. If omitted, they are set to the midpoint of the input parameter matrices
 
-doRun<-function(phy,traits,intrinsicFn,extrinsicFn,summaryFns=c(rawValuesSummaryStats, geigerUnivariateSummaryStats2),startingMatrix,intrinsicMatrix,extrinsicMatrix,startingStatesGuess=c(),intrinsicValuesGuess=c(),extrinsicValuesGuess=c(),timeStep,toleranceVector=c(), numParticles=1000, standardDevFactor=0.05, nrepSim=100, nrepEst=1000, plot=T,vipthresh=0.8,epsilonProportion=0.2) {
+doRun<-function(phy,traits,intrinsicFn,extrinsicFn,summaryFns=c(rawValuesSummaryStats, geigerUnivariateSummaryStats2),startingMatrix,intrinsicMatrix,extrinsicMatrix,startingStatesGuess=c(),intrinsicValuesGuess=c(),extrinsicValuesGuess=c(),timeStep,toleranceVector=c(), numParticles=1000, standardDevFactor=0.05, nrepSim=100, plot=T,vipthresh=0.8,epsilonProportion=0.2,epsilonMultiplier=0.5,nStepsPRC=4) {
+	#print("in do run")
 	splits<-getSimulationSplits(phy) #initialize this info
 
 
@@ -911,7 +953,7 @@ doRun<-function(phy,traits,intrinsicFn,extrinsicFn,summaryFns=c(rawValuesSummary
 	#----------------- Find best set of summary stats to use for this problem. (start) -----------------
 	#See Wegmann et al. Efficient Approximate Bayesian Computation Coupled With Markov Chain Monte Carlo Without Likelihood. Genetics (2009) vol. 182 (4) pp. 1207-1218 for more on the method
 	trueFreeValues<-matrix(nrow=0, ncol= numberParametersFree)
-	summaryValues<-matrix(nrow=0, ncol=23+dim(traits)[1]) #there are 23 summary statistics possible, plus the raw data
+	summaryValues<-matrix(nrow=0, ncol=22+dim(traits)[1]) #there are 22 summary statistics possible, plus the raw data
 	for (simIndex in 1:nrepSim) {
 		trueStarting<-rep(NaN,dim(startingMatrix)[2])
 		trueIntrinsic<-rep(NaN,dim(intrinsicMatrix)[2])
@@ -927,31 +969,38 @@ doRun<-function(phy,traits,intrinsicFn,extrinsicFn,summaryFns=c(rawValuesSummary
 		}
 		trueInitial<-c(trueStarting, trueIntrinsic, trueExtrinsic)
 		trueFreeValues<-rbind(trueFreeValues, trueInitial[freevector])
+		#cat("summaryValues\n")
+		#print(summaryValues)
 		summaryValues<-rbind(summaryValues,summaryStatsLong(phy,convertTaxonFrameToGeigerData (doSimulation(splits=splits,intrinsicFn= intrinsicFn,extrinsicFn= extrinsicFn,startingStates= trueStarting,intrinsicValues= trueIntrinsic,extrinsicValues= trueExtrinsic,timeStep=timeStep),phy)))
-		cat("rep ",simIndex," ", summaryValues[dim(summaryValues)[1],], "\n")
+		rep(sink(),50)
+		#cat("summaryValues+ summaryStatsLong\n")
+		#print(summaryValues)
+		#cat("rep ",simIndex," ", summaryValues[dim(summaryValues)[1],], "\n")
 	}
 	
-	cat("1\n")
+	#cat("1\n")
 	library("car")
 	#now put this into the boxcox function to get best lambda for each summary stat
+	boxcoxAddition<-10*(abs(min(summaryValues)))
+	summaryValues<-boxcoxAddition+summaryValues #for boxcox, need positive numbers
 	boxcoxLambda<-rep(NA,dim(summaryValues)[2])
-	cat("2 ",dim(summaryValues)[2], "\n")
+	#cat("2 ",dim(summaryValues)[2], "\n")
 	for (summaryValueIndex in 1:dim(summaryValues)[2]) {
-		cat ("3 ", summaryValueIndex, "\n")
+		#cat ("3 ", summaryValueIndex, "\n")
 		summary<-summaryValues[,summaryValueIndex]
 		data<-list(trueFreeValues,summary)
-		cat ("4 \n")
-		print(data)
+		#cat ("4 \n")
+		#print(data)
 		boxcoxResult<-boxcox(trueFreeValues ~ summary, data = data, plotit=FALSE)
-		cat ("5","\n")
-		print(boxcoxResult)
+		#cat ("5","\n")
+		#print(boxcoxResult)
 		boxcoxLambda[summaryValueIndex]<-boxcoxResult$x[which(boxcoxResult$y==max(boxcoxResult$y))]
-		cat ("6 ","\n")
-		print(boxcoxLambda)
+		#cat ("6 ","\n")
+		#print(boxcoxLambda)
 		#Transform each summary stat according to its best lambda
 		summaryValues[,summaryValueIndex]<-box.cox(x=summaryValues[,summaryValueIndex], p=boxcoxLambda[summaryValueIndex])
-		cat ("7 \n")
-		print(summaryValues)
+		#cat ("7 \n")
+		#print(summaryValues)
 	
 	}
 	
@@ -959,49 +1008,216 @@ doRun<-function(phy,traits,intrinsicFn,extrinsicFn,summaryFns=c(rawValuesSummary
 	#Use integrOmics to to find the optimal set of summary stats. Store this info in the todo vector. Note that this uses a different package (integromics rather than pls than that used by Weggman et al. because this package can calculate variable importance in projection and deals fine with NAs)
 	library("integrOmics")
 	plsResult<-pls(Y=trueFreeValues, X=summaryValues)
-	cat("plsResult\n")
-	print(plsResult)
+	#cat("plsResult\n")
+	#print(plsResult)
 	vipResult<-vip(plsResult)
-	cat("vipResult\n")
-	print(vipResult)
+	#cat("vipResult\n")
+	#print(vipResult)
 	todo<-rep(1,dim(summaryValues)[2])#initialize the vector that indicates which summary stats to include
 	for (summaryIndex in 1:dim(summaryValues)[2]) {
 		if (max(vipResult[summaryIndex,])<vipthresh) {
 				todo[summaryIndex]<-0 #exclude this summary stat, because it's too unimportant
 		}	
 	}
-	cat("todo","\n")
-	print(todo)
+rep(sink(),100)
+	#cat("todo","\n")
+	#print(todo)
 	
 	prunedSummaryValues<-summaryValues[,which(todo>0)]
-	cat("prunedSummaryValues", "\n")
-	print(prunedSummaryValues)
+	#cat("prunedSummaryValues", "\n")
+	#print(prunedSummaryValues)
 
 	prunedPlsResult<-pls(Y=trueFreeValues, X=prunedSummaryValues)
-	cat("prunedPlsResult", "\n")
-	print(prunedPlsResult)
+	#cat("prunedPlsResult", "\n")
+	#print(prunedPlsResult)
 
 	#----------------- Find best set of summary stats to use for this problem. (end) -----------------
 	
 	#----------------- Find distribution of distances (start) ----------------------
 	predictResult<-(predict(prunedPlsResult, prunedSummaryValues)$predict[, , 1])
-	cat("predictResult", "\n")
-	print(predictResult)
+	#cat("predictResult", "\n")
+	#print(predictResult)
 
 	distanceVector<-rep(NA,dim(predictResult)[1])
 	for (simulationIndex in 1:dim(predictResult)[1]) {
 			distanceVector[simulationIndex]<-dist(matrix(c(trueFreeValues[simulationIndex,], predictResult[simulationIndex,]),nrow=2,byrow=T))[1]
 	}
-	cat("distanceVector", "\n")
-	print(distanceVector)
-
-	plot(density(distanceVector))
+	#cat("distanceVector", "\n")
+	#print(distanceVector)
+	densityDistanceVector<-density(distanceVector)
+	plot(densityDistanceVector)
 	epsilonDistance<-quantile(distanceVector,probs=epsilonProportion) #this gives the distance such that epsilonProportion of the simulations starting from a given set of values will be rejected 
-	
+	lines(x=c(epsilonDistance, epsilonDistance),y=c(0,max(densityDistanceVector$y)),lty="dotted")
+	toleranceVector<-rep(epsilonDistance,nStepsPRC)
+	for (step in 2:nStepsPRC) {
+		toleranceVector[step]<-toleranceVector[step-1]*epsilonMultiplier
+	}
 	#----------------- Find distribution of distances (end) ---------------------
 	
 	#------------------ ABC-PRC (start) ------------------
-	do not forget to both use boxcoxLambda and prunedPlsResult when computing distances
+	#do not forget to use boxcoxLambda, boxcoxAddition, and prunedPlsResult when computing distances
+	nameVector<-c("generation","attempt","id","parentid","distance","weight")
+	if (plot) {
+		plot(x=c(min(intrinsicMatrix),max(intrinsicMatrix)),y=c(0,5*max(toleranceVector)),type="n")
+	}
+	for (i in 1:dim(startingMatrix)[2]) {
+		nameVector<-append(nameVector,paste("StartingStates",i,sep=""))
+	}
+	for (i in 1:dim(intrinsicMatrix)[2]) {
+		nameVector<-append(nameVector,paste("IntrinsicValue",i,sep=""))
+	}
+	for (i in 1:dim(extrinsicMatrix)[2]) {
+		nameVector<-append(nameVector,paste("ExtrinsicValue",i,sep=""))
+	}
+	particleWeights=rep(0,numParticles) #stores weights for each particle. Initially, assume infinite number of possible particles (so might not apply in discrete case), uniform prior on each
+	particleParameters<-matrix(nrow=numParticles,ncol=dim(startingMatrix)[2] +  dim(intrinsicMatrix)[2] + dim(extrinsicMatrix)[2]) #stores parameters in model for each particle
+	particleDistance=rep(NA,numParticles)
+	particle<-1
+	attempts<-0
+	particleDataFrame<-data.frame()
+	cat("successes","attempts","expected number of attempts required\n")
+	particleVector<-c()
+	originalSummaryStats<-boxcoxplsSummary(todo,summaryStatsLong(phy,traits,todo),prunedPlsResult, boxcoxLambda, boxcoxAddition)
+	#cat("originalSummaryStats\n")
+	#print(originalSummaryStats)
+	while (particle<=numParticles) {
+		attempts<-attempts+1
+		
+		newparticleVector<-c(new("abcparticle",id=particle,generation=1,weight=0))
+		newparticleVector[[1]]<-initializeStatesFromMatrices(newparticleVector[[1]],startingMatrix, intrinsicMatrix, extrinsicMatrix)
+		newparticleVector[[1]]<-setDistance(newparticleVector[[1]],dist(matrix(c(boxcoxplsSummary(todo,summaryStatsLong(phy, convertTaxonFrameToGeigerData(doSimulation(splits,intrinsicFn,extrinsicFn,startingStates(newparticleVector[[1]]),intrinsicValues(newparticleVector[[1]]),extrinsicValues(newparticleVector[[1]]),timeStep),phy),todo),prunedPlsResult, boxcoxLambda, boxcoxAddition), originalSummaryStats),nrow=2,byrow=T))[1])
+		if (distance(newparticleVector[[1]])<toleranceVector[1]) {
+			newparticleVector[[1]]<-setId(newparticleVector[[1]],particle)
+			newparticleVector[[1]]<-setWeight(newparticleVector[[1]],1/numParticles)
+			particleWeights[particle]<-1/numParticles
+			particle<-particle+1
+			particleVector<-append(particleVector,newparticleVector)
+		}
+		sink()
+		#print(newparticleVector)
+		vectorForDataFrame<-c(1,attempts,getId(newparticleVector[[1]]),0,distance(newparticleVector[[1]]),getWeight(newparticleVector[[1]]),startingStates(newparticleVector[[1]]),intrinsicValues(newparticleVector[[1]]),extrinsicValues(newparticleVector[[1]]))
+#cat("\n\nlength of vectorForDataFrame = ",length(vectorForDataFrame),"\n","length of startingStates = ",length(startingStates),"\nlength of intrinsicValues = ",length(intrinsicValues),"\nlength of extrinsicValues = ",length(extrinsicValues),"\ndistance = ",distance(newparticleVector[[1]]),"\nweight = ",getWeight(newparticleVector[[1]]),"\n",vectorForDataFrame,"\n")
+		particleDataFrame<-rbind(particleDataFrame,data.frame(rbind(vectorForDataFrame)))
+		cat(particle-1,attempts,floor(numParticles*attempts/particle),startingStates(newparticleVector[[1]]),intrinsicValues(newparticleVector[[1]]),extrinsicValues(newparticleVector[[1]]),distance(newparticleVector[[1]]),"\n")
+		
+	}
+	
+	for (dataGenerationStep in 2:length(toleranceVector)) {
+		cat("\n\n\n", "STARTING DATA GENERATION STEP ", dataGenerationStep,  "\n\n\n")
+		particleWeights<-particleWeights/(sum(particleWeights)) #normalize to one
+		cat("particleWeights\n", particleWeights,"\n\n")
+		oldParticleVector<-particleVector
+		oldParticleWeights<-particleWeights
+		particleWeights=rep(0,numParticles) #stores weights for each particle. Initially, assume infinite number of possible particles (so might not apply in discrete case), uniform prior on each
+		particleParameters<-matrix(nrow=numParticles,ncol=dim(startingMatrix)[2] +  dim(intrinsicMatrix)[2] + dim(extrinsicMatrix)[2]) #stores parameters in model for each particle
+		particleDistance=rep(NA,numParticles)
+		particle<-1
+		attempts<-0
+		cat("successes","attempts","expected number of attempts required\n")
+		particleVector<-c()
+		weightScaling=0;
+		while (particle<=numParticles) {
+			attempts<-attempts+1
+			particleToSelect<-which.max(as.vector(rmultinom(1, size = 1, prob=oldParticleWeights)))
+			#cat("particle to select = ", particleToSelect, "\n")
+			#cat("dput(oldParticleVector)\n")
+			#dput(oldParticleVector)
+			#cat("dput(oldParticleVector[particleToSelect])\n")
+			#dput(oldParticleVector[particleToSelect])
+			#cat("dput(oldParticleVector[[particleToSelect]])\n")
+			#dput(oldParticleVector[[particleToSelect]])
+			newparticleVector<-oldParticleVector[particleToSelect]
+			#cat("dput(newparticleVector[[1]])\n")
+			#dput(newparticleVector[[1]])
+			#cat("mutateStates\n")
+			newparticleVector[[1]]<-mutateStates(newparticleVector[[1]],startingMatrix, intrinsicMatrix, extrinsicMatrix, standardDevFactor)
+			#cat("dput(newparticleVector[[1]]) AFTER MUTATE STATES\n")
+			#dput(newparticleVector[[1]])
+			newparticleVector[[1]]<-setDistance(newparticleVector[[1]],dist(matrix(c(boxcoxplsSummary(todo,summaryStatsLong(phy, convertTaxonFrameToGeigerData(doSimulation(splits,intrinsicFn,extrinsicFn,startingStates(newparticleVector[[1]]),intrinsicValues(newparticleVector[[1]]),extrinsicValues(newparticleVector[[1]]),timeStep),phy),todo),prunedPlsResult, boxcoxLambda, boxcoxAddition), originalSummaryStats),nrow=2,byrow=T))[1])
+			if (plot) {
+				plotcol="grey"
+			if (distance(newparticleVector[[1]])<toleranceVector[dataGenerationStep]) {
+				plotcol="black"
+				if (dataGenerationStep==length(toleranceVector)) 
+				{
+					plotcol="red"
+					}
+				}
+				text(x=intrinsicValues(newparticleVector[[1]]),y=distance(newparticleVector[[1]]),labels= dataGenerationStep,col=plotcol) 
+			}
+			#dput(convertTaxonFrameToGeigerData(doSimulation(splits,intrinsicFn,extrinsicFn,newparticleVector[[1]]@startingStates,newparticleVector[[1]]@intrinsicValues,newparticleVector[[1]]@extrinsicValues,timeStep),phy))
+			#cat("dput(newparticleVector[[1]]) AFTER computeABCDistance\n")
+			#dput(newparticleVector[[1]])
+			
+			if (distance(newparticleVector[[1]])<toleranceVector[dataGenerationStep]) {
+				newparticleVector[[1]]<-setId(newparticleVector[[1]],particle)
+				particle<-particle+1
+				particleVector<-append(particleVector,newparticleVector)
+				#now get weights, using correction in sisson et al. 2007
+				newWeight=0
+				for (i in 1:length(oldParticleVector)) {
+					lnTransitionProb=log(1)
+					for (j in 1:length(newparticleVector[[1]]@startingStates)) {
+						newvalue<-newparticleVector[[1]]@startingStates[j]
+						meantouse= oldParticleVector[[i]]@startingStates[j]
+						sdtouse=standardDevFactor*(max(startingMatrix[,j])-min(startingMatrix[,j]))
+						localTransitionProb=dnorm(newvalue,mean= meantouse,sd= sdtouse)/(1-pnorm(min(startingMatrix[,j]),mean= meantouse ,sd= sdtouse,lower.tail=T)+pnorm(max(startingMatrix[,j]),mean= meantouse ,sd= sdtouse,lower.tail=F))
+						if (min(startingMatrix[,j])==max(startingMatrix[,j])) {
+							localTransitionProb=1
+						} 
+						lnTransitionProb<-lnTransitionProb+log(localTransitionProb)
+					}	
+					for (j in 1:length(newparticleVector[[1]]@intrinsicValues)) {
+						newvalue<-newparticleVector[[1]]@intrinsicValues[j]
+						meantouse= oldParticleVector[[i]]@intrinsicValues[j]
+						sdtouse=standardDevFactor*(max(intrinsicMatrix[,j])-min(intrinsicMatrix[,j]))
+						localTransitionProb=dnorm(newvalue,mean= meantouse,sd= sdtouse)/(1-pnorm(min(intrinsicMatrix[,j]),mean= meantouse ,sd= sdtouse,lower.tail=T)+pnorm(max(intrinsicMatrix[,j]),mean= meantouse ,sd= sdtouse,lower.tail=F))
+						if (min(intrinsicMatrix[,j])==max(intrinsicMatrix[,j])) {
+							localTransitionProb=1
+						} 						
+						lnTransitionProb<-lnTransitionProb+log(localTransitionProb)
+					}	
+					for (j in 1:length(newparticleVector[[1]]@extrinsicValues)) {
+						newvalue<-newparticleVector[[1]]@extrinsicValues[j]
+						meantouse= oldParticleVector[[i]]@extrinsicValues[j]
+						sdtouse=standardDevFactor*(max(extrinsicMatrix[,j])-min(extrinsicMatrix[,j]))
+						localTransitionProb=dnorm(newvalue,mean= meantouse,sd= sdtouse)/(1-pnorm(min(extrinsicMatrix[,j]),mean= meantouse ,sd= sdtouse,lower.tail=T)+pnorm(max(extrinsicMatrix[,j]),mean= meantouse ,sd= sdtouse,lower.tail=F))
+						if (min(extrinsicMatrix[,j])==max(extrinsicMatrix[,j])) {
+							localTransitionProb=1
+						} 						
+						lnTransitionProb<-lnTransitionProb+log(localTransitionProb)
+					}					
+					newWeight<-newWeight+getWeight(oldParticleVector[[i]])*exp(lnTransitionProb)
+				
+				
+				}
+				newparticleVector[[1]]<-setWeight(newparticleVector[[1]], newWeight)
+				particleWeights[particle-1]<-newWeight
+				weightScaling<-weightScaling+getWeight(newparticleVector[[1]])
+		}
+			sink()
+			#print(newparticleVector)
+			vectorForDataFrame<-c(dataGenerationStep,attempts,getId(newparticleVector[[1]]), particleToSelect,distance(newparticleVector[[1]]),getWeight(newparticleVector[[1]]),startingStates(newparticleVector[[1]]),intrinsicValues(newparticleVector[[1]]),extrinsicValues(newparticleVector[[1]]))
+#cat("\n\nlength of vectorForDataFrame = ",length(vectorForDataFrame),"\n","length of startingStates = ",length(startingStates),"\nlength of intrinsicValues = ",length(intrinsicValues),"\nlength of extrinsicValues = ",length(extrinsicValues),"\ndistance = ",distance(newparticleVector[[1]]),"\nweight = ",getWeight(newparticleVector[[1]]),"\n",vectorForDataFrame,"\n")
+			particleDataFrame<-rbind(particleDataFrame,data.frame(rbind(vectorForDataFrame))) #NOTE THAT WEIGHTS AREN'T NORMALIZED IN THIS DATAFRAME
+			cat(particle-1,attempts,floor(numParticles*attempts/particle),startingStates(newparticleVector[[1]]),intrinsicValues(newparticleVector[[1]]),extrinsicValues(newparticleVector[[1]]),distance(newparticleVector[[1]]),"\n")
+			
+		}
+	}
+	names(particleDataFrame)<-nameVector
+	if(plot) {
+		quartz()
+		plot(x=c(min(intrinsicMatrix),max(intrinsicMatrix)),y=c(0,1),type="n")
+		for (i in 1:(length(toleranceVector)-1)) {
+			graycolor<-gray(0.5*(length(toleranceVector)-i)/length(toleranceVector))
+			lines(density(subset(particledata,generation==i)[,8]),col= graycolor)
+		}
+		lines(density(subset(particledata,generation==length(toleranceVector))[,8]),col= "red")
+	}
+	particleDataFrame
+
+	
+	
 	#------------------ ABC-PRC (end) ------------------
 	
 	
@@ -1050,4 +1266,4 @@ char<-convertTaxonFrameToGeigerData (doSimulation(splits=splits,intrinsicFn=brow
 
 #testApproach(phy=phy,originalData=char,intrinsicFn= brownianIntrinsic,extrinsicFn= brownianExtrinsic,startingMatrix=matrix(data=c(0,15),nrow=2),intrinsicMatrix=matrix(data=c(0.0001,.1),nrow=2),extrinsicMatrix=matrix(data=c(0,0),nrow=2),timeStep=0.001,standardDevFactor=0.05, plot=T,nrepSim=3,startingStatesGuess=c(2),intrinsicValuesGuess=c(0.06),extrinsicValuesGuess=c(0))
 
-doRun(phy=phy,traits=char,intrinsicFn= brownianIntrinsic,extrinsicFn= brownianExtrinsic,startingMatrix=matrix(data=c(0,15),nrow=2),intrinsicMatrix=matrix(data=c(0.0001,.1),nrow=2),extrinsicMatrix=matrix(data=c(0,0),nrow=2),timeStep=0.001,standardDevFactor=0.05, plot=T,nrepSim=3,startingStatesGuess=c(2),intrinsicValuesGuess=c(0.06),extrinsicValuesGuess=c(0))
+doRun(phy=phy,traits=char,intrinsicFn= brownianIntrinsic,extrinsicFn= brownianExtrinsic,startingMatrix=matrix(data=c(0,15),nrow=2),intrinsicMatrix=matrix(data=c(0.0001,.1),nrow=2),extrinsicMatrix=matrix(data=c(0,0),nrow=2),timeStep=0.001,standardDevFactor=0.05, plot=T,nrepSim=10,startingStatesGuess=c(2),intrinsicValuesGuess=c(0.06),extrinsicValuesGuess=c(0),epsilonProportion=0.2,epsilonMultiplier=0.5,nStepsPRC=4,numParticles=100)
