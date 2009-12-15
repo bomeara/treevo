@@ -209,23 +209,51 @@ summaryStatsLong<-function(phy,data,todo=c()) {
 	}
 	
 	#thought here: include brown<-try(fitContinouous()), store brown, then do try(brown$lnl), etc. Faster than calling each fn
-	brown.lnl<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[1]], model="BM")[[1]]$lnl)) #if todo[i]==0, will cause an error right away, saving on computation time
-	brown.beta<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[2]], model="BM")[[1]]$beta))
-	brown.aic<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[3]], model="BM")[[1]]$aic))
-	lambda.lnl<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[4]], model="lambda")[[1]]$lnl))
-	lambda.beta<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[5]], model="lambda")[[1]]$beta))
-	lambda.lambda<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[6]], model="lambda")[[1]]$lambda))
-	lambda.aic<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[7]], model="lambda")[[1]]$aic))
-	delta.lnl<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[8]], model="delta")[[1]]$lnl))
-	delta.beta<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[9]], model="delta")[[1]]$beta))
-	delta.delta<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[10]], model="delta")[[1]]$delta))
-	delta.aic<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[11]], model="delta")[[1]]$aic))
-	ou.lnl<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[12]], model="OU")[[1]]$lnl))
-	ou.beta<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[13]], model="OU")[[1]]$beta))
-	ou.alpha<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[14]], model="OU")[[1]]$alpha))
-	ou.aic<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[15]], model="OU")[[1]]$aic))
-	white.lnl<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[16]], model="white")[[1]]$lnl))
-	white.aic<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[17]], model="white")[[1]]$aic))
+	brown<-try(fitContinuous(phy=phy, data=data[max(todo[1:3])], model="BM")[[1]]) #will only run if want to do brownian summary stats
+	#brown.lnl<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[1]], model="BM")[[1]]$lnl)) #if todo[i]==0, will cause an error right away, saving on computation time
+	brown.lnl<-as.numeric(try(brown$lnl/todo[1])) #divide by zero so we get Inf if we don't want that summary stat
+	#brown.beta<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[2]], model="BM")[[1]]$beta))
+	brown.beta <-as.numeric(try(brown$beta/todo[2]))
+	#brown.aic<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[3]], model="BM")[[1]]$aic))
+	brown.aic <-as.numeric(try(brown$aic/todo[3]))
+
+	lambda<-try(fitContinuous(phy=phy, data=data[max(todo[4:7])], model="lambda")[[1]])
+	#lambda.lnl<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[4]], model="lambda")[[1]]$lnl))
+	lambda.lnl <-as.numeric(try(lambda$lnl/todo[4]))
+	#lambda.beta<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[5]], model="lambda")[[1]]$beta))
+	lambda.beta <-as.numeric(try(lambda$beta/todo[5]))
+	#lambda.lambda<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[6]], model="lambda")[[1]]$lambda))
+	lambda.lambda <-as.numeric(try(lambda$lambda/todo[6]))
+	#lambda.aic<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[7]], model="lambda")[[1]]$aic))
+	lambda.aic <-as.numeric(try(lambda$aic/todo[7]))
+
+	delta<-try(fitContinuous(phy=phy, data=data[max(todo[8:11])], model="delta")[[1]])
+	#delta.lnl<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[8]], model="delta")[[1]]$lnl))
+	delta.lnl <-as.numeric(try(delta$lnl/todo[8]))
+	#delta.beta<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[9]], model="delta")[[1]]$beta))
+	delta.beta <-as.numeric(try(delta$beta/todo[9]))
+	#delta.delta<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[10]], model="delta")[[1]]$delta))
+	delta.delta <-as.numeric(try(delta$delta/todo[10]))
+	#delta.aic<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[11]], model="delta")[[1]]$aic))
+	delta.aic <-as.numeric(try(delta$aic/todo[11]))
+	
+	ou<-try(fitContinuous(phy=phy, data=data[max(todo[12:15])], model="OU")[[1]])
+	#ou.lnl<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[12]], model="OU")[[1]]$lnl))
+	ou.lnl <-as.numeric(try(ou$lnl/todo[12]))
+	#ou.beta<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[13]], model="OU")[[1]]$beta))
+	ou.beta <-as.numeric(try(ou$beta/todo[13]))
+	#ou.alpha<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[14]], model="OU")[[1]]$alpha))
+	ou.alpha <-as.numeric(try(ou$alpha/todo[14]))
+	#ou.aic<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[15]], model="OU")[[1]]$aic))
+	ou.aic <-as.numeric(try(ou$aic/todo[15]))
+	
+	white<-try(fitContinuous(phy=phy, data=data[max(todo[16:17])], model="white")[[1]])
+	#white.lnl<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[16]], model="white")[[1]]$lnl))
+	white.lnl<-as.numeric(try(white$lnl/todo[16]))
+	#white.aic<-as.numeric(try(fitContinuous(phy=phy, data=data[todo[17]], model="white")[[1]]$aic))
+	white.aic<-as.numeric(try(white$aic/todo[17]))
+	
+	
 	raw.mean<-as.numeric(try(mean(data[todo[18]])))
 	raw.max<-as.numeric(try(max(data[todo[19]])))
 	raw.min<-as.numeric(try(min(data[todo[20]])))
@@ -1210,9 +1238,9 @@ rep(sink(),100)
 		plot(x=c(min(intrinsicMatrix),max(intrinsicMatrix)),y=c(0,1),type="n")
 		for (i in 1:(length(toleranceVector)-1)) {
 			graycolor<-gray(0.5*(length(toleranceVector)-i)/length(toleranceVector))
-			lines(density(subset(particledata,generation==i)[,8]),col= graycolor)
+			lines(density(subset(particleDataFrame,generation==i)[,8]),col= graycolor)
 		}
-		lines(density(subset(particledata,generation==length(toleranceVector))[,8]),col= "red")
+		lines(density(subset(particleDataFrame,generation==length(toleranceVector))[,8]),col= "red")
 	}
 	particleDataFrame
 
@@ -1266,4 +1294,4 @@ char<-convertTaxonFrameToGeigerData (doSimulation(splits=splits,intrinsicFn=brow
 
 #testApproach(phy=phy,originalData=char,intrinsicFn= brownianIntrinsic,extrinsicFn= brownianExtrinsic,startingMatrix=matrix(data=c(0,15),nrow=2),intrinsicMatrix=matrix(data=c(0.0001,.1),nrow=2),extrinsicMatrix=matrix(data=c(0,0),nrow=2),timeStep=0.001,standardDevFactor=0.05, plot=T,nrepSim=3,startingStatesGuess=c(2),intrinsicValuesGuess=c(0.06),extrinsicValuesGuess=c(0))
 
-doRun(phy=phy,traits=char,intrinsicFn= brownianIntrinsic,extrinsicFn= brownianExtrinsic,startingMatrix=matrix(data=c(0,15),nrow=2),intrinsicMatrix=matrix(data=c(0.0001,.1),nrow=2),extrinsicMatrix=matrix(data=c(0,0),nrow=2),timeStep=0.001,standardDevFactor=0.05, plot=T,nrepSim=10,startingStatesGuess=c(2),intrinsicValuesGuess=c(0.06),extrinsicValuesGuess=c(0),epsilonProportion=0.2,epsilonMultiplier=0.5,nStepsPRC=4,numParticles=100)
+doRunOutput<-doRun(phy=phy,traits=char,intrinsicFn= brownianIntrinsic,extrinsicFn= brownianExtrinsic,startingMatrix=matrix(data=c(0,15),nrow=2),intrinsicMatrix=matrix(data=c(0.0001,.1),nrow=2),extrinsicMatrix=matrix(data=c(0,0),nrow=2),timeStep=0.001,standardDevFactor=0.05, plot=T,nrepSim=10,startingStatesGuess=c(2),intrinsicValuesGuess=c(0.06),extrinsicValuesGuess=c(0),epsilonProportion=0.2,epsilonMultiplier=0.5,nStepsPRC=4,numParticles=10)
