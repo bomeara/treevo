@@ -1121,6 +1121,10 @@ rep(sink(),100)
 			particle<-particle+1
 			particleVector<-append(particleVector,newparticleVector)
 		}
+		else {
+			newparticleVector[[1]]<-setId(newparticleVector[[1]],-1)
+			newparticleVector[[1]]<-setWeight(newparticleVector[[1]], 0)
+		}
 		sink()
 		#print(newparticleVector)
 		vectorForDataFrame<-c(1,attempts,getId(newparticleVector[[1]]),0,distance(newparticleVector[[1]]),getWeight(newparticleVector[[1]]),startingStates(newparticleVector[[1]]),intrinsicValues(newparticleVector[[1]]),extrinsicValues(newparticleVector[[1]]))
@@ -1223,6 +1227,10 @@ rep(sink(),100)
 				particleWeights[particle-1]<-newWeight
 				weightScaling<-weightScaling+getWeight(newparticleVector[[1]])
 		}
+		else {
+			newparticleVector[[1]]<-setId(newparticleVector[[1]],-1)
+			newparticleVector[[1]]<-setWeight(newparticleVector[[1]], 0)
+		}
 			sink()
 			#print(newparticleVector)
 			vectorForDataFrame<-c(dataGenerationStep,attempts,getId(newparticleVector[[1]]), particleToSelect,distance(newparticleVector[[1]]),getWeight(newparticleVector[[1]]),startingStates(newparticleVector[[1]]),intrinsicValues(newparticleVector[[1]]),extrinsicValues(newparticleVector[[1]]))
@@ -1231,6 +1239,7 @@ rep(sink(),100)
 			cat(particle-1,attempts,floor(numParticles*attempts/particle),startingStates(newparticleVector[[1]]),intrinsicValues(newparticleVector[[1]]),extrinsicValues(newparticleVector[[1]]),distance(newparticleVector[[1]]),"\n")
 			
 		}
+		particleDataFrame[which(particleDataFrame$generation==dataGenerationStep),]$weight<-doRunOutput[which(particleDataFrame$generation==dataGenerationStep),]$weight/(sum(doRunOutput[which(particleDataFrame$generation==dataGenerationStep),]$weight))
 	}
 	names(particleDataFrame)<-nameVector
 	if(plot) {
@@ -1252,6 +1261,20 @@ rep(sink(),100)
 
 }
 
+presentABCOutput<-function(ABCOutput,plot=FALSE) {
+	library(Hmisc)
+	lastGen<-ABCOutput[which(ABCOutput$generation==max(ABCOutput$generation)),]
+	finalParticles<-lastGen[which(lastGen$weight>0),]
+	nParams<-dim(finalParticles)[2]-6
+	nParticles<-dim(finalParticles)[1]
+	resultsMatrix<-matrix(nrow=13,ncol=0)
+	
+	for (variable in 1:nParams) {
+		resultsMatrix<-cbind(resultsMatrix,wtd.quantile(finalParticles[,6+variable],weights= nParticles*finalParticles[,6],probs=c(0,0.001, 0.005, 0.01, 0.05, 0.25, 0.5, 0.75, 0.95, 0.99, 0.995, 0.999,1)))
+	}
+	results<-data.frame(resultsMatrix)
+	results
+}
 
 
 
@@ -1294,4 +1317,4 @@ char<-convertTaxonFrameToGeigerData (doSimulation(splits=splits,intrinsicFn=brow
 
 #testApproach(phy=phy,originalData=char,intrinsicFn= brownianIntrinsic,extrinsicFn= brownianExtrinsic,startingMatrix=matrix(data=c(0,15),nrow=2),intrinsicMatrix=matrix(data=c(0.0001,.1),nrow=2),extrinsicMatrix=matrix(data=c(0,0),nrow=2),timeStep=0.001,standardDevFactor=0.05, plot=T,nrepSim=3,startingStatesGuess=c(2),intrinsicValuesGuess=c(0.06),extrinsicValuesGuess=c(0))
 
-doRunOutput<-doRun(phy=phy,traits=char,intrinsicFn= brownianIntrinsic,extrinsicFn= brownianExtrinsic,startingMatrix=matrix(data=c(0,15),nrow=2),intrinsicMatrix=matrix(data=c(0.0001,.1),nrow=2),extrinsicMatrix=matrix(data=c(0,0),nrow=2),timeStep=0.001,standardDevFactor=0.05, plot=T,nrepSim=10,startingStatesGuess=c(2),intrinsicValuesGuess=c(0.06),extrinsicValuesGuess=c(0),epsilonProportion=0.2,epsilonMultiplier=0.5,nStepsPRC=4,numParticles=10)
+doRunOutput<-doRun(phy=phy,traits=char,intrinsicFn= brownianIntrinsic,extrinsicFn= brownianExtrinsic,startingMatrix=matrix(data=c(0,15),nrow=2),intrinsicMatrix=matrix(data=c(0.0001,.1),nrow=2),extrinsicMatrix=matrix(data=c(0,0),nrow=2),timeStep=0.001,standardDevFactor=0.05, plot=T,nrepSim=10,startingStatesGuess=c(2),intrinsicValuesGuess=c(0.06),extrinsicValuesGuess=c(0),epsilonProportion=0.2,epsilonMultiplier=0.5,nStepsPRC=3,numParticles=10)
