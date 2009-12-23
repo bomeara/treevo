@@ -15,12 +15,12 @@ nullIntrinsic<-function(params,states) {
 
 
 
-brownianIntrinsic<-function(params,states) {
+brownianIntrinsic<-function(params,states,time) {
 	newstates<-rnorm(n=length(states),mean=states,sd=params)
 	return(newstates)
 }
 
-thresholdIntrinsic<-function(params, states) {
+thresholdIntrinsic<-function(params, states,time) {
 	#params[2] is min, params[3] is max. params[2] could be 0 or -Inf, for example
 	newstates<-min(max(rnorm(n=length(states),mean=states,sd=params[1]),params[2]),params[3])
 	for (i in length(newstates)) {
@@ -31,19 +31,57 @@ thresholdIntrinsic<-function(params, states) {
 
 }
 
-autoregressiveIntrinsic<-function(params,states) { #a discrete time OU, same sd, mean, and attraction for all chars
+autoregressiveIntrinsic<-function(params,states,time) { #a discrete time OU, same sd, mean, and attraction for all chars
 	sd<-params[1]
 	attractor<-params[2]
 	attraction<-params[3]	#in this model, this should be between zero and one
-	newstates<-rnorm(n=length(states),mean=attraction*states + attractor,sd=params)
+	newstates<-rnorm(n=length(states),mean=attraction*states + attractor,sd=sd)
 	return(newstates)
 }
 
-nearestNeighborDisplacementExtrinsic<-function(params,selfstates,otherstates) { #this is set up for one character only right now
-	repulsor<-otherstates[which.min(abs(otherstates-selfstates)),1] #the ,1 makes it for one char only
-	#add things here
-	
+nearestNeighborDisplacementExtrinsic<-function(params,selfstates,otherstates,time) { #this is set up for one character only right now
+	repulsorTaxon<-otherstates[which.min(abs(otherstates-selfstates)),1] #the ,1 makes it for one char only
+	repulsorValue<-otherstates[repulsorTaxon]
+	sd<-params[1]
+	springK<-params[2]
+	maxforce<-params[3]
+	newstates<-rnorm(n=1,mean=selfstates[1]+sign(repulsorValue-selfstates[1])*min(abs(springK/((selfstates[1]-repulsorValue)*(selfstates[1]-repulsorValue))),maxforce),sd=sd)
 	return(newstates)
 }
 
+everyoneDisplacementExtrinsic<-function(params,selfstates,otherstates,time) { #this is set up for one character only right now
+	sd<-params[1]
+	springK <-params[2]
+	maxforce<-params[3]
+	netforce<-0
+	for (i in 1:length(otherstates)) {
+			netforce<-netforce+sign(otherstates[i]-selfstates[1])*min(abs(springK/((selfstates[1]-otherstates[i])*(selfstates[1]-otherstates[i]))),maxforce)
+	}
+	newstates<-rnorm(n=1,mean=selfstates[1]+ netforce,sd=sd)
+	return(newstates)
+}
+
+
+autoregressiveIntrinsicTimeSlices<-function(params,states,time) { #a discrete time OU, differing mean, sigma, and attaction with time
+	#params=[sd1, attractor1, attraction1, timethreshold1, sd2, attractor2, attraction2, timethreshold2, ...]
+	#time is time before present (i.e., 65 could be 65 MYA). The last time threshold should be 0, one before that is the end of the previous epoch, etc.
+	numTimeSlices<-length(params)/4
+	sd<-params[1]
+	attractor<-params[2]
+	attraction<-params[3]	#in this model, this should be between zero and one
+	previousThresholdTime<-Inf
+	for (slice in 0:numTimeSlices-1) {
+		thresholdTime<-params[4+4*slice]
+		if (thresholdTime>=time) {
+			if (thresholdTime<previousThresholdTime) {
+				sd<-params[1+4*slice]
+				attractor<-params[2+4*slice]
+				attraction<-params[3+4*slice]
+			}		
+		}	
+		previousThresholdTime<-thresholdTime
+	}
+	newstates<-rnorm(n=length(states),mean=attraction*states + attractor,sd=sd)
+	return(newstates)
+}
 
