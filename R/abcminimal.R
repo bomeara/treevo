@@ -1017,7 +1017,7 @@ rep(sink(),100)
 			cat(particle-1,attempts,floor(numParticles*attempts/particle),startingStates(newparticleVector[[1]]),intrinsicValues(newparticleVector[[1]]),extrinsicValues(newparticleVector[[1]]),distance(newparticleVector[[1]]),"\n")
 			
 		}
-		particleDataFrame[which(particleDataFrame$generation==dataGenerationStep),]$weight<-doRunOutput[which(particleDataFrame$generation==dataGenerationStep),]$weight/(sum(doRunOutput[which(particleDataFrame$generation==dataGenerationStep),]$weight))
+		particleDataFrame[which(particleDataFrame$generation==dataGenerationStep),]$weight<-particleDataFrame[which(particleDataFrame$generation==dataGenerationStep),]$weight/(sum(particleDataFrame[which(particleDataFrame$generation==dataGenerationStep),]$weight))
 	}
 	names(particleDataFrame)<-nameVector
 	if(plot) {
