@@ -228,18 +228,29 @@ function(object, value) {
 setGeneric("initializeStatesFromMatrices",function(x, startingMatrix, intrinsicMatrix, extrinsicMatrix){standardGeneric("initializeStatesFromMatrices")})
 
 setMethod("initializeStatesFromMatrices",signature="abcparticle",definition=function(x, startingMatrix, intrinsicMatrix, extrinsicMatrix) {
+		cat("startingMatrix\n")
+		print(startingMatrix)
+		cat("\nintrinsicMatrix\n")
+		print(intrinsicMatrix)
+		cat("\nextrinsicMatrix\n")
+		print(extrinsicMatrix)
+		cat("\ndim(startingMatrix)[2]=", dim(startingMatrix)[2], " dim(intrinsicMatrix)[2]=", dim(intrinsicMatrix)[2], " dim(extrinsicMatrix)[2])=", dim(extrinsicMatrix)[2], "\n")
 		x@startingStates<-vector(mode="numeric",length=dim(startingMatrix)[2])
 		x@intrinsicValues<-vector(mode="numeric",length=dim(intrinsicMatrix)[2])
 		x@extrinsicValues <-vector(mode="numeric",length=dim(extrinsicMatrix)[2])
-		for (j in 1:length(startingStates)) {
+		cat("\n initializeStatesFromMatrices\n")
+		for (j in 1:dim(startingMatrix)[2]) {
 			x@startingStates[j]=runif(n=1,min=min(startingMatrix[,j]),max=max(startingMatrix[,j]))
+			cat("starting states j=",j," x@startingStates[j] =",x@startingStates[j],"\n")
 		}
-		for (j in 1:length(intrinsicValues)) {
+		for (j in 1:dim(intrinsicMatrix)[2]) {
 			x@intrinsicValues[j]=runif(n=1,min=min(intrinsicMatrix[,j]),max=max(intrinsicMatrix[,j]))
-			
+			cat("intrinsicValues j=",j," x@ intrinsicValues[j] =",x@intrinsicValues[j],"\n")
+
 		}
-		for (j in 1:length(extrinsicValues)) {
+		for (j in 1:dim(extrinsicMatrix)[2]) {
 			x@extrinsicValues[j]=runif(n=1,min=min(extrinsicMatrix[,j]),max=max(extrinsicMatrix[,j]))
+			cat("extrinsicValues j=",j," x@ extrinsicValues[j] =",x@extrinsicValues[j],"\n")
 		}
 		#print(x)
 		x
@@ -509,7 +520,7 @@ doSimulation<-function(splits,intrinsicFn,extrinsicFn,startingStates,intrinsicVa
 #print(taxa)
 #print(length(otherstatesvector))
 			otherstatesmatrix<-matrix(otherstatesvector,ncol=length(states(taxa[[i]])),byrow=T) #each row represents one taxon
-			newvalues<-intrinsicFn(params=intrinsicValues,states=states(taxa[[i]]),time=timefrompresent)+extrinsicFn(params=extrinsicValues,selfstates=states(taxa[[i]]),otherstates=otherstatesmatrix,time=timefrompresent)
+			newvalues<-intrinsicFn(params=intrinsicValues,states=states(taxa[[i]]), timefrompresent =timefrompresent)+extrinsicFn(params=extrinsicValues,selfstates=states(taxa[[i]]),otherstates=otherstatesmatrix, timefrompresent =timefrompresent)
 			nextstates(taxa[[i]])<-newvalues
 		}
 		for (i in 1:length(taxa)) {
@@ -835,9 +846,9 @@ rep(sink(),100)
 	#cat("distanceVector", "\n")
 	#print(distanceVector)
 	densityDistanceVector<-density(distanceVector)
-	plot(densityDistanceVector)
+	#plot(densityDistanceVector)
 	epsilonDistance<-quantile(distanceVector,probs=epsilonProportion) #this gives the distance such that epsilonProportion of the simulations starting from a given set of values will be rejected 
-	lines(x=c(epsilonDistance, epsilonDistance),y=c(0,max(densityDistanceVector$y)),lty="dotted")
+	#lines(x=c(epsilonDistance, epsilonDistance),y=c(0,max(densityDistanceVector$y)),lty="dotted")
 	toleranceVector<-rep(epsilonDistance,nStepsPRC)
 	for (step in 2:nStepsPRC) {
 		toleranceVector[step]<-toleranceVector[step-1]*epsilonMultiplier
@@ -875,6 +886,11 @@ rep(sink(),100)
 		
 		newparticleVector<-c(new("abcparticle",id=particle,generation=1,weight=0))
 		newparticleVector[[1]]<-initializeStatesFromMatrices(newparticleVector[[1]],startingMatrix, intrinsicMatrix, extrinsicMatrix)
+		cat("\nextrinsicVector\n")
+		print(extrinsicValues(newparticleVector[[1]]))
+		cat("\nintrinsicVector\n")
+		print(intrinsicValues(newparticleVector[[1]]))
+
 		newparticleVector[[1]]<-setDistance(newparticleVector[[1]],dist(matrix(c(boxcoxplsSummary(todo,summaryStatsLong(phy, convertTaxonFrameToGeigerData(doSimulation(splits,intrinsicFn,extrinsicFn,startingStates(newparticleVector[[1]]),intrinsicValues(newparticleVector[[1]]),extrinsicValues(newparticleVector[[1]]),timeStep),phy),todo),prunedPlsResult, boxcoxLambda, boxcoxAddition), originalSummaryStats),nrow=2,byrow=T))[1])
 		if (distance(newparticleVector[[1]])<toleranceVector[1]) {
 			newparticleVector[[1]]<-setId(newparticleVector[[1]],particle)
@@ -913,7 +929,7 @@ rep(sink(),100)
 		while (particle<=numParticles) {
 			attempts<-attempts+1
 			particleToSelect<-which.max(as.vector(rmultinom(1, size = 1, prob=oldParticleWeights)))
-			#cat("particle to select = ", particleToSelect, "\n")
+			cat("particle to select = ", particleToSelect, "\n")
 			#cat("dput(oldParticleVector)\n")
 			#dput(oldParticleVector)
 			#cat("dput(oldParticleVector[particleToSelect])\n")
@@ -921,12 +937,12 @@ rep(sink(),100)
 			#cat("dput(oldParticleVector[[particleToSelect]])\n")
 			#dput(oldParticleVector[[particleToSelect]])
 			newparticleVector<-oldParticleVector[particleToSelect]
-			#cat("dput(newparticleVector[[1]])\n")
-			#dput(newparticleVector[[1]])
+			cat("dput(newparticleVector[[1]])\n")
+			dput(newparticleVector[[1]])
 			#cat("mutateStates\n")
 			newparticleVector[[1]]<-mutateStates(newparticleVector[[1]],startingMatrix, intrinsicMatrix, extrinsicMatrix, standardDevFactor)
-			#cat("dput(newparticleVector[[1]]) AFTER MUTATE STATES\n")
-			#dput(newparticleVector[[1]])
+			cat("dput(newparticleVector[[1]]) AFTER MUTATE STATES\n")
+			dput(newparticleVector[[1]])
 			newparticleVector[[1]]<-setDistance(newparticleVector[[1]],dist(matrix(c(boxcoxplsSummary(todo,summaryStatsLong(phy, convertTaxonFrameToGeigerData(doSimulation(splits,intrinsicFn,extrinsicFn,startingStates(newparticleVector[[1]]),intrinsicValues(newparticleVector[[1]]),extrinsicValues(newparticleVector[[1]]),timeStep),phy),todo),prunedPlsResult, boxcoxLambda, boxcoxAddition), originalSummaryStats),nrow=2,byrow=T))[1])
 			if (plot) {
 				plotcol="grey"
@@ -993,7 +1009,7 @@ rep(sink(),100)
 			newparticleVector[[1]]<-setId(newparticleVector[[1]],-1)
 			newparticleVector[[1]]<-setWeight(newparticleVector[[1]], 0)
 		}
-			sink()
+			rep(sink(),50)
 			#print(newparticleVector)
 			vectorForDataFrame<-c(dataGenerationStep,attempts,getId(newparticleVector[[1]]), particleToSelect,distance(newparticleVector[[1]]),getWeight(newparticleVector[[1]]),startingStates(newparticleVector[[1]]),intrinsicValues(newparticleVector[[1]]),extrinsicValues(newparticleVector[[1]]))
 #cat("\n\nlength of vectorForDataFrame = ",length(vectorForDataFrame),"\n","length of startingStates = ",length(startingStates),"\nlength of intrinsicValues = ",length(intrinsicValues),"\nlength of extrinsicValues = ",length(extrinsicValues),"\ndistance = ",distance(newparticleVector[[1]]),"\nweight = ",getWeight(newparticleVector[[1]]),"\n",vectorForDataFrame,"\n")
@@ -1013,7 +1029,7 @@ rep(sink(),100)
 		}
 		lines(density(subset(particleDataFrame,generation==length(toleranceVector))[,8]),col= "red")
 	}
-	particleDataFrame
+	return(particleDataFrame)
 
 	
 	
@@ -1036,6 +1052,6 @@ presentABCOutput<-function(ABCOutput,plot=FALSE) {
 		resultsMatrix<-cbind(resultsMatrix,wtd.quantile(finalParticles[,6+variable],weights= nParticles*finalParticles[,6],probs=c(0,0.001, 0.005, 0.01, 0.05, 0.25, 0.5, 0.75, 0.95, 0.99, 0.995, 0.999,1)))
 	}
 	results<-data.frame(resultsMatrix)
-	results
+	return(results)
 }
 

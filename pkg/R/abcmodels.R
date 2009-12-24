@@ -3,24 +3,24 @@
 #otherstates has one row per taxon, one column per state
 #states is a vector for each taxon, with length=nchar
 
-nullExtrinsic<-function(params,selfstates,otherstates) {
+nullExtrinsic<-function(params,selfstates,otherstates, timefrompresent) {
 	newstates<-0*selfstates
 	return(newstates)
 }
 
-nullIntrinsic<-function(params,states) {
+nullIntrinsic<-function(params,states, timefrompresent) {
 	newstates<-0*states
 	return(newstates)
 }
 
 
 
-brownianIntrinsic<-function(params,states,time) {
+brownianIntrinsic<-function(params,states, timefrompresent) {
 	newstates<-rnorm(n=length(states),mean=states,sd=params)
 	return(newstates)
 }
 
-thresholdIntrinsic<-function(params, states,time) {
+boundaryIntrinsic<-function(params, states, timefrompresent) {
 	#params[2] is min, params[3] is max. params[2] could be 0 or -Inf, for example
 	newstates<-min(max(rnorm(n=length(states),mean=states,sd=params[1]),params[2]),params[3])
 	for (i in length(newstates)) {
@@ -31,7 +31,17 @@ thresholdIntrinsic<-function(params, states,time) {
 
 }
 
-autoregressiveIntrinsic<-function(params,states,time) { #a discrete time OU, same sd, mean, and attraction for all chars
+boundaryMinIntrinsic<-function(params, states, timefrompresent) {
+	#params[2] is min
+	newstates<-max(rnorm(n=length(states),mean=states,sd=params[1]),params[2])
+	for (i in length(newstates)) {
+		newstates[i]<-max(newstates[i],params[2]) #whichever is larger, the current value or the min value
+	}
+	return(newstates)
+
+}
+
+autoregressiveIntrinsic<-function(params,states, timefrompresent) { #a discrete time OU, same sd, mean, and attraction for all chars
 	sd<-params[1]
 	attractor<-params[2]
 	attraction<-params[3]	#in this model, this should be between zero and one
@@ -39,7 +49,7 @@ autoregressiveIntrinsic<-function(params,states,time) { #a discrete time OU, sam
 	return(newstates)
 }
 
-nearestNeighborDisplacementExtrinsic<-function(params,selfstates,otherstates,time) { #this is set up for one character only right now
+nearestNeighborDisplacementExtrinsic<-function(params,selfstates,otherstates, timefrompresent) { #this is set up for one character only right now
 	repulsorTaxon<-otherstates[which.min(abs(otherstates-selfstates)),1] #the ,1 makes it for one char only
 	repulsorValue<-otherstates[repulsorTaxon]
 	sd<-params[1]
@@ -49,7 +59,7 @@ nearestNeighborDisplacementExtrinsic<-function(params,selfstates,otherstates,tim
 	return(newstates)
 }
 
-everyoneDisplacementExtrinsic<-function(params,selfstates,otherstates,time) { #this is set up for one character only right now
+everyoneDisplacementExtrinsic<-function(params,selfstates,otherstates, timefrompresent) { #this is set up for one character only right now
 	sd<-params[1]
 	springK <-params[2]
 	maxforce<-params[3]
@@ -62,7 +72,7 @@ everyoneDisplacementExtrinsic<-function(params,selfstates,otherstates,time) { #t
 }
 
 
-autoregressiveIntrinsicTimeSlices<-function(params,states,time) { #a discrete time OU, differing mean, sigma, and attaction with time
+autoregressiveIntrinsicTimeSlices<-function(params,states, timefrompresent) { #a discrete time OU, differing mean, sigma, and attaction with time
 	#params=[sd1, attractor1, attraction1, timethreshold1, sd2, attractor2, attraction2, timethreshold2, ...]
 	#time is time before present (i.e., 65 could be 65 MYA). The last time threshold should be 0, one before that is the end of the previous epoch, etc.
 	numTimeSlices<-length(params)/4
@@ -70,9 +80,9 @@ autoregressiveIntrinsicTimeSlices<-function(params,states,time) { #a discrete ti
 	attractor<-params[2]
 	attraction<-params[3]	#in this model, this should be between zero and one
 	previousThresholdTime<-Inf
-	for (slice in 0:numTimeSlices-1) {
+	for (slice in 0:(numTimeSlices-1)) {
 		thresholdTime<-params[4+4*slice]
-		if (thresholdTime>=time) {
+		if (thresholdTime >= timefrompresent) {
 			if (thresholdTime<previousThresholdTime) {
 				sd<-params[1+4*slice]
 				attractor<-params[2+4*slice]
@@ -84,4 +94,27 @@ autoregressiveIntrinsicTimeSlices<-function(params,states,time) { #a discrete ti
 	newstates<-rnorm(n=length(states),mean=attraction*states + attractor,sd=sd)
 	return(newstates)
 }
+
+autoregressiveIntrinsicTimeSlicesConstantMean<-function(params,states, timefrompresent) { #a discrete time OU, constant mean, differing sigma, and differing attaction with time
+	#params=[sd1, attraction1, timethreshold1, sd2, attraction2, timethreshold2, ..., attractor]
+	#time is time before present (i.e., 65 could be 65 MYA). The last time threshold should be 0, one before that is the end of the previous epoch, etc.
+	numTimeSlices<-(length(params)-1)/3
+	sd<-params[1]
+	attractor<-params[length(params)]
+	attraction<-params[2]	#in this model, this should be between zero and one
+	previousThresholdTime<-Inf
+	for (slice in 0:(numTimeSlices-1)) {
+		thresholdTime<-params[3+3*slice]
+		if (thresholdTime >= timefrompresent) {
+			if (thresholdTime<previousThresholdTime) {
+				sd<-params[1+3*slice]
+				attraction<-params[2+3*slice]
+			}		
+		}	
+		previousThresholdTime<-thresholdTime
+	}
+	newstates<-rnorm(n=length(states),mean=attraction*states + attractor,sd=sd)
+	return(newstates)
+}
+
 
