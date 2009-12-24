@@ -484,7 +484,7 @@ doSimulation<-function(splits,intrinsicFn,extrinsicFn,startingStates,intrinsicVa
 	while(timefrompresent>0) {
 #print(timefrompresent)
 #speciation if needed
-		if ((timefrompresent-timeStep)<=splits[1,1]) { #do speciation
+		while ((timefrompresent-timeStep)<=splits[1,1]) { #do speciation. changed from if to while to deal with effectively polytomies
 			originallength<-length(taxa)
 			taxontodelete<-Inf
 			for (i in 1:originallength) {
