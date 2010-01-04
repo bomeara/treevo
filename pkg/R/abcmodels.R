@@ -55,7 +55,11 @@ nearestNeighborDisplacementExtrinsic<-function(params,selfstates,otherstates, ti
 	sd<-params[1]
 	springK<-params[2]
 	maxforce<-params[3]
-	newstates<-rnorm(n=1,mean=selfstates[1]+sign(repulsorValue-selfstates[1])*min(abs(springK/((selfstates[1]-repulsorValue)*(selfstates[1]-repulsorValue))),maxforce),sd=sd)
+	localsign<-sign(selfstates[1]-otherstates[i])
+	if(localsign==0) {
+		localsign=sign(rnorm(n=1))	
+	}
+	newstates<-rnorm(n=1,mean=selfstates[1]+localsign*min(c(abs(springK/((selfstates[1]-repulsorValue)*(selfstates[1]-repulsorValue))),maxforce),na.rm=TRUE),sd=sd)
 	return(newstates)
 }
 
@@ -65,9 +69,13 @@ everyoneDisplacementExtrinsic<-function(params,selfstates,otherstates, timefromp
 	maxforce<-params[3]
 	netforce<-0
 	for (i in 1:length(otherstates)) {
-			netforce<-netforce+sign(otherstates[i]-selfstates[1])*min(abs(springK/((selfstates[1]-otherstates[i])*(selfstates[1]-otherstates[i]))),maxforce)
+			localsign<-sign(selfstates[1]-otherstates[i])
+			if(localsign==0) {
+				localsign=sign(rnorm(n=1))	
+			}
+			netforce<-netforce+localsign*min(c(abs(springK/((selfstates[1]-otherstates[i])*(selfstates[1]-otherstates[i]))),maxforce),na.rm=TRUE)
 	}
-	newstates<-rnorm(n=1,mean=selfstates[1]+ netforce,sd=sd)
+	newstates<-rnorm(n=1,mean=selfstates[1]+netforce,sd=sd)
 	return(newstates)
 }
 
