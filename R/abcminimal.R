@@ -520,7 +520,7 @@ doSimulation<-function(splits,intrinsicFn,extrinsicFn,startingStates,intrinsicVa
 #print(taxa)
 #print(length(otherstatesvector))
 			otherstatesmatrix<-matrix(otherstatesvector,ncol=length(states(taxa[[i]])),byrow=T) #each row represents one taxon
-			newvalues<-intrinsicFn(params=intrinsicValues,states=states(taxa[[i]]), timefrompresent =timefrompresent)+extrinsicFn(params=extrinsicValues,selfstates=states(taxa[[i]]),otherstates=otherstatesmatrix, timefrompresent =timefrompresent)
+			newvalues<-states(taxa[[i]])+intrinsicFn(params=intrinsicValues,states=states(taxa[[i]]), timefrompresent =timefrompresent)+extrinsicFn(params=extrinsicValues,selfstates=states(taxa[[i]]),otherstates=otherstatesmatrix, timefrompresent =timefrompresent)
 			nextstates(taxa[[i]])<-newvalues
 		}
 		for (i in 1:length(taxa)) {
