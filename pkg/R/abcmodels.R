@@ -4,63 +4,69 @@
 #states is a vector for each taxon, with length=nchar
 
 nullExtrinsic<-function(params,selfstates,otherstates, timefrompresent) {
-	newstates<-0*selfstates
-	return(newstates)
+	newdisplacement<-0*selfstates
+	return(newdisplacement)
 }
 
 nullIntrinsic<-function(params,states, timefrompresent) {
-	newstates<-0*states
-	return(newstates)
+	newdisplacement<-0*states
+	return(newdisplacement)
 }
 
 
 
 brownianIntrinsic<-function(params,states, timefrompresent) {
-	newstates<-rnorm(n=length(states),mean=states,sd=params)
-	return(newstates)
+	newdisplacement<-rnorm(n=length(states),mean=0,sd=params) #mean=0 because we ADD this to existing values
+	return(newdisplacement)
 }
 
 boundaryIntrinsic<-function(params, states, timefrompresent) {
 	#params[2] is min, params[3] is max. params[2] could be 0 or -Inf, for example
-	newstates<-min(max(rnorm(n=length(states),mean=states,sd=params[1]),params[2]),params[3])
-	for (i in length(newstates)) {
-		newstates[i]<-max(newstates[i],params[2]) #whichever is larger, the current value or the min value
-		newstates[i]<-min(newstates[i],params[3])
+	newdisplacement<-rnorm(n=length(states),mean=0,sd=params[1])
+	for (i in length(newdisplacement)) {
+		newstate<-newdisplacement[i]+states[i]
+		if (newstate<params[2]) { #newstate less than min
+			newdisplacement[i]<-params[2]-states[i] #so, rather than go below the minimum, this moves the new state to the minimum
+		}
+		if (newstate>params[3]) { #newstate greater than max
+			newdisplacement[i]<-params[3]-states[i] #so, rather than go above the maximum, this moves the new state to the maximum
+		}
 	}
-	return(newstates)
-
+	return(newdisplacement)
 }
 
-boundaryMinIntrinsic<-function(params, states, timefrompresent) {
+boundaryMinIntrinsic <-function(params, states, timefrompresent) {
 	#params[2] is min
-	newstates<-max(rnorm(n=length(states),mean=states,sd=params[1]),params[2])
-	for (i in length(newstates)) {
-		newstates[i]<-max(newstates[i],params[2]) #whichever is larger, the current value or the min value
+	newdisplacement<-rnorm(n=length(states),mean=0,sd=params[1])
+	for (i in length(newdisplacement)) {
+		newstate<-newdisplacement[i]+states[i]
+		if (newstate<params[2]) { #newstate less than min
+			newdisplacement[i]<-params[2]-states[i] #so, rather than go below the minimum, this moves the new state to the minimum
+		}
 	}
-	return(newstates)
-
+	return(newdisplacement)
 }
 
 autoregressiveIntrinsic<-function(params,states, timefrompresent) { #a discrete time OU, same sd, mean, and attraction for all chars
 	sd<-params[1]
 	attractor<-params[2]
 	attraction<-params[3]	#in this model, this should be between zero and one
-	newstates<-rnorm(n=length(states),mean=attraction*states + attractor,sd=sd)
-	return(newstates)
+	newdisplacement<-rnorm(n=length(states),mean=attraction*states + attractor,sd=sd)-states #subtract current states because we want displacement
+	return(newdisplacement)
 }
 
-nearestNeighborDisplacementExtrinsic<-function(params,selfstates,otherstates, timefrompresent) { #this is set up for one character only right now
-	repulsorTaxon<-otherstates[which.min(abs(otherstates-selfstates)),1] #the ,1 makes it for one char only
+nearestNeighborDisplacementExtrinsic<-function(params,selfstates,otherstates, timefrompresent) { 
+	repulsorTaxon<-otherstates[which.min(abs(otherstates-selfstates)),1] 
 	repulsorValue<-otherstates[repulsorTaxon]
 	sd<-params[1]
 	springK<-params[2]
 	maxforce<-params[3]
 	localsign<-sign(selfstates[1]-otherstates[i])
-	if(localsign==0) {
+	if(localsign==0) { #this area deals with the case where the two taxa are identical: the direction of the movement away will be made random, rather than zero
 		localsign=sign(rnorm(n=1))	
 	}
-	newstates<-rnorm(n=1,mean=selfstates[1]+localsign*min(c(abs(springK/((selfstates[1]-repulsorValue)*(selfstates[1]-repulsorValue))),maxforce),na.rm=TRUE),sd=sd)
-	return(newstates)
+	newdisplacement<-rnorm(n=1,mean=localsign*min(c(abs(springK/((selfstates[1]-repulsorValue)*(selfstates[1]-repulsorValue))),maxforce),na.rm=TRUE),sd=sd)
+	return(newdisplacement)
 }
 
 everyoneDisplacementExtrinsic<-function(params,selfstates,otherstates, timefrompresent) { #this is set up for one character only right now
@@ -75,8 +81,8 @@ everyoneDisplacementExtrinsic<-function(params,selfstates,otherstates, timefromp
 			}
 			netforce<-netforce+localsign*min(c(abs(springK/((selfstates[1]-otherstates[i])*(selfstates[1]-otherstates[i]))),maxforce),na.rm=TRUE)
 	}
-	newstates<-rnorm(n=1,mean=selfstates[1]+netforce,sd=sd)
-	return(newstates)
+	newdisplacement<-rnorm(n=1,mean=netforce,sd=sd)
+	return(newdisplacement)
 }
 
 
@@ -99,8 +105,8 @@ autoregressiveIntrinsicTimeSlices<-function(params,states, timefrompresent) { #a
 		}	
 		previousThresholdTime<-thresholdTime
 	}
-	newstates<-rnorm(n=length(states),mean=attraction*states + attractor,sd=sd)
-	return(newstates)
+	newdisplacement<-rnorm(n=length(states),mean=attraction*states + attractor,sd=sd)-states
+	return(newdisplacement)
 }
 
 autoregressiveIntrinsicTimeSlicesConstantMean<-function(params,states, timefrompresent) { #a discrete time OU, constant mean, differing sigma, and differing attaction with time
@@ -121,8 +127,8 @@ autoregressiveIntrinsicTimeSlicesConstantMean<-function(params,states, timefromp
 		}	
 		previousThresholdTime<-thresholdTime
 	}
-	newstates<-rnorm(n=length(states),mean=attraction*states + attractor,sd=sd)
-	return(newstates)
+	newdisplacement<-rnorm(n=length(states),mean=attraction*states + attractor,sd=sd)-states
+	return(newdisplacement)
 }
 
 
