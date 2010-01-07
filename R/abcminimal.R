@@ -782,7 +782,7 @@ doRun<-function(phy,traits,intrinsicFn,extrinsicFn,summaryFns=c(rawValuesSummary
 	#cat("1\n")
 	library("car")
 	#now put this into the boxcox function to get best lambda for each summary stat
-	boxcoxAddition<-500*(abs(min(summaryValues)))
+	boxcoxAddition<-abs(500*(min(summaryValues)))
 	summaryValues<-boxcoxAddition+summaryValues #for boxcox, need positive numbers
 	boxcoxLambda<-rep(NA,dim(summaryValues)[2])
 	#cat("2 ",dim(summaryValues)[2], "\n")
