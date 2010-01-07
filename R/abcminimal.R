@@ -782,7 +782,7 @@ doRun<-function(phy,traits,intrinsicFn,extrinsicFn,summaryFns=c(rawValuesSummary
 	#cat("1\n")
 	library("car")
 	#now put this into the boxcox function to get best lambda for each summary stat
-	boxcoxAddition<-10*(abs(min(summaryValues)))
+	boxcoxAddition<-500*(abs(min(summaryValues)))
 	summaryValues<-boxcoxAddition+summaryValues #for boxcox, need positive numbers
 	boxcoxLambda<-rep(NA,dim(summaryValues)[2])
 	#cat("2 ",dim(summaryValues)[2], "\n")
@@ -892,7 +892,19 @@ rep(sink(),100)
 		#print(intrinsicValues(newparticleVector[[1]]))
 
 		newparticleVector[[1]]<-setDistance(newparticleVector[[1]],dist(matrix(c(boxcoxplsSummary(todo,summaryStatsLong(phy, convertTaxonFrameToGeigerData(doSimulation(splits,intrinsicFn,extrinsicFn,startingStates(newparticleVector[[1]]),intrinsicValues(newparticleVector[[1]]),extrinsicValues(newparticleVector[[1]]),timeStep),phy),todo),prunedPlsResult, boxcoxLambda, boxcoxAddition), originalSummaryStats),nrow=2,byrow=T))[1])
-		if (distance(newparticleVector[[1]])<toleranceVector[1]) {
+		if (is.na(distance(newparticleVector[[1]]))) {
+			sink()
+			warning("distance(newparticleVector[[1]]) = NA")
+			newparticleVector[[1]]<-setId(newparticleVector[[1]],-1)
+			newparticleVector[[1]]<-setWeight(newparticleVector[[1]], 0)
+		}
+		else if (is.na(toleranceVector[1])) {
+			sink()
+			warning("toleranceVector[1] = NA")
+			newparticleVector[[1]]<-setId(newparticleVector[[1]],-1)
+			newparticleVector[[1]]<-setWeight(newparticleVector[[1]], 0)
+		}
+		else if (distance(newparticleVector[[1]])<toleranceVector[1]) {
 			newparticleVector[[1]]<-setId(newparticleVector[[1]],particle)
 			newparticleVector[[1]]<-setWeight(newparticleVector[[1]],1/numParticles)
 			particleWeights[particle]<-1/numParticles
@@ -1040,7 +1052,7 @@ rep(sink(),100)
 }
 
 
-presentABCOutput<-function(ABCOutput,plot=FALSE) {
+presentABCOutput<-function(ABCOutput,plot=FALSE,priors=c(),truth=c()) {
 	library(Hmisc)
 	lastGen<-ABCOutput[which(ABCOutput$generation==max(ABCOutput$generation)),]
 	finalParticles<-lastGen[which(lastGen$weight>0),]
@@ -1050,6 +1062,17 @@ presentABCOutput<-function(ABCOutput,plot=FALSE) {
 	
 	for (variable in 1:nParams) {
 		resultsMatrix<-cbind(resultsMatrix,wtd.quantile(finalParticles[,6+variable],weights= nParticles*finalParticles[,6],probs=c(0,0.001, 0.005, 0.01, 0.05, 0.25, 0.5, 0.75, 0.95, 0.99, 0.995, 0.999,1)))
+	}
+	
+	if (plot==TRUE) {
+		par(mfcol=c(1, nParams))
+		for (variable in 1: nParams) {
+			cat("prior index from ",1+(variable-1)*2, " to ",2+(variable-1)*2,"\n")
+			densityResults<-density(finalParticles[,6+variable],weights= nParticles*finalParticles[,6]/sum(nParticles*finalParticles[,6]),from=min(c(priors[1+(variable-1)*2],priors[2+(variable-1)*2])),to=max(c(priors[1+(variable-1)*2],priors[2+(variable-1)*2])))
+			plot(x=c(priors[1+(variable-1)*2],priors[2+(variable-1)*2]),y=c(0,max(densityResults$y)), yaxt="n",xlab=(names(finalParticles)[6+variable]),type="n",ylab="",main="",bty="n")
+			lines(densityResults)
+				lines(x=c(truth[variable],truth[variable]),y=c(0,max(densityResults$y)),lty=3)
+		}
 	}
 	results<-data.frame(resultsMatrix)
 	return(results)
