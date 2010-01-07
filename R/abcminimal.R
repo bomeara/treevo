@@ -645,39 +645,18 @@ summaryStatsLong<-function(phy,data,todo=c()) {
 	summarystats[which(is.finite(summarystats)==FALSE)]<-NA
 	#cat("\n summaryStatsLong summarystats3\n")
 	#print(summarystats)
-	sink()
+	while(sink.number()>0) {sink()}
 	summarystats
 	
 	
 }
 
-boxcoxplsSummary<-function(todo,rawSummaryValues,prunedPlsResult, boxcoxLambda, boxcoxAddition) {
-	#cat("\n\n boxcoxplsSummary \ntodo\n")
-	#print(todo)
-	#cat("\n rawSummaryValues\n")
-	#print(rawSummaryValues)
-	#cat("\n prunedPlsResult\n")
-	#print(prunedPlsResult)
-	#cat("\n boxcoxLambda\n")
-	#print(boxcoxLambda)
-	#cat("\n boxcoxAddition\n")
-	#print(boxcoxAddition)
-	summaryValues<-boxcoxAddition+rawSummaryValues #for boxcox, need positive numbers
-	#cat("\n summaryValues\n")
-	#print(summaryValues)
-
+boxcoxplsSummary<-function(todo,summaryValues,prunedPlsResult, boxcoxLambda, boxcoxAddition) {
 	for (summaryValueIndex in 1:length(summaryValues)) {
-		summaryValues[summaryValueIndex]<-box.cox(x=summaryValues[summaryValueIndex], p=boxcoxLambda[summaryValueIndex])
+		summaryValues[summaryValueIndex]<-(summaryValues[summaryValueIndex] + boxcoxAddition[summaryValueIndex])^boxcoxLambda[summaryValueIndex]
 	}
-	#cat("\n summaryValues\n")
-	#print(summaryValues)
 	prunedSummaryValues<-summaryValues[which(todo>0)]
-	#cat("\n prunedSummaryValues\n")
-	#print(prunedSummaryValues)
 	predictResult<-(predict(prunedPlsResult, matrix(prunedSummaryValues,nrow=1))$predict[, , 1])
-	#cat("\n predictResult\n")
-	#print(predictResult)
-
 	predictResult
 }
 
@@ -699,6 +678,7 @@ doRun<-function(phy,traits,intrinsicFn,extrinsicFn,summaryFns=c(rawValuesSummary
 	freevariables<-matrix(data=NA, nrow=2,ncol=0)
 	titlevector<-c()
 	freevector<-c()
+	
 		
 	for (i in 1:dim(startingMatrix)[2]) {
 		if (startingMatrix[1,i]== startingMatrix[2,i]) {
@@ -773,54 +753,32 @@ doRun<-function(phy,traits,intrinsicFn,extrinsicFn,summaryFns=c(rawValuesSummary
 		#cat("summaryValues\n")
 		#print(summaryValues)
 		summaryValues<-rbind(summaryValues,summaryStatsLong(phy,convertTaxonFrameToGeigerData (doSimulation(splits=splits,intrinsicFn= intrinsicFn,extrinsicFn= extrinsicFn,startingStates= trueStarting,intrinsicValues= trueIntrinsic,extrinsicValues= trueExtrinsic,timeStep=timeStep),phy)))
-		rep(sink(),50)
-		#cat("summaryValues+ summaryStatsLong\n")
-		#print(summaryValues)
-		#cat("rep ",simIndex," ", summaryValues[dim(summaryValues)[1],], "\n")
+		while(sink.number()>0) {sink()}
 	}
 	
-	#cat("1\n")
 	library("car")
 	#now put this into the boxcox function to get best lambda for each summary stat
-	boxcoxAddition<-abs(500*(min(summaryValues)))
-	summaryValues<-boxcoxAddition+summaryValues #for boxcox, need positive numbers
 	boxcoxLambda<-rep(NA,dim(summaryValues)[2])
-	#cat("2 ",dim(summaryValues)[2], "\n")
+	boxcoxAddition<-rep(NA,dim(summaryValues)[2])
 	for (summaryValueIndex in 1:dim(summaryValues)[2]) {
-		#cat ("3 ", summaryValueIndex, "\n")
-		summary<-summaryValues[,summaryValueIndex]
-		data<-list(trueFreeValues,summary)
-		#cat ("4 \n")
-		#print(data)
-		boxcoxResult<-boxcox(trueFreeValues ~ summary, data = data, plotit=FALSE)
-		#cat ("5","\n")
-		#print(boxcoxResult)
-		boxcoxLambda[summaryValueIndex]<-boxcoxResult$x[which(boxcoxResult$y==max(boxcoxResult$y))]
-		#cat ("6 ","\n")
-		#print(boxcoxLambda)
-		#Transform each summary stat according to its best lambda
-		summaryValues[,summaryValueIndex]<-box.cox(x=summaryValues[,summaryValueIndex], p=boxcoxLambda[summaryValueIndex])
-		#cat ("7 \n")
-		#print(summaryValues)
-	
+		boxcoxAddition[summaryValueIndex]<-max(50,-50*min(summaryValues[,summaryValueIndex])-4*sd(summaryValues[,summaryValueIndex])) #just for some protection against low values, since box.cox needs non-negative values
+		summary<-summaryValues[,summaryValueIndex]+boxcoxAddition[summaryValueIndex]
+		boxcoxLambda[summaryValueIndex]<-box.cox.powers(summary)$lambda
+		summaryValues[,summaryValueIndex]<-summary^boxcoxLambda[summaryValueIndex]
 	}
 	
 	
 	#Use integrOmics to to find the optimal set of summary stats. Store this info in the todo vector. Note that this uses a different package (integromics rather than pls than that used by Weggman et al. because this package can calculate variable importance in projection and deals fine with NAs)
 	library("integrOmics")
 	plsResult<-pls(Y=trueFreeValues, X=summaryValues)
-	#cat("plsResult\n")
-	#print(plsResult)
 	vipResult<-vip(plsResult)
-	#cat("vipResult\n")
-	#print(vipResult)
 	todo<-rep(1,dim(summaryValues)[2])#initialize the vector that indicates which summary stats to include
 	for (summaryIndex in 1:dim(summaryValues)[2]) {
 		if (max(vipResult[summaryIndex,])<vipthresh) {
 				todo[summaryIndex]<-0 #exclude this summary stat, because it's too unimportant
 		}	
 	}
-rep(sink(),100)
+	while(sink.number()>0) {sink()}
 	#cat("todo","\n")
 	#print(todo)
 	
@@ -856,7 +814,7 @@ rep(sink(),100)
 	#----------------- Find distribution of distances (end) ---------------------
 	
 	#------------------ ABC-PRC (start) ------------------
-	#do not forget to use boxcoxLambda, boxcoxAddition, and prunedPlsResult when computing distances
+	#do not forget to use boxcoxLambda, and prunedPlsResult when computing distances
 	nameVector<-c("generation","attempt","id","parentid","distance","weight")
 	if (plot) {
 		plot(x=c(min(intrinsicMatrix),max(intrinsicMatrix)),y=c(0,5*max(toleranceVector)),type="n")
@@ -893,13 +851,13 @@ rep(sink(),100)
 
 		newparticleVector[[1]]<-setDistance(newparticleVector[[1]],dist(matrix(c(boxcoxplsSummary(todo,summaryStatsLong(phy, convertTaxonFrameToGeigerData(doSimulation(splits,intrinsicFn,extrinsicFn,startingStates(newparticleVector[[1]]),intrinsicValues(newparticleVector[[1]]),extrinsicValues(newparticleVector[[1]]),timeStep),phy),todo),prunedPlsResult, boxcoxLambda, boxcoxAddition), originalSummaryStats),nrow=2,byrow=T))[1])
 		if (is.na(distance(newparticleVector[[1]]))) {
-			sink()
+			while(sink.number()>0) {sink()}
 			warning("distance(newparticleVector[[1]]) = NA")
 			newparticleVector[[1]]<-setId(newparticleVector[[1]],-1)
 			newparticleVector[[1]]<-setWeight(newparticleVector[[1]], 0)
 		}
 		else if (is.na(toleranceVector[1])) {
-			sink()
+			while(sink.number()>0) {sink()}
 			warning("toleranceVector[1] = NA")
 			newparticleVector[[1]]<-setId(newparticleVector[[1]],-1)
 			newparticleVector[[1]]<-setWeight(newparticleVector[[1]], 0)
@@ -915,7 +873,7 @@ rep(sink(),100)
 			newparticleVector[[1]]<-setId(newparticleVector[[1]],-1)
 			newparticleVector[[1]]<-setWeight(newparticleVector[[1]], 0)
 		}
-		sink()
+		while(sink.number()>0) {sink()}
 		#print(newparticleVector)
 		vectorForDataFrame<-c(1,attempts,getId(newparticleVector[[1]]),0,distance(newparticleVector[[1]]),getWeight(newparticleVector[[1]]),startingStates(newparticleVector[[1]]),intrinsicValues(newparticleVector[[1]]),extrinsicValues(newparticleVector[[1]]))
 #cat("\n\nlength of vectorForDataFrame = ",length(vectorForDataFrame),"\n","length of startingStates = ",length(startingStates),"\nlength of intrinsicValues = ",length(intrinsicValues),"\nlength of extrinsicValues = ",length(extrinsicValues),"\ndistance = ",distance(newparticleVector[[1]]),"\nweight = ",getWeight(newparticleVector[[1]]),"\n",vectorForDataFrame,"\n")
@@ -1021,7 +979,7 @@ rep(sink(),100)
 			newparticleVector[[1]]<-setId(newparticleVector[[1]],-1)
 			newparticleVector[[1]]<-setWeight(newparticleVector[[1]], 0)
 		}
-			rep(sink(),50)
+			while(sink.number()>0) {sink()}
 			#print(newparticleVector)
 			vectorForDataFrame<-c(dataGenerationStep,attempts,getId(newparticleVector[[1]]), particleToSelect,distance(newparticleVector[[1]]),getWeight(newparticleVector[[1]]),startingStates(newparticleVector[[1]]),intrinsicValues(newparticleVector[[1]]),extrinsicValues(newparticleVector[[1]]))
 #cat("\n\nlength of vectorForDataFrame = ",length(vectorForDataFrame),"\n","length of startingStates = ",length(startingStates),"\nlength of intrinsicValues = ",length(intrinsicValues),"\nlength of extrinsicValues = ",length(extrinsicValues),"\ndistance = ",distance(newparticleVector[[1]]),"\nweight = ",getWeight(newparticleVector[[1]]),"\n",vectorForDataFrame,"\n")
