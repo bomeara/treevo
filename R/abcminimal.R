@@ -761,7 +761,11 @@ doRun<-function(phy,traits,intrinsicFn,extrinsicFn,summaryFns=c(rawValuesSummary
 	boxcoxLambda<-rep(NA,dim(summaryValues)[2])
 	boxcoxAddition<-rep(NA,dim(summaryValues)[2])
 	for (summaryValueIndex in 1:dim(summaryValues)[2]) {
-		boxcoxAddition[summaryValueIndex]<-max(25,-25*min(summaryValues[,summaryValueIndex])-4*sd(summaryValues[,summaryValueIndex])) #just for some protection against low values, since box.cox needs non-negative values
+		boxcoxAddition[summaryValueIndex]<-0
+		lowValue<-min(summaryValues[,summaryValueIndex])-4*sd(summaryValues[,summaryValueIndex])
+		if (lowValue<=0) {
+			boxcoxAddition[summaryValueIndex]<-4*abs(lowValue) #just for some protection against low values, since box.cox needs non-negative values
+		}
 		summary<-summaryValues[,summaryValueIndex]+boxcoxAddition[summaryValueIndex]
 		boxcoxLambda[summaryValueIndex]<-box.cox.powersModified(summary)$lambda
 		summaryValues[,summaryValueIndex]<-summary^boxcoxLambda[summaryValueIndex]
