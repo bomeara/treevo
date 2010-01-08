@@ -56,13 +56,13 @@ autoregressiveIntrinsic<-function(params,states, timefrompresent) { #a discrete 
 }
 
 nearestNeighborDisplacementExtrinsic<-function(params,selfstates,otherstates, timefrompresent) { 
-	repulsorTaxon<-otherstates[which.min(abs(otherstates-selfstates)),1] 
+	repulsorTaxon<-which.min(abs(otherstates-selfstates))
 	repulsorValue<-otherstates[repulsorTaxon]
 	sd<-params[1]
 	springK<-params[2]
 	maxforce<-params[3]
-	localsign<-sign(selfstates[1]-otherstates[i])
-	if(localsign==0) { #this area deals with the case where the two taxa are identical: the direction of the movement away will be made random, rather than zero
+	localsign<-sign(selfstates[1]- repulsorValue)
+	if(localsign==0) { 
 		localsign=sign(rnorm(n=1))	
 	}
 	newdisplacement<-rnorm(n=1,mean=localsign*min(c(abs(springK/((selfstates[1]-repulsorValue)*(selfstates[1]-repulsorValue))),maxforce),na.rm=TRUE),sd=sd)
