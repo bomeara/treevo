@@ -756,7 +756,7 @@ doRun<-function(phy,traits,intrinsicFn,extrinsicFn,summaryFns=c(rawValuesSummary
 		while(sink.number()>0) {sink()}
 	}
 	
-	library("car")
+	library("car")rm 
 	#now put this into the boxcox function to get best lambda for each summary stat
 	boxcoxLambda<-rep(NA,dim(summaryValues)[2])
 	boxcoxAddition<-rep(NA,dim(summaryValues)[2])
@@ -767,7 +767,8 @@ doRun<-function(phy,traits,intrinsicFn,extrinsicFn,summaryFns=c(rawValuesSummary
 			boxcoxAddition[summaryValueIndex]<-4*abs(lowValue) #just for some protection against low values, since box.cox needs non-negative values
 		}
 		summary<-summaryValues[,summaryValueIndex]+boxcoxAddition[summaryValueIndex]
-		boxcoxLambda[summaryValueIndex]<-box.cox.powersModified(summary)$lambda
+		boxcoxLambda[summaryValueIndex]<-1
+		boxcoxLambda[summaryValueIndex]<-try(box.cox.powersModified(summary)$lambda) #try is to cover errors
 		summaryValues[,summaryValueIndex]<-summary^boxcoxLambda[summaryValueIndex]
 	}
 	
@@ -1042,7 +1043,8 @@ presentABCOutput<-function(ABCOutput,plot=FALSE,priors=c(),truth=c()) {
 
 box.cox.powersModified<-function(X, start=NULL, hypotheses=NULL, ...){
 	#this is a modification of the box.cox.powers fn from the car package
-	#the only modification is to change L-BFGS-B to the BFGS
+	#the only modification is to change L-BFGS-B to the BFGS and to display the input
+	print(X)
     modified.power<-function(x, lambda, gm){
         if (lambda == 0) log(x)*gm
         else (gm^(1-lambda))*((x^lambda)-1)/lambda
