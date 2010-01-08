@@ -756,7 +756,7 @@ doRun<-function(phy,traits,intrinsicFn,extrinsicFn,summaryFns=c(rawValuesSummary
 		while(sink.number()>0) {sink()}
 	}
 	
-	library("car")rm 
+	library("car")
 	#now put this into the boxcox function to get best lambda for each summary stat
 	boxcoxLambda<-rep(NA,dim(summaryValues)[2])
 	boxcoxAddition<-rep(NA,dim(summaryValues)[2])
