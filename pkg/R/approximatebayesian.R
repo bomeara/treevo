@@ -329,13 +329,13 @@ setMethod("mutateStates", signature="abcparticle", definition=function(x, starti
 		
 		replacementVector<-rep(NA, length(x@intrinsicValues))
 		for (j in 1:length(x@intrinsicValues)) {
-			replacementVector[j]<-mutateState(intrinsicValues=x@intrinsicValues[j], standardDevFactor=standardDevFactor, priorValues=intrinsicPriorsValues[, j], priorFn=intrinsicPriorsFns[j])
+			replacementVector[j]<-mutateState(startingState=x@intrinsicValues[j], standardDevFactor=standardDevFactor, priorValues=intrinsicPriorsValues[, j], priorFn=intrinsicPriorsFns[j])
 		}
 		x@intrinsicValues<-replacementVector
 
 		replacementVector<-rep(NA, length(x@extrinsicValues))
 		for (j in 1:length(x@extrinsicValues)) {
-			replacementVector[j]<-mutateState(extrinsicValues=x@extrinsicValues[j], standardDevFactor=standardDevFactor, priorValues=extrinsicPriorsValues[, j], priorFn=extrinsicPriorsFns[j])
+			replacementVector[j]<-mutateState(startingState=x@extrinsicValues[j], standardDevFactor=standardDevFactor, priorValues=extrinsicPriorsValues[, j], priorFn=extrinsicPriorsFns[j])
 		}
 		x@extrinsicValues<-replacementVector
 		
