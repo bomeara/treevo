@@ -822,6 +822,7 @@ doRun<-function(phy, traits, intrinsicFn, extrinsicFn, summaryFns=c(rawValuesSum
 	trueFreeValues<-matrix(nrow=0, ncol= numberParametersFree)
 	summaryValues<-matrix(nrow=0, ncol=22+dim(traits)[1]) #there are 22 summary statistics possible, plus the raw data
 	for (simIndex in 1:nrepSim) {
+		cat("Now doing simulation rep ",simIndex," of ",nrepSim,"\n",sep="")
 		trueStarting<-rep(NaN, dim(startingPriorsValues)[2])
 		trueIntrinsic<-rep(NaN, dim(intrinsicPriorsValues)[2])
 		trueExtrinsic<-rep(NaN, dim(extrinsicPriorsValues)[2])
