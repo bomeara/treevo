@@ -244,12 +244,12 @@ setMethod("initializeStatesFromMatrices", signature="abcparticle", definition=fu
 			#cat("starting states j=", j, " x@startingStates[j] =", x@startingStates[j], "\n")
 		}
 		for (j in 1:dim(intrinsicPriorsValues)[2]) {
-			x@intrinsicStates[j]=pullFromPrior(priorValues=intrinsicPriorsValues[, j], priorFn=intrinsicPriorsFns[j])
+			x@intrinsicValues[j]=pullFromPrior(priorValues=intrinsicPriorsValues[, j], priorFn=intrinsicPriorsFns[j])
 			#cat("intrinsicValues j=", j, " x@ intrinsicValues[j] =", x@intrinsicValues[j], "\n")
 
 		}
 		for (j in 1:dim(extrinsicPriorsValues)[2]) {
-			x@extrinsicStates[j]=pullFromPrior(priorValues=extrinsicPriorsValues[, j], priorFn=extrinsicPriorsFns[j])
+			x@extrinsicValues[j]=pullFromPrior(priorValues=extrinsicPriorsValues[, j], priorFn=extrinsicPriorsFns[j])
 			#cat("extrinsicValues j=", j, " x@ extrinsicValues[j] =", x@extrinsicValues[j], "\n")
 		}
 		#print(x)
@@ -327,17 +327,17 @@ setMethod("mutateStates", signature="abcparticle", definition=function(x, starti
 		}
 		x@startingStates<-replacementVector
 		
-		replacementVector<-rep(NA, length(x@intrinsicStates))
-		for (j in 1:length(x@intrinsicStates)) {
-			replacementVector[j]<-mutateState(intrinsicState=x@intrinsicStates[j], standardDevFactor=standardDevFactor, priorValues=x@intrinsicPriorsValues[, j], priorFn=x@intrinsicPriorsFns[j])
+		replacementVector<-rep(NA, length(x@intrinsicValues))
+		for (j in 1:length(x@intrinsicValues)) {
+			replacementVector[j]<-mutateState(intrinsicValues=x@intrinsicValues[j], standardDevFactor=standardDevFactor, priorValues=x@intrinsicPriorsValues[, j], priorFn=x@intrinsicPriorsFns[j])
 		}
-		x@intrinsicStates<-replacementVector
+		x@intrinsicValues<-replacementVector
 
-		replacementVector<-rep(NA, length(x@extrinsicStates))
-		for (j in 1:length(x@extrinsicStates)) {
-			replacementVector[j]<-mutateState(extrinsicState=x@extrinsicStates[j], standardDevFactor=standardDevFactor, priorValues=x@extrinsicPriorsValues[, j], priorFn=x@extrinsicPriorsFns[j])
+		replacementVector<-rep(NA, length(x@extrinsicValues))
+		for (j in 1:length(x@extrinsicValues)) {
+			replacementVector[j]<-mutateState(extrinsicValues=x@extrinsicValues[j], standardDevFactor=standardDevFactor, priorValues=x@extrinsicPriorsValues[, j], priorFn=x@extrinsicPriorsFns[j])
 		}
-		x@extrinsicStates<-replacementVector
+		x@extrinsicValues<-replacementVector
 		
 		#kernel(x)<-lnTransitionProb
 		x
@@ -348,7 +348,7 @@ mutateState<-function(startingState, standardDevFactor, priorValues, priorFn) {
 	newState<-NA
 	minBound=-Inf
 	maxBound=Inf
-	validNewState<-False
+	validNewState<-FALSE  #was lowercase, but not recognised 
 	priorFn<-match.arg(arg=priorFn,choices=c("fixed", "uniform", "normal", "lognormal", "gamma", "exponential"),several.ok=FALSE);
 	if (priorFn=="fixed" || priorFn=="uniform") {
 		minBound<-min(priorValues)
@@ -380,11 +380,22 @@ mutateState<-function(startingState, standardDevFactor, priorValues, priorFn) {
 	else {
 		stop(priorFn," was not a recognized prior function")
 	}
-	
+
 	while(!validNewState) {
 		newState<-rnorm(n=1, mean=startingState, sd=sdToUse)
+		validNewState<-TRUE
+		if (newState<minBound){
+			validNewState<-FALSE
+			}
+		if (newState>maxBound){
+			validNewState<-FALSE
+			}	
+		if (!validNewState)	{
+			cat "newState does not fit into one of these"
+			}	
 	}
-	newState
+	
+newState
 }
 	
 
@@ -726,7 +737,7 @@ boxcoxplsSummary<-function(todo, summaryValues, prunedPlsResult, boxcoxLambda, b
 #the doRun function takes input from the user and then automatically guesses optimal parameters, though user overriding is also possible.
 #the guesses are used to do simulations near the expected region. If omitted, they are set to the midpoint of the input parameter matrices
 
-doRun<-function(phy, traits, intrinsicFn, extrinsicFn, summaryFns=c(rawValuesSummaryStats, geigerUnivariateSummaryStats2), startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, startingStatesGuess=c(), intrinsicValuesGuess=c(), extrinsicValuesGuess=c(), timeStep, toleranceVector=c(), numParticles=1000, standardDevFactor=0.05, nrepSim=100, plot=T, vipthresh=0.8, epsilonProportion=0.2, epsilonMultiplier=0.5, nStepsPRC=4) {
+doRun<-function(phy, traits, intrinsicFn, extrinsicFn, summaryFns=c(rawValuesSummaryStats, geigerUnivariateSummaryStats2), startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, startingStatesGuess=c(), intrinsicStatesGuess=c(), extrinsicStatesGuess=c(), timeStep, toleranceVector=c(), numParticles=1000, standardDevFactor=0.05, nrepSim=100, plot=T, vipthresh=0.8, epsilonProportion=0.2, epsilonMultiplier=0.5, nStepsPRC=4) {
 	#print("in do run")
 	splits<-getSimulationSplits(phy) #initialize this info
 
@@ -912,6 +923,7 @@ doRun<-function(phy, traits, intrinsicFn, extrinsicFn, summaryFns=c(rawValuesSum
 	for (i in 1:dim(intrinsicPriorsValues)[2]) {
 		nameVector<-append(nameVector, paste("IntrinsicValue", i, sep=""))
 	}
+	print(extrinsicPriorsValues)
 	for (i in 1:dim(extrinsicPriorsValues)[2]) {
 		nameVector<-append(nameVector, paste("ExtrinsicValue", i, sep=""))
 	}
@@ -930,7 +942,7 @@ doRun<-function(phy, traits, intrinsicFn, extrinsicFn, summaryFns=c(rawValuesSum
 		attempts<-attempts+1
 		
 		newparticleVector<-c(new("abcparticle", id=particle, generation=1, weight=0))
-		newparticleVector[[1]]<-initializeStatesFromMatrices(newparticleVector[[1]], startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues)
+		newparticleVector[[1]]<-initializeStatesFromMatrices(newparticleVector[[1]], startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns)
 		#cat("\nextrinsicVector\n")
 		#print(extrinsicValues(newparticleVector[[1]]))
 		#cat("\nintrinsicVector\n")
