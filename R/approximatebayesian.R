@@ -323,19 +323,19 @@ setMethod("mutateStates", signature="abcparticle", definition=function(x, starti
 	#typeof(x@startingStates)
 		replacementVector<-rep(NA, length(x@startingStates))
 		for (j in 1:length(x@startingStates)) {
-			replacementVector[j]<-mutateState(startingState=x@startingStates[j], standardDevFactor=standardDevFactor, priorValues=x@startingPriorsValues[, j], priorFn=x@startingPriorsFns[j])
+			replacementVector[j]<-mutateState(startingState=x@startingStates[j], standardDevFactor=standardDevFactor, priorValues=startingPriorsValues[, j], priorFn=startingPriorsFns[j])
 		}
 		x@startingStates<-replacementVector
 		
 		replacementVector<-rep(NA, length(x@intrinsicValues))
 		for (j in 1:length(x@intrinsicValues)) {
-			replacementVector[j]<-mutateState(intrinsicValues=x@intrinsicValues[j], standardDevFactor=standardDevFactor, priorValues=x@intrinsicPriorsValues[, j], priorFn=x@intrinsicPriorsFns[j])
+			replacementVector[j]<-mutateState(intrinsicValues=x@intrinsicValues[j], standardDevFactor=standardDevFactor, priorValues=intrinsicPriorsValues[, j], priorFn=intrinsicPriorsFns[j])
 		}
 		x@intrinsicValues<-replacementVector
 
 		replacementVector<-rep(NA, length(x@extrinsicValues))
 		for (j in 1:length(x@extrinsicValues)) {
-			replacementVector[j]<-mutateState(extrinsicValues=x@extrinsicValues[j], standardDevFactor=standardDevFactor, priorValues=x@extrinsicPriorsValues[, j], priorFn=x@extrinsicPriorsFns[j])
+			replacementVector[j]<-mutateState(extrinsicValues=x@extrinsicValues[j], standardDevFactor=standardDevFactor, priorValues=extrinsicPriorsValues[, j], priorFn=extrinsicPriorsFns[j])
 		}
 		x@extrinsicValues<-replacementVector
 		
@@ -391,8 +391,8 @@ mutateState<-function(startingState, standardDevFactor, priorValues, priorFn) {
 			validNewState<-FALSE
 			}	
 		if (!validNewState)	{
-			cat "newState does not fit into one of these"
-			}	
+			cat("newState ",newState," does not fit into one of the bounds ", minBound, " ", maxBound)
+		}	
 	}
 	
 newState
