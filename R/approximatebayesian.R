@@ -391,7 +391,7 @@ mutateState<-function(startingState, standardDevFactor, priorValues, priorFn) {
 			validNewState<-FALSE
 			}	
 		if (!validNewState)	{
-			cat("newState ",newState," does not fit into one of the bounds ", minBound, " ", maxBound)
+			cat("newState ",newState," does not fit into one of the bounds ", minBound, " ", maxBound, "\n")
 		}	
 	}
 	
@@ -524,7 +524,7 @@ function(object, value) {
 )
 
 getSimulationSplits<-function(phy) {
-	branchingTimes<-sort(branching.times(phy), decreasing=T)
+	branchingTimes<-sort(branching.times(phy), decreasing=TRUE)
 	branchingTimesNames<-names(branchingTimes)
 	ancestorVector<-c()
 	descendant1Vector<-c()
@@ -741,6 +741,8 @@ doRun<-function(phy, traits, intrinsicFn, extrinsicFn, summaryFns=c(rawValuesSum
 	#print("in do run")
 	splits<-getSimulationSplits(phy) #initialize this info
 
+input.data<-rbind(length(phy[[3]]), startingPriorsFns, startingPriorsValues, intrinsicPriorsFns, intrinsicPriorsValues, nrepSim, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles)
+
 
 	#figure out number of free params
 	numberParametersTotal<-dim(startingPriorsValues)[2] +  dim(intrinsicPriorsValues)[2] + dim(extrinsicPriorsValues)[2]
@@ -821,6 +823,7 @@ doRun<-function(phy, traits, intrinsicFn, extrinsicFn, summaryFns=c(rawValuesSum
 	#See Wegmann et al. Efficient Approximate Bayesian Computation Coupled With Markov Chain Monte Carlo Without Likelihood. Genetics (2009) vol. 182 (4) pp. 1207-1218 for more on the method
 	trueFreeValues<-matrix(nrow=0, ncol= numberParametersFree)
 	summaryValues<-matrix(nrow=0, ncol=22+dim(traits)[1]) #there are 22 summary statistics possible, plus the raw data
+	Rprof(nrepSims.time.check<-tempfile())	
 	for (simIndex in 1:nrepSim) {
 		cat("Now doing simulation rep ",simIndex," of ",nrepSim,"\n",sep="")
 		trueStarting<-rep(NaN, dim(startingPriorsValues)[2])
@@ -842,7 +845,7 @@ doRun<-function(phy, traits, intrinsicFn, extrinsicFn, summaryFns=c(rawValuesSum
 		summaryValues<-rbind(summaryValues, summaryStatsLong(phy, convertTaxonFrameToGeigerData (doSimulation(splits=splits, intrinsicFn= intrinsicFn, extrinsicFn= extrinsicFn, startingStates= trueStarting, intrinsicValues= trueIntrinsic, extrinsicValues= trueExtrinsic, timeStep=timeStep), phy)))
 		while(sink.number()>0) {sink()}
 	}
-	
+	summaryRprof(nrepSims.time.check)
 	library("car")
 	#now put this into the boxcox function to get best lambda for each summary stat
 	boxcoxLambda<-rep(NA, dim(summaryValues)[2])
@@ -914,6 +917,8 @@ doRun<-function(phy, traits, intrinsicFn, extrinsicFn, summaryFns=c(rawValuesSum
 	
 	#------------------ ABC-PRC (start) ------------------
 	#do not forget to use boxcoxLambda, and prunedPlsResult when computing distances
+	
+	Rprof(PRC.time.check<-tempfile())
 	nameVector<-c("generation", "attempt", "id", "parentid", "distance", "weight")
 	if (plot) {
 		plot(x=c(min(intrinsicPriorsValues), max(intrinsicPriorsValues)), y=c(0, 5*max(toleranceVector)), type="n")
@@ -924,7 +929,7 @@ doRun<-function(phy, traits, intrinsicFn, extrinsicFn, summaryFns=c(rawValuesSum
 	for (i in 1:dim(intrinsicPriorsValues)[2]) {
 		nameVector<-append(nameVector, paste("IntrinsicValue", i, sep=""))
 	}
-	print(extrinsicPriorsValues)
+	#print(extrinsicPriorsValues)
 	for (i in 1:dim(extrinsicPriorsValues)[2]) {
 		nameVector<-append(nameVector, paste("ExtrinsicValue", i, sep=""))
 	}
@@ -981,7 +986,10 @@ doRun<-function(phy, traits, intrinsicFn, extrinsicFn, summaryFns=c(rawValuesSum
 		cat(particle-1, attempts, floor(numParticles*attempts/particle), startingStates(newparticleVector[[1]]), intrinsicValues(newparticleVector[[1]]), extrinsicValues(newparticleVector[[1]]), distance(newparticleVector[[1]]), "\n")
 		
 	}
-	
+	#return(proc.time())
+	time.Gen1<-proc.time()
+	time.GenX<-vector()
+
 	for (dataGenerationStep in 2:length(toleranceVector)) {
 		cat("\n\n\n", "STARTING DATA GENERATION STEP ", dataGenerationStep, "\n\n\n")
 		particleWeights<-particleWeights/(sum(particleWeights)) #normalize to one
@@ -1085,9 +1093,12 @@ doRun<-function(phy, traits, intrinsicFn, extrinsicFn, summaryFns=c(rawValuesSum
 #cat("\n\nlength of vectorForDataFrame = ", length(vectorForDataFrame), "\n", "length of startingStates = ", length(startingStates), "\nlength of intrinsicValues = ", length(intrinsicValues), "\nlength of extrinsicValues = ", length(extrinsicValues), "\ndistance = ", distance(newparticleVector[[1]]), "\nweight = ", getWeight(newparticleVector[[1]]), "\n", vectorForDataFrame, "\n")
 			particleDataFrame<-rbind(particleDataFrame, data.frame(rbind(vectorForDataFrame))) #NOTE THAT WEIGHTS AREN'T NORMALIZED IN THIS DATAFRAME
 			cat(particle-1, attempts, floor(numParticles*attempts/particle), startingStates(newparticleVector[[1]]), intrinsicValues(newparticleVector[[1]]), extrinsicValues(newparticleVector[[1]]), distance(newparticleVector[[1]]), "\n")
-			
 		}
 		particleDataFrame[which(particleDataFrame$generation==dataGenerationStep), ]$weight<-particleDataFrame[which(particleDataFrame$generation==dataGenerationStep), ]$weight/(sum(particleDataFrame[which(particleDataFrame$generation==dataGenerationStep), ]$weight))
+
+		time.GenX[dataGenerationStep]<-proc.time()
+		time.per.generation<-c(time.Gen1, time.GenX)
+
 	}
 	names(particleDataFrame)<-nameVector
 	if(plot) {
@@ -1099,9 +1110,16 @@ doRun<-function(phy, traits, intrinsicFn, extrinsicFn, summaryFns=c(rawValuesSum
 		}
 		lines(density(subset(particleDataFrame, generation==length(toleranceVector))[, 8]), col= "red")
 	}
-	return(particleDataFrame)
-
 	
+	
+
+	test<-vector("list", 3)
+	test[[1]]<-input.data
+	test[[2]]<-time.per.generation
+	test[[3]]<-particleDataFrame
+	return(test)
+
+
 	
 	#------------------ ABC-PRC (end) ------------------
 	
