@@ -1,5 +1,5 @@
 #minimal ABC classes, pulled from  abctaxon.R, abc.R, abcparticle.R
-
+#source("/Users/BarbBanbury/Dropbox/Banbury/ABC_test/abcmodels.R")
 library(geiger)
 library(car)
 library(mixOmics)
@@ -391,7 +391,7 @@ mutateState<-function(startingState, standardDevFactor, priorValues, priorFn) {
 			validNewState<-FALSE
 			}	
 		if (!validNewState)	{
-			cat("newState ",newState," does not fit into one of the bounds ", minBound, " ", maxBound, "\n")
+			cat("newState ",newState," does not fit into one of the bounds (", minBound, "--", maxBound, ")\n")
 		}	
 	}
 	
@@ -592,7 +592,7 @@ doSimulation<-function(splits, intrinsicFn, extrinsicFn, startingStates, intrins
 			}
 #print(taxa)
 #print(length(otherstatesvector))
-			otherstatesmatrix<-matrix(otherstatesvector, ncol=length(states(taxa[[i]])), byrow=T) #each row represents one taxon
+			otherstatesmatrix<-matrix(otherstatesvector, ncol=length(states(taxa[[i]])), byrow=TRUE) #each row represents one taxon
 			newvalues<-states(taxa[[i]])+intrinsicFn(params=intrinsicValues, states=states(taxa[[i]]), timefrompresent =timefrompresent)+extrinsicFn(params=extrinsicValues, selfstates=states(taxa[[i]]), otherstates=otherstatesmatrix, timefrompresent =timefrompresent)
 			nextstates(taxa[[i]])<-newvalues
 		}
@@ -634,7 +634,7 @@ summarizeTaxonStates<-function(taxa) {
 		taxontimesincespeciation<-c(taxontimesincespeciation, timeSinceSpeciation(taxa[[i]]))
 #print("finished ", i)
 	}
-	statesmatrix<-matrix(statesvector, ncol=length(states(taxa[[1]])), byrow=T) #each row represents one taxon
+	statesmatrix<-matrix(statesvector, ncol=length(states(taxa[[1]])), byrow=TRUE) #each row represents one taxon
 	taxonframe<-data.frame(taxonid, taxonname, taxontimesincespeciation, statesmatrix)
 	return(taxonframe)
 }
@@ -737,7 +737,7 @@ boxcoxplsSummary<-function(todo, summaryValues, prunedPlsResult, boxcoxLambda, b
 #the doRun function takes input from the user and then automatically guesses optimal parameters, though user overriding is also possible.
 #the guesses are used to do simulations near the expected region. If omitted, they are set to the midpoint of the input parameter matrices
 
-doRun<-function(phy, traits, intrinsicFn, extrinsicFn, summaryFns=c(rawValuesSummaryStats, geigerUnivariateSummaryStats2), startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, startingStatesGuess=c(), intrinsicStatesGuess=c(), extrinsicStatesGuess=c(), timeStep, toleranceVector=c(), numParticles=1000, standardDevFactor=0.05, nrepSim=100, plot=T, vipthresh=0.8, epsilonProportion=0.2, epsilonMultiplier=0.5, nStepsPRC=4) {
+doRun<-function(phy, traits, intrinsicFn, extrinsicFn, summaryFns=c(rawValuesSummaryStats, geigerUnivariateSummaryStats2), startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, startingStatesGuess=c(), intrinsicStatesGuess=c(), extrinsicStatesGuess=c(), timeStep, toleranceVector=c(), numParticles=1000, standardDevFactor=0.05, nrepSim=100, plot=TRUE, vipthresh=0.8, epsilonProportion=0.2, epsilonMultiplier=0.5, nStepsPRC=4) {
 	#print("in do run")
 	splits<-getSimulationSplits(phy) #initialize this info
 
@@ -901,7 +901,7 @@ input.data<-rbind(length(phy[[3]]), startingPriorsFns, startingPriorsValues, int
 
 	distanceVector<-rep(NA, dim(predictResult)[1])
 	for (simulationIndex in 1:dim(predictResult)[1]) {
-			distanceVector[simulationIndex]<-dist(matrix(c(trueFreeValues[simulationIndex, ], predictResult[simulationIndex, ]), nrow=2, byrow=T))[1]
+			distanceVector[simulationIndex]<-dist(matrix(c(trueFreeValues[simulationIndex, ], predictResult[simulationIndex, ]), nrow=2, byrow=TRUE))[1]
 	}
 	#cat("distanceVector", "\n")
 	#print(distanceVector)
@@ -939,7 +939,8 @@ input.data<-rbind(length(phy[[3]]), startingPriorsFns, startingPriorsValues, int
 	particle<-1
 	attempts<-0
 	particleDataFrame<-data.frame()
-	cat("successes", "attempts", "expected number of attempts required\n")
+	cat("\n\n\nsuccesses", "attempts", "expected number of attempts required\n\n\n")
+	start.time<-proc.time()[[3]]
 	particleVector<-c()
 	originalSummaryStats<-boxcoxplsSummary(todo, summaryStatsLong(phy, traits, todo), prunedPlsResult, boxcoxLambda, boxcoxAddition)
 	#cat("originalSummaryStats\n")
@@ -954,7 +955,7 @@ input.data<-rbind(length(phy[[3]]), startingPriorsFns, startingPriorsValues, int
 		#cat("\nintrinsicVector\n")
 		#print(intrinsicValues(newparticleVector[[1]]))
 
-		newparticleVector[[1]]<-setDistance(newparticleVector[[1]], dist(matrix(c(boxcoxplsSummary(todo, summaryStatsLong(phy, convertTaxonFrameToGeigerData(doSimulation(splits, intrinsicFn, extrinsicFn, startingStates(newparticleVector[[1]]), intrinsicValues(newparticleVector[[1]]), extrinsicValues(newparticleVector[[1]]), timeStep), phy), todo), prunedPlsResult, boxcoxLambda, boxcoxAddition), originalSummaryStats), nrow=2, byrow=T))[1])
+		newparticleVector[[1]]<-setDistance(newparticleVector[[1]], dist(matrix(c(boxcoxplsSummary(todo, summaryStatsLong(phy, convertTaxonFrameToGeigerData(doSimulation(splits, intrinsicFn, extrinsicFn, startingStates(newparticleVector[[1]]), intrinsicValues(newparticleVector[[1]]), extrinsicValues(newparticleVector[[1]]), timeStep), phy), todo), prunedPlsResult, boxcoxLambda, boxcoxAddition), originalSummaryStats), nrow=2, byrow=TRUE))[1])
 		if (is.na(distance(newparticleVector[[1]]))) {
 			while(sink.number()>0) {sink()}
 			warning("distance(newparticleVector[[1]]) = NA")
@@ -984,14 +985,17 @@ input.data<-rbind(length(phy[[3]]), startingPriorsFns, startingPriorsValues, int
 #cat("\n\nlength of vectorForDataFrame = ", length(vectorForDataFrame), "\n", "length of startingStates = ", length(startingStates), "\nlength of intrinsicValues = ", length(intrinsicValues), "\nlength of extrinsicValues = ", length(extrinsicValues), "\ndistance = ", distance(newparticleVector[[1]]), "\nweight = ", getWeight(newparticleVector[[1]]), "\n", vectorForDataFrame, "\n")
 		particleDataFrame<-rbind(particleDataFrame, data.frame(rbind(vectorForDataFrame)))
 		cat(particle-1, attempts, floor(numParticles*attempts/particle), startingStates(newparticleVector[[1]]), intrinsicValues(newparticleVector[[1]]), extrinsicValues(newparticleVector[[1]]), distance(newparticleVector[[1]]), "\n")
-		
+			if (floor(numParticles*attempts/particle)>=floor(numParticles*20)){
+				stop ("\n\nexpected number of generations is too high\n\n")
+			}
 	}
 	#return(proc.time())
-	time.Gen1<-proc.time()
-	time.GenX<-vector()
+	time<-proc.time()[[3]]-start.time
+	time.per.gen<-time
 
 	for (dataGenerationStep in 2:length(toleranceVector)) {
 		cat("\n\n\n", "STARTING DATA GENERATION STEP ", dataGenerationStep, "\n\n\n")
+		start.time<-proc.time()[[3]]
 		particleWeights<-particleWeights/(sum(particleWeights)) #normalize to one
 		cat("particleWeights\n", particleWeights, "\n\n")
 		oldParticleVector<-particleVector
@@ -1021,7 +1025,7 @@ input.data<-rbind(length(phy[[3]]), startingPriorsFns, startingPriorsValues, int
 			newparticleVector[[1]]<-mutateStates(newparticleVector[[1]], startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, standardDevFactor)
 			#cat("dput(newparticleVector[[1]]) AFTER MUTATE STATES\n")
 			#dput(newparticleVector[[1]])
-			newparticleVector[[1]]<-setDistance(newparticleVector[[1]], dist(matrix(c(boxcoxplsSummary(todo, summaryStatsLong(phy, convertTaxonFrameToGeigerData(doSimulation(splits, intrinsicFn, extrinsicFn, startingStates(newparticleVector[[1]]), intrinsicValues(newparticleVector[[1]]), extrinsicValues(newparticleVector[[1]]), timeStep), phy), todo), prunedPlsResult, boxcoxLambda, boxcoxAddition), originalSummaryStats), nrow=2, byrow=T))[1])
+			newparticleVector[[1]]<-setDistance(newparticleVector[[1]], dist(matrix(c(boxcoxplsSummary(todo, summaryStatsLong(phy, convertTaxonFrameToGeigerData(doSimulation(splits, intrinsicFn, extrinsicFn, startingStates(newparticleVector[[1]]), intrinsicValues(newparticleVector[[1]]), extrinsicValues(newparticleVector[[1]]), timeStep), phy), todo), prunedPlsResult, boxcoxLambda, boxcoxAddition), originalSummaryStats), nrow=2, byrow=TRUE))[1])
 			if (plot) {
 				plotcol="grey"
 			if (distance(newparticleVector[[1]])<toleranceVector[dataGenerationStep]) {
@@ -1096,8 +1100,8 @@ input.data<-rbind(length(phy[[3]]), startingPriorsFns, startingPriorsValues, int
 		}
 		particleDataFrame[which(particleDataFrame$generation==dataGenerationStep), ]$weight<-particleDataFrame[which(particleDataFrame$generation==dataGenerationStep), ]$weight/(sum(particleDataFrame[which(particleDataFrame$generation==dataGenerationStep), ]$weight))
 
-		time.GenX[dataGenerationStep]<-proc.time()
-		time.per.generation<-c(time.Gen1, time.GenX)
+		time<-proc.time()[[3]]
+		time.per.gen <-c(time.per.gen, time)
 
 	}
 	names(particleDataFrame)<-nameVector
@@ -1115,7 +1119,7 @@ input.data<-rbind(length(phy[[3]]), startingPriorsFns, startingPriorsValues, int
 
 	test<-vector("list", 3)
 	test[[1]]<-input.data
-	test[[2]]<-time.per.generation
+	test[[2]]<-time.per.gen
 	test[[3]]<-particleDataFrame
 	return(test)
 
@@ -1266,7 +1270,7 @@ doSimulationForPlotting<-function(splits, intrinsicFn, extrinsicFn, startingStat
 			}
 #print(taxa)
 #print(length(otherstatesvector))
-			otherstatesmatrix<-matrix(otherstatesvector, ncol=length(states(taxa[[i]])), byrow=T) #each row represents one taxon
+			otherstatesmatrix<-matrix(otherstatesvector, ncol=length(states(taxa[[i]])), byrow=TRUE) #each row represents one taxon
 			newvalues<-states(taxa[[i]])+intrinsicFn(params=intrinsicValues, states=states(taxa[[i]]), timefrompresent =timefrompresent)+extrinsicFn(params=extrinsicValues, selfstates=states(taxa[[i]]), otherstates=otherstatesmatrix, timefrompresent =timefrompresent)
 			nextstates(taxa[[i]])<-newvalues
 			startVector<-append(startVector, states(taxa[[i]]))
