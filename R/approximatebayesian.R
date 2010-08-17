@@ -737,11 +737,19 @@ boxcoxplsSummary<-function(todo, summaryValues, prunedPlsResult, boxcoxLambda, b
 #the doRun function takes input from the user and then automatically guesses optimal parameters, though user overriding is also possible.
 #the guesses are used to do simulations near the expected region. If omitted, they are set to the midpoint of the input parameter matrices
 
-doRun<-function(phy, traits, intrinsicFn, extrinsicFn, summaryFns=c(rawValuesSummaryStats, geigerUnivariateSummaryStats2), startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, startingStatesGuess=c(), intrinsicStatesGuess=c(), extrinsicStatesGuess=c(), timeStep, toleranceVector=c(), numParticles=1000, standardDevFactor=0.05, nrepSim=100, plot=TRUE, vipthresh=0.8, epsilonProportion=0.2, epsilonMultiplier=0.5, nStepsPRC=4) {
+doRun<-function(phy, traits, intrinsicFn, extrinsicFn, summaryFns=c(rawValuesSummaryStats, geigerUnivariateSummaryStats2), startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, startingStatesGuess=c(), intrinsicStatesGuess=c(), extrinsicStatesGuess=c(), timeStep, toleranceVector=c(), numParticles=1000, standardDevFactor=0.05, nrepSim=100, plot=TRUE, vipthresh=0.8, epsilonProportion=0.2, epsilonMultiplier=0.5, nStepsPRC=4, maxTries=1) {
 	#print("in do run")
+
+run.goingwell=FALSE
+for (try in 1:maxTries)	{
+while (!run.goingwell) {
+	cat("\n\n****  TRY", try, "of", maxTries, " ****\n\n")
+	run.finished=FALSE
+	run.goingwell=TRUE
+	
 	splits<-getSimulationSplits(phy) #initialize this info
 
-input.data<-rbind(length(phy[[3]]), startingPriorsFns, startingPriorsValues, intrinsicPriorsFns, intrinsicPriorsValues, nrepSim, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles)
+input.data<-rbind(length(phy[[3]]), startingPriorsFns, startingPriorsValues, intrinsicPriorsFns, intrinsicPriorsValues, nrepSim, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, try)
 
 
 	#figure out number of free params
@@ -918,7 +926,6 @@ input.data<-rbind(length(phy[[3]]), startingPriorsFns, startingPriorsValues, int
 	#------------------ ABC-PRC (start) ------------------
 	#do not forget to use boxcoxLambda, and prunedPlsResult when computing distances
 	
-	Rprof(PRC.time.check<-tempfile())
 	nameVector<-c("generation", "attempt", "id", "parentid", "distance", "weight")
 	if (plot) {
 		plot(x=c(min(intrinsicPriorsValues), max(intrinsicPriorsValues)), y=c(0, 5*max(toleranceVector)), type="n")
@@ -985,14 +992,24 @@ input.data<-rbind(length(phy[[3]]), startingPriorsFns, startingPriorsValues, int
 #cat("\n\nlength of vectorForDataFrame = ", length(vectorForDataFrame), "\n", "length of startingStates = ", length(startingStates), "\nlength of intrinsicValues = ", length(intrinsicValues), "\nlength of extrinsicValues = ", length(extrinsicValues), "\ndistance = ", distance(newparticleVector[[1]]), "\nweight = ", getWeight(newparticleVector[[1]]), "\n", vectorForDataFrame, "\n")
 		particleDataFrame<-rbind(particleDataFrame, data.frame(rbind(vectorForDataFrame)))
 		cat(particle-1, attempts, floor(numParticles*attempts/particle), startingStates(newparticleVector[[1]]), intrinsicValues(newparticleVector[[1]]), extrinsicValues(newparticleVector[[1]]), distance(newparticleVector[[1]]), "\n")
-			if (floor(numParticles*attempts/particle)>=floor(numParticles*20)){
-				stop ("\n\nexpected number of generations is too high\n\n")
+			if (floor(numParticles*attempts/particle)>=floor(numParticles*5)){
+				run.goingwell=FALSE
+				cat ("\n\nexpected number of generations is too high\n\n")
+				break 
 			}
-	}
-	#return(proc.time())
+}
+
 	time<-proc.time()[[3]]-start.time
 	time.per.gen<-time
 
+	if (!run.goingwell){	
+			if (try==maxTries){cat("\n\nTried", maxTries, "times and all failed!")}
+			else if (try < maxTries){cat("\n\nAborting try", try, "of", maxTries, "at Generation 1\n\n")}
+		#cat ("\n\nRetrying run  (inside bracket)\n\n")
+		break
+	}	
+	
+	if (run.goingwell){
 	for (dataGenerationStep in 2:length(toleranceVector)) {
 		cat("\n\n\n", "STARTING DATA GENERATION STEP ", dataGenerationStep, "\n\n\n")
 		start.time<-proc.time()[[3]]
@@ -1097,17 +1114,35 @@ input.data<-rbind(length(phy[[3]]), startingPriorsFns, startingPriorsValues, int
 #cat("\n\nlength of vectorForDataFrame = ", length(vectorForDataFrame), "\n", "length of startingStates = ", length(startingStates), "\nlength of intrinsicValues = ", length(intrinsicValues), "\nlength of extrinsicValues = ", length(extrinsicValues), "\ndistance = ", distance(newparticleVector[[1]]), "\nweight = ", getWeight(newparticleVector[[1]]), "\n", vectorForDataFrame, "\n")
 			particleDataFrame<-rbind(particleDataFrame, data.frame(rbind(vectorForDataFrame))) #NOTE THAT WEIGHTS AREN'T NORMALIZED IN THIS DATAFRAME
 			cat(particle-1, attempts, floor(numParticles*attempts/particle), startingStates(newparticleVector[[1]]), intrinsicValues(newparticleVector[[1]]), extrinsicValues(newparticleVector[[1]]), distance(newparticleVector[[1]]), "\n")
-			if (floor(numParticles*attempts/particle)>=floor(numParticles*20)){
-				stop ("\n\nexpected number of generations is too high\n\n")
+			if (floor(numParticles*attempts/particle)>=floor(numParticles*5)){
+				run.goingwell=FALSE
+				cat ("\n\nexpected number of generations is too high\n\n")
+				break 
 			}
 
-		}
-		particleDataFrame[which(particleDataFrame$generation==dataGenerationStep), ]$weight<-particleDataFrame[which(particleDataFrame$generation==dataGenerationStep), ]$weight/(sum(particleDataFrame[which(particleDataFrame$generation==dataGenerationStep), ]$weight))
+		} #particles
+	
+	if (!run.goingwell){
+			#cat ("\n\nRetrying run  (inside datagenerationsstep bracket)\n\n")
+			break
+		}		
+
+	
+	
+	particleDataFrame[which(particleDataFrame$generation==dataGenerationStep), ]$weight<-particleDataFrame[which(particleDataFrame$generation==dataGenerationStep), ]$weight/(sum(particleDataFrame[which(particleDataFrame$generation==dataGenerationStep), ]$weight))
 
 		time<-proc.time()[[3]]
 		time.per.gen <-c(time.per.gen, time)
 
-	}
+	} #for (dataGenerationStep in 2:length(toleranceVector))
+
+	if (!run.goingwell){	
+			if (try==maxTries){cat("\n\nTried", maxTries, "times and all failed!")}
+			else if (try < maxTries){cat("\n\nAborting try", try, "of", maxTries, "at Generation", dataGenerationStep, "\n\n")}
+		#cat ("\n\nRetrying run  (inside bracket)\n\n")
+		break
+	}		
+	
 	names(particleDataFrame)<-nameVector
 	if(plot) {
 		quartz()
@@ -1119,6 +1154,7 @@ input.data<-rbind(length(phy[[3]]), startingPriorsFns, startingPriorsValues, int
 		lines(density(subset(particleDataFrame, generation==length(toleranceVector))[, 8]), col= "red")
 	}
 	
+} #if run.goingwell bracket	
 	
 
 	test<-vector("list", 3)
@@ -1127,13 +1163,14 @@ input.data<-rbind(length(phy[[3]]), startingPriorsFns, startingPriorsValues, int
 	test[[3]]<-particleDataFrame
 	return(test)
 
-
-	
+}
+}
+}	
 	#------------------ ABC-PRC (end) ------------------
 	
 	
 
-}
+
 
 
 presentABCOutput<-function(ABCOutput, plot=FALSE, priors=c(), truth=c()) {
