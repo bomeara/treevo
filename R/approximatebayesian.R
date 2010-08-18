@@ -992,7 +992,7 @@ input.data<-rbind(length(phy[[3]]), startingPriorsFns, startingPriorsValues, int
 #cat("\n\nlength of vectorForDataFrame = ", length(vectorForDataFrame), "\n", "length of startingStates = ", length(startingStates), "\nlength of intrinsicValues = ", length(intrinsicValues), "\nlength of extrinsicValues = ", length(extrinsicValues), "\ndistance = ", distance(newparticleVector[[1]]), "\nweight = ", getWeight(newparticleVector[[1]]), "\n", vectorForDataFrame, "\n")
 		particleDataFrame<-rbind(particleDataFrame, data.frame(rbind(vectorForDataFrame)))
 		cat(particle-1, attempts, floor(numParticles*attempts/particle), startingStates(newparticleVector[[1]]), intrinsicValues(newparticleVector[[1]]), extrinsicValues(newparticleVector[[1]]), distance(newparticleVector[[1]]), "\n")
-			if (floor(numParticles*attempts/particle)>=floor(numParticles*5)){
+			if (floor(numParticles*attempts/particle)>=floor(numParticles*20)){
 				run.goingwell=FALSE
 				cat ("\n\nexpected number of generations is too high\n\n")
 				break 
@@ -1114,7 +1114,7 @@ input.data<-rbind(length(phy[[3]]), startingPriorsFns, startingPriorsValues, int
 #cat("\n\nlength of vectorForDataFrame = ", length(vectorForDataFrame), "\n", "length of startingStates = ", length(startingStates), "\nlength of intrinsicValues = ", length(intrinsicValues), "\nlength of extrinsicValues = ", length(extrinsicValues), "\ndistance = ", distance(newparticleVector[[1]]), "\nweight = ", getWeight(newparticleVector[[1]]), "\n", vectorForDataFrame, "\n")
 			particleDataFrame<-rbind(particleDataFrame, data.frame(rbind(vectorForDataFrame))) #NOTE THAT WEIGHTS AREN'T NORMALIZED IN THIS DATAFRAME
 			cat(particle-1, attempts, floor(numParticles*attempts/particle), startingStates(newparticleVector[[1]]), intrinsicValues(newparticleVector[[1]]), extrinsicValues(newparticleVector[[1]]), distance(newparticleVector[[1]]), "\n")
-			if (floor(numParticles*attempts/particle)>=floor(numParticles*5)){
+			if (floor(numParticles*attempts/particle)>=floor(numParticles*20)){
 				run.goingwell=FALSE
 				cat ("\n\nexpected number of generations is too high\n\n")
 				break 
