@@ -739,7 +739,7 @@ boxcoxplsSummary<-function(todo, summaryValues, prunedPlsResult, boxcoxLambda, b
 
 doRun<-function(phy, traits, intrinsicFn, extrinsicFn, summaryFns=c(rawValuesSummaryStats, geigerUnivariateSummaryStats2), startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, startingStatesGuess=c(), intrinsicStatesGuess=c(), extrinsicStatesGuess=c(), timeStep, toleranceVector=c(), numParticles=1000, standardDevFactor=0.05, nrepSim=100, plot=TRUE, vipthresh=0.8, epsilonProportion=0.2, epsilonMultiplier=0.5, nStepsPRC=4, maxTries=1) {
 	#print("in do run")
-
+trace(doRun)
 run.goingwell=FALSE
 for (try in 1:maxTries)	{
 while (!run.goingwell) {
@@ -831,7 +831,7 @@ input.data<-rbind(length(phy[[3]]), startingPriorsFns, startingPriorsValues, int
 	#See Wegmann et al. Efficient Approximate Bayesian Computation Coupled With Markov Chain Monte Carlo Without Likelihood. Genetics (2009) vol. 182 (4) pp. 1207-1218 for more on the method
 	trueFreeValues<-matrix(nrow=0, ncol= numberParametersFree)
 	summaryValues<-matrix(nrow=0, ncol=22+dim(traits)[1]) #there are 22 summary statistics possible, plus the raw data
-	Rprof(nrepSims.time.check<-tempfile())	
+	#Rprof(nrepSims.time.check<-tempfile())	
 	for (simIndex in 1:nrepSim) {
 		cat("Now doing simulation rep ",simIndex," of ",nrepSim,"\n",sep="")
 		trueStarting<-rep(NaN, dim(startingPriorsValues)[2])
@@ -853,7 +853,7 @@ input.data<-rbind(length(phy[[3]]), startingPriorsFns, startingPriorsValues, int
 		summaryValues<-rbind(summaryValues, summaryStatsLong(phy, convertTaxonFrameToGeigerData (doSimulation(splits=splits, intrinsicFn= intrinsicFn, extrinsicFn= extrinsicFn, startingStates= trueStarting, intrinsicValues= trueIntrinsic, extrinsicValues= trueExtrinsic, timeStep=timeStep), phy)))
 		while(sink.number()>0) {sink()}
 	}
-	summaryRprof(nrepSims.time.check)
+	#summaryRprof(nrepSims.time.check)
 	library("car")
 	#now put this into the boxcox function to get best lambda for each summary stat
 	boxcoxLambda<-rep(NA, dim(summaryValues)[2])
@@ -1003,9 +1003,14 @@ input.data<-rbind(length(phy[[3]]), startingPriorsFns, startingPriorsValues, int
 	time.per.gen<-time
 
 	if (!run.goingwell){	
-			if (try==maxTries){cat("\n\nTried", maxTries, "times and all failed!")}
-			else if (try < maxTries){cat("\n\nAborting try", try, "of", maxTries, "at Generation 1\n\n")}
-		#cat ("\n\nRetrying run  (inside bracket)\n\n")
+			if (try==maxTries){
+				write(input.data,file="Error.txt", append=TRUE)
+				cat("\n\nTried", maxTries, "times and all failed!")
+				cat("\ninput.data was appended to Error.txt file within the working directory\n\n")
+			}
+			else if (try < maxTries){
+				cat("\n\nAborting try", try, "of", maxTries, "at Generation 1\n\n")
+			}
 		break
 	}	
 	
@@ -1137,9 +1142,14 @@ input.data<-rbind(length(phy[[3]]), startingPriorsFns, startingPriorsValues, int
 	} #for (dataGenerationStep in 2:length(toleranceVector))
 
 	if (!run.goingwell){	
-			if (try==maxTries){cat("\n\nTried", maxTries, "times and all failed!")}
-			else if (try < maxTries){cat("\n\nAborting try", try, "of", maxTries, "at Generation", dataGenerationStep, "\n\n")}
-		#cat ("\n\nRetrying run  (inside bracket)\n\n")
+			if (try==maxTries){
+				write(input.data,file="Error.txt", append=TRUE)
+				cat("\n\nTried", maxTries, "times and all failed!")
+				cat("\ninput.data was appended to Error.txt file within the working directory\n\n")
+			}
+			else if (try < maxTries){
+				cat("\n\nAborting try", try, "of", maxTries, "at Generation", dataGenerationStep, "\n\n")
+			}
 		break
 	}		
 	
@@ -1165,6 +1175,7 @@ input.data<-rbind(length(phy[[3]]), startingPriorsFns, startingPriorsValues, int
 
 }
 }
+untrace(doRun)
 }	
 	#------------------ ABC-PRC (end) ------------------
 	
