@@ -749,7 +749,7 @@ while (!run.goingwell) {
 	
 	splits<-getSimulationSplits(phy) #initialize this info
 
-input.data<-rbind(length(phy[[3]]), startingPriorsFns, startingPriorsValues, intrinsicPriorsFns, intrinsicPriorsValues, nrepSim, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, try)
+input.data<-rbind(job.name, length(phy[[3]]), startingPriorsFns, startingPriorsValues, intrinsicPriorsFns, intrinsicPriorsValues, nrepSim, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, try)
 
 
 	#figure out number of free params
