@@ -737,13 +737,17 @@ boxcoxplsSummary<-function(todo, summaryValues, prunedPlsResult, boxcoxLambda, b
 #the doRun function takes input from the user and then automatically guesses optimal parameters, though user overriding is also possible.
 #the guesses are used to do simulations near the expected region. If omitted, they are set to the midpoint of the input parameter matrices
 
-doRun<-function(phy, traits, intrinsicFn, extrinsicFn, summaryFns=c(rawValuesSummaryStats, geigerUnivariateSummaryStats2), startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, startingStatesGuess=c(), intrinsicStatesGuess=c(), extrinsicStatesGuess=c(), timeStep, toleranceVector=c(), numParticles=1000, standardDevFactor=0.05, nrepSim=100, plot=TRUE, vipthresh=0.8, epsilonProportion=0.2, epsilonMultiplier=0.5, nStepsPRC=4, maxTries=1) {
+doRun<-function(phy, traits, intrinsicFn, extrinsicFn, summaryFns=c(rawValuesSummaryStats, geigerUnivariateSummaryStats2), startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, startingStatesGuess=c(), intrinsicStatesGuess=c(), extrinsicStatesGuess=c(), timeStep, toleranceVector=c(), numParticles=1000, standardDevFactor=0.05, nrepSim=100, plot=TRUE, vipthresh=0.8, epsilonProportion=0.2, epsilonMultiplier=0.5, nStepsPRC=4, maxTries=1, debug=TRUE) {
 	#print("in do run")
 trace(doRun)
 run.goingwell=FALSE
 for (try in 1:maxTries)	{
 while (!run.goingwell) {
 	cat("\n\n****  TRY", try, "of", maxTries, " ****\n\n")
+		if (debug){
+			cat(".Random Seed=", .Random.seed[1:6], "\n\n")
+			cat("runif=", runif(1), "\n\n")
+		}
 	run.finished=FALSE
 	run.goingwell=TRUE
 	
@@ -1017,6 +1021,10 @@ input.data<-rbind(job.name, length(phy[[3]]), startingPriorsFns, startingPriorsV
 	if (run.goingwell){
 	for (dataGenerationStep in 2:length(toleranceVector)) {
 		cat("\n\n\n", "STARTING DATA GENERATION STEP ", dataGenerationStep, "\n\n\n")
+			if (debug){
+				cat(".Random Seed=", .Random.seed[1:6], "\n\n")
+				cat("runif=", runif(1), "\n\n")
+			}
 		start.time<-proc.time()[[3]]
 		particleWeights<-particleWeights/(sum(particleWeights)) #normalize to one
 		cat("particleWeights\n", particleWeights, "\n\n")
