@@ -740,6 +740,7 @@ boxcoxplsSummary<-function(todo, summaryValues, prunedPlsResult, boxcoxLambda, b
 doRun<-function(phy, traits, intrinsicFn, extrinsicFn, summaryFns=c(rawValuesSummaryStats, geigerUnivariateSummaryStats2), startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, startingStatesGuess=c(), intrinsicStatesGuess=c(), extrinsicStatesGuess=c(), timeStep, toleranceVector=c(), numParticles=1000, standardDevFactor=0.05, nrepSim=100, plot=TRUE, vipthresh=0.8, epsilonProportion=0.2, epsilonMultiplier=0.5, nStepsPRC=4, maxTries=1, debug=TRUE) {
 	#print("in do run")
 trace(doRun)
+
 run.goingwell=FALSE
 for (try in 1:maxTries)	{
 while (!run.goingwell) {
@@ -747,13 +748,14 @@ while (!run.goingwell) {
 		if (debug){
 			cat(".Random Seed=", .Random.seed[1:6], "\n\n")
 			cat("runif=", runif(1), "\n\n")
+			#cat("toleranceVector=", toleranceVector, "\n\n")
 		}
 	run.finished=FALSE
 	run.goingwell=TRUE
 	
 	splits<-getSimulationSplits(phy) #initialize this info
 
-input.data<-rbind(job.name, length(phy[[3]]), startingPriorsFns, startingPriorsValues, intrinsicPriorsFns, intrinsicPriorsValues, nrepSim, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, try)
+#input.data<-rbind(job.name, length(phy[[3]]), startingPriorsFns, startingPriorsValues, intrinsicPriorsFns, intrinsicPriorsValues, nrepSim, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, try, toleranceVector)
 
 
 	#figure out number of free params
@@ -1024,6 +1026,7 @@ input.data<-rbind(job.name, length(phy[[3]]), startingPriorsFns, startingPriorsV
 			if (debug){
 				cat(".Random Seed=", .Random.seed[1:6], "\n\n")
 				cat("runif=", runif(1), "\n\n")
+				#cat("toleranceVector=", toleranceVector, "\n\n")
 			}
 		start.time<-proc.time()[[3]]
 		particleWeights<-particleWeights/(sum(particleWeights)) #normalize to one
@@ -1174,11 +1177,14 @@ input.data<-rbind(job.name, length(phy[[3]]), startingPriorsFns, startingPriorsV
 	
 } #if run.goingwell bracket	
 	
+input.data<-rbind(job.name, length(phy[[3]]), startingPriorsFns, startingPriorsValues, intrinsicPriorsFns, intrinsicPriorsValues, nrepSim, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, try, toleranceVector)
 
-	test<-vector("list", 3)
+
+	test<-vector("list", 4)
 	test[[1]]<-input.data
 	test[[2]]<-time.per.gen
 	test[[3]]<-particleDataFrame
+	test[[4]]<-toleranceVector
 	return(test)
 
 }
