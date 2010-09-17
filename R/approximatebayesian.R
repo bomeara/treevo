@@ -384,6 +384,10 @@ mutateState<-function(startingState, standardDevFactor, priorValues, priorFn) {
 	while(!validNewState) {
 		newState<-rnorm(n=1, mean=startingState, sd=sdToUse)
 		validNewState<-TRUE
+		if(is.na(newState)) {
+			print(paste("MUTATESTATE_ERROR: newState = ",newState," sdToUse=",sdToUse," startingState=",startingState," priorFn=",priorFn," startingState=",startingState," priorValues=\n",sep=""))
+			print(priorValues)
+		}
 		if (newState<minBound){
 			validNewState<-FALSE
 			}
