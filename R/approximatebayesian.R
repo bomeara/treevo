@@ -1022,7 +1022,7 @@ input.data<-rbind(job.name, length(phy[[3]]), startingPriorsFns, startingPriorsV
 				ErrorParticleFrame[[2]]<-todo
 				ErrorParticleFrame[[3]]<-particleDataFrame
 				ErrorParticleFrame[[4]]<-toleranceVector
-				save(ErrorParticleFrame, file="ErrorParticleFrame.txt")
+				save(ErrorParticleFrame, file=paste("ErrorParticleFrame", job.name, ".txt", sep="")
 				cat("\n\nTried", maxTries, "times and all failed!")
 				cat("\ninput.data was appended to Error.txt file within the working directory\n\n")
 			}
@@ -1173,7 +1173,7 @@ input.data<-rbind(job.name, length(phy[[3]]), startingPriorsFns, startingPriorsV
 				ErrorParticleFrame[[2]]<-todo
 				ErrorParticleFrame[[3]]<-particleDataFrame
 				ErrorParticleFrame[[4]]<-toleranceVector
-				save(ErrorParticleFrame, file="ErrorParticleFrame.txt")
+				save(ErrorParticleFrame, file=paste("ErrorParticleFrame", job.name, ".txt", sep="")
 				cat("\n\nTried", maxTries, "times and all failed!")
 				cat("\ninput.data was appended to Error.txt file within the working directory\n\n")
 			}
