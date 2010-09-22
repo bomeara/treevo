@@ -1016,6 +1016,13 @@ input.data<-rbind(job.name, length(phy[[3]]), startingPriorsFns, startingPriorsV
 	if (!run.goingwell){	
 			if (try==maxTries){
 				write(input.data,file="Error.txt", append=TRUE)
+				ErrorParticleFrame<-vector("list", 4)
+				names(particleDataFrame)<-nameVector
+				ErrorParticleFrame[[1]]<-input.data
+				ErrorParticleFrame[[2]]<-todo
+				ErrorParticleFrame[[3]]<-particleDataFrame
+				ErrorParticleFrame[[4]]<-toleranceVector
+				save(ErrorParticleFrame, file="ErrorParticleFrame.txt")
 				cat("\n\nTried", maxTries, "times and all failed!")
 				cat("\ninput.data was appended to Error.txt file within the working directory\n\n")
 			}
@@ -1160,6 +1167,13 @@ input.data<-rbind(job.name, length(phy[[3]]), startingPriorsFns, startingPriorsV
 	if (!run.goingwell){	
 			if (try==maxTries){
 				write(input.data,file="Error.txt", append=TRUE)
+				ErrorParticleFrame<-vector("list", 4)
+				names(particleDataFrame)<-nameVector
+				ErrorParticleFrame[[1]]<-input.data
+				ErrorParticleFrame[[2]]<-todo
+				ErrorParticleFrame[[3]]<-particleDataFrame
+				ErrorParticleFrame[[4]]<-toleranceVector
+				save(ErrorParticleFrame, file="ErrorParticleFrame.txt")
 				cat("\n\nTried", maxTries, "times and all failed!")
 				cat("\ninput.data was appended to Error.txt file within the working directory\n\n")
 			}
