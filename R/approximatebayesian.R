@@ -364,18 +364,32 @@ mutateState<-function(startingState, standardDevFactor, priorValues, priorFn) {
 	}
 	else if (priorFn=="uniform") {
 		sdToUse<-standardDevFactor*range(priorValues)
+			if (sdToUse<0){
+				print(paste("priorFN=", priorFn, "standardDevFactor=", standardDevFactor, "range(priorValues)=", range(priorValues)))
+			}
 	}
 	else if (priorFn=="normal") {
-		sdToUse<-standardDevFactor*priorValues[2]
+		sdToUse<-standardDevFactor*priorValues[2]			if (sdToUse<0){
+				print(paste("priorFN=", priorFn, "standardDevFactor=", standardDevFactor, "range(priorValues)=", range(priorValues)))
+			}
 	}
 	else if (priorFn=="lognormal") {
 		sdToUse<-standardDevFactor*priorValues[2]
+			if (sdToUse<0){
+				print(paste("priorFN=", priorFn, "standardDevFactor=", standardDevFactor, "range(priorValues)=", range(priorValues)))
+			}
 	}
 	else if (priorFn=="gamma") {
 		sdToUse<-standardDevFactor*sqrt(priorValues[1]*priorValues[2]*priorValues[2])
+			if (sdToUse<0){
+				print(paste("priorFN=", priorFn, "standardDevFactor=", standardDevFactor, "range(priorValues)=", range(priorValues)))
+			}
 	}
 	else if (priorFn=="exponential") {
 		sdToUse<-standardDevFactor/priorValues[1]
+			if (sdToUse<0){
+				print(paste("priorFN=", priorFn, "standardDevFactor=", standardDevFactor, "range(priorValues)=", range(priorValues)))
+			}
 	}
 	else {
 		stop(priorFn," was not a recognized prior function")
@@ -1027,6 +1041,13 @@ input.data<-rbind(job.name, length(phy[[3]]), startingPriorsFns, startingPriorsV
 				cat("\ninput.data was appended to Error.txt file within the working directory\n\n")
 			}
 			else if (try < maxTries){
+				ErrorParticleFrame<-vector("list", 4)
+				names(particleDataFrame)<-nameVector
+				ErrorParticleFrame[[1]]<-input.data
+				ErrorParticleFrame[[2]]<-todo
+				ErrorParticleFrame[[3]]<-particleDataFrame
+				ErrorParticleFrame[[4]]<-toleranceVector
+				save(ErrorParticleFrame, file=paste("ErrorParticleFrame", job.name, ".txt", sep=""))
 				cat("\n\nAborting try", try, "of", maxTries, "at Generation 1\n\n")
 			}
 		break
@@ -1178,6 +1199,13 @@ input.data<-rbind(job.name, length(phy[[3]]), startingPriorsFns, startingPriorsV
 				cat("\ninput.data was appended to Error.txt file within the working directory\n\n")
 			}
 			else if (try < maxTries){
+				ErrorParticleFrame<-vector("list", 4)
+				names(particleDataFrame)<-nameVector
+				ErrorParticleFrame[[1]]<-input.data
+				ErrorParticleFrame[[2]]<-todo
+				ErrorParticleFrame[[3]]<-particleDataFrame
+				ErrorParticleFrame[[4]]<-toleranceVector
+				save(ErrorParticleFrame, file=paste("ErrorParticleFrame", job.name, ".txt", sep=""))
 				cat("\n\nAborting try", try, "of", maxTries, "at Generation", dataGenerationStep, "\n\n")
 			}
 		break
