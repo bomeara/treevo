@@ -363,13 +363,14 @@ mutateState<-function(startingState, standardDevFactor, priorValues, priorFn) {
 		sdToUse<-0
 	}
 	else if (priorFn=="uniform") {
-		sdToUse<-standardDevFactor*range(priorValues)
+		sdToUse<-standardDevFactor*(abs(max(priorValues)-min(priorValues)))
 			if (sdToUse<0){
 				print(paste("priorFN=", priorFn, "standardDevFactor=", standardDevFactor, "range(priorValues)=", range(priorValues)))
 			}
 	}
 	else if (priorFn=="normal") {
-		sdToUse<-standardDevFactor*priorValues[2]			if (sdToUse<0){
+		sdToUse<-standardDevFactor*priorValues[2]
+			if (sdToUse<0){
 				print(paste("priorFN=", priorFn, "standardDevFactor=", standardDevFactor, "range(priorValues)=", range(priorValues)))
 			}
 	}
