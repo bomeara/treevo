@@ -990,6 +990,8 @@ input.data<-rbind(job.name, length(phy[[3]]), startingPriorsFns, startingPriorsV
 
 		newparticleVector[[1]]<-setDistance(newparticleVector[[1]], dist(matrix(c(boxcoxplsSummary(todo, summaryStatsLong(phy, convertTaxonFrameToGeigerData(doSimulation(splits, intrinsicFn, extrinsicFn, startingStates(newparticleVector[[1]]), intrinsicValues(newparticleVector[[1]]), extrinsicValues(newparticleVector[[1]]), timeStep), phy), todo), prunedPlsResult, boxcoxLambda, boxcoxAddition), originalSummaryStats), nrow=2, byrow=TRUE))[1])
 		if (is.na(distance(newparticleVector[[1]]))) {
+			cat("Error with Geiger?  distance(newparticleVector[[1]]) = NA")
+			break
 			while(sink.number()>0) {sink()}
 			warning("distance(newparticleVector[[1]]) = NA")
 			newparticleVector[[1]]<-setId(newparticleVector[[1]], -1)
@@ -1037,7 +1039,8 @@ input.data<-rbind(job.name, length(phy[[3]]), startingPriorsFns, startingPriorsV
 				ErrorParticleFrame[[2]]<-todo
 				ErrorParticleFrame[[3]]<-particleDataFrame
 				ErrorParticleFrame[[4]]<-toleranceVector
-				save(ErrorParticleFrame, file=paste("ErrorParticleFrame", job.name, ".txt", sep=""))
+				ErrorParticleFrame->paste("ErrorParticleFrame", job.name, sep="")
+				save(paste("ErrorParticleFrame", job.name, sep=""), file=paste("ErrorParticleFrame", job.name, ".txt", sep=""))
 				cat("\n\nTried", maxTries, "times and all failed!")
 				cat("\ninput.data was appended to Error.txt file within the working directory\n\n")
 			}
@@ -1048,7 +1051,8 @@ input.data<-rbind(job.name, length(phy[[3]]), startingPriorsFns, startingPriorsV
 				ErrorParticleFrame[[2]]<-todo
 				ErrorParticleFrame[[3]]<-particleDataFrame
 				ErrorParticleFrame[[4]]<-toleranceVector
-				save(ErrorParticleFrame, file=paste("ErrorParticleFrame", job.name, ".txt", sep=""))
+				ErrorParticleFrame->paste("ErrorParticleFrame", job.name, sep="")
+				save(paste("ErrorParticleFrame", job.name, sep=""), file=paste("ErrorParticleFrame", job.name, ".txt", sep=""))
 				cat("\n\nAborting try", try, "of", maxTries, "at Generation 1\n\n")
 			}
 		break
@@ -1195,7 +1199,8 @@ input.data<-rbind(job.name, length(phy[[3]]), startingPriorsFns, startingPriorsV
 				ErrorParticleFrame[[2]]<-todo
 				ErrorParticleFrame[[3]]<-particleDataFrame
 				ErrorParticleFrame[[4]]<-toleranceVector
-				save(ErrorParticleFrame, file=paste("ErrorParticleFrame", job.name, ".txt", sep=""))
+				ErrorParticleFrame->paste("ErrorParticleFrame", job.name, sep="")
+				save(paste("ErrorParticleFrame", job.name, sep=""), file=paste("ErrorParticleFrame", job.name, ".txt", sep=""))
 				cat("\n\nTried", maxTries, "times and all failed!")
 				cat("\ninput.data was appended to Error.txt file within the working directory\n\n")
 			}
@@ -1206,7 +1211,8 @@ input.data<-rbind(job.name, length(phy[[3]]), startingPriorsFns, startingPriorsV
 				ErrorParticleFrame[[2]]<-todo
 				ErrorParticleFrame[[3]]<-particleDataFrame
 				ErrorParticleFrame[[4]]<-toleranceVector
-				save(ErrorParticleFrame, file=paste("ErrorParticleFrame", job.name, ".txt", sep=""))
+				ErrorParticleFrame->paste("ErrorParticleFrame", job.name, sep="")
+				save(paste("ErrorParticleFrame", job.name, sep=""), file=paste("ErrorParticleFrame", job.name, ".txt", sep=""))
 				cat("\n\nAborting try", try, "of", maxTries, "at Generation", dataGenerationStep, "\n\n")
 			}
 		break
@@ -1414,4 +1420,9 @@ doSimulationForPlotting<-function(splits, intrinsicFn, extrinsicFn, startingStat
 		lines(x=c(startVector[i], endVector[i]), y=max(c(startTime, endTime)) - c(startTime[i], endTime[i]))	
 	}
 	return(data.frame(startVector, endVector, startTime, endTime))
+
 }
+
+
+
+
