@@ -85,7 +85,7 @@ summaryStatsLong<-function(phy, data, todo=c()) {
 	}
 	print (paste("failurevector = ",failurevector,collapse="",sep=""))
 	if (somethingfailed) {
-		failed.summarystats<-c(doput(brown), doput(alpha), doput(white), doput(white))
+		failed.summarystats<-c(dput(brown), dput(alpha), dput(white), dput(white))
 		GeigerFailure<-vector("list", 2)
 		GeigerFailure[[1]]<-failurevector
 		GeigerFailure[[2]]<-failed.summarystats
