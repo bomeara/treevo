@@ -65,9 +65,35 @@ summaryStatsLong<-function(phy, data, todo=c()) {
 	#cat("\n summaryStatsLong summarystats2\n")
 	#print(summarystats)
 	summarystats[which(is.finite(summarystats)==FALSE)]<-NA
+	
+	somethingfailed=FALSE
+	failurevector<-rep(NA,length(summarystats))
+	for (i in 1:length(summarystats)) {
+		if (todo[i]==1) {
+			if (is.na(summarystats[i])) {
+				somethingfailed=TRUE
+				failurevector[i]=2 #failure!
+				
+			}
+			else {
+				failurevector[i]=1 #success!
+			}
+		}
+		else {
+			failurevector[i]=0 #means was not tried
+		}
+	}
+	print (paste("failurevector = ",failurevector,collapse="",sep=""))
+	if (somethingfailed) {
+		failed.summarystats<-c(doput(brown), doput(alpha), doput(white), doput(white))
+		GeigerFailure<-vector("list", 2)
+		GeigerFailure[[1]]<-failurevector
+		GeigerFailure[[2]]<-failed.summarystats
+		save(GeigerFailure, file=paste("geigerFailure", job.name, sep=""))
+	}
+	
 	#cat("\n summaryStatsLong summarystats3\n")
-	#print(summarystats)
+	#print(sstummarystats)
 	while(sink.number()>0) {sink()}
 	summarystats
-		
 }
