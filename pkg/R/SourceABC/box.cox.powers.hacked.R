@@ -1,3 +1,4 @@
+
 box.cox.powers.hacked<-function(X, start=NULL, hypotheses=NULL, ...){
 	#modified from the car package to change the optim fn. The rest of the code is from J. Fox, author of car.
     modified.power<-function(x, lambda, gm){
