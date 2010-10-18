@@ -69,6 +69,5 @@ summaryStatsLong<-function(phy, data, todo=c()) {
 	#print(summarystats)
 	while(sink.number()>0) {sink()}
 	summarystats
-	
-	
+		
 }
