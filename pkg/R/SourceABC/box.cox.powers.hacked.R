@@ -34,7 +34,7 @@ box.cox.powers.hacked<-function(X, start=NULL, hypotheses=NULL, ...){
     result$criterion<-res$value
     result$names<-colnames(X)
     result$lambda<-res$par
-    result$stderr<-sqrt(diag(inv(res$hessian)))
+    result$stderr<-NA #Used to be: sqrt(diag(inv(res$hessian)))
     result$LR0<-2*(neg.kernel.profile.logL(X, rep(0, nc), gm)-res$value)
     result$LR1<-2*(neg.kernel.profile.logL(X, rep(1, nc), gm)-res$value)
     if (!is.null(hypotheses)) {
