@@ -248,7 +248,7 @@ input.data<-rbind(job.name, length(phy[[3]]), startingPriorsFns, startingPriorsV
 			GeigerError[[9]]<-convertTaxonFrameToGeigerData(doSimulation(splits, intrinsicFn, extrinsicFn, startingStates(newparticleVector[[1]]), intrinsicValues(newparticleVector[[1]]), extrinsicValues(newparticleVector[[1]]), timeStep), phy)
 
 			save(GeigerError, file=paste("GeigerError", job.name, ".txt", sep=""))
-			break
+			#break
 			while(sink.number()>0) {sink()}
 			warning("distance(newparticleVector[[1]]) = NA")
 			newparticleVector[[1]]<-setId(newparticleVector[[1]], -1)
