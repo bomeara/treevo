@@ -52,12 +52,11 @@ summaryStatsLong<-function(phy, data, todo=c()) {
 	white.aic<-as.numeric(try(white$aic/todo[17]))
 	
 	
-	raw.mean<-as.numeric(try(mean(data[todo[18]])))
-	raw.max<-as.numeric(try(max(data[todo[19]])))
-	raw.min<-as.numeric(try(min(data[todo[20]])))
-	raw.var<-as.numeric(try(var(data[todo[21]])))
-	raw.median<-as.numeric(try(median(data[todo[22], ])))
-	#cat("summaryStatsLong")
+	raw.mean<-as.numeric(try(mean(data)/todo[18]))
+	raw.max<-as.numeric(try(max(data)/todo[19]))
+	raw.min<-as.numeric(try(min(data)/todo[20]))
+	raw.var<-as.numeric(try(var(data)/todo[21]))
+	raw.median<-as.numeric(try(median(data[,])/todo[22]))	#cat("summaryStatsLong")
 	summarystats<-c(brown.lnl, brown.beta, brown.aic, lambda.lnl, lambda.beta, lambda.lambda, lambda.aic, delta.lnl, delta.beta, delta.delta, delta.aic, ou.lnl, ou.beta, ou.alpha, ou.aic, white.lnl, white.aic, raw.mean, raw.max, raw.min, raw.var, raw.median, data[[1]] )
 	#cat("\n summaryStatsLong summarystats1\n")
 	#print(summarystats)
@@ -73,7 +72,7 @@ summaryStatsLong<-function(phy, data, todo=c()) {
 			if (is.na(summarystats[i])) {
 				somethingfailed=TRUE
 				failurevector[i]=2 #failure!
-				
+				todo=0
 			}
 			else {
 				failurevector[i]=1 #success!
