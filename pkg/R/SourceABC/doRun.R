@@ -286,6 +286,9 @@ input.data<-rbind(job.name, length(phy[[3]]), startingPriorsFns, startingPriorsV
 
 	time<-proc.time()[[3]]-start.time
 	time.per.gen<-time
+	rejects.gen.one<-(dim(subset(particleDataFrame, X3==0))[1])/(dim(subset(particleDataFrame[which(particleDataFrame$X1==1),],))[1])
+	#rejects.gen.one<-(dim(subset(particleDataFrame[which(particleDataFrame$weight==0),], ))[1])/(dim(subset(particleDataFrame[which(particleDataFrame$generation==1),],))[1])
+	print(rejects.gen.one)
 
 	if (!run.goingwell){	
 			if (try==maxTries){
@@ -444,7 +447,10 @@ input.data<-rbind(job.name, length(phy[[3]]), startingPriorsFns, startingPriorsV
 
 		time<-proc.time()[[3]]
 		time.per.gen <-c(time.per.gen, time)
-
+		rejects.per.gen<-(dim(subset(particleDataFrame, X3==0))[1])/(dim(subset(particleDataFrame[which(particleDataFrame$X1==dataGenerationStep),],))[1])
+		print(rejects.per.gen)
+		#rejects<-c(rejects, rejects.per.gen)
+		
 	} #for (dataGenerationStep in 2:length(toleranceVector))
 
 	if (!run.goingwell){	
@@ -491,12 +497,13 @@ input.data<-rbind(job.name, length(phy[[3]]), startingPriorsFns, startingPriorsV
 input.data<-rbind(job.name, length(phy[[3]]), startingPriorsFns, startingPriorsValues, intrinsicPriorsFns, intrinsicPriorsValues, nrepSim, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, try, TrueStartingState, TrueIntrinsicState)
 
 
-	test<-vector("list", 5)
+	test<-vector("list", 6)
 	test[[1]]<-input.data
 	test[[2]]<-time.per.gen
 	test[[3]]<-particleDataFrame
 	test[[4]]<-toleranceVector
 	test[[5]]<-todo
+	test[[6]]<-c(rejects.gen.one, rejects.per.gen)
 	return(test)
 
 }
