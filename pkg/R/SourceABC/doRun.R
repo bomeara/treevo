@@ -1,7 +1,7 @@
 #the doRun function takes input from the user and then automatically guesses optimal parameters, though user overriding is also possible.
 #the guesses are used to do simulations near the expected region. If omitted, they are set to the midpoint of the input parameter matrices
 
-doRun<-function(phy, traits, intrinsicFn, extrinsicFn, summaryFns=c(rawValuesSummaryStats, geigerUnivariateSummaryStats2), startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, startingStatesGuess=c(), intrinsicStatesGuess=c(), extrinsicStatesGuess=c(), timeStep, toleranceVector=c(), numParticles=1000, standardDevFactor=0.05, StartSims=100, plot=TRUE, vipthresh=0.8, epsilonProportion=0.2, epsilonMultiplier=0.5, nStepsPRC=4, maxTries=1, job.name=NA, debug=TRUE, TrueStartingState=NA, TrueIntrinsicState=NA) {
+doRun<-function(phy, traits, intrinsicFn, extrinsicFn, summaryFns=c(rawValuesSummaryStats, geigerUnivariateSummaryStats2), startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, startingStatesGuess=c(), intrinsicStatesGuess=c(), extrinsicStatesGuess=c(), timeStep, toleranceVector=c(), numParticles=1000, standardDevFactor=0.05, StartSims=100, plot=TRUE, vipthresh=0.8, epsilonProportion=0.2, epsilonMultiplier=0.5, nStepsPRC=4, maxTries=1, job.name=NA, debug=TRUE, TrueStartingState=NA, TrueIntrinsicState=NA, WhenToKill=20) {
 	#print("in do run")
 trace(doRun)
 
@@ -277,7 +277,7 @@ input.data<-rbind(job.name, length(phy[[3]]), startingPriorsFns, startingPriorsV
 #cat("\n\nlength of vectorForDataFrame = ", length(vectorForDataFrame), "\n", "length of startingStates = ", length(startingStates), "\nlength of intrinsicValues = ", length(intrinsicValues), "\nlength of extrinsicValues = ", length(extrinsicValues), "\ndistance = ", distance(newparticleVector[[1]]), "\nweight = ", getWeight(newparticleVector[[1]]), "\n", vectorForDataFrame, "\n")
 		particleDataFrame<-rbind(particleDataFrame, data.frame(rbind(vectorForDataFrame)))
 		cat(particle-1, attempts, floor(numParticles*attempts/particle), startingStates(newparticleVector[[1]]), intrinsicValues(newparticleVector[[1]]), extrinsicValues(newparticleVector[[1]]), distance(newparticleVector[[1]]), "\n")
-			if (floor(numParticles*attempts/particle)>=floor(numParticles)){
+			if (floor(numParticles*attempts/particle)>=floor(numParticles)*WhenToKill){
 				run.goingwell=FALSE
 				cat ("\n\nexpected number of generations is too high\n\n")
 				break 
@@ -286,9 +286,12 @@ input.data<-rbind(job.name, length(phy[[3]]), startingPriorsFns, startingPriorsV
 
 	time<-proc.time()[[3]]-start.time
 	time.per.gen<-time
-	rejects.gen.one<-(dim(subset(particleDataFrame, X3==0))[1])/(dim(subset(particleDataFrame[which(particleDataFrame$X1==1),],))[1])
+	rejects.gen.one<-(dim(subset(particleDataFrame, X3<0))[1])/(dim(subset(particleDataFrame,))[1])
 	#rejects.gen.one<-(dim(subset(particleDataFrame[which(particleDataFrame$weight==0),], ))[1])/(dim(subset(particleDataFrame[which(particleDataFrame$generation==1),],))[1])
-	print(rejects.gen.one)
+		#print(particleDataFrame)
+		#print(dim(subset(particleDataFrame, X3<0))[1])
+		#print(dim(subset(particleDataFrame[which(particleDataFrame$X1>0),],))[1])
+		print(rejects.gen.one)
 
 	if (!run.goingwell){	
 			if (try==maxTries){
@@ -428,7 +431,7 @@ input.data<-rbind(job.name, length(phy[[3]]), startingPriorsFns, startingPriorsV
 #cat("\n\nlength of vectorForDataFrame = ", length(vectorForDataFrame), "\n", "length of startingStates = ", length(startingStates), "\nlength of intrinsicValues = ", length(intrinsicValues), "\nlength of extrinsicValues = ", length(extrinsicValues), "\ndistance = ", distance(newparticleVector[[1]]), "\nweight = ", getWeight(newparticleVector[[1]]), "\n", vectorForDataFrame, "\n")
 			particleDataFrame<-rbind(particleDataFrame, data.frame(rbind(vectorForDataFrame))) #NOTE THAT WEIGHTS AREN'T NORMALIZED IN THIS DATAFRAME
 			cat(particle-1, attempts, floor(numParticles*attempts/particle), startingStates(newparticleVector[[1]]), intrinsicValues(newparticleVector[[1]]), extrinsicValues(newparticleVector[[1]]), distance(newparticleVector[[1]]), "\n")
-			if (floor(numParticles*attempts/particle)>=floor(numParticles)){
+			if (floor(numParticles*attempts/particle)>=floor(numParticles)*WhenToKill){
 				run.goingwell=FALSE
 				cat ("\n\nexpected number of generations is too high\n\n")
 				break 
@@ -447,7 +450,11 @@ input.data<-rbind(job.name, length(phy[[3]]), startingPriorsFns, startingPriorsV
 
 		time<-proc.time()[[3]]
 		time.per.gen <-c(time.per.gen, time)
-		rejects.per.gen<-(dim(subset(particleDataFrame, X3==0))[1])/(dim(subset(particleDataFrame[which(particleDataFrame$X1==dataGenerationStep),],))[1])
+		rejects.per.gen<-(dim(subset(particleDataFrame, X3<0))[1])/(dim(subset(particleDataFrame[which(particleDataFrame$X1==dataGenerationStep),],))[1])
+		
+		#print(particleDataFrame[which(particleDataFrame$X1==dataGenerationStep),])
+		#print(dim(subset(particleDataFrame, X3<0))[1])
+		#print(dim(subset(particleDataFrame[which(particleDataFrame$X1==dataGenerationStep),],))[1])
 		print(rejects.per.gen)
 		#rejects<-c(rejects, rejects.per.gen)
 		
