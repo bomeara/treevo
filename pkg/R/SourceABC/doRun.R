@@ -322,6 +322,7 @@ input.data<-rbind(job.name, length(phy[[3]]), startingPriorsFns, startingPriorsV
 	}	
 	
 	if (run.goingwell){
+			rejects<-c()	
 	for (dataGenerationStep in 2:length(toleranceVector)) {
 		cat("\n\n\n", "STARTING DATA GENERATION STEP ", dataGenerationStep, "\n\n\n")
 			if (debug){
@@ -456,7 +457,7 @@ input.data<-rbind(job.name, length(phy[[3]]), startingPriorsFns, startingPriorsV
 		#print(dim(subset(particleDataFrame, X3<0))[1])
 		#print(dim(subset(particleDataFrame[which(particleDataFrame$X1==dataGenerationStep),],))[1])
 		print(rejects.per.gen)
-		#rejects<-c(rejects, rejects.per.gen)
+		rejects<-c(rejects, rejects.per.gen)
 		
 	} #for (dataGenerationStep in 2:length(toleranceVector))
 
@@ -510,7 +511,7 @@ input.data<-rbind(job.name, length(phy[[3]]), startingPriorsFns, startingPriorsV
 	test[[3]]<-particleDataFrame
 	test[[4]]<-toleranceVector
 	test[[5]]<-todo
-	test[[6]]<-c(rejects.gen.one, rejects.per.gen)
+	test[[6]]<-c(rejects.gen.one, rejects)
 	return(test)
 
 }
