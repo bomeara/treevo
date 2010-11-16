@@ -170,6 +170,11 @@ input.data<-rbind(job.name, length(phy[[3]]), startingPriorsFns, startingPriorsV
 	prunedPlsResult<-pls(Y=trueFreeValues, X=prunedSummaryValues)
 	#cat("prunedPlsResult", "\n")
 	#print(prunedPlsResult)
+	
+	boxcox.output<-vector("list", 3)
+	boxcox.output[[1]]<-boxcoxLambda
+	boxcox.output[[2]]<-boxcoxAddition
+	boxcox.output[[3]]<-prunedPlsResult
 
 	#----------------- Find best set of summary stats to use for this problem. (end) -----------------
 	
@@ -505,13 +510,16 @@ input.data<-rbind(job.name, length(phy[[3]]), startingPriorsFns, startingPriorsV
 input.data<-rbind(job.name, length(phy[[3]]), startingPriorsFns, startingPriorsValues, intrinsicPriorsFns, intrinsicPriorsValues, nrepSim, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, try, TrueStartingState, TrueIntrinsicState)
 
 
-	test<-vector("list", 6)
+	test<-vector("list", 9)
 	test[[1]]<-input.data
-	test[[2]]<-time.per.gen
+	test[[2]]<-boxcox.output
 	test[[3]]<-particleDataFrame
-	test[[4]]<-toleranceVector
-	test[[5]]<-todo
-	test[[6]]<-c(rejects.gen.one, rejects)
+	test[[4]]<-time.per.gen
+	test[[5]]<-toleranceVector
+	test[[6]]<-todo
+	test[[7]]<-phy
+	test[[8]]<-char
+	test[[9]]<-c(rejects.gen.one, rejects)
 	return(test)
 
 }
