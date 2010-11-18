@@ -75,7 +75,9 @@ input.data<-rbind(job.name, length(phy[[3]]), startingPriorsFns, startingPriorsV
 		}
 	}
 
-	
+	param.stdev<-matrix(nrow=nStepsPRC, ncol=1+numberParametersFree)
+	#names(param.stdev)<-c("Generation", )
+	#print(param.stdev)
 
 	#initialize guesses, if needed
 	if (length(startingStatesGuess)==0) { #if no user guesses, try pulling a value from the prior
@@ -135,8 +137,8 @@ input.data<-rbind(job.name, length(phy[[3]]), startingPriorsFns, startingPriorsV
 		if (lowValue<=0) {
 			boxcoxAddition[summaryValueIndex]<-4*abs(lowValue) #just for some protection against low values, since box.cox needs non-negative values
 		}
-		cat("\nsummary values[", summaryValueIndex, "] = ")
-		print(summaryValues[, summaryValueIndex])
+		#cat("\nsummary values[", summaryValueIndex, "] = ")
+		#print(summaryValues[, summaryValueIndex])
 		summary<-summaryValues[, summaryValueIndex]+boxcoxAddition[summaryValueIndex]
 		boxcoxLambda[summaryValueIndex]<-1
 		if(sd(summaryValues[, summaryValueIndex])>0) { #box.cox fails if all values are identical
@@ -194,8 +196,11 @@ input.data<-rbind(job.name, length(phy[[3]]), startingPriorsFns, startingPriorsV
 	epsilonDistance<-quantile(distanceVector, probs=epsilonProportion) #this gives the distance such that epsilonProportion of the simulations starting from a given set of values will be rejected 
 	#lines(x=c(epsilonDistance, epsilonDistance), y=c(0, max(densityDistanceVector$y)), lty="dotted")
 	toleranceVector<-rep(epsilonDistance, nStepsPRC)
-	for (step in 2:nStepsPRC) {
-		toleranceVector[step]<-toleranceVector[step-1]*epsilonMultiplier
+	
+	if(nStepsPRC>1){
+		for (step in 2:nStepsPRC) {
+			toleranceVector[step]<-toleranceVector[step-1]*epsilonMultiplier
+		}
 	}
 	#----------------- Find distribution of distances (end) ---------------------
 	
@@ -240,7 +245,7 @@ input.data<-rbind(job.name, length(phy[[3]]), startingPriorsFns, startingPriorsV
 
 		newparticleVector[[1]]<-setDistance(newparticleVector[[1]], dist(matrix(c(boxcoxplsSummary(todo, summaryStatsLong(phy, convertTaxonFrameToGeigerData(doSimulation(splits, intrinsicFn, extrinsicFn, startingStates(newparticleVector[[1]]), intrinsicValues(newparticleVector[[1]]), extrinsicValues(newparticleVector[[1]]), timeStep), phy), todo), prunedPlsResult, boxcoxLambda, boxcoxAddition), originalSummaryStats), nrow=2, byrow=TRUE))[1])
 		if (is.na(distance(newparticleVector[[1]]))) {
-			cat("Error with Geiger?  distance(newparticleVector[[1]]) = NA")
+			cat("Error with Geiger?  distance(newparticleVector[[1]]) = NA\n")
 			GeigerError<-vector("list", 9)
 			GeigerError[[1]]<-newparticleVector[[1]]
 			GeigerError[[2]]<-matrix(c(boxcoxplsSummary(todo, summaryStatsLong(phy, convertTaxonFrameToGeigerData(doSimulation(splits, intrinsicFn, extrinsicFn, startingStates(newparticleVector[[1]]), intrinsicValues(newparticleVector[[1]]), extrinsicValues(newparticleVector[[1]]), timeStep), phy), todo), prunedPlsResult, boxcoxLambda, boxcoxAddition), originalSummaryStats), nrow=2, byrow=TRUE)
@@ -296,7 +301,17 @@ input.data<-rbind(job.name, length(phy[[3]]), startingPriorsFns, startingPriorsV
 		#print(particleDataFrame)
 		#print(dim(subset(particleDataFrame, X3<0))[1])
 		#print(dim(subset(particleDataFrame[which(particleDataFrame$X1>0),],))[1])
-		print(rejects.gen.one)
+		#print(rejects.gen.one)
+		
+		#print(particleDataFrame[,7])
+		#print(sd(particleDataFrame[,7:6+numberParametersFree]))
+		#print(numberParametersFree)
+		#print(6+numberParametersFree)
+		param.stdev[1,]<-c(1, sd(subset(particleDataFrame, X3>0)[,7:paste(6+numberParametersFree)]))
+		#print(param.stdev)
+		
+		#stdev.Intrinsic[i]<-sd(subset(all.a[[run]][which(all.a[[run]]$weight>0),], generation==i)[,param[2]])
+
 
 	if (!run.goingwell){	
 			if (try==maxTries){
@@ -307,8 +322,8 @@ input.data<-rbind(job.name, length(phy[[3]]), startingPriorsFns, startingPriorsV
 				ErrorParticleFrame[[2]]<-todo
 				ErrorParticleFrame[[3]]<-particleDataFrame
 				ErrorParticleFrame[[4]]<-toleranceVector
-				ErrorParticleFrame->paste("ErrorParticleFrame", job.name, sep="")
-				save(paste("ErrorParticleFrame", job.name, sep=""), file=paste("ErrorParticleFrame", job.name, ".txt", sep=""))
+				#ErrorParticleFrame->paste("ErrorParticleFrame", job.name, sep="")
+				save(ErrorParticleFrame, file=paste("ErrorParticleFrame", job.name, ".txt", sep=""))
 				cat("\n\nTried", maxTries, "times and all failed!")
 				cat("\ninput.data was appended to Error.txt file within the working directory\n\n")
 			}
@@ -319,8 +334,8 @@ input.data<-rbind(job.name, length(phy[[3]]), startingPriorsFns, startingPriorsV
 				ErrorParticleFrame[[2]]<-todo
 				ErrorParticleFrame[[3]]<-particleDataFrame
 				ErrorParticleFrame[[4]]<-toleranceVector
-				ErrorParticleFrame->paste("ErrorParticleFrame", job.name, sep="")
-				save(paste("ErrorParticleFrame", job.name, sep=""), file=paste("ErrorParticleFrame", job.name, ".txt", sep=""))
+				#ErrorParticleFrame->paste("ErrorParticleFrame", job.name, sep="")
+				save(ErrorParticleFrame, file=paste("ErrorParticleFrame", job.name, ".txt", sep=""))
 				cat("\n\nAborting try", try, "of", maxTries, "at Generation 1\n\n")
 			}
 		break
@@ -328,7 +343,11 @@ input.data<-rbind(job.name, length(phy[[3]]), startingPriorsFns, startingPriorsV
 	
 	if (run.goingwell){
 			rejects<-c()	
-	for (dataGenerationStep in 2:length(toleranceVector)) {
+			dataGenerationStep=1
+	while (dataGenerationStep < length(toleranceVector)) {
+		dataGenerationStep<-dataGenerationStep+1
+		cat("datagenStep=", dataGenerationStep)
+		cat("length of the tolerance Vector=", length(toleranceVector))
 		cat("\n\n\n", "STARTING DATA GENERATION STEP ", dataGenerationStep, "\n\n\n")
 			if (debug){
 				cat(".Random Seed=", .Random.seed[1:6], "\n\n")
@@ -458,11 +477,34 @@ input.data<-rbind(job.name, length(phy[[3]]), startingPriorsFns, startingPriorsV
 		time.per.gen <-c(time.per.gen, time)
 		rejects.per.gen<-(dim(subset(particleDataFrame, X3<0))[1])/(dim(subset(particleDataFrame[which(particleDataFrame$X1==dataGenerationStep),],))[1])
 		
+		#print(particleDataFrame)
 		#print(particleDataFrame[which(particleDataFrame$X1==dataGenerationStep),])
 		#print(dim(subset(particleDataFrame, X3<0))[1])
 		#print(dim(subset(particleDataFrame[which(particleDataFrame$X1==dataGenerationStep),],))[1])
 		print(rejects.per.gen)
 		rejects<-c(rejects, rejects.per.gen)
+
+		param.stdev[dataGenerationStep,]<-c(dataGenerationStep, sd(subset(particleDataFrame, X3>0)[which(particleDataFrame$X1==dataGenerationStep),7:paste(6+numberParametersFree)]))
+		print(param.stdev)
+		
+		#param.stdev<-matrix(ncol= numberParametersFree)
+
+		#If stddev of params is >X then dataGenStep=max(dataGenStep)
+		print(param.stdev[dataGenerationStep,])
+		
+		##Trying to make a vector of values that get changed if they are under certain stdev
+		##For this to work, I will need to take out the "generation" column that I put in earlier
+		#GG<-rep(0, dim(param.stdev)[1])
+		#print(GG)
+		#print(GG[1])
+		#print(GG[2])
+		#for (check.param.stdev in 1:length(GG)){
+		#	if (param.stdev[dataGenerationStep,check.param.stdev]<1){
+		#		GG[check.param.stdev]<-1
+		#		#print("WORKS!!")	
+		#	}
+		#}
+		print(GG)
 		
 	} #for (dataGenerationStep in 2:length(toleranceVector))
 
@@ -475,8 +517,8 @@ input.data<-rbind(job.name, length(phy[[3]]), startingPriorsFns, startingPriorsV
 				ErrorParticleFrame[[2]]<-todo
 				ErrorParticleFrame[[3]]<-particleDataFrame
 				ErrorParticleFrame[[4]]<-toleranceVector
-				ErrorParticleFrame->paste("ErrorParticleFrame", job.name, sep="")
-				save(paste("ErrorParticleFrame", job.name, sep=""), file=paste("ErrorParticleFrame", job.name, ".txt", sep=""))
+				#ErrorParticleFrame->paste("ErrorParticleFrame", job.name, sep="")
+				save(ErrorParticleFrame, file=paste("ErrorParticleFrame", job.name, ".txt", sep=""))
 				cat("\n\nTried", maxTries, "times and all failed!")
 				cat("\ninput.data was appended to Error.txt file within the working directory\n\n")
 			}
@@ -487,8 +529,8 @@ input.data<-rbind(job.name, length(phy[[3]]), startingPriorsFns, startingPriorsV
 				ErrorParticleFrame[[2]]<-todo
 				ErrorParticleFrame[[3]]<-particleDataFrame
 				ErrorParticleFrame[[4]]<-toleranceVector
-				ErrorParticleFrame->paste("ErrorParticleFrame", job.name, sep="")
-				save(paste("ErrorParticleFrame", job.name, sep=""), file=paste("ErrorParticleFrame", job.name, ".txt", sep=""))
+				#ErrorParticleFrame->paste("ErrorParticleFrame", job.name, sep="")
+				save(ErrorParticleFrame, file=paste("ErrorParticleFrame", job.name, ".txt", sep=""))
 				cat("\n\nAborting try", try, "of", maxTries, "at Generation", dataGenerationStep, "\n\n")
 			}
 		break
@@ -503,7 +545,8 @@ input.data<-rbind(job.name, length(phy[[3]]), startingPriorsFns, startingPriorsV
 			lines(density(subset(particleDataFrame, generation==i)[, 8]), col= graycolor)
 		}
 		lines(density(subset(particleDataFrame, generation==length(toleranceVector))[, 8]), col= "red")
-	}
+	} 
+	
 	
 } #if run.goingwell bracket	
 	
