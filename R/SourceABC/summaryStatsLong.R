@@ -72,7 +72,7 @@ summaryStatsLong<-function(phy, data, todo=c()) {
 			if (is.na(summarystats[i])) {
 				somethingfailed=TRUE
 				failurevector[i]=2 #failure!
-				todo=0
+				#todo=0
 			}
 			else {
 				failurevector[i]=1 #success!

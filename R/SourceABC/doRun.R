@@ -1,8 +1,9 @@
 #the doRun function takes input from the user and then automatically guesses optimal parameters, though user overriding is also possible.
 #the guesses are used to do simulations near the expected region. If omitted, they are set to the midpoint of the input parameter matrices
 
-doRun<-function(phy, traits, intrinsicFn, extrinsicFn, summaryFns=c(rawValuesSummaryStats, geigerUnivariateSummaryStats2), startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, startingStatesGuess=c(), intrinsicStatesGuess=c(), extrinsicStatesGuess=c(), timeStep, toleranceVector=c(), numParticles=1000, standardDevFactor=0.05, StartSims=100, plot=TRUE, vipthresh=0.8, epsilonProportion=0.2, epsilonMultiplier=0.5, nStepsPRC=4, maxTries=1, job.name=NA, debug=TRUE, TrueStartingState=NA, TrueIntrinsicState=NA, WhenToKill=20) {
+doRun<-function(phy, traits, intrinsicFn, extrinsicFn, summaryFns=c(rawValuesSummaryStats, geigerUnivariateSummaryStats2), startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, startingStatesGuess=c(), intrinsicStatesGuess=c(), extrinsicStatesGuess=c(), timeStep, toleranceVector=c(), numParticles=1000, standardDevFactor=0.05, StartSims=100, plot=FALSE, vipthresh=0.8, epsilonProportion=0.2, epsilonMultiplier=0.5, nStepsPRC=4, maxTries=1, job.name=NA, debug=TRUE, TrueStartingState=NA, TrueIntrinsicState=NA, WhenToKill=20, checkpoint.save=TRUE, end.stdev=TRUE, end.stdev.value=.05) {
 	#print("in do run")
+
 trace(doRun)
 
 run.goingwell=FALSE
@@ -75,7 +76,7 @@ input.data<-rbind(job.name, length(phy[[3]]), startingPriorsFns, startingPriorsV
 		}
 	}
 
-	param.stdev<-matrix(nrow=nStepsPRC, ncol=1+numberParametersFree)
+	param.stdev<-matrix(nrow=nStepsPRC, ncol=numberParametersFree)
 	#names(param.stdev)<-c("Generation", )
 	#print(param.stdev)
 
@@ -270,7 +271,9 @@ input.data<-rbind(job.name, length(phy[[3]]), startingPriorsFns, startingPriorsV
 			newparticleVector[[1]]<-setId(newparticleVector[[1]], -1)
 			newparticleVector[[1]]<-setWeight(newparticleVector[[1]], 0)
 		}
-		else if (distance(newparticleVector[[1]])<toleranceVector[1]) {
+				
+				
+		else if ((distance(newparticleVector[[1]])) < toleranceVector[1]) {
 			newparticleVector[[1]]<-setId(newparticleVector[[1]], particle)
 			newparticleVector[[1]]<-setWeight(newparticleVector[[1]], 1/numParticles)
 			particleWeights[particle]<-1/numParticles
@@ -307,7 +310,7 @@ input.data<-rbind(job.name, length(phy[[3]]), startingPriorsFns, startingPriorsV
 		#print(sd(particleDataFrame[,7:6+numberParametersFree]))
 		#print(numberParametersFree)
 		#print(6+numberParametersFree)
-		param.stdev[1,]<-c(1, sd(subset(particleDataFrame, X3>0)[,7:paste(6+numberParametersFree)]))
+		param.stdev[1,]<-c(sd(subset(particleDataFrame, X3>0)[,7:paste(6+numberParametersFree)]))
 		#print(param.stdev)
 		
 		#stdev.Intrinsic[i]<-sd(subset(all.a[[run]][which(all.a[[run]]$weight>0),], generation==i)[,param[2]])
@@ -341,13 +344,15 @@ input.data<-rbind(job.name, length(phy[[3]]), startingPriorsFns, startingPriorsV
 		break
 	}	
 	
-	if (run.goingwell){
-			rejects<-c()	
-			dataGenerationStep=1
+	if (checkpoint.save){
+		save.image(file=paste("WS", job.name, ".Rdata", sep=""))
+	}	
+	
+if (run.goingwell){
+		rejects<-c()	
+		dataGenerationStep=1
 	while (dataGenerationStep < length(toleranceVector)) {
 		dataGenerationStep<-dataGenerationStep+1
-		cat("datagenStep=", dataGenerationStep)
-		cat("length of the tolerance Vector=", length(toleranceVector))
 		cat("\n\n\n", "STARTING DATA GENERATION STEP ", dataGenerationStep, "\n\n\n")
 			if (debug){
 				cat(".Random Seed=", .Random.seed[1:6], "\n\n")
@@ -389,8 +394,7 @@ input.data<-rbind(job.name, length(phy[[3]]), startingPriorsFns, startingPriorsV
 				plotcol="grey"
 			if (distance(newparticleVector[[1]])<toleranceVector[dataGenerationStep]) {
 				plotcol="black"
-				if (dataGenerationStep==length(toleranceVector)) 
-				{
+				if (dataGenerationStep==length(toleranceVector)) {
 					plotcol="red"
 					}
 				}
@@ -400,7 +404,7 @@ input.data<-rbind(job.name, length(phy[[3]]), startingPriorsFns, startingPriorsV
 			#cat("dput(newparticleVector[[1]]) AFTER computeABCDistance\n")
 			#dput(newparticleVector[[1]])
 			
-			if (distance(newparticleVector[[1]])<toleranceVector[dataGenerationStep]) {
+			if (distance(newparticleVector[[1]]) < toleranceVector[dataGenerationStep]) {
 				newparticleVector[[1]]<-setId(newparticleVector[[1]], particle)
 				particle<-particle+1
 				particleVector<-append(particleVector, newparticleVector)
@@ -478,33 +482,53 @@ input.data<-rbind(job.name, length(phy[[3]]), startingPriorsFns, startingPriorsV
 		rejects.per.gen<-(dim(subset(particleDataFrame, X3<0))[1])/(dim(subset(particleDataFrame[which(particleDataFrame$X1==dataGenerationStep),],))[1])
 		
 		#print(particleDataFrame)
-		#print(particleDataFrame[which(particleDataFrame$X1==dataGenerationStep),])
+		#print(subset(particleDataFrame, X3>0))
 		#print(dim(subset(particleDataFrame, X3<0))[1])
 		#print(dim(subset(particleDataFrame[which(particleDataFrame$X1==dataGenerationStep),],))[1])
-		print(rejects.per.gen)
-		rejects<-c(rejects, rejects.per.gen)
 
-		param.stdev[dataGenerationStep,]<-c(dataGenerationStep, sd(subset(particleDataFrame, X3>0)[which(particleDataFrame$X1==dataGenerationStep),7:paste(6+numberParametersFree)]))
-		print(param.stdev)
+		rejects<-c(rejects, rejects.per.gen)	
+	
+		#print(param.stdev)
 		
-		#param.stdev<-matrix(ncol= numberParametersFree)
+		sub1<-subset(particleDataFrame, X1==dataGenerationStep)
+		print(sub1)
+		sub2<-subset(particleDataFrame, X3>0)
+		print(sub2)
 
-		#If stddev of params is >X then dataGenStep=max(dataGenStep)
+		
+		#print(sd(subset(particleDataFrame, X1==dataGenerationStep)[which(particleDataFrame$X3>0),7:paste(6+numberParametersFree)]))
+		
+		print(sub2[7:paste(6+numberParametersFree)])
+		
+		param.stdev[dataGenerationStep,]<-c(sd(sub2[7:paste(6+numberParametersFree)]))
+				
 		print(param.stdev[dataGenerationStep,])
-		
+
+		print(param.stdev)
+
 		##Trying to make a vector of values that get changed if they are under certain stdev
 		##For this to work, I will need to take out the "generation" column that I put in earlier
-		#GG<-rep(0, dim(param.stdev)[1])
-		#print(GG)
-		#print(GG[1])
-		#print(GG[2])
-		#for (check.param.stdev in 1:length(GG)){
-		#	if (param.stdev[dataGenerationStep,check.param.stdev]<1){
-		#		GG[check.param.stdev]<-1
-		#		#print("WORKS!!")	
-		#	}
-		#}
+		
+	if (end.stdev){	
+		GG<-rep(1, dim(param.stdev)[2])
 		print(GG)
+
+		for (check.param.stdev in 1:length(GG)){
+			if ((param.stdev[dataGenerationStep, check.param.stdev]) < end.stdev.value){
+				GG[check.param.stdev]<-0
+			}
+		}
+		print(GG)
+		if (sum(GG)==0){
+			cat("\n\n\nStandard Deviation is < ", end.stdev.value, "Analysis is being terminated at", dataGenerationStep, "instead of continuing to ", nStepsPRC, "\n\n\n")
+			dataGenerationStep<-nStepsPRC	
+		}
+	}	
+		
+	if (checkpoint.save){
+		save.image(file=paste("WS", job.name, ".Rdata", sep=""))
+	}	
+		
 		
 	} #for (dataGenerationStep in 2:length(toleranceVector))
 
