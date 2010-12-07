@@ -375,8 +375,7 @@ while (!run.goingwell) {
 		#print(numberParametersFree)
 		#print(6+numberParametersFree)
 		param.stdev[1,]<-c(sd(subset(particleDataFrame, X3>0)[,7:paste(6+numberParametersFree)]))
-		#weightedMeanParam[1,]<-c(mean(subset(particleDataFrame, X3>0)[,7:paste(6+numberParametersFree)]/particleWeights[particle]))          #apply weighted mean of each param here
-		#print(param.stdev)
+		weightedMeanParam[1,]<-c(mean(subset(particleDataFrame, X3>0)[,7:paste(6+numberParametersFree)]/subset(particleDataFrame, X3>0)[,6]))
 		
 		#stdev.Intrinsic[i]<-sd(subset(all.a[[run]][which(all.a[[run]]$weight>0),], generation==i)[,param[2]])
 
@@ -427,7 +426,7 @@ while (!run.goingwell) {
 		test[[12]]<-particleVector
 		test[[13]]<-numberParametersFree
 		test[[14]]<-param.stdev
-		#test[[15]]-> weightedMeanParam
+		test[[15]]-> weightedMeanParam
 		save(test, file=paste("partialResults", jobName, ".txt", sep=""))
 
 	}	
@@ -585,35 +584,24 @@ cat("\ndataGen=", dataGenerationStep, "\n\n")
 		#print(sub1)
 		sub2<-subset(particleDataFrame, X3>0)
 		#print(sub2)
-
 		
-		#print(sd(subset(particleDataFrame, X1==dataGenerationStep)[which(particleDataFrame$X3>0),7:paste(6+numberParametersFree)]))
+		param.stdev[dataGenerationStep,]<-c(sd(sub2[,7:paste(6+numberParametersFree)]))
 		
-		#print(sub2[7:paste(6+numberParametersFree)])
+		weightedMeanParam[dataGenerationStep,]<-c(mean(sub2[,7:paste(6+numberParametersFree)]/sub2[,6]))
 		
-		param.stdev[dataGenerationStep,]<-c(sd(sub2[7:paste(6+numberParametersFree)]))
-		#weightedMeanParam[dataGenerationStep,]<-c() #again apply some weighted mean of each param	
-		#print(param.stdev[dataGenerationStep,])
-
-		#print(param.stdev)
-
 		##Trying to make a vector of values that get changed if they are under certain stdev
 		##For this to work, I will need to take out the "generation" column that I put in earlier
 		
 	if (stopRule){	
-		GG<-rep(1, dim(param.stdev)[2])
-		#FF<-rep(1, dim(weightedMeanParam)[2])
-		#print(GG)
-
-		for (check.param.stdev in 1:length(GG)){
-			if ((param.stdev[dataGenerationStep, check.param.stdev]) < stopValue){
-				#Change this to be stopVal <= difference(weighted mean of param [dataGenStep] and weighted mean of param [dataGenStep-1])
-				GG[check.param.stdev]<-0
+		#GG<-rep(1, dim(param.stdev)[2])
+		FF<-rep(1, dim(weightedMeanParam)[2])
+		for (check.weightedMeanParam in 1:length(FF)){
+			if ((weightedMeanParam[dataGenerationStep, check.weightedMeanParam]/weightedMeanParam[dataGenerationStep-1, check.weightedMeanParam]) >= 1-stopValue){
+				FF[check.weightedMeanParam]<-0
 			}
 		}
-		#print(GG)
-		if (sum(GG)==0){
-			cat("\n\n\nStandard Deviation is < ", stopValue, "Analysis is being terminated at", dataGenerationStep, "instead of continuing to ", nStepsPRC, "\n\n\n")
+		if (sum(FF)==0){
+			cat("\n\n\nweightedMeanParam is < ", stopValue, "Analysis is being terminated at", dataGenerationStep, "instead of continuing to ", nStepsPRC, "\n\n\n")
 			dataGenerationStep<-nStepsPRC	
 		}
 	}	
@@ -692,7 +680,7 @@ time3<-proc.time()[[3]]
 genTimes<-c(time.per.gen, time3)
 
 
-test<-vector("list", 12)
+test<-vector("list", 15)
 test[[1]]<-input.data
 test[[2]]<-boxcox.output
 test[[3]]<-particleDataFrame
