@@ -529,8 +529,10 @@ if (run.goingwell){
 		save.image(file=paste("WS", job.name, ".Rdata", sep=""))
 	}	
 		
-		
 	} #for (dataGenerationStep in 2:length(toleranceVector))
+
+LastCompletedGeneration<-dataGenerationStep
+
 
 	if (!run.goingwell){	
 			if (try==maxTries){

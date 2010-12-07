@@ -58,6 +58,7 @@ if (filecount=="1"){  #if file is present
 	particleVector<-test[[12]]
 	numberParametersFree<-test[[13]]
 	param.stdev<-test[[14]]
+	weightedMeanParam<-test[[15]]
 }
 
 
@@ -133,6 +134,7 @@ while (!run.goingwell) {
 	}
 
 	param.stdev<-matrix(nrow=nStepsPRC, ncol=numberParametersFree)
+	weightedMeanParam<-matrix(nrow=nStepsPRC, ncol=numberParametersFree)
 	#names(param.stdev)<-c("Generation", )
 	#print(param.stdev)
 
@@ -373,6 +375,7 @@ while (!run.goingwell) {
 		#print(numberParametersFree)
 		#print(6+numberParametersFree)
 		param.stdev[1,]<-c(sd(subset(particleDataFrame, X3>0)[,7:paste(6+numberParametersFree)]))
+		#weightedMeanParam[1,]<-c(mean(subset(particleDataFrame, X3>0)[,7:paste(6+numberParametersFree)]/particleWeights[particle]))          #apply weighted mean of each param here
 		#print(param.stdev)
 		
 		#stdev.Intrinsic[i]<-sd(subset(all.a[[run]][which(all.a[[run]]$weight>0),], generation==i)[,param[2]])
@@ -408,7 +411,7 @@ while (!run.goingwell) {
 	
 	if (checkpointSave){
 		save.image(file=paste("WS", jobName, ".Rdata", sep=""))
-		test<-vector("list", 14)
+		test<-vector("list", 15)
 		test[[1]]<-input.data
 		test[[2]]<-boxcox.output
 		#names(particleDataFrame)<-nameVector
@@ -424,6 +427,7 @@ while (!run.goingwell) {
 		test[[12]]<-particleVector
 		test[[13]]<-numberParametersFree
 		test[[14]]<-param.stdev
+		#test[[15]]-> weightedMeanParam
 		save(test, file=paste("partialResults", jobName, ".txt", sep=""))
 
 	}	
@@ -564,8 +568,8 @@ cat("\ndataGen=", dataGenerationStep, "\n\n")
 	
 	particleDataFrame[which(particleDataFrame$generation==dataGenerationStep), ]$weight<-particleDataFrame[which(particleDataFrame$generation==dataGenerationStep), ]$weight/(sum(particleDataFrame[which(particleDataFrame$generation==dataGenerationStep), ]$weight))
 
-		time<-proc.time()[[3]]
-		time.per.gen <-c(time.per.gen, time)
+		time2<-proc.time()[[3]]-start.time
+		time.per.gen<-c(time.per.gen, time2)
 		rejects.per.gen<-(dim(subset(particleDataFrame, X3<0))[1])/(dim(subset(particleDataFrame[which(particleDataFrame$X1==dataGenerationStep),],))[1])
 		
 		#print(particleDataFrame)
@@ -588,7 +592,7 @@ cat("\ndataGen=", dataGenerationStep, "\n\n")
 		#print(sub2[7:paste(6+numberParametersFree)])
 		
 		param.stdev[dataGenerationStep,]<-c(sd(sub2[7:paste(6+numberParametersFree)]))
-				
+		#weightedMeanParam[dataGenerationStep,]<-c() #again apply some weighted mean of each param	
 		#print(param.stdev[dataGenerationStep,])
 
 		#print(param.stdev)
@@ -598,6 +602,7 @@ cat("\ndataGen=", dataGenerationStep, "\n\n")
 		
 	if (stopRule){	
 		GG<-rep(1, dim(param.stdev)[2])
+		#FF<-rep(1, dim(weightedMeanParam)[2])
 		#print(GG)
 
 		for (check.param.stdev in 1:length(GG)){
@@ -615,7 +620,7 @@ cat("\ndataGen=", dataGenerationStep, "\n\n")
 		
 	if (checkpointSave){
 		save.image(file=paste("WS", jobName, ".Rdata", sep=""))
-		test<-vector("list", 14)
+		test<-vector("list", 15)
 		test[[1]]<-input.data
 		test[[2]]<-boxcox.output
 		#names(particleDataFrame)<-nameVector
@@ -631,6 +636,7 @@ cat("\ndataGen=", dataGenerationStep, "\n\n")
 		test[[12]]<-particleVector
 		test[[13]]<-numberParametersFree
 		test[[14]]<-param.stdev
+		test[[15]]<-weightedMeanParam
 		save(test, file=paste("partialResults", jobName, ".txt", sep=""))
 	}	
 		
@@ -682,13 +688,15 @@ cat("\ndataGen=", dataGenerationStep, "\n\n")
 } #while (!run.goingwell) bracket
 	
 input.data<-rbind(jobName, length(phy[[3]]), startingPriorsFns, startingPriorsValues, intrinsicPriorsFns, intrinsicPriorsValues, nrepSim, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor, try, trueStartingState, trueIntrinsicState)
+time3<-proc.time()[[3]]
+genTimes<-c(time.per.gen, time3)
 
 
 test<-vector("list", 12)
 test[[1]]<-input.data
 test[[2]]<-boxcox.output
 test[[3]]<-particleDataFrame
-test[[4]]<-time.per.gen
+test[[4]]<-genTimes
 test[[5]]<-toleranceVector
 test[[6]]<-todo
 test[[7]]<-phy
@@ -697,6 +705,10 @@ test[[9]]<-rejects.gen.one
 test[[10]]<-rejects
 test[[11]]<-particleWeights
 test[[12]]<-particleVector
+test[[13]]<-numberParametersFree
+test[[14]]<-param.stdev
+test[[15]]<-weightedMeanParam
+
 return(test)
 
 }
