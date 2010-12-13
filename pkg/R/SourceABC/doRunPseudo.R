@@ -6,23 +6,23 @@
 #the guesses are used to do simulations near the expected region. If omitted, they are set to the midpoint of the input parameter matrices
 
 doRunPseudo<-function(phy, traits, intrinsicFn, extrinsicFn, summaryFns=c(rawValuesSummaryStats, geigerUnivariateSummaryStats2), startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, startingStatesGuess=c(), intrinsicStatesGuess=c(), extrinsicStatesGuess=c(), timeStep, toleranceVector=c(), numParticles=1000, standardDevFactor=0.05, StartSims=100, plot=FALSE, vipthresh=0.8, epsilonProportion=0.2, epsilonMultiplier=0.5, nStepsPRC=4, maxTries=1, jobName=NA, debug=TRUE, trueStartingState=NA, trueIntrinsicState=NA, startFromCheckpoint=TRUE, whenToKill=20, checkpointSave=TRUE, stopRule=TRUE, stopValue=0.05) {
-	#print("in do run")
+
+if (debug){
+	cat("\nDebugging doRun\n")
+	dput(doRun)
+}
 
 ##Checkpoint saving stuff:
 paste("partialResults", jobName, ".txt*", sep="")->pRname
 paste("WS", jobName, ".Rdata", sep="")->WSname
-print(pRname)
-
 
 system(command=paste("ls ", pRname, " | grep -c ", pRname, sep=""), intern=TRUE) -> filecount
 
-print(filecount)
-#system("ls dumpfile | grep -c dumpfile")->dumpfilecount
-if (filecount=="0") {  #for some reason if file is not present 
+if (filecount=="0") {  #if file is absent 
 	startFromCheckpoint=FALSE
 	dataGenerationStep=0
-	cat("dataGenerationStep=", dataGenerationStep, "\n")
 	cat ("\nstart from checkpoint =", startFromCheckpoint, "\n")
+	cat("dataGenerationStep=", dataGenerationStep, "\n")
 	rejects<-c()	
 
 }
@@ -34,8 +34,8 @@ if (filecount=="1"){  #if file is present
 		if (dataGenerationStep==nStepsPRC){
 			cat ("\n\nRun was finished already\n\n")		}
 	paste(load(WSname))
-	cat("dataGenerationStep=", dataGenerationStep)
 	cat ("\nstart from checkpoint =", startFromCheckpoint, "\n")
+	cat("dataGenerationStep=", dataGenerationStep)
 	nameVector<-c("generation", "attempt", "id", "parentid", "distance", "weight")
 	run.goingwell=TRUE
 
@@ -62,7 +62,6 @@ if (filecount=="1"){  #if file is present
 }
 
 
-#trace(doRun)
 run.goingwell=FALSE
 
 for (try in 1:maxTries)	{
@@ -426,7 +425,7 @@ while (!run.goingwell) {
 		test[[12]]<-particleVector
 		test[[13]]<-numberParametersFree
 		test[[14]]<-param.stdev
-		test[[15]]-> weightedMeanParam
+		test[[15]]<-weightedMeanParam
 		save(test, file=paste("partialResults", jobName, ".txt", sep=""))
 
 	}	
@@ -439,7 +438,7 @@ if (startFromCheckpoint==TRUE || dataGenerationStep < nStepsPRC) {  #This is whe
 if (run.goingwell){
 
 
-cat("\ndataGen=", dataGenerationStep, "\n\n")
+#cat("\ndataGen=", dataGenerationStep, "\n\n")
 	
 	while (dataGenerationStep < nStepsPRC) {
 		dataGenerationStep<-dataGenerationStep+1
@@ -476,25 +475,34 @@ cat("\ndataGen=", dataGenerationStep, "\n\n")
 			#cat("dput(newparticleVector[[1]])\n")
 			#dput(newparticleVector[[1]])
 			#cat("mutateStates\n")
+			
 			newparticleVector[[1]]<-mutateStates(newparticleVector[[1]], startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, standardDevFactor)
 			#cat("dput(newparticleVector[[1]]) AFTER MUTATE STATES\n")
 			#dput(newparticleVector[[1]])
+			
 			newparticleVector[[1]]<-setDistance(newparticleVector[[1]], dist(matrix(c(boxcoxplsSummary(todo, summaryStatsLong(phy, convertTaxonFrameToGeigerData(doSimulation(splits, intrinsicFn, extrinsicFn, startingStates(newparticleVector[[1]]), intrinsicValues(newparticleVector[[1]]), extrinsicValues(newparticleVector[[1]]), timeStep), phy), todo), prunedPlsResult, boxcoxLambda, boxcoxAddition), originalSummaryStats), nrow=2, byrow=TRUE))[1])
 			if (plot) {
 				plotcol="grey"
-			if (distance(newparticleVector[[1]])<toleranceVector[dataGenerationStep]) {
-				plotcol="black"
-				if (dataGenerationStep==length(toleranceVector)) {
-					plotcol="red"
-					}
+				if (distance(newparticleVector[[1]])<toleranceVector[dataGenerationStep]) {
+					plotcol="black"
+						if (dataGenerationStep==length(toleranceVector)) {
+							plotcol="red"
+						}
 				}
 				text(x=intrinsicValues(newparticleVector[[1]]), y=distance(newparticleVector[[1]]), labels= dataGenerationStep, col=plotcol) 
 			}
 			#dput(convertTaxonFrameToGeigerData(doSimulation(splits, intrinsicFn, extrinsicFn, newparticleVector[[1]]@startingStates, newparticleVector[[1]]@intrinsicValues, newparticleVector[[1]]@extrinsicValues, timeStep), phy))
 			#cat("dput(newparticleVector[[1]]) AFTER computeABCDistance\n")
 			#dput(newparticleVector[[1]])
-			
-			if (distance(newparticleVector[[1]]) < toleranceVector[dataGenerationStep]) {
+		
+			if (is.na(distance(newparticleVector[[1]]))) {
+				cat("Error with Geiger?  distance(newparticleVector[[1]]) = NA\n")
+				while(sink.number()>0) {sink()}
+					warning("distance(newparticleVector[[1]]) = NA")
+					newparticleVector[[1]]<-setId(newparticleVector[[1]], -1)
+					newparticleVector[[1]]<-setWeight(newparticleVector[[1]], 0)
+			}
+			else if (distance(newparticleVector[[1]]) < toleranceVector[dataGenerationStep]) {
 				newparticleVector[[1]]<-setId(newparticleVector[[1]], particle)
 				particle<-particle+1
 				particleVector<-append(particleVector, newparticleVector)
@@ -596,7 +604,8 @@ cat("\ndataGen=", dataGenerationStep, "\n\n")
 		#GG<-rep(1, dim(param.stdev)[2])
 		FF<-rep(1, dim(weightedMeanParam)[2])
 		for (check.weightedMeanParam in 1:length(FF)){
-			if ((weightedMeanParam[dataGenerationStep, check.weightedMeanParam]/weightedMeanParam[dataGenerationStep-1, check.weightedMeanParam]) >= 1-stopValue){
+						
+			if ((abs(weightedMeanParam[dataGenerationStep, check.weightedMeanParam]-weightedMeanParam[dataGenerationStep-1, check.weightedMeanParam])/mean(weightedMeanParam[dataGenerationStep, check.weightedMeanParam], weightedMeanParam[dataGenerationStep-1, check.weightedMeanParam])) <= stopValue){
 				FF[check.weightedMeanParam]<-0
 			}
 		}
@@ -673,6 +682,14 @@ cat("\ndataGen=", dataGenerationStep, "\n\n")
 	
 	
 } #if run.goingwell bracket	
+
+if (debug){
+	cat("debug!!")
+	debugResults<-dget(doRun)
+	#save(debugResults, file=paste("debuggingResults", jobName, ".txt", sep=""))
+}
+
+
 } #while (!run.goingwell) bracket
 	
 input.data<-rbind(jobName, length(phy[[3]]), startingPriorsFns, startingPriorsValues, intrinsicPriorsFns, intrinsicPriorsValues, nrepSim, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor, try, trueStartingState, trueIntrinsicState)
@@ -702,9 +719,8 @@ return(test)
 }
  #if startFromCheckpoint bracket?
 
-system(command=paste("rm ", pRname, sep=""))
+system(command=paste("rm ", jobName, sep=""))
 
-untrace(doRun)
 }
 
 	#------------------ ABC-PRC (end) ------------------
