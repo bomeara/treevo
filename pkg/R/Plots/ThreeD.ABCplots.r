@@ -1,4 +1,4 @@
-ThreeD.ABCplots<-function(x, parameter, show.particles=none, plot.parent=FALSE) {
+ThreeD.ABCplots<-function(a, parameter, show.particles=none, plot.parent=FALSE) {
 	
 library(gpclib)
 library(rgl)
