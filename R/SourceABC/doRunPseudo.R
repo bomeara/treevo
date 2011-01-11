@@ -33,25 +33,34 @@ if (filecount=="1"){  #if file is present
 	dataGenerationStep <- max(test[[3]]$X1)
 		if (dataGenerationStep==nStepsPRC){
 			cat ("\n\nRun was finished already\n\n")		}
-	paste(load(WSname))
+	#paste(load(WSname))
 	cat ("\nstart from checkpoint =", startFromCheckpoint, "\n")
-	cat("dataGenerationStep=", dataGenerationStep)
+	cat("dataGenerationStep=", dataGenerationStep, "\n")
 	nameVector<-c("generation", "attempt", "id", "parentid", "distance", "weight")
 	run.goingwell=TRUE
-
 	input.data<-test[[1]]
 	boxcox.output<-test[[2]]
 	boxcoxLambda<-test[[2]][[1]]
 	boxcoxAddition<-test[[2]][[2]]
 	prunedPlsResult<-test[[2]][[3]]
 	prunedSummaryValues<-test[[2]][[4]]
-	originalSummaryStats<-test[[2]][[5]]	
+	originalSummaryStats<-test[[2]][[5]]
 	particleDataFrame<-test[[3]]
-	time.per.gen<-test[[4]]
+	epsilonDistance<-test[[4]]
+	
 	toleranceVector<-test[[5]]
+		if (length(toleranceVector) < nStepsPRC){
+			print(toleranceVector)
+			toleranceVector<-rep(epsilonDistance, nStepsPRC)
+			for (step in 2:nStepsPRC) {
+				toleranceVector[step]<-toleranceVector[step-1]*as.numeric(input.data[11])
+			}
+			print(toleranceVector)
+		}	
 	todo<-test[[6]]
 	phy<-test[[7]]
-	char<-test[[8]]
+		splits<-getSimulationSplits(phy)
+	traits<-test[[8]]
 	rejects.gen.one<-test[[9]]	
 	rejects<-test[[10]]
 	particleWeights<-test[[11]]
@@ -59,6 +68,7 @@ if (filecount=="1"){  #if file is present
 	numberParametersFree<-test[[13]]
 	param.stdev<-test[[14]]
 	weightedMeanParam<-test[[15]]
+	time.per.gen<-test[[16]]
 }
 
 
@@ -70,7 +80,7 @@ for (try in 1:maxTries)	{
 		
 while (!run.goingwell) {
 		run.goingwell=TRUE
-	if (startFromCheckpoint==FALSE && dataGenerationStep <= nStepsPRC) {
+	if (startFromCheckpoint==FALSE) {
 
 
 		#run.finished=FALSE
@@ -214,11 +224,20 @@ while (!run.goingwell) {
 	plsResult<-pls(Y=trueFreeValues, X=summaryValues)
 	vipResult<-vip(plsResult)
 	todo<-rep(1, dim(summaryValues)[2])#initialize the vector that indicates which summary stats to include
+	
+	summaryIndexOffset=0 #since R excludes invariant columns from regression, this offests so we don't try to extract from these columns
+
 	for (summaryIndex in 1:dim(summaryValues)[2]) {
-		if (max(vipResult[summaryIndex, ])<vipthresh) {
-				todo[summaryIndex]<-0 #exclude this summary stat, because it's too unimportant
+
+		if (var(summaryValues[,summaryIndex])==0) {
+			summaryIndexOffset=summaryIndexOffset+1
+			todo[summaryIndex]<-0 #exclude this summary stat because it lacks variation
+		}	
+		if (max(vipResult[summaryIndex-summaryIndexOffset, ]) < vipthresh) {
+			todo[summaryIndex]<-0 #exclude this summary stat, because it is too unimportant
 		}	
 	}
+
 	while(sink.number()>0) {sink()}
 	#cat("todo", "\n")
 	#print(todo)
@@ -409,12 +428,12 @@ while (!run.goingwell) {
 	
 	if (checkpointSave){
 		save.image(file=paste("WS", jobName, ".Rdata", sep=""))
-		test<-vector("list", 15)
+		test<-vector("list", 16)
 		test[[1]]<-input.data
 		test[[2]]<-boxcox.output
 		#names(particleDataFrame)<-nameVector
 		test[[3]]<-particleDataFrame
-		test[[4]]<-time.per.gen
+		test[[4]]<-epsilonDistance
 		test[[5]]<-toleranceVector
 		test[[6]]<-todo
 		test[[7]]<-phy
@@ -426,6 +445,7 @@ while (!run.goingwell) {
 		test[[13]]<-numberParametersFree
 		test[[14]]<-param.stdev
 		test[[15]]<-weightedMeanParam
+		test[[16]]<-time.per.gen
 		save(test, file=paste("partialResults", jobName, ".txt", sep=""))
 
 	}	
@@ -433,12 +453,11 @@ while (!run.goingwell) {
 } #startFromCheckpoint bracket
 
 
-if (startFromCheckpoint==TRUE || dataGenerationStep < nStepsPRC) {  #This is where you stopped...getting an error because can not find input.data
+if (startFromCheckpoint==TRUE || dataGenerationStep < nStepsPRC) {
+	if (run.goingwell){
 
-if (run.goingwell){
 
-
-#cat("\ndataGen=", dataGenerationStep, "\n\n")
+	#cat("\ndataGen=", dataGenerationStep, "\n\n")
 	
 	while (dataGenerationStep < nStepsPRC) {
 		dataGenerationStep<-dataGenerationStep+1
@@ -617,12 +636,12 @@ if (run.goingwell){
 		
 	if (checkpointSave){
 		save.image(file=paste("WS", jobName, ".Rdata", sep=""))
-		test<-vector("list", 15)
+		test<-vector("list", 16)
 		test[[1]]<-input.data
 		test[[2]]<-boxcox.output
 		#names(particleDataFrame)<-nameVector
 		test[[3]]<-particleDataFrame
-		test[[4]]<-time.per.gen
+		test[[4]]<-epsilonDistance
 		test[[5]]<-toleranceVector
 		test[[6]]<-todo
 		test[[7]]<-phy
@@ -634,6 +653,7 @@ if (run.goingwell){
 		test[[13]]<-numberParametersFree
 		test[[14]]<-param.stdev
 		test[[15]]<-weightedMeanParam
+		test[[16]]<-time.per.gen
 		save(test, file=paste("partialResults", jobName, ".txt", sep=""))
 	}	
 		
@@ -697,11 +717,11 @@ time3<-proc.time()[[3]]
 genTimes<-c(time.per.gen, time3)
 
 
-test<-vector("list", 15)
+test<-vector("list", 16)
 test[[1]]<-input.data
 test[[2]]<-boxcox.output
 test[[3]]<-particleDataFrame
-test[[4]]<-genTimes
+test[[4]]<-epsilonDistance
 test[[5]]<-toleranceVector
 test[[6]]<-todo
 test[[7]]<-phy
@@ -713,6 +733,7 @@ test[[12]]<-particleVector
 test[[13]]<-numberParametersFree
 test[[14]]<-param.stdev
 test[[15]]<-weightedMeanParam
+test[[16]]<-genTimes
 
 return(test)
 
