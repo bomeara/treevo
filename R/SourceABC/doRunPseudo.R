@@ -226,29 +226,36 @@ while (!run.goingwell) {
 	todo<-rep(1, dim(summaryValues)[2])#initialize the vector that indicates which summary stats to include
 	
 	summaryIndexOffset=0 #since R excludes invariant columns from regression, this offests so we don't try to extract from these columns
-
+	print(vipResult)
+	print(plsResult)
+	print(dim(summaryValues))
 	for (summaryIndex in 1:dim(summaryValues)[2]) {
-
+		#print(summaryIndex)
+		print(paste("var(summaryValues[,summaryIndex]) =", var(summaryValues[,summaryIndex]), sep=""))
+		print(paste("summaryIndex-summaryIndexOffset = ",summaryIndex," - ",summaryIndexOffset," = ",summaryIndex-summaryIndexOffset,sep=""))
+		print(paste("dim(vipResult) = ",dim(vipResult),sep=""))
 		if (var(summaryValues[,summaryIndex])==0) {
 			summaryIndexOffset=summaryIndexOffset+1
 			todo[summaryIndex]<-0 #exclude this summary stat because it lacks variation
+			cat("var=0\n")
 		}	
-		if (max(vipResult[summaryIndex-summaryIndexOffset, ]) < vipthresh) {
+		else if (max(vipResult[summaryIndex-summaryIndexOffset, ]) < vipthresh) {
 			todo[summaryIndex]<-0 #exclude this summary stat, because it is too unimportant
 		}	
 	}
+print(todo)
 
 	while(sink.number()>0) {sink()}
-	#cat("todo", "\n")
-	#print(todo)
+	cat("todo", "\n")
+	print(todo)
 	
 	prunedSummaryValues<-summaryValues[, which(todo>0)]
-	#cat("prunedSummaryValues", "\n")
-	#print(prunedSummaryValues)
+	cat("prunedSummaryValues", "\n")
+	print(prunedSummaryValues)
 
 	prunedPlsResult<-pls(Y=trueFreeValues, X=prunedSummaryValues)
-	#cat("prunedPlsResult", "\n")
-	#print(prunedPlsResult)
+	cat("prunedPlsResult", "\n")
+	print(prunedPlsResult)
 	
 	originalSummaryStats<-boxcoxplsSummary(todo, summaryStatsLong(phy, traits, todo), prunedPlsResult, boxcoxLambda, boxcoxAddition)
 
@@ -264,15 +271,15 @@ while (!run.goingwell) {
 	
 	#----------------- Find distribution of distances (start) ----------------------
 	predictResult<-(predict(prunedPlsResult, prunedSummaryValues)$predict[, , 1])
-	#cat("predictResult", "\n")
-	#print(predictResult)
+	cat("predictResult", "\n")
+	print(predictResult)
 
 	distanceVector<-rep(NA, dim(predictResult)[1])
 	for (simulationIndex in 1:dim(predictResult)[1]) {
 			distanceVector[simulationIndex]<-dist(matrix(c(trueFreeValues[simulationIndex, ], predictResult[simulationIndex, ]), nrow=2, byrow=TRUE))[1]
 	}
-	#cat("distanceVector", "\n")
-	#print(distanceVector)
+	cat("distanceVector", "\n")
+	print(distanceVector)
 	densityDistanceVector<-density(distanceVector)
 	#plot(densityDistanceVector)
 	epsilonDistance<-quantile(distanceVector, probs=epsilonProportion) #this gives the distance such that epsilonProportion of the simulations starting from a given set of values will be rejected 
