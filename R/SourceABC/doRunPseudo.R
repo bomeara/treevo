@@ -226,15 +226,17 @@ while (!run.goingwell) {
 	todo<-rep(1, dim(summaryValues)[2])#initialize the vector that indicates which summary stats to include
 	
 	summaryIndexOffset=0 #since R excludes invariant columns from regression, this offests so we don't try to extract from these columns
-	print(vipResult)
-	print(plsResult)
-	print(dim(summaryValues))
+	#print(vipResult)
+	#print(plsResult)
+	#print(dim(summaryValues))
+	nearZeroVarVector<-mixOmics:::nearZeroVar(summaryValues)
+	nearZeroVarVector<-nearZeroVarVector$Position
+	print(nearZeroVarVector)
 	for (summaryIndex in 1:dim(summaryValues)[2]) {
-		#print(summaryIndex)
-		print(paste("var(summaryValues[,summaryIndex]) =", var(summaryValues[,summaryIndex]), sep=""))
-		print(paste("summaryIndex-summaryIndexOffset = ",summaryIndex," - ",summaryIndexOffset," = ",summaryIndex-summaryIndexOffset,sep=""))
-		print(paste("dim(vipResult) = ",dim(vipResult),sep=""))
-		if (var(summaryValues[,summaryIndex])==0) {
+		
+		print(summaryIndex)
+		if (summaryIndex %in% nearZeroVarVector) {
+			cat("nearZeroVarVector thingamabob works!")
 			summaryIndexOffset=summaryIndexOffset+1
 			todo[summaryIndex]<-0 #exclude this summary stat because it lacks variation
 			cat("var=0\n")
@@ -243,7 +245,7 @@ while (!run.goingwell) {
 			todo[summaryIndex]<-0 #exclude this summary stat, because it is too unimportant
 		}	
 	}
-print(todo)
+	cat("reached bottom of summaryIndex")
 
 	while(sink.number()>0) {sink()}
 	cat("todo", "\n")
