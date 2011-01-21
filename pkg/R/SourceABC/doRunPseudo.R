@@ -50,12 +50,12 @@ if (filecount=="1"){  #if file is present
 	
 	toleranceVector<-test[[5]]
 		if (length(toleranceVector) < nStepsPRC){
-			print(toleranceVector)
+			#print(toleranceVector)
 			toleranceVector<-rep(epsilonDistance, nStepsPRC)
 			for (step in 2:nStepsPRC) {
 				toleranceVector[step]<-toleranceVector[step-1]*as.numeric(input.data[11])
 			}
-			print(toleranceVector)
+			#print(toleranceVector)
 		}	
 	todo<-test[[6]]
 	phy<-test[[7]]
@@ -231,33 +231,27 @@ while (!run.goingwell) {
 	#print(dim(summaryValues))
 	nearZeroVarVector<-mixOmics:::nearZeroVar(summaryValues)
 	nearZeroVarVector<-nearZeroVarVector$Position
-	print(nearZeroVarVector)
+	#print(nearZeroVarVector)
 	for (summaryIndex in 1:dim(summaryValues)[2]) {
 		
-		print(summaryIndex)
+		#print(summaryIndex)
 		if (summaryIndex %in% nearZeroVarVector) {
-			cat("nearZeroVarVector thingamabob works!")
 			summaryIndexOffset=summaryIndexOffset+1
 			todo[summaryIndex]<-0 #exclude this summary stat because it lacks variation
-			cat("var=0\n")
 		}	
 		else if (max(vipResult[summaryIndex-summaryIndexOffset, ]) < vipthresh) {
 			todo[summaryIndex]<-0 #exclude this summary stat, because it is too unimportant
 		}	
 	}
-	cat("reached bottom of summaryIndex")
 
 	while(sink.number()>0) {sink()}
-	cat("todo", "\n")
-	print(todo)
+	#print(todo)
 	
 	prunedSummaryValues<-summaryValues[, which(todo>0)]
-	cat("prunedSummaryValues", "\n")
-	print(prunedSummaryValues)
+	#print("prunedSummaryValues", prunedSummaryValues, "\n")
 
 	prunedPlsResult<-pls(Y=trueFreeValues, X=prunedSummaryValues)
-	cat("prunedPlsResult", "\n")
-	print(prunedPlsResult)
+	#print("prunedPlsResult", prunedPlsResult, "\n")
 	
 	originalSummaryStats<-boxcoxplsSummary(todo, summaryStatsLong(phy, traits, todo), prunedPlsResult, boxcoxLambda, boxcoxAddition)
 
@@ -273,15 +267,13 @@ while (!run.goingwell) {
 	
 	#----------------- Find distribution of distances (start) ----------------------
 	predictResult<-(predict(prunedPlsResult, prunedSummaryValues)$predict[, , 1])
-	cat("predictResult", "\n")
-	print(predictResult)
+	#print("predictResult", predictResult,  "\n")
 
 	distanceVector<-rep(NA, dim(predictResult)[1])
 	for (simulationIndex in 1:dim(predictResult)[1]) {
 			distanceVector[simulationIndex]<-dist(matrix(c(trueFreeValues[simulationIndex, ], predictResult[simulationIndex, ]), nrow=2, byrow=TRUE))[1]
 	}
-	cat("distanceVector", "\n")
-	print(distanceVector)
+	#print("distanceVector", distanceVector, "\n")
 	densityDistanceVector<-density(distanceVector)
 	#plot(densityDistanceVector)
 	epsilonDistance<-quantile(distanceVector, probs=epsilonProportion) #this gives the distance such that epsilonProportion of the simulations starting from a given set of values will be rejected 
@@ -648,7 +640,6 @@ if (startFromCheckpoint==TRUE || dataGenerationStep < nStepsPRC) {
 		test<-vector("list", 16)
 		test[[1]]<-input.data
 		test[[2]]<-boxcox.output
-		#names(particleDataFrame)<-nameVector
 		test[[3]]<-particleDataFrame
 		test[[4]]<-epsilonDistance
 		test[[5]]<-toleranceVector
@@ -721,6 +712,16 @@ if (debug){
 
 } #while (!run.goingwell) bracket
 	
+FinalParamPredictions<-matrix(nrow=numberParametersFree, ncol=4)
+colnames(FinalParamPredictions)<-c("weightedMean", "SD", "Low95%CI", "High95%CI")
+subpDF<-subset(particleDataFrame[which(particleDataFrame$weight>0),], generation==max(particleDataFrame $generation))
+for (paramPred in 1:dim(FinalParamPredictions)[1]){
+		FinalParamPredictions[paramPred, 1]<-weighted.mean(subpDF[,paramPred+6], subpDF[,6])
+		FinalParamPredictions[paramPred, 2]<-sd(subpDF[,6+paramPred])
+		FinalParamPredictions[paramPred, 3]<-dnorm(x=0.05, mean=FinalParamPredictions[paramPred, 1], sd=FinalParamPredictions[paramPred, 2])
+		FinalParamPredictions[paramPred, 4]<-dnorm(x=0.95, mean=FinalParamPredictions[paramPred, 1], sd=FinalParamPredictions[paramPred, 2])
+}
+	
 input.data<-rbind(jobName, length(phy[[3]]), startingPriorsFns, startingPriorsValues, intrinsicPriorsFns, intrinsicPriorsValues, nrepSim, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor, try, trueStartingState, trueIntrinsicState)
 time3<-proc.time()[[3]]
 genTimes<-c(time.per.gen, time3)
@@ -744,13 +745,12 @@ test[[14]]<-param.stdev
 test[[15]]<-weightedMeanParam
 test[[16]]<-genTimes
 
-return(test)
-
 }
  #if startFromCheckpoint bracket?
 
-system(command=paste("rm ", jobName, sep=""))
 
+print(test)
+print(FinalParamPredictions)
 }
 
 	#------------------ ABC-PRC (end) ------------------
