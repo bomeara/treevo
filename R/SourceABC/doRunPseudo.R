@@ -87,7 +87,8 @@ while (!run.goingwell) {
 		
 		splits<-getSimulationSplits(phy) #initialize this info
 
-	input.data<-rbind(jobName, length(phy[[3]]), startingPriorsFns, startingPriorsValues, intrinsicPriorsFns, intrinsicPriorsValues, nrepSim, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor, try, trueStartingState, trueIntrinsicState)
+	
+	input.data<-rbind(jobName, length(phy[[3]]), startingPriorsFns, as.vector(startingPriorsValues), as.vector(intrinsicPriorsFns), as.vector(intrinsicPriorsValues), as.vector(extrinsicPriorsFns), as.vector(extrinsicPriorsValues), nrepSim, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor, try, trueStartingState, trueIntrinsicState)
 
 
 	#figure out number of free params
@@ -714,20 +715,23 @@ if (debug){
 	
 FinalParamPredictions<-matrix(nrow=numberParametersFree, ncol=4)
 colnames(FinalParamPredictions)<-c("weightedMean", "SD", "Low95%CI", "High95%CI")
+rownames(FinalParamPredictions)<-names(particleDataFrame[7:(numberParametersFree+6)])
 subpDF<-subset(particleDataFrame[which(particleDataFrame$weight>0),], generation==max(particleDataFrame $generation))
 for (paramPred in 1:dim(FinalParamPredictions)[1]){
 		FinalParamPredictions[paramPred, 1]<-weighted.mean(subpDF[,paramPred+6], subpDF[,6])
-		FinalParamPredictions[paramPred, 2]<-sd(subpDF[,6+paramPred])
+		FinalParamPredictions[paramPred, 2]<-sd(subpDF[,(6+paramPred)])
 		FinalParamPredictions[paramPred, 3]<-dnorm(x=0.05, mean=FinalParamPredictions[paramPred, 1], sd=FinalParamPredictions[paramPred, 2])
 		FinalParamPredictions[paramPred, 4]<-dnorm(x=0.95, mean=FinalParamPredictions[paramPred, 1], sd=FinalParamPredictions[paramPred, 2])
+		#rownames(FinalParamPredictions[paramPred])<-names(particleDataFrame[[3]][6+ paramPred])
 }
-	
-input.data<-rbind(jobName, length(phy[[3]]), startingPriorsFns, startingPriorsValues, intrinsicPriorsFns, intrinsicPriorsValues, nrepSim, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor, try, trueStartingState, trueIntrinsicState)
+
+input.data<-rbind(jobName, length(phy[[3]]), as.vector(startingPriorsValues), as.vector(intrinsicPriorsFns), as.vector(intrinsicPriorsValues), as.vector(extrinsicPriorsFns), as.vector(extrinsicPriorsValues), nrepSim, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor, try, trueStartingState, trueIntrinsicState)
+
 time3<-proc.time()[[3]]
 genTimes<-c(time.per.gen, time3)
 
 
-test<-vector("list", 16)
+test<-vector("list", 17)
 test[[1]]<-input.data
 test[[2]]<-boxcox.output
 test[[3]]<-particleDataFrame
@@ -744,13 +748,13 @@ test[[13]]<-numberParametersFree
 test[[14]]<-param.stdev
 test[[15]]<-weightedMeanParam
 test[[16]]<-genTimes
+test[[17]]<-FinalParamPredictions
 
 }
  #if startFromCheckpoint bracket?
 
 
 print(test)
-print(FinalParamPredictions)
 }
 
 	#------------------ ABC-PRC (end) ------------------
