@@ -1,4 +1,4 @@
-ThreeD.ABCplots<-function(a, parameter, show.particles=none, plot.parent=FALSE) {
+ThreeD.ABCplots<-function(a, parameter, show.particles="none", plot.parent=FALSE) {
 	
 library(gpclib)
 library(rgl)
@@ -47,6 +47,7 @@ param.position<-parameter
 			opacity<-0.8*(ngen/length(v))
 			rgl.material(color="black", alpha=opacity, lit=FALSE)
 			triangles3d(cbind(triangles, zfit), col="red")
+			readline(prompt="hit enter ")
 		}
 	}		
 		
@@ -88,17 +89,3 @@ short.kept<-subset(kept[which(kept$generation>1),])[,]
 		lines3d(x=c(short.kept[k, param.position], prev.gen[short.kept[k,]$parentid, param.position]), y=c(0, 0), z=c(short.kept[k, 1], short.kept[k, 1]-1))		}	
 	}	
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -21,7 +21,7 @@ brownianIntrinsic<-function(params,states, timefrompresent) {
 }
 
 boundaryIntrinsic<-function(params, states, timefrompresent) {
-	#params[2] is min, params[3] is max. params[2] could be 0 or -Inf, for example
+	#params[1] is sd, params[2] is min, params[3] is max. params[2] could be 0 or -Inf, for example
 	newdisplacement<-rnorm(n=length(states),mean=0,sd=params[1])
 	for (i in length(newdisplacement)) {
 		newstate<-newdisplacement[i]+states[i]
@@ -36,7 +36,7 @@ boundaryIntrinsic<-function(params, states, timefrompresent) {
 }
 
 boundaryMinIntrinsic <-function(params, states, timefrompresent) {
-	#params[2] is min
+	#params[1] is sd, params[2] is min boundary
 	newdisplacement<-rnorm(n=length(states),mean=0,sd=params[1])
 	for (i in length(newdisplacement)) {
 		newstate<-newdisplacement[i]+states[i]
@@ -48,14 +48,17 @@ boundaryMinIntrinsic <-function(params, states, timefrompresent) {
 }
 
 autoregressiveIntrinsic<-function(params,states, timefrompresent) { #a discrete time OU, same sd, mean, and attraction for all chars
-	sd<-params[1]
-	attractor<-params[2]
+	#params[1] is sd (sigma), params[2] is attractor (ie. character mean), params[3] is attraction (ie. alpha)
+	sd<-params[1] 
+	attractor<-params[2] 
 	attraction<-params[3]	#in this model, this should be between zero and one
-	newdisplacement<-rnorm(n=length(states),mean=attraction*states + attractor,sd=sd)-states #subtract current states because we want displacement
+	newdisplacement<-rnorm(n=length(states),mean=(attraction*attractor)-states,sd=sd)-states #subtract current states because we want displacement
 	return(newdisplacement)
-}
+	
+} 
 
 nearestNeighborDisplacementExtrinsic<-function(params,selfstates,otherstates, timefrompresent) { 
+	#params[1] is sd, params[2] is springK, params[3] is maxforce
 	repulsorTaxon<-which.min(abs(otherstates-selfstates))
 	repulsorValue<-otherstates[repulsorTaxon]
 	sd<-params[1]
@@ -70,6 +73,7 @@ nearestNeighborDisplacementExtrinsic<-function(params,selfstates,otherstates, ti
 }
 
 everyoneDisplacementExtrinsic<-function(params,selfstates,otherstates, timefrompresent) { #this is set up for one character only right now
+	#params[1] is sd, params[2] is springK, params[3] is maxforce
 	sd<-params[1]
 	springK <-params[2]
 	maxforce<-params[3]
@@ -110,7 +114,7 @@ autoregressiveIntrinsicTimeSlices<-function(params,states, timefrompresent) { #a
 }
 
 autoregressiveIntrinsicTimeSlicesConstantMean<-function(params,states, timefrompresent) { #a discrete time OU, constant mean, differing sigma, and differing attaction with time
-	#params=[sd1, attraction1, timethreshold1, sd2, attraction2, timethreshold2, ..., attractor]
+	#params=[sd1 (sigma1), attraction1 (character mean 1), timethreshold1, sd2 (sigma2), attraction2 (character mean 2), timethreshold2, ..., attractor (alpha)]
 	#time is time before present (i.e., 65 could be 65 MYA). The last time threshold should be 0, one before that is the end of the previous epoch, etc.
 	numTimeSlices<-(length(params)-1)/3
 	sd<-params[1]
