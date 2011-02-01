@@ -1,4 +1,4 @@
-ABCplots<-function(x) {
+ABCplots<-function(a) {
 gen1<-a[which(a$generation==1),]
 nParticles<-dim(gen1[which(gen1$weight>0),])[1]
 nparams<-dim(a)[2]-6
