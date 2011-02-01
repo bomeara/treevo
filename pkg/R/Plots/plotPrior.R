@@ -1,11 +1,14 @@
-#add option to turn on off shading and quantiles
+#priorVariables depend on priorFn.  uniform=c(min, max); normal=c(mean, stdev); lognormal=c(mean, stdev), gamma=c(shape, scale), exponential=c(rate)
+#plotPrior("normal", c(1,2), plot.quants=TRUE)
+#plotPrior("exponential", c(1), plot.quants=FALSE)
 
-plotPrior<-function(priorFn, priorVariables, plot.quants=FALSE){
+
+plotPrior<-function(priorFn=match.arg(arg=priorFn,choices=c("fixed", "uniform", "normal", "lognormal", "gamma", "exponential"),several.ok=FALSE), priorVariables, plot.quants=FALSE){
+	plot.new()
 	x<-NA
 	quant<-c(0.01, 0.05, 0.25, .50, 0.75, 0.95, 0.99)
 	quant.value<-vector()
 	mm<-vector()
-	priorFn<-match.arg(arg=priorFn,choices=c("fixed", "uniform", "normal", "lognormal", "gamma", "exponential"),several.ok=FALSE);
 	if (priorFn=="fixed") {
 		cat ("can't plot fixed prior")
 	}
@@ -98,7 +101,6 @@ plotPrior<-function(priorFn, priorVariables, plot.quants=FALSE){
 
 
 results<-data.frame(cbind(quant, quant.value))
-#return(results[,1])
 legend("topright", leg=paste(c(quant, signif(quant.value, digits=3))), title="Quantiles", ncol=2)
 
 return(results)	
