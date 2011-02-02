@@ -114,6 +114,7 @@ while (!run.goingwell) {
 			titlevector <-c(titlevector, paste("Starting", numberParametersStarting))
 			freevector<-c(freevector, TRUE)
 		}
+		#print(numberParametersStarting)
 	}
 	for (i in 1:dim(intrinsicPriorsValues)[2]) {
 		priorFn<-match.arg(arg=intrinsicPriorsFns[i],choices=c("fixed", "uniform", "normal", "lognormal", "gamma", "exponential"),several.ok=FALSE)
@@ -127,6 +128,7 @@ while (!run.goingwell) {
 			titlevector <-c(titlevector, paste("Intrinsic", numberParametersIntrinsic))
 			freevector<-c(freevector, TRUE)
 		}
+		#print(numberParametersIntrinsic)
 	}
 
 	for (i in 1:dim(extrinsicPriorsValues)[2]) {
@@ -141,7 +143,27 @@ while (!run.goingwell) {
 			titlevector <-c(titlevector, paste("Extrinsic", numberParametersExtrinsic))
 			freevector<-c(freevector, TRUE)
 		}
+		#print(numberParametersExtrinsic)
 	}
+	
+	priorMatrix<-matrix(ncol=3, nrow=numberParametersFree)
+	priorNumber<-0
+	for (a in 1: numberParametersStarting){
+		priorNumber<-priorNumber+1
+		priorMatrix[priorNumber,]<-c(startingPriorsFns[a], c(startingPriorsValues[,a]))
+	}	
+	if (numberParametersIntrinsic>0) {
+		for (b in 1: numberParametersIntrinsic){
+			priorNumber<-priorNumber+1
+			priorMatrix[priorNumber,]<-c(intrinsicPriorsFns[b], c(intrinsicPriorsValues[,b]))
+		}
+	}
+	if (numberParametersExtrinsic>0) {	
+		for (c in 1: numberParametersExtrinsic){
+			priorNumber<-priorNumber+1
+			priorMatrix[priorNumber,]<-c(extrinsicPriorsFns[c], c(extrinsicPriorsValues[,c]))
+		}
+	}	
 
 	param.stdev<-matrix(nrow=nStepsPRC, ncol=numberParametersFree)
 	weightedMeanParam<-matrix(nrow=nStepsPRC, ncol=numberParametersFree)
@@ -432,9 +454,9 @@ while (!run.goingwell) {
 		save.image(file=paste("WS", jobName, ".Rdata", sep=""))
 		test<-vector("list", 16)
 		test[[1]]<-input.data
-		test[[2]]<-boxcox.output
-		#names(particleDataFrame)<-nameVector
+		test[[2]]<-priorMatrix
 		test[[3]]<-particleDataFrame
+		names(test[[3]])<-nameVector
 		test[[4]]<-epsilonDistance
 		test[[5]]<-toleranceVector
 		test[[6]]<-todo
@@ -444,7 +466,7 @@ while (!run.goingwell) {
 		test[[10]]<-c()
 		test[[11]]<-particleWeights
 		test[[12]]<-particleVector
-		test[[13]]<-numberParametersFree
+		test[[13]]<-boxcox.output
 		test[[14]]<-param.stdev
 		test[[15]]<-weightedMeanParam
 		test[[16]]<-time.per.gen
@@ -640,8 +662,9 @@ if (startFromCheckpoint==TRUE || dataGenerationStep < nStepsPRC) {
 		save.image(file=paste("WS", jobName, ".Rdata", sep=""))
 		test<-vector("list", 16)
 		test[[1]]<-input.data
-		test[[2]]<-boxcox.output
+		test[[2]]<-priorMatrix
 		test[[3]]<-particleDataFrame
+		names(test[[3]])<-nameVector
 		test[[4]]<-epsilonDistance
 		test[[5]]<-toleranceVector
 		test[[6]]<-todo
@@ -651,7 +674,7 @@ if (startFromCheckpoint==TRUE || dataGenerationStep < nStepsPRC) {
 		test[[10]]<-rejects
 		test[[11]]<-particleWeights
 		test[[12]]<-particleVector
-		test[[13]]<-numberParametersFree
+		test[[13]]<-boxcox.output
 		test[[14]]<-param.stdev
 		test[[15]]<-weightedMeanParam
 		test[[16]]<-time.per.gen
@@ -733,7 +756,7 @@ genTimes<-c(time.per.gen, time3)
 
 test<-vector("list", 17)
 test[[1]]<-input.data
-test[[2]]<-boxcox.output
+test[[2]]<-priorMatrix
 test[[3]]<-particleDataFrame
 test[[4]]<-epsilonDistance
 test[[5]]<-toleranceVector
@@ -744,7 +767,7 @@ test[[9]]<-rejects.gen.one
 test[[10]]<-rejects
 test[[11]]<-particleWeights
 test[[12]]<-particleVector
-test[[13]]<-numberParametersFree
+test[[13]]<-boxcox.output
 test[[14]]<-param.stdev
 test[[15]]<-weightedMeanParam
 test[[16]]<-genTimes
