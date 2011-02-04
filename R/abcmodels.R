@@ -52,7 +52,7 @@ autoregressiveIntrinsic<-function(params,states, timefrompresent) { #a discrete 
 	sd<-params[1] 
 	attractor<-params[2] 
 	attraction<-params[3]	#in this model, this should be between zero and one
-	newdisplacement<-rnorm(n=length(states),mean=(attraction*attractor)-states,sd=sd)-states #subtract current states because we want displacement
+	newdisplacement<-rnorm(n=length(states),mean=(attractor-states)*attraction,sd=sd) #subtract current states because we want displacement
 	return(newdisplacement)
 	
 } 
@@ -93,23 +93,30 @@ everyoneDisplacementExtrinsic<-function(params,selfstates,otherstates, timefromp
 autoregressiveIntrinsicTimeSlices<-function(params,states, timefrompresent) { #a discrete time OU, differing mean, sigma, and attaction with time
 	#params=[sd1, attractor1, attraction1, timethreshold1, sd2, attractor2, attraction2, timethreshold2, ...]
 	#time is time before present (i.e., 65 could be 65 MYA). The last time threshold should be 0, one before that is the end of the previous epoch, etc.
-	numTimeSlices<-length(params)/4
+	numRegimes<-length(params)/4
+	timeSliceVector=c(Inf,params[which(c(1:length(params))%%4==0)])
+	#print(timeSliceVector)
 	sd<-params[1]
 	attractor<-params[2]
 	attraction<-params[3]	#in this model, this should be between zero and one
-	previousThresholdTime<-Inf
-	for (slice in 0:(numTimeSlices-1)) {
-		thresholdTime<-params[4+4*slice]
-		if (thresholdTime >= timefrompresent) {
-			if (thresholdTime<previousThresholdTime) {
-				sd<-params[1+4*slice]
-				attractor<-params[2+4*slice]
-				attraction<-params[3+4*slice]
-			}		
+	#print(paste("timefrompresent = ",timefrompresent))
+	for (regime in 1:numRegimes) {
+		#print(paste ("tryiing regime = ",regime))
+		if (timefrompresent<timeSliceVector[regime]) {
+			#print("timefrompresent>timeSliceVector[regime] == TRUE")
+			if (timefrompresent>=timeSliceVector[regime+1]) {
+				#print("timefrompresent<=timeSliceVector[regime+1] == TRUE")
+				#print(paste("choose regime ",regime, " so 4*(regime-1)=",4*(regime-1)))
+				sd<-params[1+4*(regime-1)]
+				attractor<-params[2+4*(regime-1)]
+				attraction<-params[3+4*(regime-1)]
+					#print(paste("sd = ",sd," attractor = ",attractor, " attraction = ", attraction))
+
+			}	
 		}	
-		previousThresholdTime<-thresholdTime
 	}
-	newdisplacement<-rnorm(n=length(states),mean=attraction*states + attractor,sd=sd)-states
+	#print(paste("sd = ",sd," attractor = ",attractor, " attraction = ", attraction))
+	newdisplacement<-rnorm(n=length(states),mean=(attractor-states)*attraction,sd=sd)
 	return(newdisplacement)
 }
 
