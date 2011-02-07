@@ -3,8 +3,8 @@
 #plotPrior("exponential", c(1), plot.quants=FALSE)
 
 
-plotPrior<-function(priorFn=match.arg(arg=priorFn,choices=c("fixed", "uniform", "normal", "lognormal", "gamma", "exponential"),several.ok=FALSE), priorVariables, plot.quants=FALSE){
-	plot.new()
+plotPrior<-function(priorFn=match.arg(arg=priorFn,choices=c("fixed", "uniform", "normal", "lognormal", "gamma", "exponential"),several.ok=FALSE), priorVariables, plot.quants=FALSE, plot.legend=TRUE){
+	#plot.new()
 	x<-NA
 	quant<-c(0.01, 0.05, 0.25, .50, 0.75, 0.95, 0.99)
 	quant.value<-vector()
@@ -101,7 +101,9 @@ plotPrior<-function(priorFn=match.arg(arg=priorFn,choices=c("fixed", "uniform", 
 
 
 results<-data.frame(cbind(quant, quant.value))
-legend("topright", leg=paste(c(quant, signif(quant.value, digits=3))), title="Quantiles", ncol=2)
+if (plot.legend){
+	legend("topright", leg=paste(c(quant, signif(quant.value, digits=3))), title="Quantiles", ncol=2, bty="n")
+}
 
 return(results)	
 
