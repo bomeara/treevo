@@ -453,6 +453,7 @@ while (!run.goingwell) {
 	if (checkpointSave){
 		save.image(file=paste("WS", jobName, ".Rdata", sep=""))
 		test<-vector("list", 16)
+		names(test)<-c("input.data", "priorMatrix", "particleDataFrame", "epsilonDistance", "toleranceVector", "todo", "phy", "char", "rejects.gen.one", "rejects", "particleWeights", "particleVector", "boxcox.output", "param.stdev", "weightedMeanParam", "time.per.gen")
 		test[[1]]<-input.data
 		test[[2]]<-priorMatrix
 		test[[3]]<-particleDataFrame
@@ -661,6 +662,7 @@ if (startFromCheckpoint==TRUE || dataGenerationStep < nStepsPRC) {
 	if (checkpointSave){
 		save.image(file=paste("WS", jobName, ".Rdata", sep=""))
 		test<-vector("list", 16)
+		names(test)<-c("input.data", "priorMatrix", "particleDataFrame", "epsilonDistance", "toleranceVector", "todo", "phy", "char", "rejects.gen.one", "rejects", "particleWeights", "particleVector", "boxcox.output", "param.stdev", "weightedMeanParam", "time.per.gen")
 		test[[1]]<-input.data
 		test[[2]]<-priorMatrix
 		test[[3]]<-particleDataFrame
@@ -755,6 +757,8 @@ genTimes<-c(time.per.gen, time3)
 
 
 test<-vector("list", 17)
+names(test)<-c("input.data", "priorMatrix", "particleDataFrame", "epsilonDistance", "toleranceVector", "todo", "phy", "char", "rejects.gen.one", "rejects", "particleWeights", "particleVector", "boxcox.output", "param.stdev", "weightedMeanParam", "time.per.gen", "FinalParamPredictions")
+
 test[[1]]<-input.data
 test[[2]]<-priorMatrix
 test[[3]]<-particleDataFrame
