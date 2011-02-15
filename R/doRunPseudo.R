@@ -30,7 +30,7 @@ if (filecount=="0") {  #if file is absent
 if (filecount=="1"){  #if file is present 
 	paste("partialResults", jobName, ".txt", sep="")->pRname
 	paste(load(pRname))
-	dataGenerationStep <- max(test[[3]]$X1)
+	dataGenerationStep <- max(test$particleDataFrame$X1)
 		if (dataGenerationStep==nStepsPRC){
 			cat ("\n\nRun was finished already\n\n")		}
 	#paste(load(WSname))
@@ -38,17 +38,17 @@ if (filecount=="1"){  #if file is present
 	cat("dataGenerationStep=", dataGenerationStep, "\n")
 	nameVector<-c("generation", "attempt", "id", "parentid", "distance", "weight")
 	run.goingwell=TRUE
-	input.data<-test[[1]]
-	boxcox.output<-test[[2]]
-	boxcoxLambda<-test[[2]][[1]]
-	boxcoxAddition<-test[[2]][[2]]
-	prunedPlsResult<-test[[2]][[3]]
-	prunedSummaryValues<-test[[2]][[4]]
-	originalSummaryStats<-test[[2]][[5]]
-	particleDataFrame<-test[[3]]
-	epsilonDistance<-test[[4]]
+	input.data<-test$input.data
+	boxcox.output<-test$boxcoxLambda
+	boxcoxLambda<-test$boxcox.output[[1]]
+	boxcoxAddition<-test$boxcox.output[[2]]
+	prunedPlsResult<-test$boxcox.output[[3]]
+	prunedSummaryValues<-test$boxcox.output[[4]]
+	originalSummaryStats<-test$boxcox.output[[5]]
+	particleDataFrame<-test$particleDataFrame
+	epsilonDistance<-test$epsilonDistance
 	
-	toleranceVector<-test[[5]]
+	toleranceVector<-test$toleranceVector
 		if (length(toleranceVector) < nStepsPRC){
 			#print(toleranceVector)
 			toleranceVector<-rep(epsilonDistance, nStepsPRC)
@@ -57,18 +57,18 @@ if (filecount=="1"){  #if file is present
 			}
 			#print(toleranceVector)
 		}	
-	todo<-test[[6]]
-	phy<-test[[7]]
+	todo<-test$todo
+	phy<-test$phy
 		splits<-getSimulationSplits(phy)
-	traits<-test[[8]]
-	rejects.gen.one<-test[[9]]	
-	rejects<-test[[10]]
-	particleWeights<-test[[11]]
-	particleVector<-test[[12]]
-	numberParametersFree<-test[[13]]
-	param.stdev<-test[[14]]
-	weightedMeanParam<-test[[15]]
-	time.per.gen<-test[[16]]
+	traits<-test$traits
+	rejects.gen.one<-test$rejects.gen.one
+	rejects<-test$rejects
+	particleWeights<-test$particleWeights
+	particleVector<-test$particleVector
+	numberParametersFree<-test$numberParametersFree
+	param.stdev<-test$param.stdev
+	weightedMeanParam<-test$weightedMeanParam
+	time.per.gen<-test$time.per.gen
 }
 
 
@@ -454,23 +454,23 @@ while (!run.goingwell) {
 		save.image(file=paste("WS", jobName, ".Rdata", sep=""))
 		test<-vector("list", 16)
 		names(test)<-c("input.data", "priorMatrix", "particleDataFrame", "epsilonDistance", "toleranceVector", "todo", "phy", "char", "rejects.gen.one", "rejects", "particleWeights", "particleVector", "boxcox.output", "param.stdev", "weightedMeanParam", "time.per.gen")
-		test[[1]]<-input.data
-		test[[2]]<-priorMatrix
-		test[[3]]<-particleDataFrame
-		names(test[[3]])<-nameVector
-		test[[4]]<-epsilonDistance
-		test[[5]]<-toleranceVector
-		test[[6]]<-todo
-		test[[7]]<-phy
-		test[[8]]<-char
-		test[[9]]<-rejects.gen.one
-		test[[10]]<-c()
-		test[[11]]<-particleWeights
-		test[[12]]<-particleVector
-		test[[13]]<-boxcox.output
-		test[[14]]<-param.stdev
-		test[[15]]<-weightedMeanParam
-		test[[16]]<-time.per.gen
+		test$input.data<-input.data
+		test$priorMatrix<-priorMatrix
+		test$particleDataFrame<-particleDataFrame
+		names(test$particleDataFrame)<-nameVector
+		test$epsilonDistance<-epsilonDistance
+		test$toleranceVector<-toleranceVector
+		test$todo<-todo
+		test$phy<-phy
+		test$char<-char
+		test$rejects.gen.one<-rejects.gen.one
+		test$rejects<-c()
+		test$particleWeights<-particleWeights
+		test$particleVector<-particleVector
+		test$boxcox.output<-boxcox.output
+		test$param.stdevtest$param.stdev<-param.stdev
+		test$weightedMeanParam<-weightedMeanParam
+		test$time.per.gen<-time.per.gen
 		save(test, file=paste("partialResults", jobName, ".txt", sep=""))
 
 	}	
@@ -611,7 +611,6 @@ if (startFromCheckpoint==TRUE || dataGenerationStep < nStepsPRC) {
 		} #particles
 	
 	if (!run.goingwell){
-			#cat ("\n\nRetrying run  (inside datagenerationsstep bracket)\n\n")
 			break
 		}		
 
@@ -623,29 +622,16 @@ if (startFromCheckpoint==TRUE || dataGenerationStep < nStepsPRC) {
 		time.per.gen<-c(time.per.gen, time2)
 		rejects.per.gen<-(dim(subset(particleDataFrame, X3<0))[1])/(dim(subset(particleDataFrame[which(particleDataFrame$X1==dataGenerationStep),],))[1])
 		
-		#print(particleDataFrame)
-		#print(subset(particleDataFrame, X3>0))
-		#print(dim(subset(particleDataFrame, X3<0))[1])
-		#print(dim(subset(particleDataFrame[which(particleDataFrame$X1==dataGenerationStep),],))[1])
-
 		rejects<-c(rejects, rejects.per.gen)	
 	
-		#print(param.stdev)
-		
 		sub1<-subset(particleDataFrame, X1==dataGenerationStep)
-		#print(sub1)
 		sub2<-subset(particleDataFrame, X3>0)
-		#print(sub2)
 		
 		param.stdev[dataGenerationStep,]<-c(sd(sub2[,7:paste(6+numberParametersFree)]))
 		
 		weightedMeanParam[dataGenerationStep,]<-c(mean(sub2[,7:paste(6+numberParametersFree)]/sub2[,6]))
 		
-		##Trying to make a vector of values that get changed if they are under certain stdev
-		##For this to work, I will need to take out the "generation" column that I put in earlier
-		
 	if (stopRule){	
-		#GG<-rep(1, dim(param.stdev)[2])
 		FF<-rep(1, dim(weightedMeanParam)[2])
 		for (check.weightedMeanParam in 1:length(FF)){
 			if (is.na(((abs(weightedMeanParam[dataGenerationStep, check.weightedMeanParam]-weightedMeanParam[dataGenerationStep-1, check.weightedMeanParam])/mean(weightedMeanParam[dataGenerationStep, check.weightedMeanParam], weightedMeanParam[dataGenerationStep-1, check.weightedMeanParam])) <= stopValue))) {
@@ -656,6 +642,7 @@ if (startFromCheckpoint==TRUE || dataGenerationStep < nStepsPRC) {
 				print("stopValue")
 				print(stopValue)				
 			}
+		
 			if ((abs(weightedMeanParam[dataGenerationStep, check.weightedMeanParam]-weightedMeanParam[dataGenerationStep-1, check.weightedMeanParam])/mean(weightedMeanParam[dataGenerationStep, check.weightedMeanParam], weightedMeanParam[dataGenerationStep-1, check.weightedMeanParam])) <= stopValue){
 				FF[check.weightedMeanParam]<-0
 			}
@@ -670,23 +657,23 @@ if (startFromCheckpoint==TRUE || dataGenerationStep < nStepsPRC) {
 		save.image(file=paste("WS", jobName, ".Rdata", sep=""))
 		test<-vector("list", 16)
 		names(test)<-c("input.data", "priorMatrix", "particleDataFrame", "epsilonDistance", "toleranceVector", "todo", "phy", "char", "rejects.gen.one", "rejects", "particleWeights", "particleVector", "boxcox.output", "param.stdev", "weightedMeanParam", "time.per.gen")
-		test[[1]]<-input.data
-		test[[2]]<-priorMatrix
-		test[[3]]<-particleDataFrame
-		names(test[[3]])<-nameVector
-		test[[4]]<-epsilonDistance
-		test[[5]]<-toleranceVector
-		test[[6]]<-todo
-		test[[7]]<-phy
-		test[[8]]<-char
-		test[[9]]<-rejects.gen.one
-		test[[10]]<-rejects
-		test[[11]]<-particleWeights
-		test[[12]]<-particleVector
-		test[[13]]<-boxcox.output
-		test[[14]]<-param.stdev
-		test[[15]]<-weightedMeanParam
-		test[[16]]<-time.per.gen
+		test$input.data<-input.data
+		test$priorMatrix<-priorMatrix
+		test$particleDataFrame<-particleDataFrame
+		names(test$particleDataFrame)<-nameVector
+		test$epsilonDistance<-epsilonDistance
+		test$toleranceVector<-toleranceVector
+		test$todo<-todo
+		test$phy<-phy
+		test$char<-char
+		test$rejects.gen.one<-rejects.gen.one
+		test$rejects<-rejects
+		test$particleWeights<-particleWeights
+		test$particleVector<-particleVector
+		test$boxcox.output<-boxcox.output
+		test$param.stdev<-param.stdev
+		test$weightedMeanParam<-weightedMeanParam
+		test$time.per.gen<-time.per.gen
 		save(test, file=paste("partialResults", jobName, ".txt", sep=""))
 	}	
 		
@@ -703,7 +690,6 @@ if (startFromCheckpoint==TRUE || dataGenerationStep < nStepsPRC) {
 				ErrorParticleFrame[[2]]<-todo
 				ErrorParticleFrame[[3]]<-particleDataFrame
 				ErrorParticleFrame[[4]]<-toleranceVector
-				#ErrorParticleFrame->paste("ErrorParticleFrame", jobName, sep="")
 				save(ErrorParticleFrame, file=paste("ErrorParticleFrame", jobName, ".txt", sep=""))
 				cat("\n\nTried", maxTries, "times and all failed!")
 				cat("\ninput.data was appended to Error.txt file within the working directory\n\n")
@@ -715,7 +701,6 @@ if (startFromCheckpoint==TRUE || dataGenerationStep < nStepsPRC) {
 				ErrorParticleFrame[[2]]<-todo
 				ErrorParticleFrame[[3]]<-particleDataFrame
 				ErrorParticleFrame[[4]]<-toleranceVector
-				#ErrorParticleFrame->paste("ErrorParticleFrame", jobName, sep="")
 				save(ErrorParticleFrame, file=paste("ErrorParticleFrame", jobName, ".txt", sep=""))
 				cat("\n\nAborting try", try, "of", maxTries, "at Generation", dataGenerationStep, "\n\n")
 			}
@@ -739,7 +724,6 @@ if (startFromCheckpoint==TRUE || dataGenerationStep < nStepsPRC) {
 if (debug){
 	cat("debug!!")
 	debugResults<-dget(doRun)
-	#save(debugResults, file=paste("debuggingResults", jobName, ".txt", sep=""))
 }
 
 
@@ -766,23 +750,23 @@ genTimes<-c(time.per.gen, time3)
 test<-vector("list", 17)
 names(test)<-c("input.data", "priorMatrix", "particleDataFrame", "epsilonDistance", "toleranceVector", "todo", "phy", "char", "rejects.gen.one", "rejects", "particleWeights", "particleVector", "boxcox.output", "param.stdev", "weightedMeanParam", "time.per.gen", "FinalParamPredictions")
 
-test[[1]]<-input.data
-test[[2]]<-priorMatrix
-test[[3]]<-particleDataFrame
-test[[4]]<-epsilonDistance
-test[[5]]<-toleranceVector
-test[[6]]<-todo
-test[[7]]<-phy
-test[[8]]<-char
-test[[9]]<-rejects.gen.one
-test[[10]]<-rejects
-test[[11]]<-particleWeights
-test[[12]]<-particleVector
-test[[13]]<-boxcox.output
-test[[14]]<-param.stdev
-test[[15]]<-weightedMeanParam
-test[[16]]<-genTimes
-test[[17]]<-FinalParamPredictions
+test$input.data<-input.data
+test$priorMatrix<-priorMatrix
+test$particleDataFrame<-particleDataFrame
+test$epsilonDistance<-epsilonDistance
+test$toleranceVector<-toleranceVector
+test$todo<-todo
+test$phy<-phy
+test$char<-char
+test$rejects.gen.one<-rejects.gen.one
+test$rejects<-rejects
+test$particleWeights<-particleWeights
+test$particleVector<-particleVector
+test$boxcox.output<-boxcox.output
+test$param.stdev<-param.stdev
+test$weightedMeanParam<-weightedMeanParam
+test$time.per.gen<-genTimes
+test$FinalParamPredictions <-FinalParamPredictions
 
 }
  #if startFromCheckpoint bracket?
