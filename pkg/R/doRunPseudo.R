@@ -648,7 +648,14 @@ if (startFromCheckpoint==TRUE || dataGenerationStep < nStepsPRC) {
 		#GG<-rep(1, dim(param.stdev)[2])
 		FF<-rep(1, dim(weightedMeanParam)[2])
 		for (check.weightedMeanParam in 1:length(FF)){
-						
+			if (is.na(((abs(weightedMeanParam[dataGenerationStep, check.weightedMeanParam]-weightedMeanParam[dataGenerationStep-1, check.weightedMeanParam])/mean(weightedMeanParam[dataGenerationStep, check.weightedMeanParam], weightedMeanParam[dataGenerationStep-1, check.weightedMeanParam])) <= stopValue))) {
+				print("weightedMeanParam")
+				print(weightedMeanParam)
+				print("check.weightedMeanParam")
+				print(check.weightedMeanParam)
+				print("stopValue")
+				print(stopValue)				
+			}
 			if ((abs(weightedMeanParam[dataGenerationStep, check.weightedMeanParam]-weightedMeanParam[dataGenerationStep-1, check.weightedMeanParam])/mean(weightedMeanParam[dataGenerationStep, check.weightedMeanParam], weightedMeanParam[dataGenerationStep-1, check.weightedMeanParam])) <= stopValue){
 				FF[check.weightedMeanParam]<-0
 			}
