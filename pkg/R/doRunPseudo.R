@@ -493,7 +493,7 @@ if (startFromCheckpoint==TRUE || dataGenerationStep < nStepsPRC) {
 				#cat("toleranceVector=", toleranceVector, "\n\n")
 			}
 		start.time<-proc.time()[[3]]
-		particleWeights<-particleWeights/(sum(particleWeights)) #normalize to one
+		particleWeights<-particleWeights/(sum(particleWeights,na.rm=TRUE)) #normalize to one
 		cat("particleWeights\n", particleWeights, "\n\n")
 		oldParticleVector<-particleVector
 		oldParticleWeights<-particleWeights
@@ -563,6 +563,9 @@ if (startFromCheckpoint==TRUE || dataGenerationStep < nStepsPRC) {
 							localTransitionProb=1
 						} 
 						lnTransitionProb<-lnTransitionProb+log(localTransitionProb)
+						if(!is.finite(lnTransitionProb)) {
+							print(paste("issue with lnTransitionProb: localTransitionProb = ",localTransitionProb,", log(localTransitionProb) = ",log(localTransitionProb)," lnTransitionProb = ",lnTransitionProb))
+						}
 					}	
 					for (j in 1:length(newparticleVector[[1]]@intrinsicValues)) {
 						newvalue<-newparticleVector[[1]]@intrinsicValues[j]
@@ -573,6 +576,10 @@ if (startFromCheckpoint==TRUE || dataGenerationStep < nStepsPRC) {
 							localTransitionProb=1
 						} 						
 						lnTransitionProb<-lnTransitionProb+log(localTransitionProb)
+                                               if(!is.finite(lnTransitionProb)) {
+                                                        print(paste("issue with lnTransitionProb: localTransitionProb = ",localTransitionProb,", log(localTransitionProb) = ",log(localTransitionProb)," lnTransitionProb = ",lnTransitionProb))
+                                                }
+
 					}	
 					for (j in 1:length(newparticleVector[[1]]@extrinsicValues)) {
 						newvalue<-newparticleVector[[1]]@extrinsicValues[j]
@@ -583,10 +590,17 @@ if (startFromCheckpoint==TRUE || dataGenerationStep < nStepsPRC) {
 							localTransitionProb=1
 						} 						
 						lnTransitionProb<-lnTransitionProb+log(localTransitionProb)
+                                               if(!is.finite(lnTransitionProb)) {
+                                                        print(paste("issue with lnTransitionProb: localTransitionProb = ",localTransitionProb,", log(localTransitionProb) = ",log(localTransitionProb)," lnTransitionProb = ",lnTransitionProb))
+                                                }
+
 					}					
 					newWeight<-newWeight+getWeight(oldParticleVector[[i]])*exp(lnTransitionProb)
 				
 				
+				}
+				if (!is.finite(newWeight)) {
+					print(paste("warning: newWeight is ",newWeight))
 				}
 				newparticleVector[[1]]<-setWeight(newparticleVector[[1]], newWeight)
 				particleWeights[particle-1]<-newWeight
@@ -625,7 +639,7 @@ if (startFromCheckpoint==TRUE || dataGenerationStep < nStepsPRC) {
 		rejects<-c(rejects, rejects.per.gen)	
 	
 		sub1<-subset(particleDataFrame, X1==dataGenerationStep)
-		sub2<-subset(particleDataFrame, X3>0)
+		sub2<-subset(sub1, X3>0)
 		
 		param.stdev[dataGenerationStep,]<-c(sd(sub2[,7:paste(6+numberParametersFree)]))
 		
@@ -635,6 +649,10 @@ if (startFromCheckpoint==TRUE || dataGenerationStep < nStepsPRC) {
 		FF<-rep(1, dim(weightedMeanParam)[2])
 		for (check.weightedMeanParam in 1:length(FF)){
 			if (is.na(((abs(weightedMeanParam[dataGenerationStep, check.weightedMeanParam]-weightedMeanParam[dataGenerationStep-1, check.weightedMeanParam])/mean(weightedMeanParam[dataGenerationStep, check.weightedMeanParam], weightedMeanParam[dataGenerationStep-1, check.weightedMeanParam])) <= stopValue))) {
+				print(sub1)
+				print(sub2)
+				print(weightedMeanParam[dataGenerationStep, check.weightedMeanParam]-weightedMeanParam[dataGenerationStep-1, check.weightedMeanParam])
+				print(mean(weightedMeanParam[dataGenerationStep, check.weightedMeanParam], weightedMeanParam[dataGenerationStep-1, check.weightedMeanParam]))
 				print("weightedMeanParam")
 				print(weightedMeanParam)
 				print("check.weightedMeanParam")
