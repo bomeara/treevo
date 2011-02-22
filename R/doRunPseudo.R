@@ -552,53 +552,54 @@ if (startFromCheckpoint==TRUE || dataGenerationStep < nStepsPRC) {
 				particleVector<-append(particleVector, newparticleVector)
 				#now get weights, using correction in sisson et al. 2007
 				newWeight=0
-				for (i in 1:length(oldParticleVector)) {
-					lnTransitionProb=log(1)
-					for (j in 1:length(newparticleVector[[1]]@startingStates)) {
-						newvalue<-newparticleVector[[1]]@startingStates[j]
-						meantouse= oldParticleVector[[i]]@startingStates[j]
-						sdtouse=standardDevFactor*(max(startingPriorsValues[, j])-min(startingPriorsValues[, j]))
-						localTransitionProb=dnorm(newvalue, mean= meantouse, sd= sdtouse)/(1-pnorm(min(startingPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=T)+pnorm(max(startingPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=F))
-						if (min(startingPriorsValues[, j])==max(startingPriorsValues[, j])) {
-							localTransitionProb=1
-						} 
-						lnTransitionProb<-lnTransitionProb+log(localTransitionProb)
-						if(!is.finite(lnTransitionProb)) {
-							print(paste("issue with lnTransitionProb: localTransitionProb = ",localTransitionProb,", log(localTransitionProb) = ",log(localTransitionProb)," lnTransitionProb = ",lnTransitionProb))
-						}
-					}	
-					for (j in 1:length(newparticleVector[[1]]@intrinsicValues)) {
-						newvalue<-newparticleVector[[1]]@intrinsicValues[j]
-						meantouse= oldParticleVector[[i]]@intrinsicValues[j]
-						sdtouse=standardDevFactor*(max(intrinsicPriorsValues[, j])-min(intrinsicPriorsValues[, j]))
-						localTransitionProb=dnorm(newvalue, mean= meantouse, sd= sdtouse)/(1-pnorm(min(intrinsicPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=T)+pnorm(max(intrinsicPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=F))
-						if (min(intrinsicPriorsValues[, j])==max(intrinsicPriorsValues[, j])) {
-							localTransitionProb=1
-						} 						
-						lnTransitionProb<-lnTransitionProb+log(localTransitionProb)
+                                for (i in 1:length(oldParticleVector)) {
+                                        lnTransitionProb=log(1)
+                                        for (j in 1:length(newparticleVector[[1]]@startingStates)) {
+                                                newvalue<-newparticleVector[[1]]@startingStates[j]
+                                                meantouse= oldParticleVector[[i]]@startingStates[j]
+                                                sdtouse=standardDevFactor*(max(startingPriorsValues[, j])-min(startingPriorsValues[, j]))
+                                                lnlocalTransitionProb=dnorm(newvalue, mean= meantouse, sd= sdtouse,log=TRUE)-log(1-pnorm(min(startingPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=T)+pnorm(max(startingPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=F))
+                                                if (min(startingPriorsValues[, j])==max(startingPriorsValues[, j])) {
+                                                        lnlocalTransitionProb=log(1)
+                                                } 
+                                                lnTransitionProb<-lnTransitionProb+lnlocalTransitionProb
+                                                if(!is.finite(lnTransitionProb)) {
+                                                        print(paste("issue with lnTransitionProb: lnlocalTransitionProb = ",lnlocalTransitionProb," lnTransitionProb = ",lnTransitionProb))
+                                                }
+                                        } 
+                                        for (j in 1:length(newparticleVector[[1]]@intrinsicValues)) {
+                                                newvalue<-newparticleVector[[1]]@intrinsicValues[j]
+                                                meantouse= oldParticleVector[[i]]@intrinsicValues[j]
+                                                sdtouse=standardDevFactor*(max(intrinsicPriorsValues[, j])-min(intrinsicPriorsValues[, j]))
+                                                lnlocalTransitionProb=dnorm(newvalue, mean= meantouse, sd= sdtouse,log=TRUE)-log(1-pnorm(min(intrinsicPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=T)+pnorm(max(intrinsicPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=F))
+                                                if (min(intrinsicPriorsValues[, j])==max(intrinsicPriorsValues[, j])) {
+                                                        lnlocalTransitionProb=log(1)
+                                                } 
+                                                lnTransitionProb<-lnTransitionProb+lnlocalTransitionProb
                                                if(!is.finite(lnTransitionProb)) {
-                                                        print(paste("issue with lnTransitionProb: localTransitionProb = ",localTransitionProb,", log(localTransitionProb) = ",log(localTransitionProb)," lnTransitionProb = ",lnTransitionProb))
+                                                        print(paste("issue with lnTransitionProb: lnlocalTransitionProb = ",lnlocalTransitionProb," lnTransitionProb = ",lnTransitionProb))
                                                 }
 
-					}	
-					for (j in 1:length(newparticleVector[[1]]@extrinsicValues)) {
-						newvalue<-newparticleVector[[1]]@extrinsicValues[j]
-						meantouse= oldParticleVector[[i]]@extrinsicValues[j]
-						sdtouse=standardDevFactor*(max(extrinsicPriorsValues[, j])-min(extrinsicPriorsValues[, j]))
-						localTransitionProb=dnorm(newvalue, mean= meantouse, sd= sdtouse)/(1-pnorm(min(extrinsicPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=T)+pnorm(max(extrinsicPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=F))
-						if (min(extrinsicPriorsValues[, j])==max(extrinsicPriorsValues[, j])) {
-							localTransitionProb=1
-						} 						
-						lnTransitionProb<-lnTransitionProb+log(localTransitionProb)
+                                        } 
+                                        for (j in 1:length(newparticleVector[[1]]@extrinsicValues)) {
+                                                newvalue<-newparticleVector[[1]]@extrinsicValues[j]
+                                                meantouse= oldParticleVector[[i]]@extrinsicValues[j]
+                                                sdtouse=standardDevFactor*(max(extrinsicPriorsValues[, j])-min(extrinsicPriorsValues[, j]))
+                                                lnlocalTransitionProb=dnorm(newvalue, mean= meantouse, sd= sdtouse,log=TRUE)-log(1-pnorm(min(extrinsicPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=T)+pnorm(max(extrinsicPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=F))
+                                                if (min(extrinsicPriorsValues[, j])==max(extrinsicPriorsValues[, j])) {
+                                                        lnlocalTransitionProb=log(1)
+                                                } 
+                                                lnTransitionProb<-lnTransitionProb+lnlocalTransitionProb
                                                if(!is.finite(lnTransitionProb)) {
-                                                        print(paste("issue with lnTransitionProb: localTransitionProb = ",localTransitionProb,", log(localTransitionProb) = ",log(localTransitionProb)," lnTransitionProb = ",lnTransitionProb))
+                                                        print(paste("issue with lnTransitionProb: lnlocalTransitionProb = ",lnlocalTransitionProb," lnTransitionProb = ",lnTransitionProb))
                                                 }
 
-					}					
-					newWeight<-newWeight+getWeight(oldParticleVector[[i]])*exp(lnTransitionProb)
-				
-				
-				}
+                                        }                                       
+                                        newWeight<-newWeight+getWeight(oldParticleVector[[i]])*exp(lnTransitionProb)
+                                
+                                
+                                }
+
 				if (!is.finite(newWeight)) {
 					print(paste("warning: newWeight is ",newWeight))
 				}
