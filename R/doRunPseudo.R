@@ -557,16 +557,23 @@ if (startFromCheckpoint==TRUE || dataGenerationStep < nStepsPRC) {
                                         for (j in 1:length(newparticleVector[[1]]@startingStates)) {
                                                 newvalue<-newparticleVector[[1]]@startingStates[j]
                                                 meantouse= oldParticleVector[[i]]@startingStates[j]
-                                                sdtouse=standardDevFactor*(max(startingPriorsValues[, j])-min(startingPriorsValues[, j]))
-						if(sdtouse==0){
-							print("stdtouse==0 for startingStates")
-							print(paste("@startingStates:  standardDevFactor=", standardDevFactor, "max(extrinsicPriorsValues[, j])=", max(extrinsicPriorsValues[, j]), "min(extrinsicPriorsValues[, j]))=", min(extrinsicPriorsValues[, j])))
-						}
 
-						print(paste("@startingStates: newvalue=", newvalue, "meantouse=", meantouse, "sdtouse=", sdtouse, "min(startingPriorsValues[, j])=", min(startingPriorsValues[, j]), "max(startingPriorsValues[, j])", max(startingPriorsValues[, j])))
-						#print(paste("@startingStates: meantouse=", meantouse, "sdtouse=", sdtouse))
+												if (startingPriorsFns[j]=="uniform") {
+												     sdtouse<-standardDevFactor*((max(startingPriorsValues[,j])-min(startingPriorsValues[,j]))/sqrt(12))
+												     print(paste("startingPriorFn is uniform and sdtouse =", sdtouse))
+												}
+												else if (startingPriorsFns[j]=="exponential") {
+												     sdtouse<-standardDevFactor*(1/startingPriorsValues[,j])
+												     print(paste("startingPriorFn is exponential and sdtouse =", sdtouse))
+												}
+												else {
+												     sdtouse<-standardDevFactor*(startingPriorsValues[2,j])
+												     print(paste("startingPriorFn is not uniform or exponential and sdtouse =", sdtouse))
+												}
+												
+                                                #print(paste("@startingStates: meantouse=", meantouse, "sdtouse=", sdtouse))
                                                 lnlocalTransitionProb=dnorm(newvalue, mean= meantouse, sd= sdtouse,log=TRUE)-log(1-pnorm(min(startingPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=T)+pnorm(max(startingPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=F))
-                                                print(paste("@startingStates: dnorm()=", dnorm(newvalue, mean= meantouse, sd= sdtouse,log=TRUE), ", 1-pnorm()=", 1-pnorm(min(startingPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=T), ", pnorm()=", pnorm(max(startingPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=F)))
+                                                #print(paste("@startingStates: dnorm()=", dnorm(newvalue, mean= meantouse, sd= sdtouse,log=TRUE), ", 1-pnorm()=", 1-pnorm(min(startingPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=T), ", pnorm()=", pnorm(max(startingPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=F)))
                                                 if (min(startingPriorsValues[, j])==max(startingPriorsValues[, j])) {
                                                         lnlocalTransitionProb=log(1)
                                                 } 
@@ -578,15 +585,21 @@ if (startFromCheckpoint==TRUE || dataGenerationStep < nStepsPRC) {
                                         for (j in 1:length(newparticleVector[[1]]@intrinsicValues)) {
                                                 newvalue<-newparticleVector[[1]]@intrinsicValues[j]
                                                 meantouse= oldParticleVector[[i]]@intrinsicValues[j]
-                                                sdtouse=standardDevFactor*(max(intrinsicPriorsValues[, j])-min(intrinsicPriorsValues[, j]))
-						if(sdtouse==0){
-							print("stdtouse==0 for intrinsicValues")
-                                                        print(paste("@intrinsicValues:  standardDevFactor=", standardDevFactor, "max(intrinsicPriorsValues[, j])=", max(intrinsicPriorsValues[, j]), "min(intrinsicPriorsValues[, j]))=", min(intrinsicPriorsValues[, j])))
-                                                }
-						print(paste("@intrinsicValues: newvalue=", newvalue, "meantouse=", meantouse, "sdtouse=", sdtouse, "min(intrinsicPriorsValues[, j])=", min(intrinsicPriorsValues[, j]), "max(intrinsicPriorsValues[, j])", max(intrinsicPriorsValues[, j])))                                                
-						#print(paste("@intrinsicValues: meantouse=", meantouse, "sdtouse=", sdtouse))
+												if (intrinsicPriorsFns[j]=="uniform") {
+												     sdtouse<-standardDevFactor*((max(intrinsicPriorsValues[,j])-min(intrinsicPriorsValues[,j]))/sqrt(12))
+												     print(paste("intrinsicPriorFn is uniform and sdtouse =", sdtouse))
+												}
+												else if (intrinsicPriorsFns[j]=="exponential") {
+												     sdtouse<-standardDevFactor*(1/intrinsicPriorsValues[,j])
+												     print(paste("intrinsicPriorFn is exponential and sdtouse =", sdtouse))
+												}
+												else {
+												     sdtouse<-standardDevFactor*(intrinsicPriorsValues[2,j])
+												     print(paste("intrinsicPriorFn is not uniform or exponential and sdtouse =", sdtouse))
+												}
+                                                #print(paste("@intrinsicValues: meantouse=", meantouse, "sdtouse=", sdtouse))
                                                 lnlocalTransitionProb=dnorm(newvalue, mean= meantouse, sd= sdtouse,log=TRUE)-log(1-pnorm(min(intrinsicPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=T)+pnorm(max(intrinsicPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=F))
-                                                print(paste("@intrinsicValues: dnorm()=", dnorm(newvalue, mean= meantouse, sd= sdtouse,log=TRUE), ", 1-pnorm()=", 1-pnorm(min(startingPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=T), ", pnorm()=", pnorm(max(startingPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=F)))
+                                                #print(paste("@intrinsicValues: dnorm()=", dnorm(newvalue, mean= meantouse, sd= sdtouse,log=TRUE), ", 1-pnorm()=", 1-pnorm(min(startingPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=T), ", pnorm()=", pnorm(max(startingPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=F)))
                                                 if (min(intrinsicPriorsValues[, j])==max(intrinsicPriorsValues[, j])) {
                                                         lnlocalTransitionProb=log(1)
                                                 } 
@@ -599,16 +612,21 @@ if (startFromCheckpoint==TRUE || dataGenerationStep < nStepsPRC) {
                                         for (j in 1:length(newparticleVector[[1]]@extrinsicValues)) {
                                                 newvalue<-newparticleVector[[1]]@extrinsicValues[j]
                                                 meantouse= oldParticleVector[[i]]@extrinsicValues[j]
-                                                sdtouse=standardDevFactor*(max(extrinsicPriorsValues[, j])-min(extrinsicPriorsValues[, j]))
-						if(sdtouse==0){
-							print("stdtouse==0 for extrinsicValues")
-                                                        print(paste("@extrinsicValues:  standardDevFactor=", standardDevFactor, "max(extrinsicPriorsValues[, j])=", max(extrinsicPriorsValues[, j]), "min(extrinsicPriorsValues[, j]))=", min(extrinsicPriorsValues[, j])))
-                                                }
-            					print(paste("@extrinsicValues: newvalue=", newvalue, "meantouse=", meantouse, "sdtouse=", sdtouse, "min(extrinsicPriorsValues[, j])=", min(extrinsicPriorsValues[, j]), "max(extrinsicPriorsValues[, j])", max(extrinsicPriorsValues[, j])))
-
-						#print(paste("@extrinsicValues: meantouse=", meantouse, "sdtouse=", sdtouse))
+												if (extrinsicPriorsFns[j]=="uniform") {
+												     sdtouse<-standardDevFactor*((max(extrinsic[,j])-min(extrinsicPriorsValues[,j]))/sqrt(12))
+												     print(paste("extrinsicPriorFn is uniform and sdtouse =", sdtouse))
+												}
+												else if (extrinsicPriorsFns[j]=="exponential") {
+												     sdtouse<-standardDevFactor*(1/extrinsicPriorsValues[,j])
+												     print(paste("extrinsicPriorFn is exponential and sdtouse =", sdtouse))
+												}
+												else {
+												     sdtouse<-standardDevFactor*(extrinsicPriorsValues[2,j])
+												     print(paste("extrinsicPriorFn is not uniform or exponential and sdtouse =", sdtouse))
+												}
+                                                #print(paste("@extrinsicValues: meantouse=", meantouse, "sdtouse=", sdtouse))
                                                 lnlocalTransitionProb=dnorm(newvalue, mean= meantouse, sd= sdtouse,log=TRUE)-log(1-pnorm(min(extrinsicPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=T)+pnorm(max(extrinsicPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=F))
-                                                print(paste("@extrinsicValues: dnorm()=", dnorm(newvalue, mean= meantouse, sd= sdtouse,log=TRUE), ", 1-pnorm()=", 1-pnorm(min(startingPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=T), ", pnorm()=", pnorm(max(startingPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=F)))
+                                                #print(paste("@extrinsicValues: dnorm()=", dnorm(newvalue, mean= meantouse, sd= sdtouse,log=TRUE), ", 1-pnorm()=", 1-pnorm(min(startingPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=T), ", pnorm()=", pnorm(max(startingPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=F)))
                                                 if (min(extrinsicPriorsValues[, j])==max(extrinsicPriorsValues[, j])) {
                                                         lnlocalTransitionProb=log(1)
                                                 } 
