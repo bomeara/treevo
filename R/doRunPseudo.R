@@ -613,7 +613,7 @@ if (startFromCheckpoint==TRUE || dataGenerationStep < nStepsPRC) {
                                                 newvalue<-newparticleVector[[1]]@extrinsicValues[j]
                                                 meantouse= oldParticleVector[[i]]@extrinsicValues[j]
 												if (extrinsicPriorsFns[j]=="uniform") {
-												     sdtouse<-standardDevFactor*((max(extrinsic[,j])-min(extrinsicPriorsValues[,j]))/sqrt(12))
+												     sdtouse<-standardDevFactor*((max(extrinsicPriorsValues[,j])-min(extrinsicPriorsValues[,j]))/sqrt(12))
 												     print(paste("extrinsicPriorFn is uniform and sdtouse =", sdtouse))
 												}
 												else if (extrinsicPriorsFns[j]=="exponential") {
