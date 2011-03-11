@@ -121,7 +121,7 @@ autoregressiveIntrinsicTimeSlices<-function(params,states, timefrompresent) { #a
 }
 
 autoregressiveIntrinsicTimeSlicesConstantMean<-function(params,states, timefrompresent) { #a discrete time OU, constant mean, differing sigma, and differing attaction with time
-	#params=[sd1 (sigma1), attraction1 (character mean 1), timethreshold1, sd2 (sigma2), attraction2 (character mean 2), timethreshold2, ..., attractor (alpha)]
+	#params=[sd1 (sigma1), attraction1 (alpha 1), timethreshold1, sd2 (sigma2), attraction2 (alpha 2), timethreshold2, ..., attractor (mean)]
 	#time is time before present (i.e., 65 could be 65 MYA). The last time threshold should be 0, one before that is the end of the previous epoch, etc.
 	numTimeSlices<-(length(params)-1)/3
 	sd<-params[1]
@@ -142,4 +142,37 @@ autoregressiveIntrinsicTimeSlicesConstantMean<-function(params,states, timefromp
 	return(newdisplacement)
 }
 
+autoregressiveIntrinsicTimeSlicesConstantSigma<-function(params,states, timefrompresent) { #a discrete time OU, differing mean, constant sigma, and attaction with time
+	#params=[sd, attractor1, attraction1, timethreshold1, attractor2, attraction2, timethreshold2, ...]
+	#time is time before present (i.e., 65 could be 65 MYA). The last time threshold should be 0, one before that is the end of the previous epoch, etc.
+	numRegimes<-(length(params)-1)/3
+	#print(numRegimes)
+	timeSliceVector<-c(Inf)
+	for (regime in 1:numRegimes) {
+		timeSliceVector<-append(timeSliceVector,params[4+3*(regime-1)])
+	}
+	#timeSliceVector=c(Inf,params[which(c(1:length(params))%%4==0)])
+	print(timeSliceVector)
+	sd<-params[1]
+	attractor<-params[2]
+	attraction<-params[3]	#in this model, this should be between zero and one
+	print(paste("timefrompresent = ",timefrompresent))
+	for (regime in 1:numRegimes) {
+		print(paste ("trying regime = ",regime))
+		if (timefrompresent<timeSliceVector[regime]) {
+			#print("timefrompresent>timeSliceVector[regime] == TRUE")
+			if (timefrompresent>=timeSliceVector[regime+1]) {
+				#print("timefrompresent>=timeSliceVector[regime+1] == TRUE")
+				print(paste("chose regime ",regime))
+				#sd<-params[1+4*(regime-1)]
+				attractor<-params[2+3*(regime-1)]
+				attraction<-params[3+3*(regime-1)]
+				#print(paste("sd = ",sd," attractor = ",attractor, " attraction = ", attraction))
 
+			}	
+		}	
+	}
+	print(paste("sd = ",sd," attractor = ",attractor, " attraction = ", attraction))
+	newdisplacement<-rnorm(n=length(states),mean=(attractor-states)*attraction,sd=sd)
+	return(newdisplacement)
+}
