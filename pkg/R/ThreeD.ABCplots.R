@@ -1,4 +1,4 @@
-ThreeD.ABCplots<-function(a, parameter, show.particles="none", plot.parent=FALSE) {
+ThreeD.ABCplots<-function(a, parameter, show.particles="none", plot.parent=FALSE, realParam=FALSE, realParamValues=NA) {
 	
 library(gpclib)
 library(rgl)
@@ -47,7 +47,11 @@ param.position<-parameter
 			opacity<-0.8*(ngen/length(v))
 			rgl.material(color="black", alpha=opacity, lit=FALSE)
 			triangles3d(cbind(triangles, zfit), col="red")
-			readline(prompt="hit enter ")
+			#readline(prompt="hit enter ")
+			if (realParam) {
+				rgl.material(color="blue", lwd=2)
+				lines3d(x=c(realParamValues[1], realParamValues[1]), y=c(0, 0), z=c(min(s), max(s)))	
+			}
 		}
 	}		
 		
