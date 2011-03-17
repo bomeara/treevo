@@ -575,12 +575,12 @@ if (startFromCheckpoint==TRUE || dataGenerationStep < nStepsPRC) {
 												
                                                 #print(paste("@startingStates: meantouse=", meantouse, "sdtouse=", sdtouse))
                                                 lnlocalTransitionProb=dnorm(newvalue, mean= meantouse, sd= sdtouse,log=TRUE)-log(1-pnorm(min(startingPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=T)+pnorm(max(startingPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=F))
-                                                print(paste("@startingStates: dnorm()=", dnorm(newvalue, mean= meantouse, sd= sdtouse,log=TRUE), ", 1-pnorm()=", 1-pnorm(min(startingPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=T), ", pnorm()=", pnorm(max(startingPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=F)))
+                                                #print(paste("@startingStates: dnorm()=", dnorm(newvalue, mean= meantouse, sd= sdtouse,log=TRUE), ", 1-pnorm()=", 1-pnorm(min(startingPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=T), ", pnorm()=", pnorm(max(startingPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=F)))
                                                 if (min(startingPriorsValues[, j])==max(startingPriorsValues[, j])) {
                                                         lnlocalTransitionProb=log(1)
                                                 } 
                                                 lnTransitionProb<-lnTransitionProb+lnlocalTransitionProb
-                                                print(paste("lnlocalTransitionProb=", lnlocalTransitionProb))
+                                                #print(paste("lnlocalTransitionProb=", lnlocalTransitionProb))
                                                 if(!is.finite(lnTransitionProb)) {
                                                         print(paste("issue with lnTransitionProb: lnlocalTransitionProb = ",lnlocalTransitionProb," lnTransitionProb = ",lnTransitionProb))
                                                 }
@@ -602,12 +602,12 @@ if (startFromCheckpoint==TRUE || dataGenerationStep < nStepsPRC) {
 												}
                                                 #print(paste("@intrinsicValues: meantouse=", meantouse, "sdtouse=", sdtouse))
                                                 lnlocalTransitionProb=dnorm(newvalue, mean= meantouse, sd= sdtouse,log=TRUE)-log(1-pnorm(min(intrinsicPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=T)+pnorm(max(intrinsicPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=F))
-                                                print(paste("@intrinsicValues: dnorm()=", dnorm(newvalue, mean= meantouse, sd= sdtouse,log=TRUE), ", 1-pnorm()=", 1-pnorm(min(startingPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=T), ", pnorm()=", pnorm(max(startingPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=F)))
+                                                #print(paste("@intrinsicValues: dnorm()=", dnorm(newvalue, mean= meantouse, sd= sdtouse,log=TRUE), ", 1-pnorm()=", 1-pnorm(min(startingPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=T), ", pnorm()=", pnorm(max(startingPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=F)))
                                                 if (min(intrinsicPriorsValues[, j])==max(intrinsicPriorsValues[, j])) {
                                                         lnlocalTransitionProb=log(1)
                                                 } 
                                                 lnTransitionProb<-lnTransitionProb+lnlocalTransitionProb
-                                                print(paste("lnlocalTransitionProb=", lnlocalTransitionProb))
+                                                #print(paste("lnlocalTransitionProb=", lnlocalTransitionProb))
                                                if(!is.finite(lnTransitionProb)) {
                                                         print(paste("issue with lnTransitionProb: lnlocalTransitionProb = ",lnlocalTransitionProb," lnTransitionProb = ",lnTransitionProb))
                                                 }
@@ -630,12 +630,12 @@ if (startFromCheckpoint==TRUE || dataGenerationStep < nStepsPRC) {
 												}
                                                 #print(paste("@extrinsicValues: meantouse=", meantouse, "sdtouse=", sdtouse))
                                                 lnlocalTransitionProb=dnorm(newvalue, mean= meantouse, sd= sdtouse,log=TRUE)-log(1-pnorm(min(extrinsicPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=T)+pnorm(max(extrinsicPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=F))
-                                                print(paste("@extrinsicValues: dnorm()=", dnorm(newvalue, mean= meantouse, sd= sdtouse,log=TRUE), ", 1-pnorm()=", 1-pnorm(min(startingPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=T), ", pnorm()=", pnorm(max(startingPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=F)))
+                                                #print(paste("@extrinsicValues: dnorm()=", dnorm(newvalue, mean= meantouse, sd= sdtouse,log=TRUE), ", 1-pnorm()=", 1-pnorm(min(startingPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=T), ", pnorm()=", pnorm(max(startingPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=F)))
                                                 if (min(extrinsicPriorsValues[, j])==max(extrinsicPriorsValues[, j])) {
                                                         lnlocalTransitionProb=log(1)
                                                 } 
                                                 lnTransitionProb<-lnTransitionProb+lnlocalTransitionProb
-                                                print(paste("lnlocalTransitionProb=", lnlocalTransitionProb))
+                                                #print(paste("lnlocalTransitionProb=", lnlocalTransitionProb))
                                                if(!is.finite(lnTransitionProb)) {
                                                         print(paste("issue with lnTransitionProb: lnlocalTransitionProb = ",lnlocalTransitionProb," lnTransitionProb = ",lnTransitionProb))
                                                 }
