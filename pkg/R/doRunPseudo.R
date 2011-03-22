@@ -88,7 +88,7 @@ while (!run.goingwell) {
 		splits<-getSimulationSplits(phy) #initialize this info
 
 	
-	input.data<-rbind(jobName, length(phy[[3]]), startingPriorsFns, as.vector(startingPriorsValues), as.vector(intrinsicPriorsFns), as.vector(intrinsicPriorsValues), as.vector(extrinsicPriorsFns), as.vector(extrinsicPriorsValues), nrepSim, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor, try, trueStartingState, trueIntrinsicState)
+	input.data<-rbind(jobName, length(phy[[3]]), nrepSim, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor, try, trueStartingState, trueIntrinsicState)
 
 
 	#figure out number of free params
@@ -101,6 +101,22 @@ while (!run.goingwell) {
 	titlevector<-c()
 	freevector<-c()
 	
+	namesForPriorMatrix<-c()
+	allPriorMatrix1<-matrix(c(startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns), nrow=1, ncol=numberParametersTotal)
+	for (a in 1:dim(startingPriorsValues)[2]) {
+		namesForPriorMatrix<-c(paste("StartingStates", a, sep=""))
+	}
+	for (b in 1:dim(intrinsicPriorsValues)[2]) {
+		namesForPriorMatrix<-append(namesForPriorMatrix, paste("IntrinsicValue", b, sep=""))
+	}
+	#print(extrinsicPriorsValues)
+	for (c in 1:dim(extrinsicPriorsValues)[2]) {
+		namesForPriorMatrix <-append(namesForPriorMatrix, paste("ExtrinsicValue", c, sep=""))
+	}
+	allPriorMatrix2<-cbind(startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues)
+	allPriorMatrix<-rbind(allPriorMatrix1, allPriorMatrix2)
+	colnames(allPriorMatrix)<-namesForPriorMatrix
+	rownames(allPriorMatrix)<-c("shape", "value1", "value2")
 		
 	for (i in 1:dim(startingPriorsValues)[2]) {
 		priorFn<-match.arg(arg=startingPriorsFns[i],choices=c("fixed", "uniform", "normal", "lognormal", "gamma", "exponential"),several.ok=FALSE)
@@ -146,24 +162,24 @@ while (!run.goingwell) {
 		#print(numberParametersExtrinsic)
 	}
 	
-	priorMatrix<-matrix(ncol=3, nrow=numberParametersFree)
+	freePriorMatrix<-matrix(ncol=3, nrow=numberParametersFree)
 	priorNumber<-0
 	if (numberParametersStarting>0) {
 		for (a in 1: numberParametersStarting){
 			priorNumber<-priorNumber+1
-			priorMatrix[priorNumber,]<-c(startingPriorsFns[a], c(startingPriorsValues[,a]))
+			freePriorMatrix[priorNumber,]<-c(startingPriorsFns[a], c(startingPriorsValues[,a]))
 		}
 	}	
 	if (numberParametersIntrinsic>0) {
 		for (b in 1: numberParametersIntrinsic){
 			priorNumber<-priorNumber+1
-			priorMatrix[priorNumber,]<-c(intrinsicPriorsFns[b], c(intrinsicPriorsValues[,b]))
+			freePriorMatrix[priorNumber,]<-c(intrinsicPriorsFns[b], c(intrinsicPriorsValues[,b]))
 		}
 	}
 	if (numberParametersExtrinsic>0) {	
 		for (c in 1: numberParametersExtrinsic){
 			priorNumber<-priorNumber+1
-			priorMatrix[priorNumber,]<-c(extrinsicPriorsFns[c], c(extrinsicPriorsValues[,c]))
+			freePriorMatrix[priorNumber,]<-c(extrinsicPriorsFns[c], c(extrinsicPriorsValues[,c]))
 		}
 	}	
 
@@ -454,10 +470,11 @@ while (!run.goingwell) {
 	
 	if (checkpointSave){
 		save.image(file=paste("WS", jobName, ".Rdata", sep=""))
-		test<-vector("list", 16)
-		names(test)<-c("input.data", "priorMatrix", "particleDataFrame", "epsilonDistance", "toleranceVector", "todo", "phy", "char", "rejects.gen.one", "rejects", "particleWeights", "particleVector", "boxcox.output", "param.stdev", "weightedMeanParam", "time.per.gen")
+		test<-vector("list", 17)
+		names(test)<-c("input.data", "allPriorMatrix", "freePriorMatrix", "particleDataFrame", "epsilonDistance", "toleranceVector", "todo", "phy", "char", "rejects.gen.one", "rejects", "particleWeights", "particleVector", "boxcox.output", "param.stdev", "weightedMeanParam", "time.per.gen")
 		test$input.data<-input.data
-		test$priorMatrix<-priorMatrix
+		test$allPriorMatrix<-allPriorMatrix
+		test$freePriorMatrix<-freePriorMatrix
 		test$particleDataFrame<-particleDataFrame
 		names(test$particleDataFrame)<-nameVector
 		test$epsilonDistance<-epsilonDistance
@@ -720,10 +737,11 @@ if (startFromCheckpoint==TRUE || dataGenerationStep < nStepsPRC) {
 		
 	if (checkpointSave){
 		save.image(file=paste("WS", jobName, ".Rdata", sep=""))
-		test<-vector("list", 16)
-		names(test)<-c("input.data", "priorMatrix", "particleDataFrame", "epsilonDistance", "toleranceVector", "todo", "phy", "char", "rejects.gen.one", "rejects", "particleWeights", "particleVector", "boxcox.output", "param.stdev", "weightedMeanParam", "time.per.gen")
+		test<-vector("list", 17)
+		names(test)<-c("input.data", "allPriorMatrix", "freePriorMatrix", "particleDataFrame", "epsilonDistance", "toleranceVector", "todo", "phy", "char", "rejects.gen.one", "rejects", "particleWeights", "particleVector", "boxcox.output", "param.stdev", "weightedMeanParam", "time.per.gen")
 		test$input.data<-input.data
-		test$priorMatrix<-priorMatrix
+		test$allPriorMatrix<-allPriorMatrix
+		test$freePriorMatrix<-freePriorMatrix
 		test$particleDataFrame<-particleDataFrame
 		names(test$particleDataFrame)<-nameVector
 		test$epsilonDistance<-epsilonDistance
@@ -812,11 +830,12 @@ time3<-proc.time()[[3]]
 genTimes<-c(time.per.gen, time3)
 
 
-test<-vector("list", 17)
-names(test)<-c("input.data", "priorMatrix", "particleDataFrame", "epsilonDistance", "toleranceVector", "todo", "phy", "char", "rejects.gen.one", "rejects", "particleWeights", "particleVector", "boxcox.output", "param.stdev", "weightedMeanParam", "time.per.gen", "FinalParamPredictions")
+test<-vector("list", 18)
+names(test)<-c("input.data", "allPriorMatrix", "freePriorMatrix", "particleDataFrame", "epsilonDistance", "toleranceVector", "todo", "phy", "char", "rejects.gen.one", "rejects", "particleWeights", "particleVector", "boxcox.output", "param.stdev", "weightedMeanParam", "time.per.gen", "FinalParamPredictions")
 
 test$input.data<-input.data
-test$priorMatrix<-priorMatrix
+test$allPriorMatrix<-allPriorMatrix
+test$freePriorMatrix<-freePriorMatrix
 test$particleDataFrame<-particleDataFrame
 test$epsilonDistance<-epsilonDistance
 test$toleranceVector<-toleranceVector
