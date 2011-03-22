@@ -35,14 +35,14 @@ v<-vector("list", max(all$run))
 nParticles<-dim(subset(all[which(all$weight>0),], run==max(all$run)))[1]
 
 for (param in 1:dim(priors)[1]) {
-	print(param)
+	#print(param)
 	v<-vector("list", max(all$run))
 	which.param<-param+7
 	print(which.param)
 	r<-c()
 	q<-c()
 
-		if (priors[param, 1] == "fixed" || priors[param, 1] == "uniform" || priors[param, 1] == "exponential") {
+		if (priors[param, 1] == "uniform" || priors[param, 1] == "exponential") {
 			
 			for (dens in 1:max(all$run)) {
 				v[[dens]]<-density(subset(all[which(all$run==dens),],)[,which.param], weights=nParticles*subset(all[which(all$weight>0),], run==dens)[,7]/sum(nParticles*subset(all[which(all$weight>0),], run==dens)[,7]), from=min(subset(all[which(all$run==dens),],)[,which.param]), to=max(subset(all[which(all$run==dens),],)[,which.param]))
@@ -60,10 +60,8 @@ for (param in 1:dim(priors)[1]) {
 			}
 		}
 
-		if (priors[param,1]=="fixed") {
-			#make a red line where it is fixed
-		}
-		else if (priors[param,1]=="uniform") {
+
+		if (priors[param,1]=="uniform") {
 			#print("made it to uniform priorFn")
 			min=as.numeric(priors[param, 2])
 			max=as.numeric(priors[param,3])
