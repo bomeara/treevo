@@ -824,7 +824,7 @@ for (paramPred in 1:dim(FinalParamPredictions)[1]){
 		#rownames(FinalParamPredictions[paramPred])<-names(particleDataFrame[[3]][6+ paramPred])
 }
 
-input.data<-rbind(jobName, length(phy[[3]]), as.vector(startingPriorsValues), as.vector(intrinsicPriorsFns), as.vector(intrinsicPriorsValues), as.vector(extrinsicPriorsFns), as.vector(extrinsicPriorsValues), nrepSim, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor, try, trueStartingState, trueIntrinsicState)
+input.data<-rbind(jobName, length(phy[[3]]), nrepSim, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor, try, trueStartingState, trueIntrinsicState)
 
 time3<-proc.time()[[3]]
 genTimes<-c(time.per.gen, time3)
