@@ -152,18 +152,18 @@ autoregressiveIntrinsicTimeSlicesConstantSigma<-function(params,states, timefrom
 		timeSliceVector<-append(timeSliceVector,params[4+3*(regime-1)])
 	}
 	#timeSliceVector=c(Inf,params[which(c(1:length(params))%%4==0)])
-	print(timeSliceVector)
+	#print(timeSliceVector)
 	sd<-params[1]
 	attractor<-params[2]
 	attraction<-params[3]	#in this model, this should be between zero and one
-	print(paste("timefrompresent = ",timefrompresent))
+	#print(paste("timefrompresent = ",timefrompresent))
 	for (regime in 1:numRegimes) {
-		print(paste ("trying regime = ",regime))
+		#print(paste ("trying regime = ",regime))
 		if (timefrompresent<timeSliceVector[regime]) {
 			#print("timefrompresent>timeSliceVector[regime] == TRUE")
 			if (timefrompresent>=timeSliceVector[regime+1]) {
 				#print("timefrompresent>=timeSliceVector[regime+1] == TRUE")
-				print(paste("chose regime ",regime))
+				#print(paste("chose regime ",regime))
 				#sd<-params[1+4*(regime-1)]
 				attractor<-params[2+3*(regime-1)]
 				attraction<-params[3+3*(regime-1)]
@@ -172,7 +172,7 @@ autoregressiveIntrinsicTimeSlicesConstantSigma<-function(params,states, timefrom
 			}	
 		}	
 	}
-	print(paste("sd = ",sd," attractor = ",attractor, " attraction = ", attraction))
+	#print(paste("sd = ",sd," attractor = ",attractor, " attraction = ", attraction))
 	newdisplacement<-rnorm(n=length(states),mean=(attractor-states)*attraction,sd=sd)
 	return(newdisplacement)
 }
