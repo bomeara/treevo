@@ -1,8 +1,10 @@
-doSimulationForPlotting<-function(splits, intrinsicFn, extrinsicFn, startingStates, intrinsicValues, extrinsicValues, timeStep) {
+doSimulationForPlotting<-function(splits, intrinsicFn, extrinsicFn, startingStates, intrinsicValues, extrinsicValues, timeStep, plot=FALSE, savePlot=FALSE) {
+if (plot || savePlot) {
 	startVector<-c()
 	endVector<-c()
 	startTime<-c()
 	endTime<-c()
+}
 	numberofsteps<-floor(splits[1, 1]/timeStep)
 	mininterval<-min(splits[1:(dim(splits)[1]-1), 1]-splits[2:(dim(splits)[1]), 1])
 	if (numberofsteps<1000) {
@@ -58,11 +60,12 @@ doSimulationForPlotting<-function(splits, intrinsicFn, extrinsicFn, startingStat
 			otherstatesmatrix<-matrix(otherstatesvector, ncol=length(states(taxa[[i]])), byrow=TRUE) #each row represents one taxon
 			newvalues<-states(taxa[[i]])+intrinsicFn(params=intrinsicValues, states=states(taxa[[i]]), timefrompresent =timefrompresent)+extrinsicFn(params=extrinsicValues, selfstates=states(taxa[[i]]), otherstates=otherstatesmatrix, timefrompresent =timefrompresent)
 			nextstates(taxa[[i]])<-newvalues
-			startVector<-append(startVector, states(taxa[[i]]))
-			endVector <-append(endVector, newvalues)
-			startTime <-append(startTime, timefrompresent+timeStep)
-			endTime <-append(endTime, timefrompresent)
-			
+			if (plot || savePlot) {
+				startVector<-append(startVector, states(taxa[[i]]))
+				endVector <-append(endVector, newvalues)
+				startTime <-append(startTime, timefrompresent+timeStep)
+				endTime <-append(endTime, timefrompresent)
+			}
 			
 		}
 		for (i in 1:length(taxa)) {
@@ -80,9 +83,20 @@ doSimulationForPlotting<-function(splits, intrinsicFn, extrinsicFn, startingStat
 			timeSinceSpeciation(taxa[[i]])<-timeSinceSpeciation(taxa[[i]])+timeStep
 		}
 	}
-	plot(x=c(min(c(startVector, endVector)), max(c(startVector, endVector))), y=c(0, max(c(startTime, endTime))), type="n", ylab="Time", xlab="Trait value", main="", bty="n")
-	for (i in 1:length(startVector)) {
-		lines(x=c(startVector[i], endVector[i]), y=max(c(startTime, endTime)) - c(startTime[i], endTime[i]))	
+	if (plot) {
+		dev.new()
+		plot(x=c(min(c(startVector, endVector)), max(c(startVector, endVector))), y=c(0, max(c(startTime, endTime))), type="n", ylab="Time", xlab="Trait value", main="", bty="n")
+		for (i in 1:length(startVector)) {
+			lines(x=c(startVector[i], endVector[i]), y=max(c(startTime, endTime)) - c(startTime[i], endTime[i]))
+		}
 	}
-	return(data.frame(startVector, endVector, startTime, endTime))
+	if (savePlot) {
+		pdf(paste("SimTree", jobName, ".pdf", sep=""))	
+		plot(x=c(min(c(startVector, endVector)), max(c(startVector, endVector))), y=c(0, max(c(startTime, endTime))), type="n", ylab="Time", xlab="Trait value", main="", bty="n")
+		for (i in 1:length(startVector)) {
+			lines(x=c(startVector[i], endVector[i]), y=max(c(startTime, endTime)) - c(startTime[i], endTime[i]))
+		}
+		dev.off()
+	}
+	return(summarizeTaxonStates(taxa))
 }

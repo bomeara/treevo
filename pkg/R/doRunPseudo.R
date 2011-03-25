@@ -102,7 +102,7 @@ while (!run.goingwell) {
 	freevector<-c()
 	
 	namesForPriorMatrix<-c()
-	allPriorMatrix1<-matrix(c(startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns), nrow=1, ncol=numberParametersTotal)
+	allPriorMatrix<-matrix(c(startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns), nrow=1, ncol=numberParametersTotal)
 	for (a in 1:dim(startingPriorsValues)[2]) {
 		namesForPriorMatrix<-c(paste("StartingStates", a, sep=""))
 	}
@@ -113,10 +113,14 @@ while (!run.goingwell) {
 	for (c in 1:dim(extrinsicPriorsValues)[2]) {
 		namesForPriorMatrix <-append(namesForPriorMatrix, paste("ExtrinsicValue", c, sep=""))
 	}
-	allPriorMatrix2<-cbind(startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues)
-	allPriorMatrix<-rbind(allPriorMatrix1, allPriorMatrix2)
+	allPriorMatrix<-rbind(allPriorMatrix, cbind(startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues))
+	#allPriorMatrix<-rbind(allPriorMatrix1, allPriorMatrix2)
 	colnames(allPriorMatrix)<-namesForPriorMatrix
 	rownames(allPriorMatrix)<-c("shape", "value1", "value2")
+		
+		print(allPriorMatrix)
+		
+		
 		
 	for (i in 1:dim(startingPriorsValues)[2]) {
 		priorFn<-match.arg(arg=startingPriorsFns[i],choices=c("fixed", "uniform", "normal", "lognormal", "gamma", "exponential"),several.ok=FALSE)
