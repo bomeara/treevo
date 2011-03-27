@@ -1,4 +1,4 @@
-doSimulationForPlotting<-function(splits, intrinsicFn, extrinsicFn, startingStates, intrinsicValues, extrinsicValues, timeStep, plot=FALSE, savePlot=FALSE) {
+doSimulationForPlotting<-function(splits, intrinsicFn, extrinsicFn, startingStates, intrinsicValues, extrinsicValues, timeStep, plot=FALSE, savePlot=FALSE,jobName="") {
 if (plot || savePlot) {
 	startVector<-c()
 	endVector<-c()
