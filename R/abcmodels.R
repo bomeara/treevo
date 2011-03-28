@@ -57,6 +57,26 @@ autoregressiveIntrinsic<-function(params,states, timefrompresent) { #a discrete 
 	
 } 
 
+MinBoundaryAutoregressiveIntrinsic<-function(params,states, timefrompresent) { #a discrete time OU, same sd, mean, and attraction for all chars
+	#params[1] is sd (sigma), params[2] is attractor (ie. character mean), params[3] is attraction (ie. alpha), params[4] is min bound
+	sd<-params[1] 
+	attractor<-params[2] 
+	attraction<-params[3]	#in this model, this should be between zero and one
+	minBound<-params[4]
+	newdisplacement<-rnorm(n=length(states),mean=(attractor-states)*attraction,sd=sd) #subtract current states because we want displacement
+	#print(newdisplacement)
+	for (i in length(newdisplacement)) {
+		newstate<-newdisplacement[i] + states[i]
+		print(newstate)
+			if (newstate <params[4]) { #newstate less than min
+				newdisplacement[i]<-params[4] - states[i] #so, rather than go below the minimum, this moves the new state to the minimum
+			}
+	}
+	return(newdisplacement)
+	
+}
+
+
 nearestNeighborDisplacementExtrinsic<-function(params,selfstates,otherstates, timefrompresent) { 
 	#params[1] is sd, params[2] is springK, params[3] is maxforce
 	repulsorTaxon<-which.min(abs(otherstates-selfstates))
