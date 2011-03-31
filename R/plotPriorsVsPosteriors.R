@@ -2,7 +2,7 @@ plotParamPosteriors<-function(data, priors, realParam=FALSE, realParamValues=NA)
 # data can be a single particleDataFrame or a list of particleDataFrames (1:n)
 # priors can also be single matrix or a list of matrices (Note that priors have to be the same to make comparison across runs, therefore if a list of priors is given, this function will extract only the first matrix)
 #priors should be $allPriorMatrix from treevo output (not $freePriorMatrix)
-
+#realParamValues should include a real value for every prior (fixed or not).
 
 if(class(data)=="data.frame"){
 	data1<-subset(data[which(data[,6]>0),], generation==max(data[,1])) #make generation and other names by column so it works for partial and complete 
