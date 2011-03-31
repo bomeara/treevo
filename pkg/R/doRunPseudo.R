@@ -121,7 +121,6 @@ while (!run.goingwell) {
 	print(PriorMatrix)
 		
 		
-		
 	for (i in 1:dim(startingPriorsValues)[2]) {
 		priorFn<-match.arg(arg=startingPriorsFns[i],choices=c("fixed", "uniform", "normal", "lognormal", "gamma", "exponential"),several.ok=FALSE)
 		if (priorFn=="fixed") {
@@ -794,16 +793,16 @@ if (debug){
 
 } #while (!run.goingwell) bracket
 	
-FinalParamPredictions<-matrix(nrow=numberParametersFree, ncol=4)
-colnames(FinalParamPredictions)<-c("weightedMean", "SD", "Low95%CI", "High95%CI")
-rownames(FinalParamPredictions)<-names(particleDataFrame[7:(numberParametersFree+6)])
+FinalParamPredictions<-matrix(nrow=numberParametersTotal, ncol=4)
+colnames(FinalParamPredictions)<-c("weightedMean", "SD", "Low95%", "High95%")
+rownames(FinalParamPredictions)<-names(particleDataFrame[7: dim(particleDataFrame)[2]])
 subpDF<-subset(particleDataFrame[which(particleDataFrame$weight>0),], generation==max(particleDataFrame $generation))
-for (paramPred in 1:dim(FinalParamPredictions)[1]){
-		FinalParamPredictions[paramPred, 1]<-weighted.mean(subpDF[,paramPred+6], subpDF[,6])
-		FinalParamPredictions[paramPred, 2]<-sd(subpDF[,(6+paramPred)])
-		FinalParamPredictions[paramPred, 3]<-dnorm(x=0.05, mean=FinalParamPredictions[paramPred, 1], sd=FinalParamPredictions[paramPred, 2])
-		FinalParamPredictions[paramPred, 4]<-dnorm(x=0.95, mean=FinalParamPredictions[paramPred, 1], sd=FinalParamPredictions[paramPred, 2])
-		#rownames(FinalParamPredictions[paramPred])<-names(particleDataFrame[[3]][6+ paramPred])
+for (paramPred in 1:numberParametersTotal){
+	print(6+paramPred)
+	FinalParamPredictions[paramPred, 1]<-weighted.mean(subpDF[,6+paramPred], subpDF[,6])
+	FinalParamPredictions[paramPred, 2]<-sd(subpDF[,(6+paramPred)])
+	FinalParamPredictions[paramPred, 3]<-quantile(subpDF[,6+paramPred], probs=0.05)
+	FinalParamPredictions[paramPred, 4]<-quantile(subpDF[,6+paramPred], probs=0.95)
 }
 
 input.data<-rbind(jobName, length(phy[[3]]), nrepSim, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor, try, trueStartingState, trueIntrinsicState)
