@@ -166,11 +166,13 @@ while (!run.goingwell) {
 	}
 	
 
-	param.stdev<-matrix(nrow=nStepsPRC, ncol=numberParametersFree)
-	weightedMeanParam<-matrix(nrow=nStepsPRC, ncol=numberParametersFree)
+	param.stdev<-matrix(nrow=nStepsPRC, ncol=numberParametersTotal)
+	colnames(param.stdev)<-namesForPriorMatrix
+	rownames(param.stdev)<-paste("Gen", c(1: nStepsPRC), sep="")
+	weightedMeanParam<-matrix(nrow=nStepsPRC, ncol=numberParametersTotal)
+	colnames(weightedMeanParam)<-namesForPriorMatrix
+	rownames(weightedMeanParam)<-paste("Gen", c(1: nStepsPRC), sep="")
 	#names(param.stdev)<-c("Generation", )
-	#print(param.stdev)
-
 	#initialize guesses, if needed
 	if (length(startingStatesGuess)==0) { #if no user guesses, try pulling a value from the prior
 		startingStatesGuess<-rep(NA,length(startingPriorsFns))
@@ -417,9 +419,11 @@ while (!run.goingwell) {
 		#print(sd(particleDataFrame[,7:6+numberParametersFree]))
 		#print(numberParametersFree)
 		#print(6+numberParametersFree)
-		param.stdev[1,]<-c(sd(subset(particleDataFrame, X3>0)[,7:paste(6+numberParametersFree)]))
-		weightedMeanParam[1,]<-c(mean(subset(particleDataFrame, X3>0)[,7:paste(6+numberParametersFree)]/subset(particleDataFrame, X3>0)[,6]))
-		
+		for (i in 1:numberParametersTotal){
+			param.stdev[1,i]<-c(sd(subset(particleDataFrame, X3>0)[,6+i]))
+			weightedMeanParam[1,i]<-weighted.mean(subset(particleDataFrame, X3>0)[,6+i], subset(particleDataFrame, X3>0)[,6])
+			#c(mean(subset(particleDataFrame, X3>0)[,7:dim(particleDataFrame)[2]])/subset(particleDataFrame, X3>0)[,6])
+		}
 		#stdev.Intrinsic[i]<-sd(subset(all.a[[run]][which(all.a[[run]]$weight>0),], generation==i)[,param[2]])
 
 
@@ -687,27 +691,35 @@ if (startFromCheckpoint==TRUE || dataGenerationStep < nStepsPRC) {
 		sub1<-subset(particleDataFrame, X1==dataGenerationStep)
 		sub2<-subset(sub1, X3>0)
 		
-		param.stdev[dataGenerationStep,]<-c(sd(sub2[,7:paste(6+numberParametersFree)]))
-		
-		weightedMeanParam[dataGenerationStep,]<-c(mean(sub2[,7:paste(6+numberParametersFree)]/sub2[,6]))
-		
+		for (i in 1:numberParametersTotal){
+			param.stdev[dataGenerationStep,i]<-c(sd(sub2[,6+i]))
+			weightedMeanParam[dataGenerationStep,i]<-weighted.mean(sub2[,6+i], sub2[,6])
+		}
+
+		#param.stdev[dataGenerationStep,]<-c(sd(sub2[,7:dim(particleDataFrame)[2]]))
+		#weightedMeanParam[dataGenerationStep,]<-c(mean(sub2[,7:dim(particleDataFrame)[2]]/sub2[,6]))
+	print(param.stdev)
+	print(weightedMeanParam)
+
+
 	if (stopRule){	
 		FF<-rep(1, dim(weightedMeanParam)[2])
 		for (check.weightedMeanParam in 1:length(FF)){
-			if (is.na(((abs(weightedMeanParam[dataGenerationStep, check.weightedMeanParam]-weightedMeanParam[dataGenerationStep-1, check.weightedMeanParam])/mean(weightedMeanParam[dataGenerationStep, check.weightedMeanParam], weightedMeanParam[dataGenerationStep-1, check.weightedMeanParam])) <= stopValue))) {
-				print(sub1)
-				print(sub2)
-				print(weightedMeanParam[dataGenerationStep, check.weightedMeanParam]-weightedMeanParam[dataGenerationStep-1, check.weightedMeanParam])
-				print(mean(weightedMeanParam[dataGenerationStep, check.weightedMeanParam], weightedMeanParam[dataGenerationStep-1, check.weightedMeanParam]))
-				print("weightedMeanParam")
-				print(weightedMeanParam)
-				print("check.weightedMeanParam")
-				print(check.weightedMeanParam)
-				print("stopValue")
-				print(stopValue)				
+			if (is.na(abs(weightedMeanParam[dataGenerationStep, check.weightedMeanParam]-weightedMeanParam[dataGenerationStep-1, check.weightedMeanParam])/mean(weightedMeanParam[dataGenerationStep, check.weightedMeanParam], weightedMeanParam[dataGenerationStep-1, check.weightedMeanParam]) <= stopValue)) {
+				cat("can't compute stopRule, because weightedMeanParam = NA")
+				#print(sub1)
+				#print(sub2)
+				#print(weightedMeanParam[dataGenerationStep, check.weightedMeanParam]-weightedMeanParam[dataGenerationStep-1, check.weightedMeanParam])
+				#print(mean(weightedMeanParam[dataGenerationStep, check.weightedMeanParam], weightedMeanParam[dataGenerationStep-1, check.weightedMeanParam]))
+				#print("weightedMeanParam")
+				#print(weightedMeanParam)
+				#print("check.weightedMeanParam")
+				#print(check.weightedMeanParam)
+				#print("stopValue")
+				#print(stopValue)				
 			}
 		
-			if ((abs(weightedMeanParam[dataGenerationStep, check.weightedMeanParam]-weightedMeanParam[dataGenerationStep-1, check.weightedMeanParam])/mean(weightedMeanParam[dataGenerationStep, check.weightedMeanParam], weightedMeanParam[dataGenerationStep-1, check.weightedMeanParam])) <= stopValue){
+			if (abs(weightedMeanParam[dataGenerationStep, check.weightedMeanParam]-weightedMeanParam[dataGenerationStep-1, check.weightedMeanParam])/mean(weightedMeanParam[dataGenerationStep, check.weightedMeanParam], weightedMeanParam[dataGenerationStep-1, check.weightedMeanParam]) <= stopValue){
 				FF[check.weightedMeanParam]<-0
 			}
 		}
