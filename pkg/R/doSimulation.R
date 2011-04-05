@@ -1,4 +1,17 @@
-doSimulation<-function(splits, intrinsicFn, extrinsicFn, startingStates, intrinsicValues, extrinsicValues, timeStep) {
+doSimulation<-function(splits, intrinsicFn, extrinsicFn, startingStates, intrinsicValues, extrinsicValues, timeStep, saveRealParams=FALSE, jobName="") {
+if (saveRealParams){
+	RealParams<-vector("list", 2)
+	names(RealParams)<-c("matrix", "vector")	
+	RealParams$vector<-c(startingStates, intrinsicValues, extrinsicValues)
+	maxLength<-(max(length(startingStates), length(intrinsicValues), length(extrinsicValues)))
+	RealParams$matrix<-matrix(ncol=maxLength, nrow=3)
+	rownames(RealParams$matrix)<-c("startingStates", "intrinsicFn", "extrinsicFn")
+	RealParams$matrix[1,]<-c(startingStates, rep(NA, maxLength-length(startingStates)))
+	RealParams$matrix[2,]<-c(intrinsicValues, rep(NA, maxLength-length(intrinsicValues)))
+	RealParams$matrix[3,]<-c(extrinsicValues, rep(NA, maxLength-length(extrinsicValues)))
+	save(RealParams, file=paste("RealParams", jobName, sep=""))
+}
+
 	numberofsteps<-floor(splits[1, 1]/timeStep)
 	mininterval<-min(splits[1:(dim(splits)[1]-1), 1]-splits[2:(dim(splits)[1]), 1])
 	if (numberofsteps<1000) {
