@@ -292,10 +292,11 @@ while (!run.goingwell) {
 	#----------------- Find best set of summary stats to use for this problem. (end) -----------------
 	
 	#----------------- Find distribution of distances (start) ----------------------
-	predictResult<-(predict(prunedPlsResult, prunedSummaryValues)$predict[, , 1])
-	#print("predictResult", predictResult,  "\n")
-
+	predictResult<-as.matrix(predict(prunedPlsResult, prunedSummaryValues)$predict[, , 1])
+	print(predictResult) 
+	print(dim(predictResult)[1])
 	distanceVector<-rep(NA, dim(predictResult)[1])
+
 	for (simulationIndex in 1:dim(predictResult)[1]) {
 			distanceVector[simulationIndex]<-dist(matrix(c(trueFreeValues[simulationIndex, ], predictResult[simulationIndex, ]), nrow=2, byrow=TRUE))[1]
 	}
