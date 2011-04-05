@@ -458,7 +458,7 @@ while (!run.goingwell) {
 	if (checkpointSave){
 		save.image(file=paste("WS", jobName, ".Rdata", sep=""))
 		test<-vector("list", 16)
-		names(test)<-c("input.data", "PriorMatrix", "particleDataFrame", "epsilonDistance", "toleranceVector", "todo", "phy", "char", "rejects.gen.one", "rejects", "particleWeights", "particleVector", "boxcox.output", "param.stdev", "weightedMeanParam", "time.per.gen")
+		names(test)<-c("input.data", "PriorMatrix", "particleDataFrame", "epsilonDistance", "toleranceVector", "todo", "phy", "traits", "rejects.gen.one", "rejects", "particleWeights", "particleVector", "boxcox.output", "param.stdev", "weightedMeanParam", "time.per.gen")
 		test$input.data<-input.data
 		test$PriorMatrix<-PriorMatrix
 		test$particleDataFrame<-particleDataFrame
@@ -467,7 +467,7 @@ while (!run.goingwell) {
 		test$toleranceVector<-toleranceVector
 		test$todo<-todo
 		test$phy<-phy
-		test$char<-char
+		test$traits<-traits
 		test$rejects.gen.one<-rejects.gen.one
 		test$rejects<-c()
 		test$particleWeights<-particleWeights
@@ -696,11 +696,6 @@ if (startFromCheckpoint==TRUE || dataGenerationStep < nStepsPRC) {
 			weightedMeanParam[dataGenerationStep,i]<-weighted.mean(sub2[,6+i], sub2[,6])
 		}
 
-		#param.stdev[dataGenerationStep,]<-c(sd(sub2[,7:dim(particleDataFrame)[2]]))
-		#weightedMeanParam[dataGenerationStep,]<-c(mean(sub2[,7:dim(particleDataFrame)[2]]/sub2[,6]))
-	print(param.stdev)
-	print(weightedMeanParam)
-
 
 	if (stopRule){	
 		FF<-rep(1, dim(weightedMeanParam)[2])
@@ -723,7 +718,7 @@ if (startFromCheckpoint==TRUE || dataGenerationStep < nStepsPRC) {
 			else if (abs(weightedMeanParam[dataGenerationStep, check.weightedMeanParam]-weightedMeanParam[dataGenerationStep-1, check.weightedMeanParam])/mean(weightedMeanParam[dataGenerationStep, check.weightedMeanParam], weightedMeanParam[dataGenerationStep-1, check.weightedMeanParam]) <= stopValue){
 				FF[check.weightedMeanParam]<-0
 			}
-			print(FF)
+			#print(FF)
 		}
 		if (sum(FF)==0){
 			cat("\n\n\nweightedMeanParam is < ", stopValue, "Analysis is being terminated at", dataGenerationStep, "instead of continuing to ", nStepsPRC, "\n\n\n")
@@ -734,7 +729,7 @@ if (startFromCheckpoint==TRUE || dataGenerationStep < nStepsPRC) {
 	if (checkpointSave){
 		save.image(file=paste("WS", jobName, ".Rdata", sep=""))
 		test<-vector("list", 16)
-		names(test)<-c("input.data", "PriorMatrix", "particleDataFrame", "epsilonDistance", "toleranceVector", "todo", "phy", "char", "rejects.gen.one", "rejects", "particleWeights", "particleVector", "boxcox.output", "param.stdev", "weightedMeanParam", "time.per.gen")
+		names(test)<-c("input.data", "PriorMatrix", "particleDataFrame", "epsilonDistance", "toleranceVector", "todo", "phy", "traits", "rejects.gen.one", "rejects", "particleWeights", "particleVector", "boxcox.output", "param.stdev", "weightedMeanParam", "time.per.gen")
 		test$input.data<-input.data
 		test$PriorMatrix<-PriorMatrix
 		test$particleDataFrame<-particleDataFrame
@@ -743,7 +738,7 @@ if (startFromCheckpoint==TRUE || dataGenerationStep < nStepsPRC) {
 		test$toleranceVector<-toleranceVector
 		test$todo<-todo
 		test$phy<-phy
-		test$char<-char
+		test$traits<-traits
 		test$rejects.gen.one<-rejects.gen.one
 		test$rejects<-rejects
 		test$particleWeights<-particleWeights
@@ -826,7 +821,7 @@ genTimes<-c(time.per.gen, time3)
 
 
 test<-vector("list", 17)
-names(test)<-c("input.data", "PriorMatrix", "particleDataFrame", "epsilonDistance", "toleranceVector", "todo", "phy", "char", "rejects.gen.one", "rejects", "particleWeights", "particleVector", "boxcox.output", "param.stdev", "weightedMeanParam", "time.per.gen", "FinalParamPredictions")
+names(test)<-c("input.data", "PriorMatrix", "particleDataFrame", "epsilonDistance", "toleranceVector", "todo", "phy", "traits", "rejects.gen.one", "rejects", "particleWeights", "particleVector", "boxcox.output", "param.stdev", "weightedMeanParam", "time.per.gen", "FinalParamPredictions")
 
 test$input.data<-input.data
 test$PriorMatrix<-PriorMatrix
@@ -835,7 +830,7 @@ test$epsilonDistance<-epsilonDistance
 test$toleranceVector<-toleranceVector
 test$todo<-todo
 test$phy<-phy
-test$char<-char
+test$traits<-traits
 test$rejects.gen.one<-rejects.gen.one
 test$rejects<-rejects
 test$particleWeights<-particleWeights
@@ -850,7 +845,11 @@ test$FinalParamPredictions <-FinalParamPredictions
  #if startFromCheckpoint bracket?
 
 
-print(test)
+print(test$PriorMatrix)
+print(test$particleDataFrame)
+print(test$param.stdev)
+print(test$weightedMeanParam)
+print(test$FinalParamPredictions)
 }
 
 	#------------------ ABC-PRC (end) ------------------
