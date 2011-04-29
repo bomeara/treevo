@@ -234,6 +234,7 @@ while (!run.goingwell) {
 		#cat("\nsummary values[", summaryValueIndex, "] = ")
 		#print(summaryValues[, summaryValueIndex])
 		summary<-summaryValues[, summaryValueIndex]+boxcoxAddition[summaryValueIndex]
+		save(summary, file="summary.Rout")
 		boxcoxLambda[summaryValueIndex]<-1
 		if(sd(summaryValues[, summaryValueIndex])>0) { #box.cox fails if all values are identical
 			newLambda<-as.numeric(try(box.cox.powers.hacked(summary)$lambda))
@@ -354,22 +355,21 @@ while (!run.goingwell) {
 
 		newparticleVector[[1]]<-setDistance(newparticleVector[[1]], dist(matrix(c(boxcoxplsSummary(todo, summaryStatsLong(phy, convertTaxonFrameToGeigerData(doSimulation(splits, intrinsicFn, extrinsicFn, startingStates(newparticleVector[[1]]), intrinsicValues(newparticleVector[[1]]), extrinsicValues(newparticleVector[[1]]), timeStep), phy), todo), prunedPlsResult, boxcoxLambda, boxcoxAddition), originalSummaryStats), nrow=2, byrow=TRUE))[1])
 		if (is.na(distance(newparticleVector[[1]]))) {
-			cat("Error with Geiger?  distance(newparticleVector[[1]]) = NA\n")
-			GeigerError<-vector("list", 9)
-			GeigerError[[1]]<-newparticleVector[[1]]
-			GeigerError[[2]]<-matrix(c(boxcoxplsSummary(todo, summaryStatsLong(phy, convertTaxonFrameToGeigerData(doSimulation(splits, intrinsicFn, extrinsicFn, startingStates(newparticleVector[[1]]), intrinsicValues(newparticleVector[[1]]), extrinsicValues(newparticleVector[[1]]), timeStep), phy), todo), prunedPlsResult, boxcoxLambda, boxcoxAddition), originalSummaryStats), nrow=2, byrow=TRUE)
-			GeigerError[[3]]<-c(boxcoxplsSummary(todo, summaryStatsLong(phy, convertTaxonFrameToGeigerData(doSimulation(splits, intrinsicFn, extrinsicFn, startingStates(newparticleVector[[1]]), intrinsicValues(newparticleVector[[1]]), extrinsicValues(newparticleVector[[1]]), timeStep), phy), todo), prunedPlsResult, boxcoxLambda, boxcoxAddition), originalSummaryStats)
-			GeigerError[[4]]<-todo
-			GeigerError[[5]]<-summaryStatsLong(phy, convertTaxonFrameToGeigerData(doSimulation(splits, intrinsicFn, extrinsicFn, startingStates(newparticleVector[[1]]), intrinsicValues(newparticleVector[[1]]), extrinsicValues(newparticleVector[[1]]), timeStep), phy), todo)
-			GeigerError[[6]]<-phy
-			GeigerError[[7]]<-vipResult
-			GeigerError[[8]]<-convertTaxonFrameToGeigerData(doSimulation(splits, intrinsicFn, extrinsicFn, startingStates(newparticleVector[[1]]), intrinsicValues(newparticleVector[[1]]), extrinsicValues(newparticleVector[[1]]), timeStep), phy)
-			GeigerError[[9]]<-convertTaxonFrameToGeigerData(doSimulation(splits, intrinsicFn, extrinsicFn, startingStates(newparticleVector[[1]]), intrinsicValues(newparticleVector[[1]]), extrinsicValues(newparticleVector[[1]]), timeStep), phy)
+			newparticleVectorError<-vector("list", 9)
+			newparticleVectorError[[1]]<-newparticleVector[[1]]
+			newparticleVectorError[[2]]<-matrix(c(boxcoxplsSummary(todo, summaryStatsLong(phy, convertTaxonFrameToGeigerData(doSimulation(splits, intrinsicFn, extrinsicFn, startingStates(newparticleVector[[1]]), intrinsicValues(newparticleVector[[1]]), extrinsicValues(newparticleVector[[1]]), timeStep), phy), todo), prunedPlsResult, boxcoxLambda, boxcoxAddition), originalSummaryStats), nrow=2, byrow=TRUE)
+			newparticleVectorError[[3]]<-c(boxcoxplsSummary(todo, summaryStatsLong(phy, convertTaxonFrameToGeigerData(doSimulation(splits, intrinsicFn, extrinsicFn, startingStates(newparticleVector[[1]]), intrinsicValues(newparticleVector[[1]]), extrinsicValues(newparticleVector[[1]]), timeStep), phy), todo), prunedPlsResult, boxcoxLambda, boxcoxAddition), originalSummaryStats)
+			newparticleVectorError[[4]]<-todo
+			newparticleVectorError[[5]]<-summaryStatsLong(phy, convertTaxonFrameToGeigerData(doSimulation(splits, intrinsicFn, extrinsicFn, startingStates(newparticleVector[[1]]), intrinsicValues(newparticleVector[[1]]), extrinsicValues(newparticleVector[[1]]), timeStep), phy), todo)
+			newparticleVectorError[[6]]<-phy
+			newparticleVectorError[[7]]<-vipResult
+			newparticleVectorError[[8]]<-convertTaxonFrameToGeigerData(doSimulation(splits, intrinsicFn, extrinsicFn, startingStates(newparticleVector[[1]]), intrinsicValues(newparticleVector[[1]]), extrinsicValues(newparticleVector[[1]]), timeStep), phy)
+			newparticleVectorError[[9]]<-convertTaxonFrameToGeigerData(doSimulation(splits, intrinsicFn, extrinsicFn, startingStates(newparticleVector[[1]]), intrinsicValues(newparticleVector[[1]]), extrinsicValues(newparticleVector[[1]]), timeStep), phy)
 
-			save(GeigerError, file=paste("GeigerError", jobName, ".txt", sep=""))
+			save(newparticleVectorError, file=paste("newparticleVectorError", jobName, ".txt", sep=""))
 			#break
 			while(sink.number()>0) {sink()}
-			warning("distance(newparticleVector[[1]]) = NA")
+			warning("distance(newparticleVector[[1]]) = NA, likely an underflow/overflow problem")
 			newparticleVector[[1]]<-setId(newparticleVector[[1]], -1)
 			newparticleVector[[1]]<-setWeight(newparticleVector[[1]], 0)
 		}
@@ -844,13 +844,7 @@ test$FinalParamPredictions <-FinalParamPredictions
 
 }
  #if startFromCheckpoint bracket?
-
-
-print(test$PriorMatrix)
-print(test$particleDataFrame)
-print(test$param.stdev)
-print(test$weightedMeanParam)
-print(test$FinalParamPredictions)
+print(test)
 }
 
 	#------------------ ABC-PRC (end) ------------------

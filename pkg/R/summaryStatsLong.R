@@ -1,6 +1,5 @@
-
 library(geiger)
-summaryStatsLong<-function(phy, data, todo=c()) {
+summaryStatsLong<-function(phy, data, todo=c(), jobName="") {
 	sink(file="/dev/null")
 	if (length(todo)==0) {
 		todo=rep(1, 22+dim(data)[1]) #by default, include everything -- the 22 summary stats and the raw tip data
@@ -88,7 +87,7 @@ summaryStatsLong<-function(phy, data, todo=c()) {
 		GeigerFailure<-vector("list", 2)
 		GeigerFailure[[1]]<-failurevector
 		GeigerFailure[[2]]<-failed.summarystats
-		save(GeigerFailure, file=paste("geigerFailure", job.name, sep=""))
+		save(GeigerFailure, file=paste("geigerFailure", jobName, sep=""))
 	}
 	
 	#cat("\n summaryStatsLong summarystats3\n")

@@ -28,7 +28,12 @@ box.cox.powers.hacked<-function(X, start=NULL, hypotheses=NULL, ...){
             start[j] <- res$minimum
             }
         }
-    res<-try(optim(start, neg.kernel.profile.logL, hessian=TRUE, method="BFGS", X=X, gm=gm, ...))
+    #if (length(X)==1){
+    #	res<-try(optimize(start, neg.kernel.profile.logL, hessian=TRUE, method="BFGS", X=X, gm=gm, ...))
+    #}
+    #else {
+    	res<-try(optim(start, neg.kernel.profile.logL, hessian=TRUE, method="BFGS", X=X, gm=gm, ...))
+    #}
     if (!is.finite(res)) {
     	errorTimeString<-format(Sys.time(),"%m-%d-%Y_%H-%M-%S")
     	save(start,neg.kernel.profile.logL,file=paste("boxcoxError_",errorTimeString,".Rsave",sep=""))
