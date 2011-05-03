@@ -1,4 +1,5 @@
 library(geiger)
+library(stats)
 summaryStatsLong<-function(phy, data, todo=c(), jobName="") {
 	sink(file="/dev/null")
 	if (length(todo)==0) {
