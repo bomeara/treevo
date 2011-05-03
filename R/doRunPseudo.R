@@ -118,7 +118,7 @@ while (!run.goingwell) {
 	colnames(PriorMatrix)<-namesForPriorMatrix
 	rownames(PriorMatrix)<-c("shape", "value1", "value2")
 		
-	print(PriorMatrix)
+	#print(PriorMatrix)
 		
 		
 	for (i in 1:dim(startingPriorsValues)[2]) {
@@ -234,10 +234,10 @@ while (!run.goingwell) {
 		#cat("\nsummary values[", summaryValueIndex, "] = ")
 		#print(summaryValues[, summaryValueIndex])
 		summary<-summaryValues[, summaryValueIndex]+boxcoxAddition[summaryValueIndex]
-		save(summary, file="summary.Rout")
+		#save(summary, file="summary.Rout")
 		boxcoxLambda[summaryValueIndex]<-1
 		if(sd(summaryValues[, summaryValueIndex])>0) { #box.cox fails if all values are identical
-			newLambda<-as.numeric(try(box.cox.powers.hacked(summary)$lambda))
+			newLambda<-as.numeric(try(powerTransform(summary)$lambda)) #trying powerTransform instead of box.cox.powers.hacked
 			if (!is.na(newLambda)) {
 				boxcoxLambda[summaryValueIndex]<-newLambda
 			}
@@ -294,8 +294,8 @@ while (!run.goingwell) {
 	
 	#----------------- Find distribution of distances (start) ----------------------
 	predictResult<-as.matrix(predict(prunedPlsResult, prunedSummaryValues)$predict[, , 1])
-	print(predictResult) 
-	print(dim(predictResult)[1])
+	#print(predictResult) 
+	#print(dim(predictResult)[1])
 	distanceVector<-rep(NA, dim(predictResult)[1])
 
 	for (simulationIndex in 1:dim(predictResult)[1]) {
@@ -808,7 +808,7 @@ colnames(FinalParamPredictions)<-c("weightedMean", "SD", "Low95%", "High95%")
 rownames(FinalParamPredictions)<-names(particleDataFrame[7: dim(particleDataFrame)[2]])
 subpDF<-subset(particleDataFrame[which(particleDataFrame$weight>0),], generation==max(particleDataFrame $generation))
 for (paramPred in 1:numberParametersTotal){
-	print(6+paramPred)
+	#print(6+paramPred)
 	FinalParamPredictions[paramPred, 1]<-weighted.mean(subpDF[,6+paramPred], subpDF[,6])
 	FinalParamPredictions[paramPred, 2]<-sd(subpDF[,(6+paramPred)])
 	FinalParamPredictions[paramPred, 3]<-quantile(subpDF[,6+paramPred], probs=0.05)

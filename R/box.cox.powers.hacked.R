@@ -5,6 +5,7 @@ box.cox.powers.hacked<-function(X, start=NULL, hypotheses=NULL, ...){
         if (lambda == 0) log(x)*gm
         else (gm^(1-lambda))*((x^lambda)-1)/lambda
         }
+        print("modified.power defined")
     neg.kernel.profile.logL<-function(X, lambda, gm){
         for (j in 1:ncol(X)){
             X[, j]<-modified.power(X[, j], lambda[j], gm[j])
@@ -17,11 +18,14 @@ box.cox.powers.hacked<-function(X, start=NULL, hypotheses=NULL, ...){
         }
     X<-as.matrix(X)
     nc <- ncol(X)
+    print(nc)
     if(any(X<=0)) stop("All values must be > 0")
     gm<-apply(X, 2, function(x) exp(mean(log(x))))
+    print(paste("gm is ",gm))
     if (is.null(start)) {
         start <- rep(1, nc)
         for (j in 1:nc){
+        	print(paste("j is ",j, "gm[j] is ",gm[j],"univ.neg.kernel.logL(x=X[, j], lambda=lambda, gm=gm[j]) is",univ.neg.kernel.logL(x=X[, j], lambda=lambda, gm=gm[j])))
             res<- optimize(
                 f = function(lambda) univ.neg.kernel.logL(x=X[, j], lambda=lambda, gm=gm[j]), 
                 lower=-50, upper=+50)
