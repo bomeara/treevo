@@ -234,7 +234,7 @@ while (!run.goingwell) {
 		#cat("\nsummary values[", summaryValueIndex, "] = ")
 		#print(summaryValues[, summaryValueIndex])
 		summary<-summaryValues[, summaryValueIndex]+boxcoxAddition[summaryValueIndex]
-		#save(summary, file="summary.Rout")
+		save(summary, file=paste("summary", jobName, ".Rout"))
 		boxcoxLambda[summaryValueIndex]<-1
 		if(sd(summaryValues[, summaryValueIndex])>0) { #box.cox fails if all values are identical
 			newLambda<-as.numeric(try(powerTransform(summary)$lambda)) #trying powerTransform instead of box.cox.powers.hacked
