@@ -249,6 +249,12 @@ function(ds, print=TRUE)
 
 			
 			diag(vv)<-diag(vv)+meserr^2
+			determinantVCV<-det(vv)
+			badLnL=100000
+			if (determinantVCV==0){ #old delta had bounds, so couldn't get very low values and so didn't get singular matrices. Now that can happen, so have to guard against it
+				warning("Possibly singular variance-covariance matrix, so giving this particular parameter combination a very bad likelihood score (rather than crashing)")
+				return(badLnL)
+			}
 			mu<-phylogMean(vv, y)
 			mu<-rep(mu, n)
 			print(paste("delta = ",exp(x[2]),"beta = ",exp(x[1]), "lnL=",-dmvnorm(y, mu, vv, log=T)))
