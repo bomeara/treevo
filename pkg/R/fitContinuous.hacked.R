@@ -1,7 +1,7 @@
 `fitContinuous.hacked` <-
 function(phy, data, data.names=NULL, model=c("BM", "OU", "lambda", "kappa", "delta", "EB", "white", "trend"), bounds=NULL,  meserr=NULL, userstart=NULL)
 {
-	
+	library(corpcor)
 	# sort is T because sub-functions assume data are in
 	# this particular order
 	
@@ -464,9 +464,10 @@ function(ds, print=TRUE)
 phylogMean<-function(phyvcv, data) 
 {
 	o<-rep(1, length(data))
-	ci<-solve(phyvcv)
+	ci<-pseudoinverse(phyvcv)
+	print(ci)
 	
-	m1<-solve(t(o) %*% ci %*% o)
+	m1<-pseudoinverse(t(o) %*% ci %*% o)
 	m2<-t(o) %*% ci %*% data
 	
 	return(m1 %*% m2)
