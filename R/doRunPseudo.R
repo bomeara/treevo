@@ -218,9 +218,9 @@ while (!run.goingwell) {
 		#cat("summaryValues\n")
 		#print(summaryValues)
 		convertTaxonFrameToGeigerData (doSimulation(splits=splits, intrinsicFn= intrinsicFn, extrinsicFn= extrinsicFn, startingStates= trueStarting, intrinsicValues= trueIntrinsic, extrinsicValues= trueExtrinsic, timeStep=timeStep), phy)->simdata
-		save(simdata, file="simdata.Rdata")
+		#save(simdata, file="simdata.Rdata")
 		summaryValues<-rbind(summaryValues, summaryStatsLong(phy, simdata))
-		print(summaryValues, file="summaryValues.Rdata")
+		#print(summaryValues)
 		while(sink.number()>0) {sink()}
 	}
 	#summaryRprof(nrepSims.time.check)
@@ -240,14 +240,14 @@ while (!run.goingwell) {
 		save(summary, file=paste("summary", jobName, ".Rout", sep=""))
 		boxcoxLambda[summaryValueIndex]<-1
 		if(sd(summaryValues[, summaryValueIndex])>0) { #box.cox fails if all values are identical
-			print("now calculating newLambda")
-			print("summary")
-			print(summary)
+			#print("now calculating newLambda")
+			#print("summary")
+			#print(summary)
 			newLambda<-as.numeric(try(powerTransform(summary,method="Nelder-Mead")$lambda)) #trying powerTransform instead of box.cox.powers.hacked
-			print("done calculating newLambda")
+			#print("done calculating newLambda")
 			if (!is.na(newLambda)) {
 				boxcoxLambda[summaryValueIndex]<-newLambda
-				print(boxcoxLambda)
+				#print(boxcoxLambda)
 			}
 		}
 		summaryValues[, summaryValueIndex]<-summary^boxcoxLambda[summaryValueIndex]
