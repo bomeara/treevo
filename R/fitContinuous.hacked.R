@@ -552,11 +552,12 @@ function(ds, print=TRUE)
 		us<-lsol[gc,1]
 		usc<-sum((us-min(us))>0.01)			
 		out<-outTries[[b[1]]]	
+		print(out)
+	
 		if(usc>1) {out$message="Warning: likelihood surface is flat."}
 			
-		if(out$convergence!=0) {out$message="Warning: may not have converged to a proper solution."}
 
-		results<-list(lnl=-out$minimum, beta=exp(out$estimate[1]), alpha=exp(out$estimate[2]))	#convergence & message?		
+		results<-list(lnl=-out$minimum, beta=exp(out$estimate[1]), alpha=exp(out$estimate[2]))	
 		#results<-list(lnl=-out$value, beta= exp(out$par[1]), alpha=exp(out$par[2]), convergence=out$convergence, message=out$message, k=k)
 
 
