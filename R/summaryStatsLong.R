@@ -25,7 +25,7 @@ summaryStatsLong<-function(phy, data, todo=c(), jobName="") {
 	#lambda.aic<-as.numeric(try(fitContinuous.hacked(phy=phy, data=data[todo[7]], model="lambda")[[1]]$aic))
 	lambda.aic <-as.numeric(try(lambda$aic/todo[7]))
 
-	delta<-try(fitContinuous(phy=phy, data=data[max(todo[8:11])], model="delta")[[1]])
+	delta<-try(fitContinuous.hacked(phy=phy, data=data[max(todo[8:11])], model="delta")[[1]])
 	#delta.lnl<-as.numeric(try(fitContinuous.hacked(phy=phy, data=data[todo[8]], model="delta")[[1]]$lnl))
 	delta.lnl <-as.numeric(try(delta$lnl/todo[8]))
 	#delta.beta<-as.numeric(try(fitContinuous.hacked(phy=phy, data=data[todo[9]], model="delta")[[1]]$beta))
