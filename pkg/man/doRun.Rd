@@ -20,18 +20,23 @@ doRun(phy, traits, intrinsicFn, extrinsicFn, summaryFns=c(rawValuesSummaryStats,
   \item{extrinsicPriorsFns}{Matrix with ncol=number of parameters to pass to the extrinsic function and nrow=2 (two parameters to pass to prior distribution)}
   \item{extrinsicPriorsFns}{Vector containing names of prior distributions to use for extrinsic function parameters: can be one of fixed, uniform, normal, lognormal, gamma, exponential}
   \item{startingStatesGuess}{Optional guess of starting value}
+Make sure these are the same now...
+
 }
 \details{
 	This is awesome but not ready to use
 }
 \value{
-	This has some value
+doRun returns a list of objects with the following components:\cr
+list them...
+
 	}
 \references{O'Meara and Banbury, unpublished}
-\author{Brian O'Meara}
+\author{Brian O'Meara and Barb Banbury}
 \seealso{
 }
 \examples{
+
 }
-\keyword{arith}
+\keyword{}
 
