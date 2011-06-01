@@ -1,13 +1,17 @@
 Package: TreEvo
 Type: Package
-Title: Using phylogenetic trees to understand evolution
+Title: Using ABC to understand trait evolution
 Version: 0.1
-Date: 2010-07-13
-Depends:
-Suggests: geiger, ape, ouch, phylobase
-Author: Brian O'Meara
+Date: 2011-05-26
+Author: Brian O'Meara, Barb L. Banbury
 Maintainer: Brian O'Meara <omeara.brian@gmail.com>
-Description: A package containing various functions I've created for using and modifying trees and trait data
+Depends: geiger, ape, gpclib, rgl, geometry, car, mixOmics, Hmisc, stats, corpcor
+Description: Various functions for estimating parameters of trait evolution using Approximate Bayesian Computation.
 License: GPL
 Collage: approximatebayesian.R
 URL: http://treevo.R-forge.R-project.org
+Repository: CRAN
+Packaged: 2011-05-26 23:00:00; BLB
+Date/Publication: 2011-05-26 23:00:00
+
+
