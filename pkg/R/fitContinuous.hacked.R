@@ -109,7 +109,7 @@ function(phy, data, data.names=NULL, model=c("BM", "OU", "lambda", "kappa", "del
 
 
 `fitContinuousModel` <-
-function(ds, print=TRUE, badLnL=badLnL)
+function(ds, print=TRUE)
 {
 	bounds 	<- ds$bounds
 	model 	<- ds$model
@@ -144,7 +144,7 @@ function(ds, print=TRUE, badLnL=badLnL)
 		tryFoo<-function(x) {
 			options(warn=-1) #do this so that warnings and error get surpressed. Gets generated from exp(param)=Inf in phylogmean
 			#print ("in tryFoo")
-			#badLnL=100000
+			badLnL=100000
 			result<-try(foo(x), silent=T)
 			if (is.finite(result)) {
 				return(result)
@@ -182,7 +182,7 @@ function(ds, print=TRUE, badLnL=badLnL)
 		tryFoo<-function(x) {
 			options(warn=-1) #do this so that warnings and error get surpressed. Gets generated from exp(param)=Inf in phylogmean
 			#print ("in tryFoo")
-			#badLnL=100000
+			badLnL=100000
 			result<-try(foo(x), silent=T)
 			if (is.finite(result)) {
 				return(result)
@@ -237,7 +237,7 @@ function(ds, print=TRUE, badLnL=badLnL)
 				
 		tryFoo<-function(x) {
 			options(warn=-1) #do this so that warnings and error get surpressed. Gets generated from exp(param)=Inf in phylogmean
-			#badLnL=100000
+			badLnL=100000
 			result<-try(foo(x), silent=T)
 			if (is.finite(result)) {
 				return(result)
@@ -287,7 +287,7 @@ function(ds, print=TRUE, badLnL=badLnL)
 		
 		tryFoo<-function(x) {
 			options(warn=-1) #do this so that warnings and error get surpressed. Gets generated from exp(param)=Inf in phylogmean
-			#badLnL=100000
+			badLnL=100000
 			result<-try(foo(x), silent=T)
 			if (is.finite(result)) {
 				return(result)
@@ -307,7 +307,7 @@ function(ds, print=TRUE, badLnL=badLnL)
 			
 			diag(vv)<-diag(vv)+meserr^2
 			#determinantVCV<-det(vv)
-			#badLnL=100000
+			badLnL=100000
 			#if (determinantVCV==0){ #old delta had bounds, so couldn't get very low values and so didn't get singular matrices. Now that can happen, so have to guard against it
 			#	warning("Possibly singular variance-covariance matrix, so giving this particular parameter combination a very bad likelihood score (rather than crashing)")
 			#	return(badLnL)
@@ -332,7 +332,7 @@ function(ds, print=TRUE, badLnL=badLnL)
 		
 		tryLnl.noise<-function (p, x, se) {
 			options(warn=-1) #do this so that warnings and error get surpressed. Gets generated from exp(param)=Inf in phylogmean
-			#badLnL=100000
+			badLnL=100000
 			result<-try(Lnl.noise(p, x, se), silent=T)
 			if (is.finite(result)) {
 				return(result)
@@ -382,7 +382,7 @@ function(ds, print=TRUE, badLnL=badLnL)
 		
 		tryLnl.BMtrend <-function(p, vcv, x, se) {
 			options(warn=-1) #do this so that warnings and error get surpressed. Gets generated from exp(param)=Inf in phylogmean
-			#badLnL=100000
+			badLnL=100000
 			result<-try(Lnl.BMtrend(p, vcv, x, se), silent=T)
 			if (is.finite(result)) {
 				return(result)
@@ -434,7 +434,7 @@ function(ds, print=TRUE, badLnL=badLnL)
 		tryFoo<-function(x) {
 			options(warn=-1) #do this so that warnings and error get surpressed. Gets generated from exp(param)=Inf in phylogmean
 			#print ("in tryFoo")
-			#badLnL=100000
+			badLnL=100000
 			result<-try(foo(x), silent=T)
 			if (is.finite(result)) {
 				return(result)
@@ -564,7 +564,7 @@ function(ds, print=TRUE, badLnL=badLnL)
 		tryFoo<-function(x) {
 			options(warn=-1) #do this so that warnings and error get surpressed. Gets generated from exp(param)=Inf in phylogmean
 			#print ("in tryFoo")
-			#badLnL=100000
+			badLnL=100000
 			result<-try(foo(x), silent=T)
 			if (is.finite(result)) {
 				return(result)
