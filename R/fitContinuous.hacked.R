@@ -1,41 +1,8 @@
 library(corpcor)
 
-dmvnormPseudoinverse<-function (x, mean, sigma, log = FALSE) {
-	#print("in dmvnormPseudoinverse")
-    if (is.vector(x)) {
-        x <- matrix(x, ncol = length(x))
-    }
-    if (missing(mean)) {
-        mean <- rep(0, length = ncol(x))
-    }
-    if (missing(sigma)) {
-        sigma <- diag(ncol(x))
-    }
-    if (NCOL(x) != NCOL(sigma)) {
-        stop("x and sigma have non-conforming size")
-    }
-    if (!isSymmetric(sigma, tol = sqrt(.Machine$double.eps))) {
-        stop("sigma must be a symmetric matrix")
-    }
-    if (length(mean) != NROW(sigma)) {
-        stop("mean and sigma have non-conforming size")
-    }
-    #print("sigma")
-    #print(sigma)
-    #print(" starting mahalanobis") 
-    distval <- mahalanobis(x, center = mean, cov = pseudoinverse(sigma),inverted=TRUE)
-    #print(" finishing mahalanobis") 
-
-    logdet <- sum(log(eigen(sigma, symmetric = TRUE, only.values = TRUE)$values))
-    logretval <- -(ncol(x) * log(2 * pi) + logdet + distval)/2
-    #print("leaving dmvnormPseudoinverse")
-    if (log) 
-        return(logretval)
-    exp(logretval)
-}
 
 `fitContinuous.hacked` <-
-function(phy, data, data.names=NULL, model=c("BM", "OU", "lambda", "kappa", "delta", "EB", "white", "trend"), bounds=NULL,  meserr=NULL, userstart=NULL)
+function(phy, data, data.names=NULL, model=c("BM", "OU", "lambda", "kappa", "delta", "EB", "white", "trend"), bounds=NULL,  meserr=NULL, userstart=NULL, badLnL=badLnL)
 {
 	
 	# sort is T because sub-functions assume data are in
@@ -177,7 +144,7 @@ function(ds, print=TRUE)
 		tryFoo<-function(x) {
 			options(warn=-1) #do this so that warnings and error get surpressed. Gets generated from exp(param)=Inf in phylogmean
 			#print ("in tryFoo")
-			badLnL=100000
+			#badLnL=100000
 			result<-try(foo(x), silent=T)
 			if (is.finite(result)) {
 				return(result)
@@ -215,7 +182,7 @@ function(ds, print=TRUE)
 		tryFoo<-function(x) {
 			options(warn=-1) #do this so that warnings and error get surpressed. Gets generated from exp(param)=Inf in phylogmean
 			#print ("in tryFoo")
-			badLnL=100000
+			#badLnL=100000
 			result<-try(foo(x), silent=T)
 			if (is.finite(result)) {
 				return(result)
@@ -270,7 +237,7 @@ function(ds, print=TRUE)
 				
 		tryFoo<-function(x) {
 			options(warn=-1) #do this so that warnings and error get surpressed. Gets generated from exp(param)=Inf in phylogmean
-			badLnL=100000
+			#badLnL=100000
 			result<-try(foo(x), silent=T)
 			if (is.finite(result)) {
 				return(result)
@@ -320,7 +287,7 @@ function(ds, print=TRUE)
 		
 		tryFoo<-function(x) {
 			options(warn=-1) #do this so that warnings and error get surpressed. Gets generated from exp(param)=Inf in phylogmean
-			badLnL=100000
+			#badLnL=100000
 			result<-try(foo(x), silent=T)
 			if (is.finite(result)) {
 				return(result)
@@ -363,7 +330,19 @@ function(ds, print=TRUE)
 		lower=c(-Inf, log(bounds[1,"nv"]))
 		upper=c(Inf, log(bounds[2, "nv"]))
 		
-		lnl.noise<- function (p, x, se)
+		tryLnl.noise<-function (p, x, se) {
+			options(warn=-1) #do this so that warnings and error get surpressed. Gets generated from exp(param)=Inf in phylogmean
+			#badLnL=100000
+			result<-try(Lnl.noise(p, x, se), silent=T)
+			if (is.finite(result)) {
+				return(result)
+			}
+			else {
+				return(badLnL)
+			}
+		}
+		
+		Lnl.noise<- function (p, x, se)
 		# p is the vector of parameters, tree is not needed
 		# x and se are trait means and std errors
 		{
@@ -379,7 +358,7 @@ function(ds, print=TRUE)
   			-dmvnorm(x, M, VV, log=TRUE)
 		}
 
-		o<- nlm(lnl.noise, p=start, x=y, se=meserr)		
+		o<- nlm(tryLnl.noise, p=start, x=y, se=meserr)		
 		#o<- optim(start, fn=lnl.noise, x=y, se=meserr, lower=lower, upper=upper, method="L")
 		
 		results<-list(lnl=-o$minimum, beta=exp(o$estimate[1]), nv=exp(o$estimate[2]))	
@@ -401,8 +380,19 @@ function(ds, print=TRUE)
 		lower=c(-Inf, log(bounds[1,"beta"]), bounds[1,"mu"])
 		upper=c(Inf, log(bounds[2,"beta"]), bounds[2,"mu"])
 		
-
-		lnl.BMtrend<- function(p, vcv, x, se)
+		tryLnl.BMtrend <-function(p, vcv, x, se) {
+			options(warn=-1) #do this so that warnings and error get surpressed. Gets generated from exp(param)=Inf in phylogmean
+			#badLnL=100000
+			result<-try(Lnl.BMtrend(p, vcv, x, se), silent=T)
+			if (is.finite(result)) {
+				return(result)
+			}
+			else {
+				return(badLnL)
+			}
+		}
+		
+		Lnl.BMtrend<- function(p, vcv, x, se)
 		# p is vector of parameters, tr is tree
 		# x and se are vectors of trait means and standard errors
 		{
@@ -419,7 +409,7 @@ function(ds, print=TRUE)
   			- dmvnorm(x, M, VV, log=TRUE)
   		}
 
-		o<- nlm(lnl.BMtrend, p=p0, vcv=vcv, x=y, se=meserr)
+		o<- nlm(tryLnl.BMtrend, p=p0, vcv=vcv, x=y, se=meserr)
 		#o<- optim(p0, fn=lnl.BMtrend, vcv=vcv, x=y, se=meserr, lower=lower, upper=upper, method="L")
 		
 		names(o$par)<-NULL
@@ -444,7 +434,7 @@ function(ds, print=TRUE)
 		tryFoo<-function(x) {
 			options(warn=-1) #do this so that warnings and error get surpressed. Gets generated from exp(param)=Inf in phylogmean
 			#print ("in tryFoo")
-			badLnL=100000
+			#badLnL=100000
 			result<-try(foo(x), silent=T)
 			if (is.finite(result)) {
 				return(result)
@@ -574,7 +564,7 @@ function(ds, print=TRUE)
 		tryFoo<-function(x) {
 			options(warn=-1) #do this so that warnings and error get surpressed. Gets generated from exp(param)=Inf in phylogmean
 			#print ("in tryFoo")
-			badLnL=100000
+			#badLnL=100000
 			result<-try(foo(x), silent=T)
 			if (is.finite(result)) {
 				return(result)
@@ -614,6 +604,39 @@ function(ds, print=TRUE)
 }
 
 
+dmvnormPseudoinverse<-function (x, mean, sigma, log = FALSE) {
+	#print("in dmvnormPseudoinverse")
+    if (is.vector(x)) {
+        x <- matrix(x, ncol = length(x))
+    }
+    if (missing(mean)) {
+        mean <- rep(0, length = ncol(x))
+    }
+    if (missing(sigma)) {
+        sigma <- diag(ncol(x))
+    }
+    if (NCOL(x) != NCOL(sigma)) {
+        stop("x and sigma have non-conforming size")
+    }
+    if (!isSymmetric(sigma, tol = sqrt(.Machine$double.eps))) {
+        stop("sigma must be a symmetric matrix")
+    }
+    if (length(mean) != NROW(sigma)) {
+        stop("mean and sigma have non-conforming size")
+    }
+    #print("sigma")
+    #print(sigma)
+    #print(" starting mahalanobis") 
+    distval <- mahalanobis(x, center = mean, cov = pseudoinverse(sigma),inverted=TRUE)
+    #print(" finishing mahalanobis") 
+
+    logdet <- sum(log(eigen(sigma, symmetric = TRUE, only.values = TRUE)$values))
+    logretval <- -(ncol(x) * log(2 * pi) + logdet + distval)/2
+    #print("leaving dmvnormPseudoinverse")
+    if (log) 
+        return(logretval)
+    exp(logretval)
+}
 
 phylogMean<-function(phyvcv, data) 
 {
