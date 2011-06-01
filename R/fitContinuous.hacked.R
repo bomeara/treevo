@@ -2,9 +2,9 @@ library(corpcor)
 
 
 `fitContinuous.hacked` <-
-function(phy, data, data.names=NULL, model=c("BM", "OU", "lambda", "kappa", "delta", "EB", "white", "trend"), bounds=NULL,  meserr=NULL, userstart=NULL, badLnL=badLnL)
+function(phy, data, data.names=NULL, model=c("BM", "OU", "lambda", "kappa", "delta", "EB", "white", "trend"), bounds=NULL,  meserr=NULL, userstart=NULL, badLnL=10000)
 {
-	
+	print(badLnL)
 	# sort is T because sub-functions assume data are in
 	# this particular order
 	
@@ -109,7 +109,7 @@ function(phy, data, data.names=NULL, model=c("BM", "OU", "lambda", "kappa", "del
 
 
 `fitContinuousModel` <-
-function(ds, print=TRUE)
+function(ds, print=TRUE, badLnL=badLnL)
 {
 	bounds 	<- ds$bounds
 	model 	<- ds$model
