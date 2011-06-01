@@ -1,6 +1,6 @@
 library(geiger)
 library(stats)
-summaryStatsLong<-function(phy, data, todo=c(), jobName="", badLnL=10000) {
+summaryStatsLong<-function(phy, data, todo=c(), jobName="") {
 	sink(file="/dev/null")
 	if (length(todo)==0) {
 		todo=rep(1, 22+dim(data)[1]) #by default, include everything -- the 22 summary stats and the raw tip data
