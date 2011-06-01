@@ -84,7 +84,7 @@ summaryStatsLong<-function(phy, data, todo=c(), jobName="") {
 	}
 	print (paste("failurevector = ",failurevector,collapse="",sep=""))
 	if (somethingfailed) {
-		failed.summarystats<-c(dput(brown), dput(alpha), dput(white), dput(white))
+		failed.summarystats<-c(dput(brown), dput(lambda), dput(delta), dput(ou), dput(white))
 		GeigerFailure<-vector("list", 2)
 		GeigerFailure[[1]]<-failurevector
 		GeigerFailure[[2]]<-failed.summarystats
@@ -94,5 +94,6 @@ summaryStatsLong<-function(phy, data, todo=c(), jobName="") {
 	#cat("\n summaryStatsLong summarystats3\n")
 	#print(sstummarystats)
 	while(sink.number()>0) {sink()}
+	print(summarystats)
 	summarystats
 }
