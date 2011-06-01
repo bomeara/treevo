@@ -25,5 +25,5 @@ ThreeD.ABCplotsWPrior(a, parameter, show.particles="none", plot.parent=FALSE, re
 \examples{
 
 }
-\keyword{arith}
+\keyword{}
 
