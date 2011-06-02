@@ -85,9 +85,11 @@ summaryStatsLong<-function(phy, data, todo=c(), jobName="") {
 	print (paste("failurevector = ",failurevector,collapse="",sep=""))
 	if (somethingfailed) {
 		failed.summarystats<-c(dput(brown), dput(lambda), dput(delta), dput(ou), dput(white))
-		GeigerFailure<-vector("list", 2)
+		GeigerFailure<-vector("list", 4)
 		GeigerFailure[[1]]<-failurevector
 		GeigerFailure[[2]]<-failed.summarystats
+		GeigerFailure[[3]]<-phy
+		GeigerFailure[[4]]<-data
 		save(GeigerFailure, file=paste("geigerFailure", jobName, ".Rdata", sep=""))
 	}
 	
