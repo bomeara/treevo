@@ -182,14 +182,15 @@ function(ds, print=TRUE)
 		
 		tryFoo<-function(x) {
 			options(warn=-1) #do this so that warnings and error get surpressed. Gets generated from exp(param)=Inf in phylogmean
-			#print ("in tryFoo")
+			print ("in tryFoo")
 			badLnL=100000
 			result<-try(foo(x), silent=T)
-			if (is.finite(result)) {
+			if (is.finite(result) && result < 710) {
+				print(paste("in is.finite, result =", result))
 				return(result)
 			}
 			else {
-				#print("in badLnL")
+				print("in badLnL")
 				return(badLnL)
 			}
 		options(warn=0) 
