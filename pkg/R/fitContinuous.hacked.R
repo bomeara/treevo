@@ -153,6 +153,7 @@ function(ds, print=TRUE)
 				#print("in badLnL")
 				return(badLnL)
 			}
+		options(warn=0) 
 		}
 		
 		foo<-function(x) {
@@ -191,6 +192,7 @@ function(ds, print=TRUE)
 				#print("in badLnL")
 				return(badLnL)
 			}
+		options(warn=0) 
 		}
 			
 		foo<-function(x) {
@@ -245,6 +247,7 @@ function(ds, print=TRUE)
 			else {
 				return(badLnL)
 			}
+		options(warn=0) 
 		}
 		
 		foo<-function(x) {
@@ -295,6 +298,7 @@ function(ds, print=TRUE)
 			else {
 				return(badLnL)
 			}
+		options(warn=0) 
 		}
 		
 		foo<-function(x) {
@@ -443,6 +447,7 @@ function(ds, print=TRUE)
 				#print("in badLnL")
 				return(badLnL)
 			}
+		options(warn=0) 
 		}
 		
 		foo<-function(x) {
@@ -573,6 +578,7 @@ function(ds, print=TRUE)
 				#print("in badLnL")
 				return(badLnL)
 			}
+		options(warn=0) 
 		}
 		
 		foo<-function(x) {
@@ -638,8 +644,7 @@ dmvnormPseudoinverse<-function (x, mean, sigma, log = FALSE) {
     exp(logretval)
 }
 
-phylogMean<-function(phyvcv, data) 
-{
+phylogMean<-function(phyvcv, data) {
 	o<-rep(1, length(data))
 	#print("phyvcv in phylogMean")
 	#print(phyvcv)
@@ -654,10 +659,10 @@ phylogMean<-function(phyvcv, data)
 	m2<-t(o) %*% ci %*% data
 	return(m1 %*% m2)
 	
-	}
+}
 	
-ouMatrix <- function(vcvMatrix, alpha) 
-{
+	
+ouMatrix <- function(vcvMatrix, alpha) {
 ## follows Hansen 1997; does not assume ultrametricity (AH 12 dec 07)
 ## vectorized by LJH
   vcvDiag<-diag(vcvMatrix)
