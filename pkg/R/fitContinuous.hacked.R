@@ -50,6 +50,7 @@ function(phy, data, data.names=NULL, model=c("BM", "OU", "lambda", "kappa", "del
     #--------------------------------
 	ds			<- list()
    		ds$tree 		<- td$phy          # TIP data 
+   		ds$badLnL <- badLnL
     #--------------------------------
     #--- SET MODEL SPECIFICATIONS ---
     #--------------------------------
@@ -113,6 +114,7 @@ function(ds, print=TRUE)
 {
 	bounds 	<- ds$bounds
 	model 	<- ds$model
+	badLnL	<- ds$badLnL
 	n 		<- length(ds$data)
 	userstart <- ds$userstart
 
@@ -183,9 +185,9 @@ function(ds, print=TRUE)
 		tryFoo<-function(x) {
 			options(warn=-1) #do this so that warnings and error get surpressed. Gets generated from exp(param)=Inf in phylogmean
 			print ("in tryFoo")
-			badLnL=100000
+			#badLnL=100000
 			result<-try(foo(x), silent=T)
-			if (is.finite(result) && result < 710) {
+			if (is.finite(result) && result < log(.Machine$double.xmax)) {
 				print(paste("in is.finite, result =", result))
 				return(result)
 			}
@@ -291,8 +293,9 @@ function(ds, print=TRUE)
 		
 		tryFoo<-function(x) {
 			options(warn=-1) #do this so that warnings and error get surpressed. Gets generated from exp(param)=Inf in phylogmean
-			badLnL=100000
+			#badLnL=100000
 			result<-try(foo(x), silent=T)
+			print(paste("badLnL in delta is set to",badLnL))
 			if (is.finite(result)) {
 				print(paste("in is.finite, result =", result))
 				return(result)
