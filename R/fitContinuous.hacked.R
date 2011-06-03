@@ -294,10 +294,12 @@ function(ds, print=TRUE)
 			badLnL=100000
 			result<-try(foo(x), silent=T)
 			if (is.finite(result)) {
+				print(paste("in is.finite, result =", result))
 				return(result)
 			}
 			else {
 				return(badLnL)
+				print("in badLnL")
 			}
 		options(warn=0) 
 		}
