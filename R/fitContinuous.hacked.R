@@ -4,7 +4,7 @@ library(corpcor)
 `fitContinuous.hacked` <-
 function(phy, data, data.names=NULL, model=c("BM", "OU", "lambda", "kappa", "delta", "EB", "white", "trend"), bounds=NULL,  meserr=NULL, userstart=NULL, badLnL=10000)
 {
-	print(badLnL)
+	#print(badLnL)
 	# sort is T because sub-functions assume data are in
 	# this particular order
 	
@@ -140,15 +140,15 @@ function(ds, print=TRUE)
 		vcv<-vcv.phylo(tree)
 
 		start=log(beta.start)
-		lower=log(bounds[1,"beta"])
-		upper=log(bounds[2,"beta"])
+		#lower=log(bounds[1,"beta"])
+		#upper=log(bounds[2,"beta"])
 		
 		tryFoo<-function(x) {
 			options(warn=-1) #do this so that warnings and error get surpressed. Gets generated from exp(param)=Inf in phylogmean
 			#print ("in tryFoo")
-			badLnL=100000
+			#badLnL=100000
 			result<-try(foo(x), silent=T)
-			if (is.finite(result)) {
+			if (is.finite(result) && result < log(.Machine$double.xmax)) {
 				return(result)
 			}
 			else {
@@ -179,20 +179,20 @@ function(ds, print=TRUE)
 		k<-3
 		
 		start=log(c(beta.start, 0.5))
-		lower=log(bounds[1,c("beta","lambda")])
-		upper=log(bounds[2,c("beta","lambda")])
+		#lower=log(bounds[1,c("beta","lambda")])
+		#upper=log(bounds[2,c("beta","lambda")])
 		
 		tryFoo<-function(x) {
 			options(warn=-1) #do this so that warnings and error get surpressed. Gets generated from exp(param)=Inf in phylogmean
-			print ("in tryFoo")
+			#print ("in tryFoo")
 			#badLnL=100000
 			result<-try(foo(x), silent=T)
 			if (is.finite(result) && result < log(.Machine$double.xmax)) {
-				print(paste("in is.finite, result =", result))
+				#print(paste("in is.finite, result =", result))
 				return(result)
 			}
 			else {
-				print("in badLnL")
+				#print("in badLnL")
 				return(badLnL)
 			}
 		options(warn=0) 
@@ -237,14 +237,14 @@ function(ds, print=TRUE)
 	} else if (model=="kappa"){
 		k<-3
 		start=log(c(beta.start, 0.5))
-		lower=log(bounds[1,c("beta","kappa")])
-		upper=log(bounds[2,c("beta","kappa")])
+		#lower=log(bounds[1,c("beta","kappa")])
+		#upper=log(bounds[2,c("beta","kappa")])
 				
 		tryFoo<-function(x) {
 			options(warn=-1) #do this so that warnings and error get surpressed. Gets generated from exp(param)=Inf in phylogmean
-			badLnL=100000
+			#badLnL=100000
 			result<-try(foo(x), silent=T)
-			if (is.finite(result)) {
+			if (is.finite(result) && result < log(.Machine$double.xmax)) {
 				return(result)
 			}
 			else {
@@ -288,21 +288,21 @@ function(ds, print=TRUE)
 		start<-log(userstart)
 	
 	}
-		lower=log(bounds[1,c("beta","delta")])
-		upper=log(bounds[2,c("beta","delta")])
+		#lower=log(bounds[1,c("beta","delta")])
+		#upper=log(bounds[2,c("beta","delta")])
 		
 		tryFoo<-function(x) {
 			options(warn=-1) #do this so that warnings and error get surpressed. Gets generated from exp(param)=Inf in phylogmean
 			#badLnL=100000
 			result<-try(foo(x), silent=T)
-			print(paste("badLnL in delta is set to",badLnL))
-			if (is.finite(result)) {
-				print(paste("in is.finite, result =", result))
+			#print(paste("badLnL in delta is set to",badLnL))
+			if (is.finite(result) && result < log(.Machine$double.xmax)) {
+				#print(paste("in is.finite, result =", result))
 				return(result)
 			}
 			else {
 				return(badLnL)
-				print("in badLnL")
+				#print("in badLnL")
 			}
 		options(warn=0) 
 		}
@@ -337,14 +337,14 @@ function(ds, print=TRUE)
 		
 		k<-2
 		start=c(mean(y), log(var(y)))
-		lower=c(-Inf, log(bounds[1,"nv"]))
-		upper=c(Inf, log(bounds[2, "nv"]))
+		#lower=c(-Inf, log(bounds[1,"nv"]))
+		#upper=c(Inf, log(bounds[2, "nv"]))
 		
 		tryLnl.noise<-function (p, x, se) {
 			options(warn=-1) #do this so that warnings and error get surpressed. Gets generated from exp(param)=Inf in phylogmean
-			badLnL=100000
+			#badLnL=100000
 			result<-try(Lnl.noise(p, x, se), silent=T)
-			if (is.finite(result)) {
+			if (is.finite(result) && result < log(.Machine$double.xmax)) {
 				return(result)
 			}
 			else {
@@ -387,14 +387,14 @@ function(ds, print=TRUE)
 			if(is.ultrametric(tree))
 				cat("WARNING: Cannot estimate a trend with an ultrametric tree; lnl will be the same as the BM model")
 		}
-		lower=c(-Inf, log(bounds[1,"beta"]), bounds[1,"mu"])
-		upper=c(Inf, log(bounds[2,"beta"]), bounds[2,"mu"])
+		#lower=c(-Inf, log(bounds[1,"beta"]), bounds[1,"mu"])
+		#upper=c(Inf, log(bounds[2,"beta"]), bounds[2,"mu"])
 		
 		tryLnl.BMtrend <-function(p, vcv, x, se) {
 			options(warn=-1) #do this so that warnings and error get surpressed. Gets generated from exp(param)=Inf in phylogmean
-			badLnL=100000
+			#badLnL=100000
 			result<-try(Lnl.BMtrend(p, vcv, x, se), silent=T)
-			if (is.finite(result)) {
+			if (is.finite(result) && result < log(.Machine$double.xmax)) {
 				return(result)
 			}
 			else {
@@ -436,17 +436,17 @@ function(ds, print=TRUE)
 		nlm.print.level<-0
 		failureCountSwitch<-50
 		start=log(c(beta.start, 0.5))
-		lower=log(bounds[1,c("beta","alpha")])
-		upper=log(bounds[2,c("beta","alpha")])
+		#lower=log(bounds[1,c("beta","alpha")])
+		#upper=log(bounds[2,c("beta","alpha")])
 	
 		vcvOrig<-vcv.phylo(tree)
 
 		tryFoo<-function(x) {
 			options(warn=-1) #do this so that warnings and error get surpressed. Gets generated from exp(param)=Inf in phylogmean
 			#print ("in tryFoo")
-			badLnL=100000
+			#badLnL=100000
 			result<-try(foo(x), silent=T)
-			if (is.finite(result)) {
+			if (is.finite(result) && result < log(.Machine$double.xmax)) {
 				return(result)
 			}
 			else {
@@ -569,15 +569,15 @@ function(ds, print=TRUE)
 
 		k<-3
 		start=c(log(beta.start), 0.01)
-		lower=c(log(bounds[1,"beta"]),bounds[1,"a"])
-		upper=c(log(bounds[2,"beta"]),bounds[2,"a"])
+		#lower=c(log(bounds[1,"beta"]),bounds[1,"a"])
+		#upper=c(log(bounds[2,"beta"]),bounds[2,"a"])
 		
 		tryFoo<-function(x) {
 			options(warn=-1) #do this so that warnings and error get surpressed. Gets generated from exp(param)=Inf in phylogmean
 			#print ("in tryFoo")
-			badLnL=100000
+			#badLnL=100000
 			result<-try(foo(x), silent=T)
-			if (is.finite(result)) {
+			if (is.finite(result) && result < log(.Machine$double.xmax)) {
 				return(result)
 			}
 			else {
