@@ -225,9 +225,9 @@ while (!run.goingwell) {
 	}
 	#summaryRprof(nrepSims.time.check)
 	library("car")
-	summary<-vector("list", 3) #for boxcox debugging
+	summaryDebugging<-vector("list", 3) #for boxcox debugging
 	names(summary)<-c("preTransform", "boxcoxAddition", "postTransform") #for boxcox debugging
-	summary$preTransform<-summaryValues #for boxcox debugging
+	summaryDebugging$preTransform<-summaryValues #for boxcox debugging
 	#now put this into the boxcox function to get best lambda for each summary stat
 	boxcoxLambda<-rep(NA, dim(summaryValues)[2])
 	boxcoxAddition<-rep(NA, dim(summaryValues)[2])
@@ -241,7 +241,7 @@ while (!run.goingwell) {
 		#cat("\nsummary values[", summaryValueIndex, "] = ")
 		#print(summaryValues[, summaryValueIndex])
 		summary<-summaryValues[, summaryValueIndex]+boxcoxAddition[summaryValueIndex]
-		summary$boxcoxAddition<-summary #for boxcox debugging
+		summaryDebugging$boxcoxAddition<-summary #for boxcox debugging
 		#save(summary, file=paste("summary", jobName, ".Rout", sep="")) #for boxcox debugging
 		boxcoxLambda[summaryValueIndex]<-1
 		if(sd(summaryValues[, summaryValueIndex])>0) { #box.cox fails if all values are identical
@@ -257,7 +257,7 @@ while (!run.goingwell) {
 		}
 		summaryValues[, summaryValueIndex]<-summary^boxcoxLambda[summaryValueIndex]
 	}
-	summary$postTransform<-summaryValues
+	summaryDebugging$postTransform<-summaryValues
 	save(summary, file=paste("summary", jobName, ".Rout", sep=""))
 	
 	#Use mixOmics to to find the optimal set of summary stats. Store this info in the todo vector. Note that this uses a different package (mixOmics rather than pls than that used by Weggman et al. because this package can calculate variable importance in projection and deals fine with NAs)
