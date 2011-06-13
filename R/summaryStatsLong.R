@@ -7,7 +7,7 @@ summaryStatsLong<-function(phy, data, todo=c(), jobName="") {
 	}
 	
 	#thought here: include brown<-try(fitContinouous()), store brown, then do try(brown$lnl), etc. Faster than calling each fn
-	brown<-try(fitContinuous.hacked(phy=phy, data=data[max(todo[1:3])], model="BM")[[1]]) #will only run if want to do brownian summary stats
+	brown<-try(fitContinuous.hacked(phy=phy, data=data, model="BM")[[1]]) #will only run if want to do brownian summary stats
 	#brown.lnl<-as.numeric(try(fitContinuous.hacked(phy=phy, data=data[todo[1]], model="BM")[[1]]$lnl)) #if todo[i]==0, will cause an error right away, saving on computation time
 	brown.lnl<-as.numeric(try(brown$lnl/todo[1])) #divide by zero so we get Inf if we don't want that summary stat
 	#brown.beta<-as.numeric(try(fitContinuous.hacked(phy=phy, data=data[todo[2]], model="BM")[[1]]$beta))
@@ -15,7 +15,7 @@ summaryStatsLong<-function(phy, data, todo=c(), jobName="") {
 	#brown.aic<-as.numeric(try(fitContinuous.hacked(phy=phy, data=data[todo[3]], model="BM")[[1]]$aic))
 	brown.aic <-as.numeric(try(brown$aic/todo[3]))
 
-	lambda<-try(fitContinuous.hacked(phy=phy, data=data[max(todo[4:7])], model="lambda")[[1]])
+	lambda<-try(fitContinuous.hacked(phy=phy, data=data, model="lambda")[[1]])
 	#lambda.lnl<-as.numeric(try(fitContinuous.hacked(phy=phy, data=data[todo[4]], model="lambda")[[1]]$lnl))
 	lambda.lnl <-as.numeric(try(lambda$lnl/todo[4]))
 	#lambda.beta<-as.numeric(try(fitContinuous.hacked(phy=phy, data=data[todo[5]], model="lambda")[[1]]$beta))
@@ -25,7 +25,7 @@ summaryStatsLong<-function(phy, data, todo=c(), jobName="") {
 	#lambda.aic<-as.numeric(try(fitContinuous.hacked(phy=phy, data=data[todo[7]], model="lambda")[[1]]$aic))
 	lambda.aic <-as.numeric(try(lambda$aic/todo[7]))
 
-	delta<-try(fitContinuous.hacked(phy=phy, data=data[max(todo[8:11])], model="delta")[[1]])
+	delta<-try(fitContinuous.hacked(phy=phy, data=data, model="delta")[[1]])
 	#delta.lnl<-as.numeric(try(fitContinuous.hacked(phy=phy, data=data[todo[8]], model="delta")[[1]]$lnl))
 	delta.lnl <-as.numeric(try(delta$lnl/todo[8]))
 	#delta.beta<-as.numeric(try(fitContinuous.hacked(phy=phy, data=data[todo[9]], model="delta")[[1]]$beta))
@@ -35,7 +35,7 @@ summaryStatsLong<-function(phy, data, todo=c(), jobName="") {
 	#delta.aic<-as.numeric(try(fitContinuous.hacked(phy=phy, data=data[todo[11]], model="delta")[[1]]$aic))
 	delta.aic <-as.numeric(try(delta$aic/todo[11]))
 	
-	ou<-try(fitContinuous.hacked(phy=phy, data=data[max(todo[12:15])], model="OU")[[1]])
+	ou<-try(fitContinuous.hacked(phy=phy, data=data, model="OU")[[1]])
 	#ou.lnl<-as.numeric(try(fitContinuous.hacked(phy=phy, data=data[todo[12]], model="OU")[[1]]$lnl))
 	ou.lnl <-as.numeric(try(ou$lnl/todo[12]))
 	#ou.beta<-as.numeric(try(fitContinuous.hacked(phy=phy, data=data[todo[13]], model="OU")[[1]]$beta))
@@ -45,7 +45,7 @@ summaryStatsLong<-function(phy, data, todo=c(), jobName="") {
 	#ou.aic<-as.numeric(try(fitContinuous.hacked(phy=phy, data=data[todo[15]], model="OU")[[1]]$aic))
 	ou.aic <-as.numeric(try(ou$aic/todo[15]))
 	
-	white<-try(fitContinuous.hacked(phy=phy, data=data[max(todo[16:17])], model="white")[[1]])
+	white<-try(fitContinuous.hacked(phy=phy, data=data, model="white")[[1]])
 	#white.lnl<-as.numeric(try(fitContinuous.hacked(phy=phy, data=data[todo[16]], model="white")[[1]]$lnl))
 	white.lnl<-as.numeric(try(white$lnl/todo[16]))
 	#white.aic<-as.numeric(try(fitContinuous.hacked(phy=phy, data=data[todo[17]], model="white")[[1]]$aic))
