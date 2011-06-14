@@ -302,7 +302,7 @@ function(ds, print=TRUE)
 			}
 			else {
 				return(badLnL)
-				#print("in badLnL")
+				print("in badLnL")
 			}
 		options(warn=0) 
 		}
