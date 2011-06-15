@@ -591,15 +591,23 @@ if (startFromCheckpoint==TRUE || dataGenerationStep < nStepsPRC) {
 												     #print(paste("startingPriorFn is not uniform or exponential and sdtouse =", sdtouse))
 												}
 												
-                                                print(paste("@startingStates: newvalue=", newvalue, "meantouse=", meantouse, "sdtouse=", sdtouse))
-                                                lnlocalTransitionProb=dnorm(newvalue, mean= meantouse, sd= sdtouse,log=TRUE)-log(1-pnorm(min(startingPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=T)+pnorm(max(startingPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=F))
-                                                #print(paste("@startingStates: dnorm()=", dnorm(newvalue, mean= meantouse, sd= sdtouse,log=TRUE), ", 1-pnorm()=", 1-pnorm(min(startingPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=T), ", pnorm()=", pnorm(max(startingPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=F)))
+                                               # print(paste("@startingStates: newvalue=", newvalue, "meantouse=", meantouse, "sdtouse=", sdtouse))
+                                               
+                                               #OLDlnlocalTransitionProb=dnorm(newvalue, mean= meantouse, sd= sdtouse,log=TRUE)-log(1-pnorm(min(startingPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=T)+pnorm(max(startingPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=F))  #this was the way we were doing it up until 6/15/11, but were getting log(0) = Inf errors
+                                               lnlocalTransitionProb=dnorm(newvalue, mean= meantouse, sd= sdtouse,log=TRUE)-((log(1)/pnorm(min(startingPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=T, log.p=T))*pnorm(max(startingPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=F, log.p=T))
+                                               if (lnlocalTransitionProb == "NaN") {  #to prevent lnlocalTransitionProb from being NaN (if pnorm=0)
+                                               		lnlocalTransitionProb<-.Machine$double.xmin
+                                               }
+                                               #print(paste("OLDlnlocalTransitionProb =", OLDlnlocalTransitionProb, "lnlocalTransitionProb =", lnlocalTransitionProb))
+												
+												#print(paste("@startingStates: dnorm()=", dnorm(newvalue, mean= meantouse, sd= sdtouse,log=TRUE), ", 1-pnorm()=", 1-pnorm(min(startingPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=T), ", pnorm()=", pnorm(max(startingPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=F)))
+                                                #print(paste("lnlocalTransitionProb =", lnlocalTransitionProb))
                                                 if (min(startingPriorsValues[, j])==max(startingPriorsValues[, j])) {
                                                         lnlocalTransitionProb=log(1)
                                                 } 
                                                 lnTransitionProb<-lnTransitionProb+lnlocalTransitionProb
                                                 #print(paste("lnlocalTransitionProb=", lnlocalTransitionProb))
-                                                if(!is.finite(lnTransitionProb)) {
+                                               if(!is.finite(lnTransitionProb) || is.na(lnlocalTransitionProb)) {
                                                         print(paste("issue with lnTransitionProb: lnlocalTransitionProb = ",lnlocalTransitionProb," lnTransitionProb = ",lnTransitionProb))
                                                 }
                                         } 
@@ -618,15 +626,21 @@ if (startFromCheckpoint==TRUE || dataGenerationStep < nStepsPRC) {
 												     sdtouse<-standardDevFactor*(intrinsicPriorsValues[2,j])
 												     #print(paste("intrinsicPriorFn is not uniform or exponential and sdtouse =", sdtouse))
 												}
-                                                print(paste("@intrinsicValues: newvalue =", newvalue, "meantouse=", meantouse, "sdtouse=", sdtouse))
-                                                lnlocalTransitionProb=dnorm(newvalue, mean= meantouse, sd= sdtouse,log=TRUE)-log(1-pnorm(min(intrinsicPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=T)+pnorm(max(intrinsicPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=F))
+                                                #print(paste("@intrinsicValues: newvalue =", newvalue, "meantouse=", meantouse, "sdtouse=", sdtouse))
+                                                #OLDlnlocalTransitionProb=dnorm(newvalue, mean= meantouse, sd= sdtouse,log=TRUE)-log(1-pnorm(min(intrinsicPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=T)+pnorm(max(intrinsicPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=F))  #this was the way we were doing it up until 6/15/11, but were getting log(0) = Inf errors
+                                                lnlocalTransitionProb=dnorm(newvalue, mean= meantouse, sd= sdtouse,log=TRUE)-((log(1)/pnorm(min(startingPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=T, log.p=T))*pnorm(max(startingPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=F, log.p=T))
+                                               if (lnlocalTransitionProb == "NaN") {  #to prevent lnlocalTransitionProb from being NaN (if pnorm=0)
+                                               		lnlocalTransitionProb<-.Machine$double.xmin
+                                               }
+                                               
+                                               #print(paste("OLDlnlocalTransitionProb =", OLDlnlocalTransitionProb, "lnlocalTransitionProb =", lnlocalTransitionProb))
                                                 #print(paste("@intrinsicValues: dnorm()=", dnorm(newvalue, mean= meantouse, sd= sdtouse,log=TRUE), ", 1-pnorm()=", 1-pnorm(min(startingPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=T), ", pnorm()=", pnorm(max(startingPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=F)))
                                                 if (min(intrinsicPriorsValues[, j])==max(intrinsicPriorsValues[, j])) {
                                                         lnlocalTransitionProb=log(1)
                                                 } 
                                                 lnTransitionProb<-lnTransitionProb+lnlocalTransitionProb
                                                 #print(paste("lnlocalTransitionProb=", lnlocalTransitionProb))
-                                               if(!is.finite(lnTransitionProb)) {
+                                               if(!is.finite(lnTransitionProb) || is.na(lnlocalTransitionProb)) {
                                                         print(paste("issue with lnTransitionProb: lnlocalTransitionProb = ",lnlocalTransitionProb," lnTransitionProb = ",lnTransitionProb))
                                                 }
 
@@ -646,15 +660,20 @@ if (startFromCheckpoint==TRUE || dataGenerationStep < nStepsPRC) {
 												     sdtouse<-standardDevFactor*(extrinsicPriorsValues[2,j])
 												     #print(paste("extrinsicPriorFn is not uniform or exponential and sdtouse =", sdtouse))
 												}
-                                                print(paste("@extrinsicValues: newvalue=", newvalue, "meantouse=", meantouse, "sdtouse=", sdtouse))
-                                                lnlocalTransitionProb=dnorm(newvalue, mean= meantouse, sd= sdtouse,log=TRUE)-log(1-pnorm(min(extrinsicPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=T)+pnorm(max(extrinsicPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=F))
+                                                #print(paste("@extrinsicValues: newvalue=", newvalue, "meantouse=", meantouse, "sdtouse=", sdtouse))
+                                                #OLDlnlocalTransitionProb=dnorm(newvalue, mean= meantouse, sd= sdtouse,log=TRUE)-log(1-pnorm(min(extrinsicPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=T)+pnorm(max(extrinsicPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=F))  #this was the way we were doing it up until 6/15/11, but were getting log(0) = Inf errors
+                                                lnlocalTransitionProb=dnorm(newvalue, mean= meantouse, sd= sdtouse,log=TRUE)-((log(1)/pnorm(min(startingPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=T, log.p=T))*pnorm(max(startingPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=F, log.p=T))
+                                               if (lnlocalTransitionProb == "NaN") {  #to prevent lnlocalTransitionProb from being NaN (if pnorm=0)
+                                               		lnlocalTransitionProb<-.Machine$double.xmin
+                                               }
+                                               #print(paste("OLDlnlocalTransitionProb =", OLDlnlocalTransitionProb, "lnlocalTransitionProb =", lnlocalTransitionProb))
                                                 #print(paste("@extrinsicValues: dnorm()=", dnorm(newvalue, mean= meantouse, sd= sdtouse,log=TRUE), ", 1-pnorm()=", 1-pnorm(min(startingPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=T), ", pnorm()=", pnorm(max(startingPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=F)))
                                                 if (min(extrinsicPriorsValues[, j])==max(extrinsicPriorsValues[, j])) {
                                                         lnlocalTransitionProb=log(1)
                                                 } 
                                                 lnTransitionProb<-lnTransitionProb+lnlocalTransitionProb
                                                 #print(paste("lnlocalTransitionProb=", lnlocalTransitionProb))
-                                               if(!is.finite(lnTransitionProb)) {
+                                               if(!is.finite(lnTransitionProb) || is.na(lnlocalTransitionProb)) {
                                                         print(paste("issue with lnTransitionProb: lnlocalTransitionProb = ",lnlocalTransitionProb," lnTransitionProb = ",lnTransitionProb))
                                                 }
 
