@@ -24,7 +24,6 @@ if (class(priors)=="list"){
 }
 
 
-
 freeParams<-dim(subset(priors[,which(priors[1,] != "fixed")])[,])[2] 
 dev.new(width=2.5*freeParams, height=3)
 nf<-layout(matrix(1:freeParams, nrow=1, byrow=TRUE), respect=TRUE)
@@ -39,7 +38,7 @@ nParticles<-dim(subset(all[which(all$weight>0),], run==max(all$run)))[1]
 
 for (param in 1:dim(priors)[2]) {
 	#print(param)
-	v<-vector("list", max(all$run))
+	#v<-vector("list", max(all$run))
 	which.param<-param+7
 	r<-c()
 	q<-c()
@@ -69,7 +68,7 @@ for (param in 1:dim(priors)[2]) {
 			min=as.numeric(min(priors[2, param], priors[3, param]))
 			max=as.numeric(max(priors[2, param], priors[3, param]))
 			x<-runif(1000, min, max)
-			poly<-curve(dunif(x), xlim=c(min(min-(.3*(max-min)), min(q)), max(max+(.3*(max-min)), max(q))), ylim=c(0, max(1.5, max(r))), type="n", xlab=names(all)[which.param], ylab="Density", bty="n", sub=names(data)[which.param])
+			poly<-curve(dunif(x), xlim=c(min(min-(.3*(max-min)), min(q)), max(max+(.3*(max-min)), max(q))), ylim=c(0, max(1.5, max(r))), type="n", xlab=names(all)[which.param], ylab="Density", bty="n")
 			rect(min, 0, max, 1, border=rgb(1, 0, 0), lwd=1.5)
 			if (realParam) {
 				segments(realParamValues[param], 0, realParamValues[param], max(1.5, max(r)), col=rgb(0, 0, 1), lwd=1.5)
@@ -81,7 +80,7 @@ for (param in 1:dim(priors)[2]) {
 			stdev=as.numeric(priors[3, param])
 			x<-rnorm(1000, mean, stdev)
 			w<-density(x)
-			poly<-curve(dnorm(x, mean, stdev), from=min(x), to=max(x), xlim=c(min(min(w$x), min(q)), max(max(w$x), max(q))), ylim=c(0, max(max(w$y), max(r))), xlab=names(all)[which.param], ylab="Density", col=rgb(1, 0, 0), lwd=1.5, bty="n", sub=names(data)[which.param])
+			poly<-curve(dnorm(x, mean, stdev), from=min(x), to=max(x), xlim=c(min(min(w$x), min(q)), max(max(w$x), max(q))), ylim=c(0, max(max(w$y), max(r))), xlab=names(all)[which.param], ylab="Density", col=rgb(1, 0, 0), lwd=1.5, bty="n")
 			if (realParam) {
 				segments(realParamValues[param], 0, realParamValues[param], max(1.5, max(r)), col=rgb(0, 0, 1), lwd=1.5)
 			}
@@ -91,7 +90,7 @@ for (param in 1:dim(priors)[2]) {
 			stdev=as.numeric(priors[3, param])
 			x<-rlnorm(1000, mean, stdev)
 			w<-density(x)
-			poly<-curve(dlnorm(x, mean, stdev), from=0, to=qlnorm(0.99, mean, stdev), xlim=c(min(min(w$x), min(q)), max(max(w$x), max(q))), ylim=c(0, max(max(w$y), max(r))), xlab=names(all)[which.param], ylab="Density", col=rgb(1, 0, 0), lwd=1.5, bty="n", sub=names(data)[which.param])
+			poly<-curve(dlnorm(x, mean, stdev), from=0, to=qlnorm(0.99, mean, stdev), xlim=c(min(min(w$x), min(q)), max(max(w$x), max(q))), ylim=c(0, max(max(w$y), max(r))), xlab=names(all)[which.param], ylab="Density", col=rgb(1, 0, 0), lwd=1.5, bty="n")
 			if (realParam) {
 				segments(realParamValues[param], 0, realParamValues[param], max(1.5, max(r)), col=rgb(0, 0, 1), lwd=1.5)
 			}
@@ -101,7 +100,7 @@ for (param in 1:dim(priors)[2]) {
 			scale=as.numeric(priors[3, param])
 			x<-rgamma(1000, shape, scale)
 			w<-density(x)
-			poly<-curve(dgamma(x, shape, scale), from=0, to=qgamma(0.99, shape, scale), xlim=c(min(min(w$x), min(q)), max(max(w$x), max(q))), ylim=c(0, max(max(w$y), max(r))), xlab=names(all)[which.param], ylab="Density", col=rgb(1, 0, 0), lwd=1.5, bty="n", sub=names(data)[which.param])
+			poly<-curve(dgamma(x, shape, scale), from=0, to=qgamma(0.99, shape, scale), xlim=c(min(min(w$x), min(q)), max(max(w$x), max(q))), ylim=c(0, max(max(w$y), max(r))), xlab=names(all)[which.param], ylab="Density", col=rgb(1, 0, 0), lwd=1.5, bty="n")
 			if (realParam) {
 				segments(realParamValues[param], 0, realParamValues[param], max(1.5, max(r)), col=rgb(0, 0, 1), lwd=1.5)
 			}
@@ -111,7 +110,7 @@ for (param in 1:dim(priors)[2]) {
 			rate=as.numeric(priors[2, param])
 			x<-rexp(1000, rate)
 			w<-density(x)
-			poly<-curve(dexp(x, rate), from=0, to=qexp(0.99, rate), xlim=c(min(min(w$x), min(q)), max(max(w$x), max(q))), ylim=c(0, max(max(w$y), max(r))), xlab=names(all)[which.param], ylab="Density", col=rgb(1, 0, 0), lwd=1.5, bty="n", sub=names(data)[which.param])
+			poly<-curve(dexp(x, rate), from=0, to=qexp(0.99, rate), xlim=c(min(min(w$x), min(q)), max(max(w$x), max(q))), ylim=c(0, max(max(w$y), max(r))), xlab=names(all)[which.param], ylab="Density", col=rgb(1, 0, 0), lwd=1.5, bty="n") #, sub=names(data)[which.param]
 			if (realParam) {
 				segments(realParamValues[param], 0, realParamValues[param], max(1.5, max(r)), col=rgb(0, 0, 1), lwd=1.5)
 			}
@@ -124,7 +123,7 @@ for (param in 1:dim(priors)[2]) {
 		for (lines in 1:length(v)) {
 			polygon(v[[lines]]$x, v[[lines]]$y, border=NA, col=rgb(0, 0, 0, (.7/max(all$run))))
 		}
-	} #else
+	} #if (priors[1,param] != "fixed") 
 } #for
 
 	
