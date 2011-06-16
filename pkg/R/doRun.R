@@ -258,7 +258,7 @@ while (!run.goingwell) {
 		summaryValues[, summaryValueIndex]<-summary^boxcoxLambda[summaryValueIndex]
 	}
 	summaryDebugging$postTransform<-summaryValues
-	save(summary, file=paste("summary", jobName, ".Rout", sep=""))
+	save(summaryDebugging, file=paste("summaryDebugging", jobName, ".Rout", sep=""))
 	
 	#Use mixOmics to to find the optimal set of summary stats. Store this info in the todo vector. Note that this uses a different package (mixOmics rather than pls than that used by Weggman et al. because this package can calculate variable importance in projection and deals fine with NAs)
 	library("mixOmics")
