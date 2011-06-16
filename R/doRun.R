@@ -575,6 +575,7 @@ if (startFromCheckpoint==TRUE || dataGenerationStep < nStepsPRC) {
                                 for (i in 1:length(oldParticleVector)) {
                                         lnTransitionProb=log(1)
                                         for (j in 1:length(newparticleVector[[1]]@startingStates)) {
+
                                                 newvalue<-newparticleVector[[1]]@startingStates[j]
                                                 meantouse= oldParticleVector[[i]]@startingStates[j]
 
@@ -591,10 +592,10 @@ if (startFromCheckpoint==TRUE || dataGenerationStep < nStepsPRC) {
 												     #print(paste("startingPriorFn is not uniform or exponential and sdtouse =", sdtouse))
 												}
 												
-                                               # print(paste("@startingStates: newvalue=", newvalue, "meantouse=", meantouse, "sdtouse=", sdtouse))
+                                                #print(paste("@startingStates: newvalue=", newvalue, "meantouse=", meantouse, "sdtouse=", sdtouse))
                                                
                                                #OLDlnlocalTransitionProb=dnorm(newvalue, mean= meantouse, sd= sdtouse,log=TRUE)-log(1-pnorm(min(startingPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=T)+pnorm(max(startingPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=F))  #this was the way we were doing it up until 6/15/11, but were getting log(0) = Inf errors
-                                               lnlocalTransitionProb=dnorm(newvalue, mean= meantouse, sd= sdtouse,log=TRUE)-((log(1)/pnorm(min(startingPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=T, log.p=T))*pnorm(max(startingPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=F, log.p=T))
+                                               lnlocalTransitionProb=dnorm(newvalue, mean=meantouse, sd=sdtouse,log=TRUE) - ((log(1)/pnorm(min(startingPriorsValues[, j]), mean=meantouse, sd=sdtouse, lower.tail=T, log.p=T))* pnorm(max(startingPriorsValues[,j]), mean=meantouse , sd=sdtouse, lower.tail=F, log.p=T))
                                                if (lnlocalTransitionProb == "NaN") {  #to prevent lnlocalTransitionProb from being NaN (if pnorm=0)
                                                		lnlocalTransitionProb<-.Machine$double.xmin
                                                }
@@ -612,6 +613,7 @@ if (startFromCheckpoint==TRUE || dataGenerationStep < nStepsPRC) {
                                                 }
                                         } 
                                         for (j in 1:length(newparticleVector[[1]]@intrinsicValues)) {
+                                        	
                                                 newvalue<-newparticleVector[[1]]@intrinsicValues[j]
                                                 meantouse= oldParticleVector[[i]]@intrinsicValues[j]
 												if (intrinsicPriorsFns[j]=="uniform") {
@@ -628,7 +630,7 @@ if (startFromCheckpoint==TRUE || dataGenerationStep < nStepsPRC) {
 												}
                                                 #print(paste("@intrinsicValues: newvalue =", newvalue, "meantouse=", meantouse, "sdtouse=", sdtouse))
                                                 #OLDlnlocalTransitionProb=dnorm(newvalue, mean= meantouse, sd= sdtouse,log=TRUE)-log(1-pnorm(min(intrinsicPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=T)+pnorm(max(intrinsicPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=F))  #this was the way we were doing it up until 6/15/11, but were getting log(0) = Inf errors
-                                                lnlocalTransitionProb=dnorm(newvalue, mean= meantouse, sd= sdtouse,log=TRUE)-((log(1)/pnorm(min(startingPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=T, log.p=T))*pnorm(max(startingPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=F, log.p=T))
+                                                lnlocalTransitionProb=dnorm(newvalue, mean= meantouse, sd= sdtouse,log=TRUE)-((log(1)/pnorm(min(intrinsicPriorsValues[, j]), mean=meantouse , sd=sdtouse, lower.tail=T, log.p=T)) * pnorm(max(intrinsicPriorsValues[,j]), mean=meantouse , sd=sdtouse, lower.tail=F, log.p=T))
                                                if (lnlocalTransitionProb == "NaN") {  #to prevent lnlocalTransitionProb from being NaN (if pnorm=0)
                                                		lnlocalTransitionProb<-.Machine$double.xmin
                                                }
@@ -662,7 +664,7 @@ if (startFromCheckpoint==TRUE || dataGenerationStep < nStepsPRC) {
 												}
                                                 #print(paste("@extrinsicValues: newvalue=", newvalue, "meantouse=", meantouse, "sdtouse=", sdtouse))
                                                 #OLDlnlocalTransitionProb=dnorm(newvalue, mean= meantouse, sd= sdtouse,log=TRUE)-log(1-pnorm(min(extrinsicPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=T)+pnorm(max(extrinsicPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=F))  #this was the way we were doing it up until 6/15/11, but were getting log(0) = Inf errors
-                                                lnlocalTransitionProb=dnorm(newvalue, mean= meantouse, sd= sdtouse,log=TRUE)-((log(1)/pnorm(min(startingPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=T, log.p=T))*pnorm(max(startingPriorsValues[, j]), mean= meantouse , sd= sdtouse, lower.tail=F, log.p=T))
+                                                lnlocalTransitionProb=dnorm(newvalue, mean= meantouse, sd= sdtouse,log=TRUE)-((log(1)/pnorm(min(extrinsicPriorsValues[,j]), mean=meantouse , sd=sdtouse, lower.tail=T, log.p=T)) * pnorm(max(extrinsicPriorsValues[,j]), mean=meantouse , sd=sdtouse, lower.tail=F, log.p=T))
                                                if (lnlocalTransitionProb == "NaN") {  #to prevent lnlocalTransitionProb from being NaN (if pnorm=0)
                                                		lnlocalTransitionProb<-.Machine$double.xmin
                                                }
