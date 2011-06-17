@@ -223,9 +223,12 @@ while (!run.goingwell) {
 		#print(summaryValues)
 		while(sink.number()>0) {sink()}
 	}
+	library(abc)
+	rejResults<-abc(target=summaryStatsLong(phy, traits, jobName=jobName), param=trueFreeValues, sumstat=summaryValues)
+	save(rejResults,trueFreeValues,summaryValues,file=paste("abc_pkg_reg_results_",jobName,".Rdata",sep=""))
 	#summaryRprof(nrepSims.time.check)
 	library("car")
-	summaryDebugging<-vector("list", 3) #for boxcox debugging
+	summaryDebugging<-c() #for boxcox debugging
 	names(summary)<-c("preTransform", "boxcoxAddition", "postTransform") #for boxcox debugging
 	summaryDebugging$preTransform<-summaryValues #for boxcox debugging
 	#now put this into the boxcox function to get best lambda for each summary stat
@@ -258,7 +261,7 @@ while (!run.goingwell) {
 		summaryValues[, summaryValueIndex]<-summary^boxcoxLambda[summaryValueIndex]
 	}
 	summaryDebugging$postTransform<-summaryValues
-	save(summaryDebugging, file=paste("summaryDebugging", jobName, ".Rout", sep=""))
+	save(summaryDebugging, file=paste("summaryDebugging", jobName, ".Rdata", sep=""))
 	
 	#Use mixOmics to to find the optimal set of summary stats. Store this info in the todo vector. Note that this uses a different package (mixOmics rather than pls than that used by Weggman et al. because this package can calculate variable importance in projection and deals fine with NAs)
 	library("mixOmics")
