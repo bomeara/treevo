@@ -224,8 +224,8 @@ while (!run.goingwell) {
 		while(sink.number()>0) {sink()}
 	}
 	library(abc)
-	rejResults<-abc(target=summaryStatsLong(phy, traits, jobName=jobName), param=trueFreeValues, sumstat=summaryValues)
-	save(rejResults,trueFreeValues,summaryValues,file=paste("abc_pkg_reg_results_",jobName,".Rdata",sep=""))
+	rejResults<-abc(target=summaryStatsLong(phy, traits, jobName=jobName), param=trueFreeValues, sumstat=summaryValues, tol=0.1, method="rejection")
+	save(rejResults,trueFreeValues,summaryValues,file=paste("abc_pkg_rej_results_",jobName,".Rdata",sep=""))
 	#summaryRprof(nrepSims.time.check)
 	library("car")
 	summaryDebugging<-c() #for boxcox debugging
