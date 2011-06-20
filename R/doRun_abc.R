@@ -6,6 +6,8 @@
 #the guesses are used to do simulations near the expected region. If omitted, they are set to the midpoint of the input parameter matrices
 
 doRun_abc<-function(phy, traits, intrinsicFn, extrinsicFn, summaryFns=c(rawValuesSummaryStats, geigerUnivariateSummaryStats2), startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, startingStatesGuess=c(), intrinsicStatesGuess=c(), extrinsicStatesGuess=c(), timeStep, toleranceVector=c(), numParticles=1000, standardDevFactor=0.05, StartSims=100, plot=FALSE, vipthresh=0.8, epsilonProportion=0.2, epsilonMultiplier=0.5, nStepsPRC=4, maxTries=1, jobName=NA, debug=TRUE, trueStartingState=NA, trueIntrinsicState=NA, startFromCheckpoint=TRUE, whenToKill=20, checkpointSave=TRUE, stopRule=TRUE, stopValue=0.05, abcMethod=NA) {
+
+startTime<-proc.time()[[3]]
 print(abcMethod)
 if (debug){
 	cat("\nDebugging doRun\n")
@@ -233,5 +235,21 @@ while (!run.goingwell) {
 	
 }  #if (startFromCheckpoint==FALSE)
 }  #while (!run.goingwell)
+input.data<-rbind(jobName, length(phy[[3]]), nrepSim, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor, try, trueStartingState, trueIntrinsicState)
+
+runTime<-proc.time()[[3]]-startTime
+
+
+test<-vector("list", 5)
+names(test)<-c("input.data", "PriorMatrix", "phy", "traits")
+
+test$input.data<-input.data
+test$PriorMatrix<-PriorMatrix
+test$phy<-phy
+test$traits<-traits
+test$runTime<-runTime
+
 }  #for (try in 1:maxTries)
+
+print(test)
 }  #doRun_abc
