@@ -227,27 +227,30 @@ while (!run.goingwell) {
 		while(sink.number()>0) {sink()}
 	}
 	
+	SimTime<-proc.time()[[3]]-startTime	
+	startTime<-proc.time()[[3]]
 	library(abc)
 	
 	abcResults<-abc(target=summaryStatsLong(phy, traits, jobName=jobName), param=trueFreeValues, sumstat=summaryValues, tol=0.1, method=abcMethod)
 	
 	save(abcResults,trueFreeValues,summaryValues,file=paste("abc_pkg_rej_results_",jobName,".Rdata",sep=""))
+	abcRunTime<-proc.time()[[3]]-startTime
+
 	
 }  #if (startFromCheckpoint==FALSE)
 }  #while (!run.goingwell)
 input.data<-rbind(jobName, length(phy[[3]]), nrepSim, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor, try, trueStartingState, trueIntrinsicState)
 
-runTime<-proc.time()[[3]]-startTime
 
-
-test<-vector("list", 5)
+test<-vector("list", 6)
 names(test)<-c("input.data", "PriorMatrix", "phy", "traits")
 
 test$input.data<-input.data
 test$PriorMatrix<-PriorMatrix
 test$phy<-phy
 test$traits<-traits
-test$runTime<-runTime
+test$SimTime<-SimTime
+test$abcRunTime<-abcRunTime
 
 }  #for (try in 1:maxTries)
 
