@@ -1,0 +1,47 @@
+\name{abcmodels.intrinsic.R}
+\alias{nullIntrinsic}
+\alias{brownianIntrinsic}
+\alias{boundaryIntrinsic}
+\alias{boundaryMinIntrinsic}
+\alias{autoregressiveIntrinsic}
+\alias{MinBoundaryAutoregressiveIntrinsic}
+\alias{autoregressiveIntrinsicTimeSlices}
+\alias{autoregressiveIntrinsicTimeSlicesConstantMean}
+\alias{autoregressiveIntrinsicTimeSlicesConstantSigma}
+
+\title{Intrinsic Character Evolution Models}
+
+\description{These functions describe models of character evolution by intrinsic forces. Each function generates new character values after one time step; \code{nullIntrinsic}: no intrinsic character change; \code{brownianIntrinsic}: character change via brownian motion; \code{boundaryIntrinsic}: character change is restricted above minimum and below maximum thresholds; \code{boundaryMinIntrinsic}: character change is restricted above a minimum threshold; \code{autoregressiveIntrinsic}: character change via a discrete-time OU process; \code{MinBoundaryAutoregressiveIntrinsic}: a discrete-time OU process with a minimum bound; \code{autoregressiveIntrinsicTimeSlices}: a discrete-time OU process with differing means, sigma, and attraction over time; \code{autoregressiveIntrinsicTimeSlicesConstantMean}: a discrete-time OU process with differing sigma and attraction over time; and \code{autoregressiveIntrinsicTimeSlicesConstantSigma}:  a discrete-time OU process with differing means and attraction over time}
+
+\usage{
+nullIntrinsic(params,states, timefrompresent)
+brownianIntrinsic(params,states, timefrompresent)
+boundaryIntrinsic(params, states, timefrompresent)
+boundaryMinIntrinsic(params, states, timefrompresent)
+autoregressiveIntrinsic(params,states, timefrompresent)
+MinBoundaryAutoregressiveIntrinsic(params,states, timefrompresent)
+autoregressiveIntrinsicTimeSlices(params,states, timefrompresent)
+autoregressiveIntrinsicTimeSlicesConstantMean(params,states, timefrompresent)
+autoregressiveIntrinsicTimeSlicesConstantSigma(params,states, timefrompresent)
+}
+
+\arguments{
+  \item{params}{describes input paramaters for the model. \code{brownianIntrinsic} params = sd; \code{boundaryIntrinsic} params = sd, minimum, maximum; \code{boundaryMinIntrinsic} params = sd, minimum; \code{autoregressiveIntrinsic} params = sd (sigma), attractor (character mean), attraction (alpha); \code{MinBoundaryAutoregressiveIntrinsic} params = sd (sigma), attractor (character mean), attraction (alpha), minimum; \code{autoregressiveIntrinsicTimeSlices} params = sd-1 (sigma-1), attractor-1 (character mean-1), attraction-1 (alpha-1), time threshold-1, sd-2 (sigma-2), attractor-2 (character mean-2), attraction-2 (alpha-2), time threshold-2; \code{autoregressiveIntrinsicTimeSlicesConstantMean} params = sd-1 (sigma-1), attraction-1 (alpha-1), time threshold-1, sd-2 (sigma-2), attraction-2 (alpha-2), time threshold-2, attractor (character mean); \code{autoregressiveIntrinsicTimeSlicesConstantSigma} params = sd (sigma), attractor-1 (character mean-1), attraction-1 (alpha-1), time threshold-1, attractor-2 (character mean-2), attraction-2 (alpha-2), time threshold-2}   
+  \item{states}{vector of states for each taxon}
+  \item{timefrompresent}{which time slice in the tree}
+}
+\details{
+	In the TimeSlices models, time threshold units are in time before present (i.e., 65 could be 65 MYA). The last time threshold should be 0.
+}
+\value{
+	A matrix of values representing character displacement from a single time step in the tree.
+	}
+\references{O'Meara and Banbury, unpublished}
+\author{Brian O'Meara and Barb Banbury}
+\seealso{
+}
+\examples{
+
+}
+\keyword{}
+
