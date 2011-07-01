@@ -82,7 +82,7 @@ for (param in 1:dim(priors)[2]) {
 			w<-density(x)
 			poly<-curve(dnorm(x, mean, stdev), from=min(x), to=max(x), xlim=c(min(min(w$x), min(q)), max(max(w$x), max(q))), ylim=c(0, max(max(w$y), max(r))), xlab=names(all)[which.param], ylab="Density", col=rgb(1, 0, 0), lwd=1.5, bty="n")
 			if (realParam) {
-				segments(realParamValues[param], 0, realParamValues[param], max(1.5, max(r)), col=rgb(0, 0, 1), lwd=1.5)
+				segments(realParamValues[param], 0, realParamValues[param], max(max(w$y), max(r)), col=rgb(0, 0, 1), lwd=1.5)
 			}
 		}
 		else if (priors[1, param]=="lognormal") {  
@@ -92,7 +92,7 @@ for (param in 1:dim(priors)[2]) {
 			w<-density(x)
 			poly<-curve(dlnorm(x, mean, stdev), from=0, to=qlnorm(0.99, mean, stdev), xlim=c(min(min(w$x), min(q)), max(max(w$x), max(q))), ylim=c(0, max(max(w$y), max(r))), xlab=names(all)[which.param], ylab="Density", col=rgb(1, 0, 0), lwd=1.5, bty="n")
 			if (realParam) {
-				segments(realParamValues[param], 0, realParamValues[param], max(1.5, max(r)), col=rgb(0, 0, 1), lwd=1.5)
+				segments(realParamValues[param], 0, realParamValues[param], max(max(w$y), max(r)), col=rgb(0, 0, 1), lwd=1.5)
 			}
 		}
 		else if (priors[1, param]=="gamma") {
@@ -102,7 +102,7 @@ for (param in 1:dim(priors)[2]) {
 			w<-density(x)
 			poly<-curve(dgamma(x, shape, scale), from=0, to=qgamma(0.99, shape, scale), xlim=c(min(min(w$x), min(q)), max(max(w$x), max(q))), ylim=c(0, max(max(w$y), max(r))), xlab=names(all)[which.param], ylab="Density", col=rgb(1, 0, 0), lwd=1.5, bty="n")
 			if (realParam) {
-				segments(realParamValues[param], 0, realParamValues[param], max(1.5, max(r)), col=rgb(0, 0, 1), lwd=1.5)
+				segments(realParamValues[param], 0, realParamValues[param], max(max(w$y), max(r)), col=rgb(0, 0, 1), lwd=1.5)
 			}
 		}
 		else if (priors[1, param]=="exponential") {
@@ -112,7 +112,7 @@ for (param in 1:dim(priors)[2]) {
 			w<-density(x)
 			poly<-curve(dexp(x, rate), from=0, to=qexp(0.99, rate), xlim=c(min(min(w$x), min(q)), max(max(w$x), max(q))), ylim=c(0, max(max(w$y), max(r))), xlab=names(all)[which.param], ylab="Density", col=rgb(1, 0, 0), lwd=1.5, bty="n") #, sub=names(data)[which.param]
 			if (realParam) {
-				segments(realParamValues[param], 0, realParamValues[param], max(1.5, max(r)), col=rgb(0, 0, 1), lwd=1.5)
+				segments(realParamValues[param], 0, realParamValues[param], max(max(w$y), max(r)), col=rgb(0, 0, 1), lwd=1.5)
 			}
 		}
 		
