@@ -1,1 +1,1 @@
-export(getSimulationSplits, doSimulation, summarizeTaxonStates, convertTaxonFrameToGeigerData, summaryStatsLong, boxcoxplsSummary, doRunPseudo)
+export(getSimulationSplits, doSimulation, summarizeTaxonStates, convertTaxonFrameToGeigerData, summaryStatsLong, boxcoxplsSummary, doRun)
