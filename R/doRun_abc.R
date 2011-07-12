@@ -7,8 +7,12 @@
 
 doRun_abc<-function(phy, traits, intrinsicFn, extrinsicFn, summaryFns=c(rawValuesSummaryStats, geigerUnivariateSummaryStats2), startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, startingStatesGuess=c(), intrinsicStatesGuess=c(), extrinsicStatesGuess=c(), timeStep, toleranceVector=c(), numParticles=1000, standardDevFactor=0.05, StartSims=100, plot=FALSE, vipthresh=0.8, epsilonProportion=0.2, epsilonMultiplier=0.5, nStepsPRC=4, maxTries=1, jobName=NA, debug=TRUE, trueStartingState=NA, trueIntrinsicState=NA, startFromCheckpoint=TRUE, whenToKill=20, checkpointSave=TRUE, stopRule=TRUE, stopValue=0.05, abcMethod=NA, abcTolerance=0.1) {
 
+if (!is.binary.tree(phy)) {
+	print("Warning: Tree is not fully dichotomous")
+}
+
+
 startTime<-proc.time()[[3]]
-print(abcMethod)
 if (debug){
 	cat("\nDebugging doRun\n")
 	dput(doRun)
