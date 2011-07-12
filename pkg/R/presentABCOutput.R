@@ -1,6 +1,6 @@
 
 presentABCOutput<-function(ABCOutput, plot=FALSE, priors=c(), truth=c()) {
-	library(Hmisc)
+	#library(Hmisc)
 	lastGen<-ABCOutput[which(ABCOutput$generation==max(ABCOutput$generation)), ]
 	finalParticles<-lastGen[which(lastGen$weight>0), ]
 	nParams<-dim(finalParticles)[2]-6
