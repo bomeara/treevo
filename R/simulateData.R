@@ -14,7 +14,7 @@ simulateData<-function(nrepSim, startingPriorsValues, intrinsicPriorsValues, ext
 	trueInitial<-c(trueStarting, trueIntrinsic, trueExtrinsic)
 	trueFreeValues<-rbind(trueFreeValues, trueInitial[freevector])
 
-	cat("Calculating initial simulations...")
+	print("Calculating initial simulations...")
 	simdata<-summaryStatsLong(phy, convertTaxonFrameToGeigerData(doSimulation(splits=splits, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, startingStates=trueStarting, intrinsicValues=trueIntrinsic, extrinsicValues=trueExtrinsic, timeStep=timeStep), phy), jobName=jobName)
 	
 	simSummaryStats <-c(trueFreeValues, simdata)
