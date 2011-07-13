@@ -65,7 +65,7 @@ MinBoundaryAutoregressiveIntrinsic<-function(params,states, timefrompresent) { #
 	#print(newdisplacement)
 	for (i in length(newdisplacement)) {
 		newstate<-newdisplacement[i] + states[i]
-		print(newstate)
+		#print(newstate)
 			if (newstate <params[4]) { #newstate less than min
 				newdisplacement[i]<-params[4] - states[i] #so, rather than go below the minimum, this moves the new state to the minimum
 			}

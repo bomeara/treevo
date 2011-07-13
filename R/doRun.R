@@ -230,7 +230,7 @@ for (try in 1:maxTries)	{
 			for (summaryValueIndex in 1:dim(summaryValues)[2]) {
 				boxcoxAddition[summaryValueIndex]<-0
 				lowValue<-min(summaryValues[, summaryValueIndex])-4*sd(summaryValues[, summaryValueIndex])
-				print (lowValue)
+				#print (lowValue)
 				if (lowValue<=0) {
 					boxcoxAddition[summaryValueIndex]<-4*abs(lowValue) #just for some protection against low values, since box.cox needs non-negative values
 				}
@@ -798,10 +798,12 @@ for (try in 1:maxTries)	{
 		
 		} #while (!run.goingwell) bracket
 		
+		#Calculate summary statistics on final generation particles
 		FinalParamPredictions<-matrix(nrow=numberParametersTotal, ncol=4)
 		colnames(FinalParamPredictions)<-c("weightedMean", "SD", "Low95%", "High95%")
 		rownames(FinalParamPredictions)<-names(particleDataFrame[7: dim(particleDataFrame)[2]])
 		subpDF<-subset(particleDataFrame[which(particleDataFrame$weight>0),], generation==max(particleDataFrame $generation))  #change this to be names and then call names in next for loop
+		#names(subpDF)<-c("input.data", "PriorMatrix", "particleDataFrame", "epsilonDistance", "toleranceVector", "todo", "phy", "traits", "rejects.gen.one", "rejects", "particleWeights", "particleVector", "boxcox.output", "param.stdev", "weightedMeanParam", "time.per.gen", "FinalParamPredictions")
 		for (paramPred in 1:numberParametersTotal){
 			#print(6+paramPred)
 			FinalParamPredictions[paramPred, 1]<-weighted.mean(subpDF[,6+paramPred], subpDF[,6])
