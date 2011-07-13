@@ -5,7 +5,7 @@
 #the doRun function takes input from the user and then automatically guesses optimal parameters, though user overriding is also possible.
 #the guesses are used to do simulations near the expected region. If omitted, they are set to the midpoint of the input parameter matrices
 
-doRun<-function(phy, traits, intrinsicFn, extrinsicFn, summaryFns=c(rawValuesSummaryStats, geigerUnivariateSummaryStats2), startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, startingStatesGuess=c(), intrinsicStatesGuess=c(), extrinsicStatesGuess=c(), timeStep, toleranceVector=c(), numParticles=1000, standardDevFactor=0.05, StartSims=100, plot=FALSE, vipthresh=0.8, epsilonProportion=0.2, epsilonMultiplier=0.5, nStepsPRC=4, maxTries=1, jobName=NA, debug=TRUE, trueStartingState=NA, trueIntrinsicState=NA, startFromCheckpoint=TRUE, whenToKill=20, checkpointSave=TRUE, stopRule=TRUE, stopValue=0.05) {
+doRun<-function(phy, traits, intrinsicFn, extrinsicFn, summaryFns=c(rawValuesSummaryStats, geigerUnivariateSummaryStats2), startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, startingStatesGuess=c(), intrinsicStatesGuess=c(), extrinsicStatesGuess=c(), timeStep, toleranceVector=c(), numParticles=1000, standardDevFactor=0.05, StartSims=100, plot=FALSE, vipthresh=0.8, epsilonProportion=0.2, epsilonMultiplier=0.5, nStepsPRC=4, maxTries=1, jobName=NA, debug=TRUE, trueStartingState=NA, trueIntrinsicState=NA, startFromCheckpoint=TRUE, whenToKill=20, checkpointSave=TRUE, stopRule=TRUE, stopValue=0.05, multicore=TRUE, coreLimit=NA) {
 
 if (!is.binary.tree(phy)) {
 	print("Warning: Tree is not fully dichotomous")
@@ -75,7 +75,20 @@ if (filecount=="1"){  #if file is present
 	time.per.gen<-test$time.per.gen
 }
 
-
+cores=1
+if (multicore) {
+	library(doMC, quietly=T)
+	library(foreach, quietly=T)
+	registerDoMC()
+	if (is.na(coreLimit)){
+		getDoParWorkers()->cores
+	}
+	else {
+		coreLimit->cores
+	}
+}
+cat(paste("Using", cores, "core(s) for the analysis\n"))
+			
 run.goingwell=FALSE
 	
 for (try in 1:maxTries)	{
@@ -191,13 +204,17 @@ for (try in 1:maxTries)	{
 			}
 			
 			
-			#----------------- Find best set of summary stats to use for this problem. (start) -----------------
+			#---------------------- Initial Simulations (Start) ------------------------------
 			#See Wegmann et al. Efficient Approximate Bayesian Computation Coupled With Markov Chain Monte Carlo Without Likelihood. Genetics (2009) vol. 182 (4) pp. 1207-1218 for more on the method
+			
+			# here add multithreading
+
+			
+			
 			trueFreeValues<-matrix(nrow=0, ncol= numberParametersFree)
 			summaryValues<-matrix(nrow=0, ncol=22+dim(traits)[1]) #there are 22 summary statistics possible, plus the raw data
 			#Rprof(nrepSims.time.check<-tempfile())	
 			for (simIndex in 1:nrepSim) {
-				cat("Now doing simulation rep ",simIndex," of ",nrepSim,"\n",sep="")
 				trueStarting<-rep(NaN, dim(startingPriorsValues)[2])
 				trueIntrinsic<-rep(NaN, dim(intrinsicPriorsValues)[2])
 				trueExtrinsic<-rep(NaN, dim(extrinsicPriorsValues)[2])
@@ -212,14 +229,20 @@ for (try in 1:maxTries)	{
 				}
 				trueInitial<-c(trueStarting, trueIntrinsic, trueExtrinsic)
 				trueFreeValues<-rbind(trueFreeValues, trueInitial[freevector])
-				convertTaxonFrameToGeigerData (doSimulation(splits=splits, intrinsicFn= intrinsicFn, extrinsicFn= extrinsicFn, startingStates= trueStarting, intrinsicValues= trueIntrinsic, extrinsicValues= trueExtrinsic, timeStep=timeStep), phy)->simdata
-				summaryValues<-rbind(summaryValues, summaryStatsLong(phy, simdata, jobName=jobName))
+				if (cores == 1) {
+					cat("Now doing simulation rep ",simIndex," of ",nrepSim,"\n",sep="")
+					convertTaxonFrameToGeigerData (doSimulation(splits=splits, intrinsicFn= intrinsicFn, extrinsicFn= extrinsicFn, startingStates= trueStarting, intrinsicValues= trueIntrinsic, extrinsicValues= trueExtrinsic, timeStep=timeStep), phy)->simdata
+					summaryValues<-rbind(summaryValues, summaryStatsLong(phy, simdata, jobName=jobName))
+				}
+				
 				#print(summaryValues)
 				while(sink.number()>0) {sink()}
 			}
 			
 			save(trueFreeValues,summaryValues,file=paste("simulations",jobName,".Rdata",sep=""))
-			#summaryRprof(nrepSims.time.check)
+			#---------------------- Initial Simulations (End) ------------------------------
+
+			#---------------------- Box-Cox transformation (Start) ------------------------------
 			library("car")
 			summaryDebugging<-c() #for boxcox debugging
 			names(summary)<-c("preTransform", "boxcoxAddition", "postTransform") #for boxcox debugging
@@ -254,7 +277,10 @@ for (try in 1:maxTries)	{
 			}
 			summaryDebugging$postTransform<-summaryValues
 			save(summaryDebugging, file=paste("summaryDebugging", jobName, ".Rdata", sep=""))
-			
+			#---------------------- Box-Cox transformation (End) ------------------------------
+
+
+			#----------------- Find best set of summary stats to use for this problem. (Start) -----------------
 			#Use mixOmics to to find the optimal set of summary stats. Store this info in the todo vector. Note that this uses a different package (mixOmics rather than pls than that used by Weggman et al. because this package can calculate variable importance in projection and deals fine with NAs)
 			library("mixOmics")
 			plsResult<-pls(Y=trueFreeValues, X=summaryValues)
@@ -295,10 +321,9 @@ for (try in 1:maxTries)	{
 			boxcox.output$PlsResult<-prunedPlsResult
 			boxcox.output$prunedSummaryValues<-prunedSummaryValues
 			boxcox.output$originalSummaryStats<-originalSummaryStats
-		
-			#----------------- Find best set of summary stats to use for this problem. (end) -----------------
+			#----------------- Find best set of summary stats to use for this problem. (End) -----------------
 			
-			#----------------- Find distribution of distances (start) ----------------------
+			#----------------- Find distribution of distances (Start) ----------------------
 			predictResult<-as.matrix(predict(prunedPlsResult, prunedSummaryValues)$predict[, , 1])
 			#print(predictResult) 
 			#print(dim(predictResult)[1])
@@ -318,9 +343,9 @@ for (try in 1:maxTries)	{
 					toleranceVector[step]<-toleranceVector[step-1]*epsilonMultiplier
 				}
 			}
-			#----------------- Find distribution of distances (end) ---------------------
+			#----------------- Find distribution of distances (End) ---------------------
 			
-			#------------------ ABC-PRC (start) ------------------
+			#------------------ ABC-PRC (Start) ------------------
 			#do not forget to use boxcoxLambda, and prunedPlsResult when computing distances
 			
 			nameVector<-c("generation", "attempt", "id", "parentid", "distance", "weight")
@@ -788,7 +813,7 @@ for (try in 1:maxTries)	{
 				
 			} # if(startFromCheckpoint==TRUE || dataGenerationStep < nStepsPRC) bracket
 			
-			#---------------------- ABC-PRC (end) --------------------------------
+			#---------------------- ABC-PRC (End) --------------------------------
 			
 			if (debug){
 				cat("debug!!")
