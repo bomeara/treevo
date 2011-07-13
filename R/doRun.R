@@ -79,11 +79,12 @@ cores=1
 if (multicore) {
 	library(doMC, quietly=T)
 	library(foreach, quietly=T)
-	registerDoMC()
 	if (is.na(coreLimit)){
+		registerDoMC()
 		getDoParWorkers()->cores
 	}
 	else {
+		registerDoMC(coreLimit)
 		coreLimit->cores
 	}
 }
@@ -207,38 +208,17 @@ for (try in 1:maxTries)	{
 			#---------------------- Initial Simulations (Start) ------------------------------
 			#See Wegmann et al. Efficient Approximate Bayesian Computation Coupled With Markov Chain Monte Carlo Without Likelihood. Genetics (2009) vol. 182 (4) pp. 1207-1218 for more on the method
 			
-			# here add multithreading
-
-			
-			
 			trueFreeValues<-matrix(nrow=0, ncol= numberParametersFree)
 			summaryValues<-matrix(nrow=0, ncol=22+dim(traits)[1]) #there are 22 summary statistics possible, plus the raw data
-			#Rprof(nrepSims.time.check<-tempfile())	
-			for (simIndex in 1:nrepSim) {
-				trueStarting<-rep(NaN, dim(startingPriorsValues)[2])
-				trueIntrinsic<-rep(NaN, dim(intrinsicPriorsValues)[2])
-				trueExtrinsic<-rep(NaN, dim(extrinsicPriorsValues)[2])
-				for (j in 1:dim(startingPriorsValues)[2]) {
-					trueStarting[j]=pullFromPrior(startingPriorsValues[,j],startingPriorsFns[j])
-				}
-				for (j in 1:dim(intrinsicPriorsValues)[2]) {
-					trueIntrinsic[j]=pullFromPrior(intrinsicPriorsValues[,j],intrinsicPriorsFns[j])
-				}
-				for (j in 1:dim(extrinsicPriorsValues)[2]) {
-					trueExtrinsic[j]=pullFromPrior(extrinsicPriorsValues[,j],extrinsicPriorsFns[j])
-				}
-				trueInitial<-c(trueStarting, trueIntrinsic, trueExtrinsic)
-				trueFreeValues<-rbind(trueFreeValues, trueInitial[freevector])
-				if (cores == 1) {
-					cat("Now doing simulation rep ",simIndex," of ",nrepSim,"\n",sep="")
-					convertTaxonFrameToGeigerData (doSimulation(splits=splits, intrinsicFn= intrinsicFn, extrinsicFn= extrinsicFn, startingStates= trueStarting, intrinsicValues= trueIntrinsic, extrinsicValues= trueExtrinsic, timeStep=timeStep), phy)->simdata
-					summaryValues<-rbind(summaryValues, summaryStatsLong(phy, simdata, jobName=jobName))
-				}
-				
-				#print(summaryValues)
-				while(sink.number()>0) {sink()}
-			}
+			simIndex=0
+			trueFreeValuesANDSummaryValues<-foreach(1:nrepSim, .combine=rbind) %dopar% simulateData(simIndex, nrepSim, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, trueFreeValues, freevector, timeStep, intrinsicFn, extrinsicFn)
+			#print(trueFreeValuesANDSummaryValues)
 			
+			trueFreeValues<-trueFreeValuesANDSummaryValues[,1:numberParametersFree]
+			#print(trueFreeValues)
+			summaryValues<-trueFreeValuesANDSummaryValues[,-1:-numberParametersFree]
+			#print(trueFreeValues)
+			while(sink.number()>0) {sink()}
 			save(trueFreeValues,summaryValues,file=paste("simulations",jobName,".Rdata",sep=""))
 			#---------------------- Initial Simulations (End) ------------------------------
 
