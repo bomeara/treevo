@@ -207,11 +207,10 @@ for (try in 1:maxTries)	{
 			
 			#---------------------- Initial Simulations (Start) ------------------------------
 			#See Wegmann et al. Efficient Approximate Bayesian Computation Coupled With Markov Chain Monte Carlo Without Likelihood. Genetics (2009) vol. 182 (4) pp. 1207-1218 for more on the method
-			
+			Time<-proc.time()[3]
 			trueFreeValues<-matrix(nrow=0, ncol= numberParametersFree)
 			summaryValues<-matrix(nrow=0, ncol=22+dim(traits)[1]) #there are 22 summary statistics possible, plus the raw data
-			simIndex=0
-			trueFreeValuesANDSummaryValues<-foreach(1:nrepSim, .combine=rbind) %dopar% simulateData(simIndex, nrepSim, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, trueFreeValues, freevector, timeStep, intrinsicFn, extrinsicFn)
+			trueFreeValuesANDSummaryValues<-foreach(1:nrepSim, .combine=rbind) %dopar% simulateData(nrepSim, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, trueFreeValues, freevector, timeStep, intrinsicFn, extrinsicFn)
 			#print(trueFreeValuesANDSummaryValues)
 			
 			trueFreeValues<-trueFreeValuesANDSummaryValues[,1:numberParametersFree]
@@ -220,7 +219,10 @@ for (try in 1:maxTries)	{
 			#print(trueFreeValues)
 			while(sink.number()>0) {sink()}
 			save(trueFreeValues,summaryValues,file=paste("simulations",jobName,".Rdata",sep=""))
+			TT<-proc.time()[3]-Time
+			cat(paste("Initial simulations took", round(TT[1], digits=3), "seconds"), "\n")
 			#---------------------- Initial Simulations (End) ------------------------------
+
 
 			#---------------------- Box-Cox transformation (Start) ------------------------------
 			library("car")
@@ -845,6 +847,7 @@ for (try in 1:maxTries)	{
 	
 	} #for (try in 1:maxTries) bracket
 
+	registerDoMC(1)
 	print(test)
 
 }
