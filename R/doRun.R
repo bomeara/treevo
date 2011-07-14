@@ -460,8 +460,7 @@ for (try in 1:maxTries)	{
 			
 			if (checkpointSave){
 				save.image(file=paste("WS", jobName, ".Rdata", sep=""))
-				test<-vector("list", 16)
-				names(test)<-c("input.data", "PriorMatrix", "particleDataFrame", "epsilonDistance", "toleranceVector", "todo", "phy", "traits", "rejects.gen.one", "rejects", "particleWeights", "particleVector", "boxcox.output", "param.stdev", "weightedMeanParam", "time.per.gen")
+				test<-vector("list")
 				test$input.data<-input.data
 				test$PriorMatrix<-PriorMatrix
 				test$particleDataFrame<-particleDataFrame
@@ -478,6 +477,8 @@ for (try in 1:maxTries)	{
 				test$boxcox.output<-boxcox.output
 				test$param.stdevtest$param.stdev<-param.stdev
 				test$weightedMeanParam<-weightedMeanParam
+				test$cores<-cores
+				test$simTime<-simTime
 				test$time.per.gen<-time.per.gen
 				save(test, file=paste("partialResults", jobName, ".txt", sep=""))
 		
@@ -729,8 +730,7 @@ for (try in 1:maxTries)	{
 						
 						if (checkpointSave){
 							save.image(file=paste("WS", jobName, ".Rdata", sep=""))
-							test<-vector("list", 16)
-							names(test)<-c("input.data", "PriorMatrix", "particleDataFrame", "epsilonDistance", "toleranceVector", "todo", "phy", "traits", "rejects.gen.one", "rejects", "particleWeights", "particleVector", "boxcox.output", "param.stdev", "weightedMeanParam", "time.per.gen")
+							test<-vector("list")
 							test$input.data<-input.data
 							test$PriorMatrix<-PriorMatrix
 							test$particleDataFrame<-particleDataFrame
@@ -747,6 +747,8 @@ for (try in 1:maxTries)	{
 							test$boxcox.output<-boxcox.output
 							test$param.stdev<-param.stdev
 							test$weightedMeanParam<-weightedMeanParam
+							test$cores<-cores
+							test$simTime
 							test$time.per.gen<-time.per.gen
 							save(test, file=paste("partialResults", jobName, ".txt", sep=""))
 						}	
@@ -824,9 +826,7 @@ for (try in 1:maxTries)	{
 		time3<-proc.time()[[3]]
 		genTimes<-c(time.per.gen, time3)
 	
-		test<-vector("list", 17)
-		names(test)<-c("input.data", "PriorMatrix", "particleDataFrame", "epsilonDistance", "toleranceVector", "todo", "phy", "traits", "rejects.gen.one", "rejects", "particleWeights", "particleVector", "boxcox.output", "param.stdev", "weightedMeanParam", "time.per.gen", "FinalParamPredictions")
-	
+		test<-vector("list")
 		test$input.data<-input.data
 		test$PriorMatrix<-PriorMatrix
 		test$particleDataFrame<-particleDataFrame
@@ -842,6 +842,7 @@ for (try in 1:maxTries)	{
 		test$boxcox.output<-boxcox.output
 		test$param.stdev<-param.stdev
 		test$weightedMeanParam<-weightedMeanParam
+		test$cores<-cores
 		test$simTime<-simTime
 		test$time.per.gen<-genTimes
 		test$FinalParamPredictions <-FinalParamPredictions
