@@ -408,7 +408,7 @@ for (try in 1:maxTries)	{
 				#print(newparticleVector)
 				vectorForDataFrame<-c(1, attempts, getId(newparticleVector[[1]]), 0, distance(newparticleVector[[1]]), getWeight(newparticleVector[[1]]), startingStates(newparticleVector[[1]]), intrinsicValues(newparticleVector[[1]]), extrinsicValues(newparticleVector[[1]]))
 				#cat("\n\nlength of vectorForDataFrame = ", length(vectorForDataFrame), "\n", "length of startingStates = ", length(startingStates), "\nlength of intrinsicValues = ", length(intrinsicValues), "\nlength of extrinsicValues = ", length(extrinsicValues), "\ndistance = ", distance(newparticleVector[[1]]), "\nweight = ", getWeight(newparticleVector[[1]]), "\n", vectorForDataFrame, "\n")
-				particleDataFrame<-rbind(particleDataFrame, data.frame(rbind(vectorForDataFrame)))
+				particleDataFrame<-rbind(particleDataFrame, vectorForDataFrame)
 				cat(particle-1, attempts, floor(numParticles*attempts/particle), startingStates(newparticleVector[[1]]), intrinsicValues(newparticleVector[[1]]), extrinsicValues(newparticleVector[[1]]), distance(newparticleVector[[1]]), "\n")
 					if (floor(numParticles*attempts/particle)>=floor(numParticles)*whenToKill){
 						run.goingwell=FALSE
@@ -435,7 +435,7 @@ for (try in 1:maxTries)	{
 				if (try==maxTries){
 					write(input.data,file="Error.txt", append=TRUE)
 					ErrorParticleFrame<-vector("list", 4)
-					names(particleDataFrame)<-nameVector
+					#names(particleDataFrame)<-nameVector
 					ErrorParticleFrame[[1]]<-input.data
 					ErrorParticleFrame[[2]]<-todo
 					ErrorParticleFrame[[3]]<-particleDataFrame
@@ -447,7 +447,7 @@ for (try in 1:maxTries)	{
 				}
 				else if (try < maxTries){
 					ErrorParticleFrame<-vector("list", 4)
-					names(particleDataFrame)<-nameVector
+					#names(particleDataFrame)<-nameVector
 					ErrorParticleFrame[[1]]<-input.data
 					ErrorParticleFrame[[2]]<-todo
 					ErrorParticleFrame[[3]]<-particleDataFrame
@@ -681,8 +681,11 @@ for (try in 1:maxTries)	{
 							while(sink.number()>0) {sink()}
 							#print(newparticleVector)
 							vectorForDataFrame<-c(dataGenerationStep, attempts, getId(newparticleVector[[1]]), particleToSelect, distance(newparticleVector[[1]]), getWeight(newparticleVector[[1]]), startingStates(newparticleVector[[1]]), intrinsicValues(newparticleVector[[1]]), extrinsicValues(newparticleVector[[1]]))
+							save(vectorForDataFrame, file="vector.Rdata")
 				#cat("\n\nlength of vectorForDataFrame = ", length(vectorForDataFrame), "\n", "length of startingStates = ", length(startingStates), "\nlength of intrinsicValues = ", length(intrinsicValues), "\nlength of extrinsicValues = ", length(extrinsicValues), "\ndistance = ", distance(newparticleVector[[1]]), "\nweight = ", getWeight(newparticleVector[[1]]), "\n", vectorForDataFrame, "\n")
-							particleDataFrame<-rbind(particleDataFrame, data.frame(rbind(vectorForDataFrame))) #NOTE THAT WEIGHTS AREN'T NORMALIZED IN THIS DATAFRAME
+											save(particleDataFrame, file="pDF.Rdata")
+
+							particleDataFrame<-rbind(particleDataFrame, vectorForDataFrame) #NOTE THAT WEIGHTS AREN'T NORMALIZED IN THIS DATAFRAME
 							cat(particle-1, attempts, floor(numParticles*attempts/particle), startingStates(newparticleVector[[1]]), intrinsicValues(newparticleVector[[1]]), extrinsicValues(newparticleVector[[1]]), distance(newparticleVector[[1]]), "\n")
 							if (floor(numParticles*attempts/particle)>=floor(numParticles)*whenToKill){
 								run.goingwell=FALSE
@@ -758,7 +761,7 @@ for (try in 1:maxTries)	{
 					if (try==maxTries){
 						write(input.data,file="Error.txt", append=TRUE)
 						ErrorParticleFrame<-vector("list", 4)
-						names(particleDataFrame)<-nameVector
+						#names(particleDataFrame)<-nameVector
 						ErrorParticleFrame[[1]]<-input.data
 						ErrorParticleFrame[[2]]<-todo
 						ErrorParticleFrame[[3]]<-particleDataFrame
@@ -769,7 +772,7 @@ for (try in 1:maxTries)	{
 					}
 					else if (try < maxTries){
 						ErrorParticleFrame<-vector("list", 4)
-						names(particleDataFrame)<-nameVector
+						#names(particleDataFrame)<-nameVector
 						ErrorParticleFrame[[1]]<-input.data
 						ErrorParticleFrame[[2]]<-todo
 						ErrorParticleFrame[[3]]<-particleDataFrame
