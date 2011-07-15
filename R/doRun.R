@@ -5,7 +5,7 @@
 #the doRun function takes input from the user and then automatically guesses optimal parameters, though user overriding is also possible.
 #the guesses are used to do simulations near the expected region. If omitted, they are set to the midpoint of the input parameter matrices
 
-doRun<-function(phy, traits, intrinsicFn, extrinsicFn, summaryFns=c(rawValuesSummaryStats, geigerUnivariateSummaryStats2), startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, startingStatesGuess=c(), intrinsicStatesGuess=c(), extrinsicStatesGuess=c(), timeStep, toleranceVector=c(), numParticles=1000, standardDevFactor=0.05, StartSims=100, plot=FALSE, vipthresh=0.8, epsilonProportion=0.2, epsilonMultiplier=0.5, nStepsPRC=4, maxTries=1, jobName=NA, debug=TRUE, trueStartingState=NA, trueIntrinsicState=NA, startFromCheckpoint=TRUE, whenToKill=20, checkpointSave=TRUE, stopRule=TRUE, stopValue=0.05, multicore=TRUE, coreLimit=NA) {
+doRun<-function(phy, traits, intrinsicFn, extrinsicFn, summaryFns=c(rawValuesSummaryStats, geigerUnivariateSummaryStats2), startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, startingStatesGuess=c(), intrinsicStatesGuess=c(), extrinsicStatesGuess=c(), timeStep, toleranceVector=c(), numParticles=1000, standardDevFactor=0.05, StartSims=100, plot=FALSE, vipthresh=0.8, epsilonProportion=0.2, epsilonMultiplier=0.5, nStepsPRC=4, maxTries=1, jobName=NA, debug=TRUE, trueStartingState=NA, trueIntrinsicState=NA, whenToKill=20, startFromCheckpoint=FALSE, stopRule=TRUE, stopValue=0.05, multicore=TRUE, coreLimit=NA) {
 
 if (!is.binary.tree(phy)) {
 	print("Warning: Tree is not fully dichotomous")
@@ -16,64 +16,66 @@ if (debug){
 	dput(doRun)
 }
 
-##Checkpoint saving stuff:
-paste("partialResults", jobName, ".txt*", sep="")->pRname
-paste("WS", jobName, ".Rdata", sep="")->WSname
+##Importing checkpoint saving stuff:
+if (startFromCheckpoint) {
+	paste("partialResults", jobName, ".txt*", sep="")->pRname
+	paste("WS", jobName, ".Rdata", sep="")->WSname
 
-system(command=paste("ls ", pRname, " | grep -c ", pRname, sep=""), intern=TRUE) -> filecount
+	system(command=paste("ls ", pRname, " | grep -c ", pRname, sep=""), intern=TRUE) -> filecount
 
-if (filecount=="0") {  #if file is absent 
-	startFromCheckpoint=FALSE
-	dataGenerationStep=0
-	cat ("\nstart from checkpoint =", startFromCheckpoint, "\n")
-	cat("dataGenerationStep=", dataGenerationStep, "\n")
-	rejects<-c()
-}
-
-if (filecount=="1"){  #if file is present 
-	paste("partialResults", jobName, ".txt", sep="")->pRname
-	paste(load(pRname))
-	dataGenerationStep <- max(test$particleDataFrame$X1)
-	if (dataGenerationStep==nStepsPRC){
-		cat ("\n\nRun was finished already\n\n")
+	if (filecount=="0") {  #if file is absent 
+		startFromCheckpoint=FALSE
+		dataGenerationStep=0
+		cat("\nstart from checkpoint =", startFromCheckpoint, "\n")
+		cat("dataGenerationStep=", dataGenerationStep, "\n")
+		rejects<-c()
 	}
-	#paste(load(WSname))
-	cat ("\nstart from checkpoint =", startFromCheckpoint, "\n")
-	cat("dataGenerationStep=", dataGenerationStep, "\n")
-	nameVector<-c("generation", "attempt", "id", "parentid", "distance", "weight")
-	run.goingwell=TRUE
-	input.data<-test$input.data
-	boxcox.output<-test$boxcoxLambda
-	boxcoxLambda<-test$boxcox.output$lambda
-	boxcoxAddition<-test$boxcox.output$addition
-	prunedPlsResult<-test$boxcox.output$PlsResult
-	prunedSummaryValues<-test$boxcox.output$prunedSummaryValues
-	originalSummaryStats<-test$boxcox.output$originalSummaryStats
-	particleDataFrame<-test$particleDataFrame
-	epsilonDistance<-test$epsilonDistance
+
+	if (filecount=="1"){  #if file is present 
+		paste("partialResults", jobName, ".txt", sep="")->pRname
+		paste(load(pRname))
+		dataGenerationStep <- max(test$particleDataFrame$generation)
+		if (dataGenerationStep==nStepsPRC){
+			cat ("\n\nRun was finished already\n\n")
+		}
+		#paste(load(WSname))
+		cat ("\nstart from checkpoint =", startFromCheckpoint, "\n")
+		cat("dataGenerationStep=", dataGenerationStep, "\n")
+		nameVector<-c("generation", "attempt", "id", "parentid", "distance", "weight")
+		run.goingwell=TRUE
+		input.data<-test$input.data
+		boxcox.output<-test$boxcoxLambda
+		boxcoxLambda<-test$boxcox.output$lambda
+		boxcoxAddition<-test$boxcox.output$addition
+		prunedPlsResult<-test$boxcox.output$PlsResult
+		prunedSummaryValues<-test$boxcox.output$prunedSummaryValues
+		originalSummaryStats<-test$boxcox.output$originalSummaryStats
+		particleDataFrame<-test$particleDataFrame
+		epsilonDistance<-test$epsilonDistance
 	
-	toleranceVector<-test$toleranceVector
-		if (length(toleranceVector) < nStepsPRC){
-			#print(toleranceVector)
-			toleranceVector<-rep(epsilonDistance, nStepsPRC)
-			for (step in 2:nStepsPRC) {
-				toleranceVector[step]<-toleranceVector[step-1]*as.numeric(input.data[11])
-			}
-			#print(toleranceVector)
-		}	
-	todo<-test$todo
-	phy<-test$phy
-	splits<-getSimulationSplits(phy)
-	traits<-test$traits
-	rejects.gen.one<-test$rejects.gen.one
-	rejects<-test$rejects
-	particleWeights<-test$particleWeights
-	particleVector<-test$particleVector
-	numberParametersFree<-test$numberParametersFree
-	param.stdev<-test$param.stdev
-	weightedMeanParam<-test$weightedMeanParam
-	time.per.gen<-test$time.per.gen
-}
+		toleranceVector<-test$toleranceVector
+			if (length(toleranceVector) < nStepsPRC){
+				#print(toleranceVector)
+				toleranceVector<-rep(epsilonDistance, nStepsPRC)
+				for (step in 2:nStepsPRC) {
+					toleranceVector[step]<-toleranceVector[step-1]*as.numeric(input.data[11])
+				}
+				#print(toleranceVector)
+			}	
+		todo<-test$todo
+		phy<-test$phy
+		splits<-getSimulationSplits(phy)
+		traits<-test$traits
+		rejects.gen.one<-test$rejects.gen.one
+		rejects<-test$rejects
+		particleWeights<-test$particleWeights
+		particleVector<-test$particleVector
+		numberParametersFree<-test$numberParametersFree
+		param.stdev<-test$param.stdev
+		weightedMeanParam<-test$weightedMeanParam
+		time.per.gen<-test$time.per.gen
+	}
+} #if(startFromCheckpoint) bracket
 
 cores=1
 if (multicore) {
@@ -95,7 +97,6 @@ run.goingwell=FALSE
 for (try in 1:maxTries)	{
 	nrepSim<-StartSims*((10^try)/10)
 	cat("\n\n****  TRY", try, "of", maxTries, " ****\n\n")
-	
 	while (!run.goingwell) {
 		run.goingwell=TRUE
 	
@@ -416,15 +417,15 @@ for (try in 1:maxTries)	{
 					}
 		} #while (particle<=numParticles) bracket
 		
-		
+			names(particleDataFrame)<-nameVector
 			dataGenerationStep=1
 			time<-proc.time()[[3]]-start.time
 			time.per.gen<-time
-			rejects.gen.one<-(dim(subset(particleDataFrame, X3<0))[1])/(dim(subset(particleDataFrame,))[1])
+			rejects.gen.one<-(dim(subset(particleDataFrame, id<0))[1])/(dim(subset(particleDataFrame,))[1])
 		
 			for (i in 1:numberParametersTotal){
-				param.stdev[1,i]<-c(sd(subset(particleDataFrame, X3>0)[,6+i]))
-				weightedMeanParam[1,i]<-weighted.mean(subset(particleDataFrame, X3>0)[,6+i], subset(particleDataFrame, X3>0)[,6])
+				param.stdev[1,i]<-c(sd(subset(particleDataFrame, id>0)[,6+i]))
+				weightedMeanParam[1,i]<-weighted.mean(subset(particleDataFrame, id>0)[,6+i], subset(particleDataFrame, id>0)[,6])
 				#c(mean(subset(particleDataFrame, X3>0)[,7:dim(particleDataFrame)[2]])/subset(particleDataFrame, X3>0)[,6])
 			}
 			#stdev.Intrinsic[i]<-sd(subset(all.a[[run]][which(all.a[[run]]$weight>0),], generation==i)[,param[2]])
@@ -457,32 +458,31 @@ for (try in 1:maxTries)	{
 				}
 				break
 			}	
+
+			rejects<-c()
+			save.image(file=paste("WS", jobName, ".Rdata", sep=""))
+			test<-vector("list")
+			test$input.data<-input.data
+			test$PriorMatrix<-PriorMatrix
+			test$particleDataFrame<-particleDataFrame
+			names(test$particleDataFrame)<-nameVector
+			test$epsilonDistance<-epsilonDistance
+			test$toleranceVector<-toleranceVector
+			test$todo<-todo
+			test$phy<-phy
+			test$traits<-traits
+			test$rejects.gen.one<-rejects.gen.one
+			test$rejects<-rejects
+			test$particleWeights<-particleWeights
+			test$particleVector<-particleVector
+			test$boxcox.output<-boxcox.output
+			test$param.stdevtest$param.stdev<-param.stdev
+			test$weightedMeanParam<-weightedMeanParam
+			test$cores<-cores
+			test$simTime<-simTime
+			test$time.per.gen<-time.per.gen
+			save(test, file=paste("partialResults", jobName, ".txt", sep=""))
 			
-			if (checkpointSave){
-				save.image(file=paste("WS", jobName, ".Rdata", sep=""))
-				test<-vector("list")
-				test$input.data<-input.data
-				test$PriorMatrix<-PriorMatrix
-				test$particleDataFrame<-particleDataFrame
-				names(test$particleDataFrame)<-nameVector
-				test$epsilonDistance<-epsilonDistance
-				test$toleranceVector<-toleranceVector
-				test$todo<-todo
-				test$phy<-phy
-				test$traits<-traits
-				test$rejects.gen.one<-rejects.gen.one
-				test$rejects<-c()
-				test$particleWeights<-particleWeights
-				test$particleVector<-particleVector
-				test$boxcox.output<-boxcox.output
-				test$param.stdevtest$param.stdev<-param.stdev
-				test$weightedMeanParam<-weightedMeanParam
-				test$cores<-cores
-				test$simTime<-simTime
-				test$time.per.gen<-time.per.gen
-				save(test, file=paste("partialResults", jobName, ".txt", sep=""))
-		
-			}	
 			
 		} #startFromCheckpoint bracket
 		
@@ -701,10 +701,10 @@ for (try in 1:maxTries)	{
 				
 						time2<-proc.time()[[3]]-start.time
 						time.per.gen<-c(time.per.gen, time2)
-						rejects.per.gen<-(dim(subset(particleDataFrame, X3<0))[1])/(dim(subset(particleDataFrame[which(particleDataFrame$X1==dataGenerationStep),],))[1])
+						rejects.per.gen<-(dim(subset(particleDataFrame, id<0))[1])/(dim(subset(particleDataFrame[which(particleDataFrame$generation==dataGenerationStep),],))[1])
 						rejects<-c(rejects, rejects.per.gen)
-						sub1<-subset(particleDataFrame, X1==dataGenerationStep)
-						sub2<-subset(sub1, X3>0)
+						sub1<-subset(particleDataFrame, generation==dataGenerationStep)
+						sub2<-subset(sub1, id>0)
 						
 						for (i in 1:numberParametersTotal){
 							param.stdev[dataGenerationStep,i]<-c(sd(sub2[,6+i]))
@@ -728,31 +728,28 @@ for (try in 1:maxTries)	{
 							}
 						}	
 						
-						if (checkpointSave){
-							save.image(file=paste("WS", jobName, ".Rdata", sep=""))
-							test<-vector("list")
-							test$input.data<-input.data
-							test$PriorMatrix<-PriorMatrix
-							test$particleDataFrame<-particleDataFrame
-							names(test$particleDataFrame)<-nameVector
-							test$epsilonDistance<-epsilonDistance
-							test$toleranceVector<-toleranceVector
-							test$todo<-todo
-							test$phy<-phy
-							test$traits<-traits
-							test$rejects.gen.one<-rejects.gen.one
-							test$rejects<-rejects
-							test$particleWeights<-particleWeights
-							test$particleVector<-particleVector
-							test$boxcox.output<-boxcox.output
-							test$param.stdev<-param.stdev
-							test$weightedMeanParam<-weightedMeanParam
-							test$cores<-cores
-							test$simTime
-							test$time.per.gen<-time.per.gen
-							save(test, file=paste("partialResults", jobName, ".txt", sep=""))
-						}	
-						
+						save.image(file=paste("WS", jobName, ".Rdata", sep=""))
+						test<-vector("list")
+						test$input.data<-input.data
+						test$PriorMatrix<-PriorMatrix
+						test$particleDataFrame<-particleDataFrame
+						names(test$particleDataFrame)<-nameVector
+						test$epsilonDistance<-epsilonDistance
+						test$toleranceVector<-toleranceVector
+						test$todo<-todo
+						test$phy<-phy
+						test$traits<-traits
+						test$rejects.gen.one<-rejects.gen.one
+						test$rejects<-rejects
+						test$particleWeights<-particleWeights
+						test$particleVector<-particleVector
+						test$boxcox.output<-boxcox.output
+						test$param.stdev<-param.stdev
+						test$weightedMeanParam<-weightedMeanParam
+						test$cores<-cores
+						test$simTime
+						test$time.per.gen<-time.per.gen
+						save(test, file=paste("partialResults", jobName, ".txt", sep=""))
 						
 					} #while (dataGenerationStep < nStepsPRC) bracket
 				} #if (run.goingwell) bracket
@@ -811,7 +808,7 @@ for (try in 1:maxTries)	{
 		FinalParamPredictions<-matrix(nrow=numberParametersTotal, ncol=4)
 		colnames(FinalParamPredictions)<-c("weightedMean", "SD", "Low95%", "High95%")
 		rownames(FinalParamPredictions)<-names(particleDataFrame[7: dim(particleDataFrame)[2]])
-		subpDF<-subset(particleDataFrame[which(particleDataFrame$weight>0),], generation==max(particleDataFrame $generation))  #change this to be names and then call names in next for loop
+		subpDF<-subset(particleDataFrame[which(particleDataFrame$weight>0),], generation==max(particleDataFrame$generation))  #change this to be names and then call names in next for loop
 		#names(subpDF)<-c("input.data", "PriorMatrix", "particleDataFrame", "epsilonDistance", "toleranceVector", "todo", "phy", "traits", "rejects.gen.one", "rejects", "particleWeights", "particleVector", "boxcox.output", "param.stdev", "weightedMeanParam", "time.per.gen", "FinalParamPredictions")
 		for (paramPred in 1:numberParametersTotal){
 			#print(6+paramPred)
@@ -849,7 +846,7 @@ for (try in 1:maxTries)	{
 	
 	} #for (try in 1:maxTries) bracket
 
-	registerDoMC(1)
+	registerDoMC(1) #set number of cores back to 1
 	print(test)
 
 }
