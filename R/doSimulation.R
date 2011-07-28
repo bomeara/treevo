@@ -9,7 +9,7 @@ if (saveRealParams){
 	RealParams$matrix[1,]<-c(startingStates, rep(NA, maxLength-length(startingStates)))
 	RealParams$matrix[2,]<-c(intrinsicValues, rep(NA, maxLength-length(intrinsicValues)))
 	RealParams$matrix[3,]<-c(extrinsicValues, rep(NA, maxLength-length(extrinsicValues)))
-	save(RealParams, file=paste("RealParams", jobName, sep=""))
+	save(RealParams, file=paste("RealParams", jobName, ".Rdata", sep=""))
 }
 
 	numberofsteps<-floor(splits[1, 1]/timeStep)

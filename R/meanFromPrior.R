@@ -1,6 +1,6 @@
 
 meanFromPrior<-function(priorValues, priorFn) {
-	#fixed, uniform, normal, lognormal, gamma
+	#fixed, uniform, normal, lognormal, gamma, exponential
 	x<-NA
 	priorFn<-match.arg(arg=priorFn,choices=c("fixed", "uniform", "normal", "lognormal", "gamma", "exponential"),several.ok=FALSE);
 	if (priorFn=="fixed") {
