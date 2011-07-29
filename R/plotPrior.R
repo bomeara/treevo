@@ -1,9 +1,9 @@
 #priorVariables depend on priorFn.  uniform=c(min, max); normal=c(mean, stdev); lognormal=c(mean, stdev), gamma=c(shape, scale), exponential=c(rate)
-#plotPrior("normal", c(1,2), plot.quants=TRUE)
-#plotPrior("exponential", c(1), plot.quants=FALSE)
+#plotPrior("normal", c(1,2), plotQuants=TRUE)
+#plotPrior("exponential", c(1), plotQuants=FALSE)
 
 
-plotPrior<-function(priorFn=match.arg(arg=priorFn,choices=c("fixed", "uniform", "normal", "lognormal", "gamma", "exponential"),several.ok=FALSE), priorVariables, plot.quants=FALSE, plot.legend=TRUE){
+plotPrior<-function(priorFn=match.arg(arg=priorFn,choices=c("fixed", "uniform", "normal", "lognormal", "gamma", "exponential"),several.ok=FALSE), priorVariables, plotQuants=TRUE, plotLegend=TRUE){
 	#plot.new()
 	x<-NA
 	quant<-c(0.01, 0.05, 0.25, .50, 0.75, 0.95, 0.99)
@@ -22,7 +22,7 @@ plotPrior<-function(priorFn=match.arg(arg=priorFn,choices=c("fixed", "uniform", 
 		for (i in 1:length(quant)) {
 			quant.value[i]<-qunif(quant[i], min, max)
 			
-			if (plot.quants) {
+			if (plotQuants) {
 				#mm[i]<-dunif(quant.value[i], min, max)
 				segments(quant.value[i], 0, quant.value[i], 1)
 				segments(qunif(.5, min, max), 0, qunif(.5, min, max), 1, lwd=2)
@@ -39,7 +39,7 @@ plotPrior<-function(priorFn=match.arg(arg=priorFn,choices=c("fixed", "uniform", 
 		polygon(poly, col=rgb(0, 0, 0, 0.3))  #to include 95%?
 		for (i in 1:length(quant)) {
 			quant.value[i]<-qnorm(quant[i], mean, stdev)
-			if (plot.quants) {
+			if (plotQuants) {
 				mm[i]<-dnorm(quant.value[i], mean, stdev)
 				segments(quant.value[i], min(poly$y), quant.value[i], mm[i])
 				segments(qnorm(.5, mean, stdev), min(poly$y), qnorm(.5, mean, stdev), dnorm(qnorm(.5, mean, stdev), mean, stdev), lwd=2)
@@ -56,7 +56,7 @@ plotPrior<-function(priorFn=match.arg(arg=priorFn,choices=c("fixed", "uniform", 
 		polygon(poly, col=rgb(0, 0, 0, 0.3))  #to include 95%?
 		for (i in 1:length(quant)) {
 			quant.value[i]<-qlnorm(quant[i], mean, stdev)
-			if(plot.quants) {
+			if(plotQuants) {
 				mm[i]<-dlnorm(quant.value[i], mean, stdev)
 				segments(quant.value[i], min(poly$y), quant.value[i], mm[i])
 				segments(qlnorm(.5, mean, stdev), min(poly$y), qlnorm(.5, mean, stdev), dlnorm(qlnorm(.5, mean, stdev), mean, stdev), lwd=2)
@@ -74,7 +74,7 @@ plotPrior<-function(priorFn=match.arg(arg=priorFn,choices=c("fixed", "uniform", 
 		polygon(poly, col=rgb(0, 0, 0, 0.3)) 
 		for (i in 1:length(quant)) {
 			quant.value[i]<-qgamma(quant[i], shape, scale)
-			if (plot.quants) {
+			if (plotQuants) {
 				mm[i]<-dgamma(quant.value[i], shape, scale)
 				segments(quant.value[i], min(poly$y), quant.value[i], mm[i])
 				segments(qgamma(.5, shape, scale), min(poly$y), qgamma(.5, shape, scale), dgamma(qgamma(.5, shape, scale), shape, scale), lwd=2)
@@ -90,7 +90,7 @@ plotPrior<-function(priorFn=match.arg(arg=priorFn,choices=c("fixed", "uniform", 
 		polygon(poly, col=rgb(0, 0, 0, 0.3))
 		for (i in 1:length(quant)) {
 			quant.value[i]<-qexp(quant[i], rate)
-			if (plot.quants) {
+			if (plotQuants) {
 				mm[i]<-dexp(quant.value[i], rate)
 				segments(quant.value[i], min(poly$y), quant.value[i], mm[i])
 				segments(qexp(.5, rate), min(poly$y), qexp(.5, rate), dexp(qexp(.5, rate), rate), lwd=2)
@@ -101,7 +101,7 @@ plotPrior<-function(priorFn=match.arg(arg=priorFn,choices=c("fixed", "uniform", 
 
 
 results<-data.frame(cbind(quant, quant.value))
-if (plot.legend){
+if (plotLegend){
 	legend("topright", leg=paste(c(quant, signif(quant.value, digits=3))), title="Quantiles", ncol=2, bty="n")
 }
 

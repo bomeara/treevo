@@ -1,22 +1,24 @@
-plotParamPosteriors<-function(data, priors, realParam=FALSE, realParamValues=NA) {
-# data can be a single particleDataFrame or a list of particleDataFrames (1:n)
+plotPosteriors<-function(particleDataFrame, PriorMatrix, realParam=FALSE, realParamValues=NA) {
+# particleDataFrame can be single or a list of particleDataFrames (1:n)
 # priors can also be single matrix or a list of matrices (Note that priors have to be the same to make comparison across runs, therefore if a list of priors is given, this function will extract only the first matrix)
-#priors should be $allPriorMatrix from treevo output (not $freePriorMatrix)
+#priors should be $PriorMatrix from TreEvo output
 #realParamValues should include a real value for every prior (fixed or not).
 
-if(class(data)=="data.frame"){
-	data1<-subset(data[which(data[,6]>0),], generation==max(data[,1])) #make generation and other names by column so it works for partial and complete 
+x<-particleDataFrame
+priors<-PriorMatrix
+if(class(x)=="data.frame"){
+	data1<-subset(x[which(x[,6]>0),], generation==max(x[,1])) #make generation and other names by column so it works for partial and complete 
 	run<-rep(1, dim(data1)[1])
 	all<-cbind(run, data1)
 }
 	
-if(class(data)=="list"){
+if(class(x)=="list"){
 	all<-data.frame()
-	for (list in 1:length(data)) {
-		data1<-subset(data[[list]][which(data[[list]][,6]>0),], generation==max(data[[list]][,1])) #make generation and other names by column so it works for partial and complete 
+	for (list in 1:length(x)) {
+		data1<-subset(x[[list]][which(x[[list]][,6]>0),], generation==max(x[[list]][,1])) #make generation and other names by column so it works for partial and complete 
 		run<-rep(list, dim(data1)[1])
-		data[[list]]<-cbind(run, data1)
-		all<-rbind(all, data[[list]])		
+		x[[list]]<-cbind(run, data1)
+		all<-rbind(all, x[[list]])		
 	}
 }
 if (class(priors)=="list"){
