@@ -22,4 +22,3 @@ simulateData<-function(nrepSim, startingPriorsValues, intrinsicPriorsValues, ext
 	return(simSummaryStats)
 }
 
-		#summaryValues<-rbind(summaryValues, summaryStatsLong(phy, simdata, jobName=jobName))

@@ -77,10 +77,10 @@ if (startFromCheckpoint) {
 	}
 } #if(startFromCheckpoint) bracket
 
+library(doMC, quietly=T)
+library(foreach, quietly=T)
 cores=1
 if (multicore) {
-	library(doMC, quietly=T)
-	library(foreach, quietly=T)
 	if (is.na(coreLimit)){
 		registerDoMC()
 		getDoParWorkers()->cores
@@ -547,9 +547,9 @@ for (try in 1:maxTries)	{
 							#dput(newparticleVector[[1]])
 						
 							if (is.na(distance(newparticleVector[[1]]))) {
-								cat("Error with Geiger?  distance(newparticleVector[[1]]) = NA\n")
+								#cat("Error with Geiger?  distance(newparticleVector[[1]]) = NA\n")
 								while(sink.number()>0) {sink()}
-								warning("distance(newparticleVector[[1]]) = NA")
+								#warning("distance(newparticleVector[[1]]) = NA")
 								newparticleVector[[1]]<-setId(newparticleVector[[1]], -1)
 								newparticleVector[[1]]<-setWeight(newparticleVector[[1]], 0)
 							}
