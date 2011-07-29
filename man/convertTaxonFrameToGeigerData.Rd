@@ -1,8 +1,9 @@
 \name{convertTaxonFrameToGeigerData}
+\alias{convertTaxonFrameToGeigerData}
 
 \title{Converting Simulated Data to Geiger Formatted Data}
 \description{
-	This function takes simulated data and converts it to geiger's formatting.
+	This function takes simulated data and converts it to geigers formatting.
 }
 \usage{
 convertTaxonFrameToGeigerData(taxonframe, phy)

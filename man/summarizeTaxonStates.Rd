@@ -1,4 +1,5 @@
 \name{summarizeTaxonStates}
+\alias{summarizeTaxonStates}
 
 \title{Create a data frame of taxon states}
 

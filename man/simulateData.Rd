@@ -1,4 +1,6 @@
 \name{simulateData}
+\alias{simulateData}
+
 
 \title{Simulate data for initial TreEvo analysis}
 

@@ -1,4 +1,6 @@
 \name{pullFromPrior}
+\alias{pullFromPrior}
+
 
 \title{Get Value from Prior}
 

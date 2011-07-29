@@ -1,4 +1,6 @@
 \name{plotPrior}
+\alias{plotPrior}
+
 
 \title{Plot prior distribution}
 

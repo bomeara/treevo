@@ -1,11 +1,12 @@
 \name{doSimulationForPlotting}
+\alias{doSimulationForPlotting}
 
 \title{Discrete Time Character Simulation}
 
 \description{This function evolves continuous characters in a discrete time process.}
 
 \usage{
-doSimulationForPlotting<-function(splits, intrinsicFn, extrinsicFn, startingStates, intrinsicValues, extrinsicValues, timeStep, plot=FALSE, savePlot=FALSE, saveRealParams=FALSE, jobName="") {
+doSimulationForPlotting<-function(splits, intrinsicFn, extrinsicFn, startingStates, intrinsicValues, extrinsicValues, timeStep, plot=FALSE, savePlot=FALSE, saveRealParams=FALSE, jobName="")
 }
 
 \arguments{

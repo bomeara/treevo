@@ -1,4 +1,6 @@
 \name{doSimulation}
+\alias{doSimulation}
+
 
 \title{Discrete Time Character Simulation}
 

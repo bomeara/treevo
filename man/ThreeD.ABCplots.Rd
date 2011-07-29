@@ -1,5 +1,6 @@
 \name{ThreeD.ABCplots}
 \alias{ThreeD.ABCplots}
+
 \title{Plot posterior density distribution for each generation in 3d}
 \description{Plot posterior density distribution for each generation in 3d plot window}
 \usage{
@@ -20,8 +21,6 @@ ThreeD.ABCplots(a, parameter, show.particles="none", plot.parent=FALSE, realPara
 \references{O'Meara and Banbury, unpublished}
 \author{Barb Banbury}
 \seealso{ThreeD.ABCplotsWPrior}
-\examples{
-
-}
+\examples{}
 \keyword{}
 

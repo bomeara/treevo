@@ -1,5 +1,6 @@
 \name{boxcoxplsSummary.R}
 \alias{boxcoxplsSummary.R}
+
 \title{Box-Cox Transformations + PLS}
 \description{Performs Box-Cox transformation and partial least squares (PLS) on summaryValues }
 \usage{

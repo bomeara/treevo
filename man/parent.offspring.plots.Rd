@@ -1,4 +1,6 @@
 \name{parent.offspring.plots}
+\alias{parent.offspring.plots}
+
 
 \title{Plotting parent-offspring particles}
 
@@ -22,8 +24,7 @@ parent.offspring.plots(x)
 \seealso{
 }
 \examples{
-parent.offspring.plots(a$particleDataFrame)
-
+	parent.offspring.plots(a$particleDataFrame)
 }
 \keyword{}
 
