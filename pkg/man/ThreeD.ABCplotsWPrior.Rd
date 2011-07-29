@@ -1,5 +1,6 @@
 \name{ThreeD.ABCplotsWPrior}
 \alias{ThreeD.ABCplotsWPrior}
+
 \title{Plot posterior density distribution in 3d}
 \description{Plot posterior density distribution for each generation in 3d plot window}
 \usage{

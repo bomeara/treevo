@@ -1,4 +1,4 @@
-\name{abcmodels.intrinsic.R}
+\name{autoregressiveIntrinsicTimeSlicesConstantSigma}
 \alias{autoregressiveIntrinsicTimeSlicesConstantSigma}
 
 \title{Intrinsic Character Evolution Models}

@@ -1,4 +1,4 @@
-\name{abcmodels.intrinsic.R}
+\name{autoregressiveIntrinsic}
 \alias{autoregressiveIntrinsic}
 
 \title{Intrinsic Character Evolution Models}

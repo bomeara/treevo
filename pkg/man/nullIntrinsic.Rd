@@ -1,5 +1,6 @@
-\name{abcmodels.intrinsic.R}
+\name{nullIntrinsic}
 \alias{nullIntrinsic}
+
 \title{Intrinsic Character Evolution Models}
 
 \description{This function describes a model of no intrinsic character change}

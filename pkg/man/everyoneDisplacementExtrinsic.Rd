@@ -1,4 +1,4 @@
-\name{abcmodels.extrinsic.R}
+\name{everyoneDisplacementExtrinsic}
 \alias{everyoneDisplacementExtrinsic}
 \title{Extrinsic Character Evolution Models}
 

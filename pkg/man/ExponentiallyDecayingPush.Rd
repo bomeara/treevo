@@ -1,4 +1,4 @@
-\name{abcmodels.extrinsic.R}
+\name{ExponentiallyDecayingPush}
 \alias{ExponentiallyDecayingPush}
 
 \title{Extrinsic Character Evolution Models}

@@ -1,4 +1,4 @@
-\name{abcmodels.intrinsic.R}
+\name{MinBoundaryAutoregressiveIntrinsic}
 \alias{MinBoundaryAutoregressiveIntrinsic}
 
 \title{Intrinsic Character Evolution Models}

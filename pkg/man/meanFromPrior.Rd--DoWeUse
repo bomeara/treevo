@@ -1,4 +1,6 @@
 \name{meanFromPrior}
+\alias{meanFromPrior}
+
 
 \title{Get Mean Value from Prior}
 

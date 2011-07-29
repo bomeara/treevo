@@ -1,4 +1,6 @@
 \name{plotPosteriors}
+\alias{plotPosteriors}
+
 
 \title{Plot posterior distributions}
 

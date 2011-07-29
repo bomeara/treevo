@@ -1,4 +1,5 @@
 \name{mutateState}
+\alias{mutateState}
 
 \title{Mutate Character State}
 

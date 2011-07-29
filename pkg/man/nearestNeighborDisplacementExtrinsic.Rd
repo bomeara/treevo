@@ -1,4 +1,4 @@
-\name{abcmodels.extrinsic.R}
+\name{nearestNeighborDisplacementExtrinsic}
 \alias{nearestNeighborDisplacementExtrinsic}
 
 \title{Extrinsic Character Evolution Models}

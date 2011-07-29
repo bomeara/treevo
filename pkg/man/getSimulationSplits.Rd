@@ -1,4 +1,5 @@
 \name{getSimulationSplits}
+\alias{getSimulationSplits}
 
 \title{Simulation Splits}
 

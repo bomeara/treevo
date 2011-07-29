@@ -1,4 +1,4 @@
-\name{abcmodels.extrinsic.R}
+\name{nullExtrinsic}
 \alias{nullExtrinsic}
 
 \title{Extrinsic Character Evolution Models}
