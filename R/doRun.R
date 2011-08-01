@@ -5,7 +5,7 @@
 #the doRun function takes input from the user and then automatically guesses optimal parameters, though user overriding is also possible.
 #the guesses are used to do simulations near the expected region. If omitted, they are set to the midpoint of the input parameter matrices
 
-doRun<-function(phy, traits, intrinsicFn, extrinsicFn, summaryFns=c(rawValuesSummaryStats, geigerUnivariateSummaryStats2), startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, startingStatesGuess=c(), intrinsicStatesGuess=c(), extrinsicStatesGuess=c(), timeStep, toleranceVector=c(), numParticles=1000, standardDevFactor=0.05, StartSims=100, plot=FALSE, vipthresh=0.8, epsilonProportion=0.2, epsilonMultiplier=0.5, nStepsPRC=4, maxTries=1, jobName=NA, debug=TRUE, trueStartingState=NA, trueIntrinsicState=NA, whenToKill=20, startFromCheckpoint=FALSE, stopRule=TRUE, stopValue=0.05, multicore=TRUE, coreLimit=NA) {
+doRun<-function(phy, traits, intrinsicFn, extrinsicFn, summaryFns=c(rawValuesSummaryStats, geigerUnivariateSummaryStats2), startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, startingStatesGuess=c(), intrinsicStatesGuess=c(), extrinsicStatesGuess=c(), timeStep, toleranceVector=c(), numParticles=1000, standardDevFactor=0.05, StartSims=NA, plot=FALSE, vipthresh=0.8, epsilonProportion=0.2, epsilonMultiplier=0.5, nStepsPRC=4, maxTries=1, jobName=NA, debug=TRUE, trueStartingState=NA, trueIntrinsicState=NA, whenToKill=20, startFromCheckpoint=FALSE, stopRule=TRUE, stopValue=0.05, multicore=TRUE, coreLimit=NA) {
 
 if (!is.binary.tree(phy)) {
 	print("Warning: Tree is not fully dichotomous")
@@ -90,12 +90,10 @@ if (multicore) {
 		coreLimit->cores
 	}
 }
-cat(paste("Using", cores, "core(s) for the analysis\n"))
 			
 run.goingwell=FALSE
 	
 for (try in 1:maxTries)	{
-	nrepSim<-StartSims*((10^try)/10)
 	cat("\n\n****  TRY", try, "of", maxTries, " ****\n\n")
 	while (!run.goingwell) {
 		run.goingwell=TRUE
@@ -104,7 +102,6 @@ for (try in 1:maxTries)	{
 
 			#run.finished=FALSE
 			splits<-getSimulationSplits(phy) #initialize this info
-			input.data<-rbind(jobName, length(phy[[3]]), nrepSim, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor, try, trueStartingState, trueIntrinsicState)
 		
 			numberParametersTotal<-dim(startingPriorsValues)[2] +  dim(intrinsicPriorsValues)[2] + dim(extrinsicPriorsValues)[2] #figure out number of free params
 			numberParametersFree<-numberParametersTotal
@@ -204,8 +201,14 @@ for (try in 1:maxTries)	{
 					extrinsicStatesGuess[i]<-pullFromPrior(extrinsicPriorsValues[,i],extrinsicPriorsFns[i])
 				}
 			}
-			
-			
+	if (is.na(StartSims)) {
+		StartSims<-1000*numberParametersFree
+	}
+	nrepSim<-StartSims*((2^try)/2) #If initial simulations are not enough, and we need to try again then new analysis will double number of initial simulations
+	input.data<-rbind(jobName, length(phy[[3]]), nrepSim, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor, try, trueStartingState, trueIntrinsicState)		
+	cat(paste("Number of initial simulations set to", nrepSim, "\n"))
+	cat(paste("Using", cores, "core(s) for initial simulations \n\n"))
+	
 			#---------------------- Initial Simulations (Start) ------------------------------
 			#See Wegmann et al. Efficient Approximate Bayesian Computation Coupled With Markov Chain Monte Carlo Without Likelihood. Genetics (2009) vol. 182 (4) pp. 1207-1218 for more on the method
 			Time<-proc.time()[[3]]
@@ -422,7 +425,8 @@ for (try in 1:maxTries)	{
 			time<-proc.time()[[3]]-start.time
 			time.per.gen<-time
 			rejects.gen.one<-(dim(subset(particleDataFrame, id<0))[1])/(dim(subset(particleDataFrame,))[1])
-		
+			rejects<-c()
+			
 			for (i in 1:numberParametersTotal){
 				param.stdev[1,i]<-c(sd(subset(particleDataFrame, id>0)[,6+i]))
 				weightedMeanParam[1,i]<-weighted.mean(subset(particleDataFrame, id>0)[,6+i], subset(particleDataFrame, id>0)[,6])
@@ -443,7 +447,7 @@ for (try in 1:maxTries)	{
 					#ErrorParticleFrame->paste("ErrorParticleFrame", jobName, sep="")
 					save(ErrorParticleFrame, file=paste("ErrorParticleFrame", jobName, ".txt", sep=""))
 					cat("\n\nTried", maxTries, "times and all failed!")
-					cat("\ninput.data was appended to Error.txt file within the working directory\n\n")
+					cat("\ninput.data was appended to Error.txt file within the working directory\n\n") #priors might be really bad if this is the case.  Check prior distributions before setting up a new run.
 				}
 				else if (try < maxTries){
 					ErrorParticleFrame<-vector("list", 4)
@@ -459,7 +463,6 @@ for (try in 1:maxTries)	{
 				break
 			}	
 
-			rejects<-c()
 			save.image(file=paste("WS", jobName, ".Rdata", sep=""))
 			test<-vector("list")
 			test$input.data<-input.data
@@ -472,7 +475,7 @@ for (try in 1:maxTries)	{
 			test$phy<-phy
 			test$traits<-traits
 			test$rejects.gen.one<-rejects.gen.one
-			test$rejects<-rejects
+			#test$rejects<-rejects
 			test$particleWeights<-particleWeights
 			test$particleVector<-particleVector
 			test$boxcox.output<-boxcox.output
@@ -485,7 +488,6 @@ for (try in 1:maxTries)	{
 			
 			
 		} #startFromCheckpoint bracket
-		
 		
 			if (startFromCheckpoint==TRUE || dataGenerationStep < nStepsPRC) {
 			
