@@ -1,5 +1,6 @@
 
 getSimulationSplits<-function(phy) {
+	phy$node.label<-NULL
 	branchingTimes<-sort(branching.times(phy), decreasing=TRUE)
 	branchingTimesNames<-names(branchingTimes)
 	ancestorVector<-c()
