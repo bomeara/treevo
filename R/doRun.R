@@ -205,7 +205,7 @@ for (try in 1:maxTries)	{
 		StartSims<-1000*numberParametersFree
 	}
 	nrepSim<-StartSims*((2^try)/2) #If initial simulations are not enough, and we need to try again then new analysis will double number of initial simulations
-	input.data<-rbind(jobName, length(phy[[3]]), nrepSim, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor, try, trueStartingState, trueIntrinsicState)		
+	input.data<-rbind(jobName, length(phy[[3]]), nrepSim, timeStep, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor, try, trueStartingState, trueIntrinsicState)		
 	cat(paste("Number of initial simulations set to", nrepSim, "\n"))
 	cat(paste("Using", cores, "core(s) for initial simulations \n\n"))
 	
@@ -823,7 +823,7 @@ for (try in 1:maxTries)	{
 			FinalParamPredictions[paramPred, 4]<-quantile(subpDF[,6+paramPred], probs=0.95)
 		}
 	
-		input.data<-rbind(jobName, length(phy[[3]]), nrepSim, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor, try, trueStartingState, trueIntrinsicState)
+		input.data<-rbind(jobName, length(phy[[3]]), nrepSim, timeStep, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor, try, trueStartingState, trueIntrinsicState)
 	
 		time3<-proc.time()[[3]]
 		genTimes<-c(time.per.gen, time3)
