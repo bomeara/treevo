@@ -484,6 +484,7 @@ for (try in 1:maxTries)	{
 			test$cores<-cores
 			test$simTime<-simTime
 			test$time.per.gen<-time.per.gen
+			test$vipResult<-vipResult
 			save(test, file=paste("partialResults", jobName, ".txt", sep=""))
 			
 			
@@ -754,6 +755,7 @@ for (try in 1:maxTries)	{
 						test$cores<-cores
 						test$simTime
 						test$time.per.gen<-time.per.gen
+						test$vipResult<-vipResult
 						save(test, file=paste("partialResults", jobName, ".txt", sep=""))
 						
 					} #while (dataGenerationStep < nStepsPRC) bracket
@@ -847,6 +849,7 @@ for (try in 1:maxTries)	{
 		test$cores<-cores
 		test$simTime<-simTime
 		test$time.per.gen<-genTimes
+		test$vipResult<-vipResult
 		test$FinalParamPredictions <-FinalParamPredictions
 	
 	} #for (try in 1:maxTries) bracket
