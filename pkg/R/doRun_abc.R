@@ -95,7 +95,7 @@ while (!run.goingwell) {
 		splits<-getSimulationSplits(phy) #initialize this info
 
 	
-	input.data<-rbind(jobName, length(phy[[3]]), nrepSim, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor, try, trueStartingState, trueIntrinsicState)
+	input.data<-rbind(jobName, length(phy[[3]]), timeStep, nrepSim, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor, try, trueStartingState, trueIntrinsicState)
 
 
 	#figure out number of free params
@@ -243,11 +243,11 @@ while (!run.goingwell) {
 	
 }  #if (startFromCheckpoint==FALSE)
 }  #while (!run.goingwell)
-input.data<-rbind(jobName, length(phy[[3]]), nrepSim, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor, try, trueStartingState, trueIntrinsicState)
+input.data<-rbind(jobName, length(phy[[3]]), timeStep, nrepSim, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor, try, trueStartingState, trueIntrinsicState)
 
 
-test<-vector("list", 6)
-names(test)<-c("input.data", "PriorMatrix", "phy", "traits")
+test<-vector("list")
+#names(test)<-c("input.data", "PriorMatrix", "phy", "traits")
 
 test$input.data<-input.data
 test$PriorMatrix<-PriorMatrix
