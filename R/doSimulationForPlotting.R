@@ -20,10 +20,10 @@ if (plot || savePlot) {
 	numberofsteps<-floor(splits[1, 1]/timeStep)
 	mininterval<-min(splits[1:(dim(splits)[1]-1), 1]-splits[2:(dim(splits)[1]), 1])
 	if (numberofsteps<1000) {
-#warning(paste("You have only ", numberofsteps, " but should probably have a lot more. I would suggest decreasing timeStep to no more than ", splits[1, 1]/1000))
+		warning(paste("You have only ", numberofsteps, " but should probably have a lot more. I would suggest decreasing timeStep to no more than ", splits[1, 1]/1000))
 	}
 	if (floor(mininterval/timeStep)<50) {
-#warning(paste("You have only ", floor(mininterval/timeStep), " on the shortest interval but should probably have a lot more. I would suggest decreasing timeStep to no more than ", mininterval/50))
+		warning(paste("You have only ", floor(mininterval/timeStep), " on the shortest interval but should probably have a lot more. I would suggest decreasing timeStep to no more than ", mininterval/50))
 	}
 #initial setup
 	timefrompresent=splits[1, 1]
