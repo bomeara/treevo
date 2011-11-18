@@ -15,7 +15,7 @@ if(class(x)=="data.frame"){
 if(class(x)=="list"){
 	all<-data.frame()
 	for (list in 1:length(x)) {
-		data1<-subset(x[[list]][which(x[[list]][,6]>0),], generation==max(x[[list]][,1])) #make generation and other names by column so it works for partial and complete 
+		data1<-subset(x[[list]][which(x[[list]][,6]>0),], generation==max(x[[list]]$generation)) #make generation and other names by column so it works for partial and complete 
 		run<-rep(list, dim(data1)[1])
 		x[[list]]<-cbind(run, data1)
 		all<-rbind(all, x[[list]])		

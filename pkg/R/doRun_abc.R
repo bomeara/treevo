@@ -5,7 +5,7 @@
 #the doRun function takes input from the user and then automatically guesses optimal parameters, though user overriding is also possible.
 #the guesses are used to do simulations near the expected region. If omitted, they are set to the midpoint of the input parameter matrices
 
-doRun_abc<-function(phy, traits, intrinsicFn, extrinsicFn, summaryFns=c(rawValuesSummaryStats, geigerUnivariateSummaryStats2), startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, startingStatesGuess=c(), intrinsicStatesGuess=c(), extrinsicStatesGuess=c(), TreeYears=1e+06, toleranceVector=c(), numParticles=1000, standardDevFactor=0.05, StartSims=100, plot=FALSE, vipthresh=0.8, epsilonProportion=0.2, epsilonMultiplier=0.5, nStepsPRC=4, maxTries=1, jobName=NA, debug=TRUE, trueStartingState=NA, trueIntrinsicState=NA, startFromCheckpoint=TRUE, whenToKill=20, checkpointSave=TRUE, stopRule=TRUE, stopValue=0.05, abcMethod=NA, abcTolerance=0.1) {
+doRun_abc<-function(phy, traits, intrinsicFn, extrinsicFn, summaryFns=c(rawValuesSummaryStats, geigerUnivariateSummaryStats2), startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, startingStatesGuess=c(), intrinsicStatesGuess=c(), extrinsicStatesGuess=c(), TreeYears=1e+06, toleranceVector=c(), numParticles=1000, standardDevFactor=0.05, StartSims=100, plot=FALSE, vipthresh=0.8, epsilonProportion=0.2, epsilonMultiplier=0.5, nStepsPRC=4, maxTries=1, jobName=NA, debug=TRUE, trueStartingState=NA, trueIntrinsicState=NA, startFromCheckpoint=FALSE, whenToKill=20, checkpointSave=TRUE, stopRule=TRUE, stopValue=0.05, abcMethod="rejection", abcTolerance=0.1, multicore=TRUE, coreLimit=NA) {
 
 if (!is.binary.tree(phy)) {
 	print("Warning: Tree is not fully dichotomous")
@@ -19,64 +19,80 @@ if (debug){
 }
 
 ##Checkpoint saving stuff:
-paste("partialResults", jobName, ".txt*", sep="")->pRname
-paste("WS", jobName, ".Rdata", sep="")->WSname
+if (startFromCheckpoint) {
 
-system(command=paste("ls ", pRname, " | grep -c ", pRname, sep=""), intern=TRUE) -> filecount
-
-if (filecount=="0") {  #if file is absent 
-	startFromCheckpoint=FALSE
-	dataGenerationStep=0
-	cat ("\nstart from checkpoint =", startFromCheckpoint, "\n")
-	cat("dataGenerationStep=", dataGenerationStep, "\n")
-	rejects<-c()	
-
-}
-
-if (filecount=="1"){  #if file is present 
-	paste("partialResults", jobName, ".txt", sep="")->pRname
-	paste(load(pRname))
-	dataGenerationStep <- max(test$particleDataFrame$X1)
-		if (dataGenerationStep==nStepsPRC){
-			cat ("\n\nRun was finished already\n\n")		}
-	#paste(load(WSname))
-	cat ("\nstart from checkpoint =", startFromCheckpoint, "\n")
-	cat("dataGenerationStep=", dataGenerationStep, "\n")
-	nameVector<-c("generation", "attempt", "id", "parentid", "distance", "weight")
-	run.goingwell=TRUE
-	input.data<-test$input.data
-	boxcox.output<-test$boxcoxLambda
-	boxcoxLambda<-test$boxcox.output[[1]]
-	boxcoxAddition<-test$boxcox.output[[2]]
-	prunedPlsResult<-test$boxcox.output[[3]]
-	prunedSummaryValues<-test$boxcox.output[[4]]
-	originalSummaryStats<-test$boxcox.output[[5]]
-	particleDataFrame<-test$particleDataFrame
-	epsilonDistance<-test$epsilonDistance
+	paste("partialResults", jobName, ".txt*", sep="")->pRname
+	paste("WS", jobName, ".Rdata", sep="")->WSname
 	
-	toleranceVector<-test$toleranceVector
-		if (length(toleranceVector) < nStepsPRC){
-			#print(toleranceVector)
-			toleranceVector<-rep(epsilonDistance, nStepsPRC)
-			for (step in 2:nStepsPRC) {
-				toleranceVector[step]<-toleranceVector[step-1]*as.numeric(input.data[11])
-			}
-			#print(toleranceVector)
-		}	
-	todo<-test$todo
-	phy<-test$phy
-		splits<-getSimulationSplits(phy)
-	traits<-test$traits
-	rejects.gen.one<-test$rejects.gen.one
-	rejects<-test$rejects
-	particleWeights<-test$particleWeights
-	particleVector<-test$particleVector
-	numberParametersFree<-test$numberParametersFree
-	param.stdev<-test$param.stdev
-	weightedMeanParam<-test$weightedMeanParam
-	time.per.gen<-test$time.per.gen
-}
+	system(command=paste("ls ", pRname, " | grep -c ", pRname, sep=""), intern=TRUE) -> filecount
 
+	if (filecount=="0") {  #if file is absent 
+		startFromCheckpoint=FALSE
+		dataGenerationStep=0
+		cat ("\nstart from checkpoint =", startFromCheckpoint, "\n")
+		cat("dataGenerationStep=", dataGenerationStep, "\n")
+		rejects<-c()	
+	}
+
+	if (filecount=="1"){  #if file is present 
+		paste("partialResults", jobName, ".txt", sep="")->pRname
+		paste(load(pRname))
+		dataGenerationStep <- max(test$particleDataFrame$X1)
+			if (dataGenerationStep==nStepsPRC){
+				cat ("\n\nRun was finished already\n\n")		}
+		#paste(load(WSname))
+		cat ("\nstart from checkpoint =", startFromCheckpoint, "\n")
+		cat("dataGenerationStep=", dataGenerationStep, "\n")
+		nameVector<-c("generation", "attempt", "id", "parentid", "distance", "weight")
+		run.goingwell=TRUE
+		input.data<-test$input.data
+		boxcox.output<-test$boxcoxLambda
+		boxcoxLambda<-test$boxcox.output[[1]]
+		boxcoxAddition<-test$boxcox.output[[2]]
+		prunedPlsResult<-test$boxcox.output[[3]]
+		prunedSummaryValues<-test$boxcox.output[[4]]
+		originalSummaryStats<-test$boxcox.output[[5]]
+		particleDataFrame<-test$particleDataFrame
+		epsilonDistance<-test$epsilonDistance
+	
+		toleranceVector<-test$toleranceVector
+			if (length(toleranceVector) < nStepsPRC){
+				#print(toleranceVector)
+				toleranceVector<-rep(epsilonDistance, nStepsPRC)
+				for (step in 2:nStepsPRC) {
+					toleranceVector[step]<-toleranceVector[step-1]*as.numeric(input.data[11])
+				}
+				#print(toleranceVector)
+			}	
+		todo<-test$todo
+		phy<-test$phy
+		splits<-getSimulationSplits(phy)
+		traits<-test$traits
+		rejects.gen.one<-test$rejects.gen.one
+		rejects<-test$rejects
+		particleWeights<-test$particleWeights
+		particleVector<-test$particleVector
+		numberParametersFree<-test$numberParametersFree
+		param.stdev<-test$param.stdev
+		weightedMeanParam<-test$weightedMeanParam
+		time.per.gen<-test$time.per.gen
+	}
+} #if (startFromCheckpoint)
+
+library(doMC, quietly=T)
+library(foreach, quietly=T)
+cores=1
+if (multicore) {
+	if (is.na(coreLimit)){
+		registerDoMC()
+		getDoParWorkers()->cores
+	}
+	else {
+		registerDoMC(coreLimit)
+		coreLimit->cores
+	}
+}
+			
 timeStep<-1/TreeYears			
 run.goingwell=FALSE
 for (try in 1:maxTries)	{
@@ -200,36 +216,35 @@ while (!run.goingwell) {
 		}
 	}
 	
-	
-	#----------------- Find best set of summary stats to use for this problem. (start) -----------------
-	#See Wegmann et al. Efficient Approximate Bayesian Computation Coupled With Markov Chain Monte Carlo Without Likelihood. Genetics (2009) vol. 182 (4) pp. 1207-1218 for more on the method
-	trueFreeValues<-matrix(nrow=0, ncol= numberParametersFree)
-	summaryValues<-matrix(nrow=0, ncol=22+dim(traits)[1]) #there are 22 summary statistics possible, plus the raw data
-	#Rprof(nrepSims.time.check<-tempfile())	
-	for (simIndex in 1:nrepSim) {
-		cat("Now doing simulation rep ",simIndex," of ",nrepSim,"\n",sep="")
-		trueStarting<-rep(NaN, dim(startingPriorsValues)[2])
-		trueIntrinsic<-rep(NaN, dim(intrinsicPriorsValues)[2])
-		trueExtrinsic<-rep(NaN, dim(extrinsicPriorsValues)[2])
-		for (j in 1:dim(startingPriorsValues)[2]) {
-			trueStarting[j]=pullFromPrior(startingPriorsValues[,j],startingPriorsFns[j])
-		}
-		for (j in 1:dim(intrinsicPriorsValues)[2]) {
-			trueIntrinsic[j]=pullFromPrior(intrinsicPriorsValues[,j],intrinsicPriorsFns[j])
-		}
-		for (j in 1:dim(extrinsicPriorsValues)[2]) {
-			trueExtrinsic[j]=pullFromPrior(extrinsicPriorsValues[,j],extrinsicPriorsFns[j])
-		}
-		trueInitial<-c(trueStarting, trueIntrinsic, trueExtrinsic)
-		trueFreeValues<-rbind(trueFreeValues, trueInitial[freevector])
-		#cat("summaryValues\n")
-		#print(summaryValues)
-		convertTaxonFrameToGeigerData (doSimulation(splits=splits, intrinsicFn= intrinsicFn, extrinsicFn= extrinsicFn, startingStates= trueStarting, intrinsicValues= trueIntrinsic, extrinsicValues= trueExtrinsic, timeStep=timeStep), phy)->simdata
-		#save(simdata, file="simdata.Rdata")
-		summaryValues<-rbind(summaryValues, summaryStatsLong(phy, simdata, jobName=jobName))
-		#print(summaryValues)
-		while(sink.number()>0) {sink()}
+	if (is.na(StartSims)) {
+		StartSims<-1000*numberParametersFree
 	}
+	
+	nrepSim<-StartSims*((2^try)/2) #If initial simulations are not enough, and we need to try again then new analysis will double number of initial simulations
+	input.data<-rbind(jobName, length(phy[[3]]), nrepSim, timeStep, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor, try, trueStartingState, trueIntrinsicState)		
+	cat(paste("Number of initial simulations set to", nrepSim, "\n"))
+	cat(paste("Using", cores, "core(s) for initial simulations \n\n"))
+	
+	
+			#---------------------- Initial Simulations (Start) ------------------------------
+			#See Wegmann et al. Efficient Approximate Bayesian Computation Coupled With Markov Chain Monte Carlo Without Likelihood. Genetics (2009) vol. 182 (4) pp. 1207-1218 for more on the method
+			Time<-proc.time()[[3]]
+			trueFreeValues<-matrix(nrow=0, ncol= numberParametersFree)
+			summaryValues<-matrix(nrow=0, ncol=22+dim(traits)[1]) #there are 22 summary statistics possible, plus the raw data
+			trueFreeValuesANDSummaryValues<-foreach(1:nrepSim, .combine=rbind) %dopar% simulateData(nrepSim, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, trueFreeValues, freevector, timeStep, intrinsicFn, extrinsicFn)
+			#print(trueFreeValuesANDSummaryValues)
+			
+			trueFreeValues<-trueFreeValuesANDSummaryValues[,1:numberParametersFree]
+			#print(trueFreeValues)
+			summaryValues<-trueFreeValuesANDSummaryValues[,-1:-numberParametersFree]
+			#print(trueFreeValues)
+			while(sink.number()>0) {sink()}
+			save(trueFreeValues,summaryValues,file=paste("simulations",jobName,".Rdata",sep=""))
+			simTime<-proc.time()[[3]]-Time
+			cat(paste("Initial simulations took", round(simTime, digits=3), "seconds"), "\n")
+			#---------------------- Initial Simulations (End) ------------------------------
+
+
 
 	SimTime<-proc.time()[[3]]-startTime	
 	startTime<-proc.time()[[3]]
