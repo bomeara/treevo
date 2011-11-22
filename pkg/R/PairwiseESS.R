@@ -1,4 +1,5 @@
-setwd("/Users/Barb/Desktop/TestTime/TestTimeStep2")
+setwd("/Users/BarbBanbury/Desktop/newton_BackUp/Newton-11.7.11/Models/Anolis-paper/TestTimeStep2")
+#setwd("/Users/Barb/Desktop/TestTime/TestTimeStep2")
 myFiles<-system("ls a*",intern=TRUE)
 all.a<-vector("list", length(myFiles))
 time<-vector()
@@ -27,6 +28,7 @@ PairwiseESS<-function(particleDataFrame) {
 	# particleDataFrame can be single or a list of particleDataFrames (1:n)
 	x<-particleDataFrame
 	
+	source("/Users/BarbBanbury/Desktop/treevo/pkg/R/ESSpairs.R")
 	if(class(x)=="data.frame"){
 		warning("ESS on a single run should be high; consider combining several runs")
 		data1<-subset(x[which(x[,6]>0),], generation==max(x[,1])) 
@@ -50,17 +52,15 @@ PairwiseESS<-function(particleDataFrame) {
 					runNames<-append(runNames, run)
 				}	
 			}	
-			#print(dim(data2))
-			print(combination)
 			ESS[[combination]]<-effectiveSize(data2[,7:dim(data2)[2]])
-			names(ESS)[[combination]]<-paste("particleDataFrame", runNames, sep="", collapse="")
+			names(ESS)[[combination]]<-paste(runNames, sep="", collapse=".")
 		}
 	}
 
-	#return(ESS)
+	return(ESS)
 }
 
-
+PairwiseESS(set3)->l
 
 PairwiseESS(set2)->l
 
