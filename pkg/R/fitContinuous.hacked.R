@@ -654,17 +654,19 @@ phylogMean<-function(phyvcv, data) {
 	o<-rep(1, length(data))
 	#print("phyvcv in phylogMean")
 	#print(phyvcv)
-	ci<-solve(phyvcv)
+	ci<-try(solve(phyvcv))
 	if (is.na(ci)){
+		print(paste("used pseudoinverse"))
 		ci<-pseudoinverse(phyvcv)
 	}
 	#print("ci in phylogMean")
 	#print(ci)
 	
-	#print("t(o) %*% ci %*% o")
-	#print(t(o) %*% ci %*% o)
-	m1<-solve(t(o) %*% ci %*% o)
+	print("t(o) %*% ci %*% o")
+	print(t(o) %*% ci %*% o)
+	m1<-try(solve(t(o) %*% ci %*% o))
 	if (is.na(m1)){
+		print(paste("used pseudoinverse"))
 		m1<-pseudoinverse(t(o) %*% ci %*% o)
 	}
 	m2<-t(o) %*% ci %*% data
