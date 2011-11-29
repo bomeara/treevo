@@ -478,7 +478,7 @@ function(ds, print=TRUE)
 		# Second one: try one with very strong constraints
 		tv<-var(y)
 		start=log(c(tv*2000, 1000))
-		outTries[[2]]<-nlm(tryFoo, p=start,print.level=nlm.print.level)
+		outTries[[2]]<-nlm(tryFoo, p=start, print.level=nlm.print.level)
 		#outTries[[2]]<-optim(foo, p=start, lower=lower, upper=upper, method="L")
 	
 
@@ -654,19 +654,21 @@ phylogMean<-function(phyvcv, data) {
 	o<-rep(1, length(data))
 	#print("phyvcv in phylogMean")
 	#print(phyvcv)
-	ci<-try(solve(phyvcv))
-	if (is.na(ci)){
-		print(paste("used pseudoinverse"))
+	#save(phyvcv, file="phyvcv")
+	ci<-try(solve(phyvcv), silent=T)
+	if(class(ci)=="try-error"){
+		print(paste("ci used pseudoinverse"))
 		ci<-pseudoinverse(phyvcv)
 	}
 	#print("ci in phylogMean")
 	#print(ci)
 	
-	print("t(o) %*% ci %*% o")
-	print(t(o) %*% ci %*% o)
-	m1<-try(solve(t(o) %*% ci %*% o))
-	if (is.na(m1)){
-		print(paste("used pseudoinverse"))
+	#print("t(o) %*% ci %*% o")
+	#print(t(o) %*% ci %*% o)
+	m1<-try(solve(t(o) %*% ci %*% o), silent=T)
+	if (class(m1)=="try-error"){
+		print(paste("m1 used pseudoinverse"))
+		#save(ci, o, file="stuff")
 		m1<-pseudoinverse(t(o) %*% ci %*% o)
 	}
 	m2<-t(o) %*% ci %*% data
