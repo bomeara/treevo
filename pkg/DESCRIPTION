@@ -5,7 +5,7 @@ Version: 0.1
 Date: 2011-05-26
 Author: Brian O'Meara, Barb L. Banbury
 Maintainer: Brian O'Meara <omeara.brian@gmail.com>
-Depends: geiger, ape, gpclib, rgl, geometry, car, mixOmics, stats, corpcor, foreach, doMC
+Depends: geiger, ape, gpclib, rgl, geometry, car, mixOmics, stats, corpcor, foreach, doMC, coda
 Description: Various functions for estimating parameters of trait evolution using Approximate Bayesian Computation.
 License: GPL
 Collage: approximatebayesian.R
