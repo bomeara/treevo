@@ -1,4 +1,4 @@
-ESSpairs<-function (nRuns) {
+pairings<-function (nRuns) {
 library(partitions)
 #each output colum has a 1 in the rows corresponding to the runs you will combine for the ESS
 	library(partitions)

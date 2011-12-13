@@ -2,7 +2,7 @@ PairwiseESS<-function(particleDataFrame) {
 #Combine doRun$particleDataFrame results and test effective sample size
 
 	library(coda)
-	source("/Users/Barb/Desktop/treevo/pkg/R/ESSpairs.R")
+	source("/Users/Barb/Desktop/treevo/pkg/R/pairings.R")
 	# particleDataFrame can be single or a list of particleDataFrames (1:n)
 	x<-particleDataFrame
 	
@@ -16,7 +16,7 @@ PairwiseESS<-function(particleDataFrame) {
 	}
 	
 	if(class(x)=="list"){
-		pairs<-as.matrix(ESSpairs(length(x)))
+		pairs<-as.matrix(pairings(length(x)))
 		ESS<-vector("list")
 		ESSmatrix<-matrix(nrow=dim(set3[[1]])[2]-6, ncol=dim(pairs)[2])
 		rownames(ESSmatrix)<-names(set2[[1]])[7:length(names(set2[[1]]))]
