@@ -1,1 +1,1 @@
-export(getSimulationSplits, doSimulation, summarizeTaxonStates, convertTaxonFrameToGeigerData, summaryStatsLong, boxcoxplsSummary, doRun)
+export(fitContinuous.hacked, getSimulationSplits, meanFromPrior, mutateState, pairings, PairwiseESS, PairwiseKS, parentOffspringPlots, plotPosteriors, plotPrior, plotPosteriors_abc, presentABCOutput, pullFromPrior, SetMethods, simulateData, summarizeTaxonStates, summaryStatsLong, ThreeD.ABCplots)
