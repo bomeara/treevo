@@ -1,4 +1,4 @@
-plotParamPosteriors_abc<-function(data, priors, realParam=FALSE, realParamValues=NA) {
+plotPosteriors_abc<-function(data, priors, realParam=FALSE, realParamValues=NA) {
 # data can be a single particleDataFrame or a list of particleDataFrames (1:n)
 # priors can also be single matrix or a list of matrices (Note that priors have to be the same to make comparison across runs, therefore if a list of priors is given, this function will extract only the first matrix)
 #priors should be $allPriorMatrix from treevo output (not $freePriorMatrix)

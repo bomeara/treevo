@@ -1,4 +1,4 @@
-parent.offspring.plots<-function(particleDataFrame){
+parentOffspringPlots<-function(particleDataFrame){
 
 x<-particleDataFrame
 nparams<-dim(x)[2]-6
