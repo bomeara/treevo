@@ -215,7 +215,10 @@ for (try in 1:maxTries)	{
 			Time<-proc.time()[[3]]
 			trueFreeValues<-matrix(nrow=0, ncol= numberParametersFree)
 			summaryValues<-matrix(nrow=0, ncol=22+dim(traits)[1]) #there are 22 summary statistics possible, plus the raw data
-			trueFreeValuesANDSummaryValues<-foreach(1:nrepSim, .combine=rbind) %dopar% simulateData(nrepSim, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, trueFreeValues, freevector, timeStep, intrinsicFn, extrinsicFn)
+			#while(dim(trueFreeValuesANDSummaryValues)[1]>nrepSim){
+				trueFreeValuesANDSummaryValues<-foreach(1:nrepSim, .combine=rbind) %dopar% simulateData(nrepSim, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, trueFreeValues, freevector, timeStep, intrinsicFn, extrinsicFn, jobName)
+			#}
+			
 			#print(trueFreeValuesANDSummaryValues)
 			
 			trueFreeValues<-trueFreeValuesANDSummaryValues[,1:numberParametersFree]
@@ -223,7 +226,8 @@ for (try in 1:maxTries)	{
 			summaryValues<-trueFreeValuesANDSummaryValues[,-1:-numberParametersFree]
 			#print(trueFreeValues)
 			while(sink.number()>0) {sink()}
-			save(trueFreeValues,summaryValues,file=paste("simulations",jobName,".Rdata",sep=""))
+			save(trueFreeValues,summaryValues,file=paste("CompletedSimulations",jobName,".Rdata",sep=""))
+			system(command=paste("rm ", paste("RunningSimulations",jobName,".Rdata",sep="")))
 			simTime<-proc.time()[[3]]-Time
 			cat(paste("Initial simulations took", round(simTime, digits=3), "seconds"), "\n")
 			#---------------------- Initial Simulations (End) ------------------------------

@@ -1,4 +1,5 @@
-simulateData<-function(nrepSim, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, trueFreeValues, freevector, timeStep, intrinsicFn, extrinsicFn) {
+simulateData<-function(nrepSim, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, trueFreeValues, freevector, timeStep, intrinsicFn, extrinsicFn, jobName) {
+	
 	trueStarting<-rep(NaN, dim(startingPriorsValues)[2])
 	trueIntrinsic<-rep(NaN, dim(intrinsicPriorsValues)[2])
 	trueExtrinsic<-rep(NaN, dim(extrinsicPriorsValues)[2])
@@ -18,6 +19,9 @@ simulateData<-function(nrepSim, startingPriorsValues, intrinsicPriorsValues, ext
 	simdata<-summaryStatsLong(phy, convertTaxonFrameToGeigerData(doSimulation(splits=splits, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, startingStates=trueStarting, intrinsicValues=trueIntrinsic, extrinsicValues=trueExtrinsic, timeStep=timeStep), phy), jobName=jobName)
 	
 	simSummaryStats <-c(trueFreeValues, simdata)
+	#print(simSummaryStats)
+	#print(rbind(simSummaryStats, simSummaryStats))
+	#save(simSummaryStats,file=paste("RunningSimulations",jobName,".Rdata",sep=""))
 	#print(simSummaryStats)
 	return(simSummaryStats)
 }
