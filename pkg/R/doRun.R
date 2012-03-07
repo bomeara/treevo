@@ -826,8 +826,8 @@ for (try in 1:maxTries)	{
 			#print(6+paramPred)
 			FinalParamPredictions[paramPred, 1]<-weighted.mean(subpDF[,6+paramPred], subpDF[,6])
 			FinalParamPredictions[paramPred, 2]<-sd(subpDF[,(6+paramPred)])
-			FinalParamPredictions[paramPred, 3]<-quantile(subpDF[,6+paramPred], probs=0.05)
-			FinalParamPredictions[paramPred, 4]<-quantile(subpDF[,6+paramPred], probs=0.95)
+			FinalParamPredictions[paramPred, 3]<-quantile(subpDF[,6+paramPred], probs=0.025)
+			FinalParamPredictions[paramPred, 4]<-quantile(subpDF[,6+paramPred], probs=0.975)
 		}
 	
 		input.data<-rbind(jobName, length(phy[[3]]), nrepSim, timeStep, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor, try, trueStartingState, trueIntrinsicState)
