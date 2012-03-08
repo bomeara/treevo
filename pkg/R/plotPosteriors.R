@@ -3,6 +3,7 @@ plotPosteriors<-function(particleDataFrame, PriorMatrix, realParam=FALSE, realPa
 # priors can also be single matrix or a list of matrices (Note that priors have to be the same to make comparison across runs, therefore if a list of priors is given, this function will extract only the first matrix)
 #priors should be $PriorMatrix from TreEvo output
 #realParamValues should include a real value for every prior (fixed or not).
+#fix this function so it works when "fixed" params are not last (ie the second param)
 
 x<-particleDataFrame
 priors<-PriorMatrix
