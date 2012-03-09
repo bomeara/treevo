@@ -2,7 +2,7 @@ PairwiseKS<-function(particleDataFrame) {
 #Combine doRun$particleDataFrame results and performs Kolmogorov-Smirnov tests
 # particleDataFrame should be a list of particleDataFrames (1:n)
 
-	source("/Users/Barb/Desktop/treevo/pkg/R/pairings.R")
+	#source("/Users/Barb/Desktop/treevo/pkg/R/pairings.R")
 	
 		
 	if(class(particleDataFrame)=="data.frame"){
