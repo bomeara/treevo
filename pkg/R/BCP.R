@@ -1,14 +1,14 @@
-BCP<-function(RealParam, FinalParamPredictions, verbose=F){
+BCP<-function(RealParam, HPD, verbose=F){
 #BCP = Bayesian Coverage Probability
 #RealParam can be "RealParams" from doSimulation or a vector c(x1, x2, ...)
 #Calculates what percent of the time the real parameter falls into the 95% credible interval
-if(length(RealParam) != dim(FinalParamPredictions[[1]])[1]){ warning("RealParams and FinalParamPredictions do not match")}
-Covered<-matrix(nrow=length(FinalParamPredictions), ncol=length(RealParam))
-colnames(Covered)<-rownames(FinalParamPredictions[[1]])
-	for(i in 1:length(FinalParamPredictions)){
+if(length(RealParam) != dim(HPD[[1]])[1]){ warning("RealParams and HPD do not match")}
+Covered<-matrix(nrow=length(HPD), ncol=length(RealParam))
+colnames(Covered)<-rownames(HPD[[1]])
+	for(i in 1:length(HPD)){
 		for(j in 1:length(RealParam)){
-			if(FinalParamPredictions[[i]][j,4]-FinalParamPredictions[[i]][j,3] != 0) { #keep only parameters that vary (ie, not fixed)
-				if(FinalParamPredictions[[i]][j,4] > RealParam[j] && RealParam[j] > FinalParamPredictions[[i]][j,3]) {
+			if(!is.na(HPD[[i]][j,4])) { #keep only parameters that vary (ie, not fixed)
+				if(HPD[[i]][j,4] > RealParam[j] && RealParam[j] > HPD[[i]][j,3]) {
 					Covered[i,j]<-1
 				}
 				else{
