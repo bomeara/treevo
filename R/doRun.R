@@ -817,19 +817,9 @@ for (try in 1:maxTries)	{
 		} #while (!run.goingwell) bracket
 		
 		#Calculate summary statistics on final generation particles
-		FinalParamPredictions<-matrix(nrow=numberParametersTotal, ncol=4)
-		colnames(FinalParamPredictions)<-c("weightedMean", "SD", "Low95%", "High95%")
-		rownames(FinalParamPredictions)<-names(particleDataFrame[7: dim(particleDataFrame)[2]])
-		subpDF<-subset(particleDataFrame[which(particleDataFrame$weight>0),], generation==max(particleDataFrame$generation))  #change this to be names and then call names in next for loop
-		#names(subpDF)<-c("input.data", "PriorMatrix", "particleDataFrame", "epsilonDistance", "toleranceVector", "todo", "phy", "traits", "rejects.gen.one", "rejects", "particleWeights", "particleVector", "boxcox.output", "param.stdev", "weightedMeanParam", "time.per.gen", "FinalParamPredictions")
-		for (paramPred in 1:numberParametersTotal){
-			#print(6+paramPred)
-			FinalParamPredictions[paramPred, 1]<-weighted.mean(subpDF[,6+paramPred], subpDF[,6])
-			FinalParamPredictions[paramPred, 2]<-sd(subpDF[,(6+paramPred)])
-			FinalParamPredictions[paramPred, 3]<-quantile(subpDF[,6+paramPred], probs=0.025)
-			FinalParamPredictions[paramPred, 4]<-quantile(subpDF[,6+paramPred], probs=0.975)
-		}
-	
+		FinalParamPredictions_CredInt<-CredInt(particleDataFrame)
+		FinalParamPredictions_HPD<-HPD(particleDataFrame)
+
 		input.data<-rbind(jobName, length(phy[[3]]), nrepSim, timeStep, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor, try, trueStartingState, trueIntrinsicState)
 	
 		time3<-proc.time()[[3]]
@@ -855,7 +845,8 @@ for (try in 1:maxTries)	{
 		test$simTime<-simTime
 		test$time.per.gen<-genTimes
 		test$vipResult<-vipResult
-		test$FinalParamPredictions <-FinalParamPredictions
+		test$CredInt <-FinalParamPredictions_CredInt
+		test$HPD <-FinalParamPredictions_HPD
 	
 	} #for (try in 1:maxTries) bracket
 
