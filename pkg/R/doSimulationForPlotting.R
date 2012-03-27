@@ -1,4 +1,4 @@
-doSimulationForPlotting<-function(splits, intrinsicFn, extrinsicFn, startingStates, intrinsicValues, extrinsicValues, timeStep, plot=FALSE, savePlot=FALSE, saveRealParams=FALSE, jobName="") {
+doSimulationForPlotting<-function(splits, intrinsicFn, extrinsicFn, startingStates, intrinsicValues, extrinsicValues, timeStep, plot=FALSE, savePlot=FALSE, saveHistory=FALSE, saveRealParams=FALSE, jobName="") {
 if (saveRealParams){
 	RealParams<-vector("list", 2)
 	names(RealParams)<-c("matrix", "vector")	
@@ -11,7 +11,7 @@ if (saveRealParams){
 	RealParams$matrix[3,]<-c(extrinsicValues, rep(NA, maxLength-length(extrinsicValues)))
 	save(RealParams, file=paste("RealParams", jobName, sep=""))
 }
-if (plot || savePlot) {
+if (plot || savePlot || saveHistory) {
 	startVector<-c()
 	endVector<-c()
 	startTime<-c()
@@ -72,11 +72,14 @@ if (plot || savePlot) {
 			otherstatesmatrix<-matrix(otherstatesvector, ncol=length(states(taxa[[i]])), byrow=TRUE) #each row represents one taxon
 			newvalues<-states(taxa[[i]])+intrinsicFn(params=intrinsicValues, states=states(taxa[[i]]), timefrompresent =timefrompresent)+extrinsicFn(params=extrinsicValues, selfstates=states(taxa[[i]]), otherstates=otherstatesmatrix, timefrompresent =timefrompresent)
 			nextstates(taxa[[i]])<-newvalues
-			if (plot || savePlot) {
+			if (plot || savePlot || saveHistory) {
 				startVector<-append(startVector, states(taxa[[i]]))
 				endVector <-append(endVector, newvalues)
 				startTime <-append(startTime, timefrompresent+timeStep)
 				endTime <-append(endTime, timefrompresent)
+				if(saveHistory){
+					save(startVector, endVector, startTime, endTime, file=paste("savedHistory", jobName, ".Rdata", sep=""))
+				}
 			}
 			
 		}
