@@ -1,4 +1,4 @@
-doSimulation<-function(splits, intrinsicFn, extrinsicFn, startingStates, intrinsicValues, extrinsicValues, timeStep, saveRealParams=FALSE, jobName="") {
+doSimulation<-function(splits, intrinsicFn, extrinsicFn, startingStates, intrinsicValues, extrinsicValues, timeStep, saveHistory=FALSE, saveRealParams=FALSE, jobName="") {
 if (saveRealParams){
 	RealParams<-vector("list", 2)
 	names(RealParams)<-c("matrix", "vector")	
@@ -11,7 +11,12 @@ if (saveRealParams){
 	RealParams$matrix[3,]<-c(extrinsicValues, rep(NA, maxLength-length(extrinsicValues)))
 	save(RealParams, file=paste("RealParams", jobName, ".Rdata", sep=""))
 }
-
+if (saveHistory) {
+	startVector<-c()
+	endVector<-c()
+	startTime<-c()
+	endTime<-c()
+}
 	numberofsteps<-floor(splits[1, 1]/timeStep)
 	mininterval<-min(splits[1:(dim(splits)[1]-1), 1]-splits[2:(dim(splits)[1]), 1])
 	if (numberofsteps<1000) {
@@ -68,6 +73,15 @@ if (saveRealParams){
 			newvalues<-states(taxa[[i]])+intrinsicFn(params=intrinsicValues, states=states(taxa[[i]]), timefrompresent =timefrompresent)+extrinsicFn(params=extrinsicValues, selfstates=states(taxa[[i]]), otherstates=otherstatesmatrix, timefrompresent =timefrompresent)
 			nextstates(taxa[[i]])<-newvalues
 		}
+		
+		if (saveHistory) {
+			startVector<-append(startVector, states(taxa[[i]]))
+			endVector <-append(endVector, newvalues)
+			startTime <-append(startTime, timefrompresent+timeStep)
+			endTime <-append(endTime, timefrompresent)
+			save(startVector, endVector, startTime, endTime, file=paste("savedHistory", jobName, ".Rdata", sep=""))
+		}
+			
 		for (i in 1:length(taxa)) {
 #print("\nbefore\n")
 #print(taxa[[i]])
