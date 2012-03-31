@@ -9,7 +9,7 @@ BCP<-function(RealParam, HPD, verbose=F){  #alter so it can be a single or a lis
 			rps[[i]]<-RealParam
 		}
 	}
-	rps<-RealParam
+	else{rps<-RealParam}
 	#if(length(RealParam) != dim(HPD[[1]])[1]){ warning("RealParams and HPD do not match")}  #need something like this, but it will have to be after changing the RealParam to take a list 
 	Covered<-matrix(nrow=length(HPD), ncol=length(rps[[i]]))
 	colnames(Covered)<-rownames(HPD[[1]])
