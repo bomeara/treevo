@@ -1,4 +1,5 @@
 HPD<-function(particleDataFrame, percent=0.95, returnData=F){
+	library(coda, quietly=T)
 	summary<-vector("list")
 	Ints<-matrix(nrow=(dim(particleDataFrame)[2]-6), ncol=4)
 	colnames(Ints)<-c("mean", "sd", paste("LowerHPD_", percent, sep=""), paste("UpperHPD_", percent, sep=""))	
