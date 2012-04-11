@@ -236,7 +236,6 @@ for (try in 1:maxTries)	{
 			#---------------------- Box-Cox transformation (Start) ------------------------------
 			library("car")
 			summaryDebugging<-c() #for boxcox debugging
-			names(summary)<-c("preTransform", "boxcoxAddition", "postTransform") #for boxcox debugging
 			summaryDebugging$preTransform<-summaryValues #for boxcox debugging
 			#now put this into the boxcox function to get best lambda for each summary stat
 			boxcoxLambda<-rep(NA, dim(summaryValues)[2])
@@ -267,6 +266,7 @@ for (try in 1:maxTries)	{
 				summaryValues[, summaryValueIndex]<-summary^boxcoxLambda[summaryValueIndex]
 			}
 			summaryDebugging$postTransform<-summaryValues
+			print(summaryDebugging)
 			save(summaryDebugging, file=paste("summaryDebugging", jobName, ".Rdata", sep=""))
 			#---------------------- Box-Cox transformation (End) ------------------------------
 
