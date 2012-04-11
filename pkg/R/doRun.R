@@ -227,7 +227,7 @@ for (try in 1:maxTries)	{
 			#print(trueFreeValues)
 			while(sink.number()>0) {sink()}
 			save(trueFreeValues,summaryValues,file=paste("CompletedSimulations",jobName,".Rdata",sep=""))
-			system(command=paste("rm ", paste("RunningSimulations",jobName,".Rdata",sep="")))
+			#system(command=paste("rm ", paste("RunningSimulations",jobName,".Rdata",sep="")))
 			simTime<-proc.time()[[3]]-Time
 			cat(paste("Initial simulations took", round(simTime, digits=3), "seconds"), "\n")
 			#---------------------- Initial Simulations (End) ------------------------------
