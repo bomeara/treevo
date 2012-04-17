@@ -1,10 +1,12 @@
 library(geiger)
 library(stats)
 summaryStatsLong<-function(phy, data, todo=c(), jobName="") {
-	if(!any(phy$edge[which(phy$edge.length==0),2] %in% phy$edge[,1])){
-	#if(any(phy$edge.length==0)){
-		return("There are zero branch lengths at the tips of your trees--will not run properly")
-	}
+	if (any(phy$edge.length==0)){
+		if(!any(phy$edge[which(phy$edge.length==0),2] %in% phy$edge[,1])){
+		#if(any(phy$edge.length==0)){
+			return("There are zero branch lengths at the tips of your trees--will not run properly")
+		}
+	}	
 	sink(file="/dev/null")
 	if (length(todo)==0) {
 		todo=rep(1, 22+dim(data)[1]) #by default, include everything -- the 22 summary stats and the raw tip data
