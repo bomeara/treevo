@@ -5,6 +5,9 @@ HPD<-function(particleDataFrame, abc=F, percent=0.95, returnData=F){
 		Ints<-matrix(nrow=(dim(particleDataFrame)[2]), ncol=4)
 		colnames(Ints)<-c("mean", "sd", paste("LowerHPD_", percent, sep=""), paste("UpperHPD_", percent, sep=""))	
 		rownames(Ints)<-names(particleDataFrame)
+		if (is.null(names(particleDataFrame))){
+			print(paste("Parameter names are NULL from abc output. Assumed to be in the same order."))
+		}
 		subpDF<-as.data.frame(particleDataFrame) 
 	}
 	else{
