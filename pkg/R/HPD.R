@@ -25,13 +25,14 @@ HPD<-function(particleDataFrame, abc=F, percent=0.95, returnData=F){
 			Ints[i,3]<-HPDinterval(as.mcmc(subpDF[,i]), prob=percent)[1] #returns lower HPD		
 			Ints[i,4]<-HPDinterval(as.mcmc(subpDF[,i]), prob=percent)[2] #returns upper HPD	
 			if(returnData){
-				summary[[i]]<-subpDF[,i][-c(which(subpDF[i]<Ints[i,3]), which(subpDF[,i]>Ints[i,4]))]		
+				summary[[i]]<-subpDF[,i][-c(which(subpDF[i]<Ints[i,3]), which(subpDF[,i]>Ints[i,4]))]
 			}		
 		}
 	}
+	print(class(Ints))
 	if(returnData){
 		summary$summary<-Ints
 		return(summary)
 	}
-	else{return(Ints)}
+	else{return(as.data.frame(Ints))}
 }
