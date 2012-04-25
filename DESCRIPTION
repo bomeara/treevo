@@ -1,7 +1,7 @@
 Package: TreEvo
 Type: Package
 Title: Using ABC to understand trait evolution
-Version: 0.1
+Version: 0.2
 Date: 2011-05-26
 Author: Brian O'Meara, Barb L. Banbury
 Maintainer: Brian O'Meara <omeara.brian@gmail.com>
