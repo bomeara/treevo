@@ -31,7 +31,7 @@ plotPrior(priorFn=match.arg(arg=priorFn,choices=c("fixed", "uniform", "normal", 
 	
 	plotPrior("normal", c(1,2))
 	
-	plotPrior("gamma", c(2, .2), plotQuants=F, plotLegend=F)
+	plotPrior("gamma", c(2, .2), plotQuants=FALSE, plotLegend=FALSE)
 }
 \keyword{}
 

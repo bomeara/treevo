@@ -23,8 +23,6 @@ parentOffspringPlots(x)
 \author{Brian O'Meara and Barb Banbury}
 \seealso{
 }
-\examples{
-	parentOffspringPlots(a$particleDataFrame)
-}
+
 \keyword{}
 

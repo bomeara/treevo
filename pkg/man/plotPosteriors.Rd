@@ -27,20 +27,9 @@ plotPosteriors(particleDataFrame, priorMatrix, realParam=FALSE, realParamValues=
 	Returns a plot for each free parameter.  
 }
 \references{O'Meara and Banbury, unpublished}
-\author{Brian O'Meara and Barb Banbury}
+\author{Barb Banbury and Brian O'Meara}
 \seealso{
 }
-\examples{
-	#For single runs
-	plotPosteriors(results$particleDataFrame, results$PriorMatrix)
-	
-	#For multiple runs
-	MultipleRuns<-vector("list")
-	MultipleRuns[[1]]<-results1$particleDataFrame
-	MultipleRuns[[2]]<-results2$particleDataFrame
-	MultipleRuns[[3]]<-results3$particleDataFrame
-	plotPosteriors(MultipleRuns, results$PriorMatrix)
-	
-}
+
 \keyword{}
 
