@@ -1,5 +1,5 @@
-\name{parent.offspring.plots}
-\alias{parent.offspring.plots}
+\name{parentOffspringPlots}
+\alias{parentOffspringPlots}
 
 
 \title{Plotting parent-offspring particles}
@@ -7,7 +7,7 @@
 \description{This function uses the particleDataFrame from TreEvo results and plots parent-offspring particles from generation to generation.}
 
 \usage{
-parent.offspring.plots(x)
+parentOffspringPlots(x)
 }
 
 \arguments{
@@ -24,7 +24,7 @@ parent.offspring.plots(x)
 \seealso{
 }
 \examples{
-	parent.offspring.plots(a$particleDataFrame)
+	parentOffspringPlots(a$particleDataFrame)
 }
 \keyword{}
 

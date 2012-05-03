@@ -14,7 +14,6 @@ BCP<-function(RealParam, HPD, verbose=F){
 	Covered<-matrix(nrow=length(HPD), ncol=length(rps[[i]]))
 	colnames(Covered)<-rownames(HPD[[1]])
 	for(i in 1:length(HPD)){
-		print(HPD)
 		for(j in 1:length(rps[[i]])){
 			if(!is.na(HPD[[i]][j,4])) { #keep only parameters that vary (ie, not fixed)
 				if(HPD[[i]][j,4] > rps[[i]][j] && rps[[i]][j] > HPD[[i]][j,3]) {
