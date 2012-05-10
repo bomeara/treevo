@@ -76,11 +76,11 @@ if (startFromCheckpoint) {
 		time.per.gen<-test$time.per.gen
 	}
 } #if(startFromCheckpoint) bracket
+library(foreach, quietly=T)
 
 cores=1
 if (multicore) {
 	library(doMC, quietly=T)
-	library(foreach, quietly=T)
 	if (is.na(coreLimit)){
 		registerDoMC()
 		getDoParWorkers()->cores
