@@ -237,7 +237,6 @@ while (!run.goingwell) {
 			trueFreeValues<-trueFreeValuesANDSummaryValues[,1:numberParametersFree]
 			#print(trueFreeValues)
 			summaryValues<-trueFreeValuesANDSummaryValues[,-1:-numberParametersFree]
-			#print(trueFreeValues)
 			while(sink.number()>0) {sink()}
 			save(trueFreeValues,summaryValues,file=paste("simulations",jobName,".Rdata",sep=""))
 			simTime<-proc.time()[[3]]-Time
@@ -250,6 +249,11 @@ while (!run.goingwell) {
 	startTime<-proc.time()[[3]]
 	library(abc)
 	
+	#boxcox on sims
+	boxCoxTransform(summaryValues)
+	#pls
+	
+	#abcResults<-abc(target=summaryStatsLong(phy, traits, jobName=jobName), param=prunedPlsResult, sumstat=prunedSummaryValues, tol=abcTolerance, method=abcMethod)	
 	abcResults<-abc(target=summaryStatsLong(phy, traits, jobName=jobName), param=trueFreeValues, sumstat=summaryValues, tol=abcTolerance, method=abcMethod)
 	
 	save(abcResults,trueFreeValues,summaryValues,file=paste("abc_pkg_rej_results_",jobName,".Rdata",sep=""))
