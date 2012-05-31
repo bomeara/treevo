@@ -108,7 +108,7 @@ compareIPD<-function(particleDataFrame1, particleDataFrame2){
 		subpDF_1<-as.data.frame(subset(particleDataFrame1[which(particleDataFrame1$weight>0),], generation==gen)[7:dim(particleDataFrame1)[2]])
 		subpDF_2<-as.data.frame(subset(particleDataFrame2[which(particleDataFrame2$weight>0),], generation==gen)[7:dim(particleDataFrame2)[2]])
 		rownames(runIPD)<-paste("gen", c(1:max(particleDataFrame1$generation)), sep="")
-		colnames(runIPD)<-names(subpDF)
+		colnames(runIPD)<-names(subpDF_1)
 		for (param in 1:dim(runIPD)[2]){ #each param
 			IPD<-median(interparticleDistance(subpDF_1[,param], subpDF_2[,param]))
 			print(IPD)
