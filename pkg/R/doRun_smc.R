@@ -5,305 +5,208 @@
 #the doRun function takes input from the user and then automatically guesses optimal parameters, though user overriding is also possible.
 #the guesses are used to do simulations near the expected region. If omitted, they are set to the midpoint of the input parameter matrices
 
-doRun<-function(phy, traits, intrinsicFn, extrinsicFn, summaryFns=c(rawValuesSummaryStats, geigerUnivariateSummaryStats2), startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, startingStatesGuess=c(), intrinsicStatesGuess=c(), extrinsicStatesGuess=c(), TreeYears=1e+06, toleranceVector=c(), numParticles=1000, standardDevFactor=0.05, StartSims=NA, plot=FALSE, vipthresh=0.8, epsilonProportion=0.2, epsilonMultiplier=0.5, nStepsPRC=4, maxTries=1, jobName=NA, debug=TRUE, trueStartingState=NA, trueIntrinsicState=NA, whenToKill=20, startFromCheckpoint=FALSE, stopRule=TRUE, stopValue=0.05, multicore=TRUE, coreLimit=NA) {
+doRun_smc<-function(phy, traits, intrinsicFn, extrinsicFn, summaryFns=c(rawValuesSummaryStats, geigerUnivariateSummaryStats2), startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, startingStatesGuess=c(), intrinsicStatesGuess=c(), extrinsicStatesGuess=c(), TreeYears=1e+04, toleranceVector=c(), numParticles=300, standardDevFactor=0.20, StartSims=300, plot=FALSE, vipthresh=0.8, epsilonProportion=0.7, epsilonMultiplier=0.7, nStepsPRC=5, jobName=NA, debug=TRUE, trueStartingState=NA, trueIntrinsicState=NA, stopRule=TRUE, stopValue=0.05, multicore=FALSE, coreLimit=NA, filenames=c("rejectionsims.RData")) {
 
 if (!is.binary.tree(phy)) {
 	print("Warning: Tree is not fully dichotomous")
 }
 
-if (debug){
-	cat("\nDebugging doRun\n")
-	dput(doRun)
-}
-
-##Importing checkpoint saving stuff:
-if (startFromCheckpoint) {
-	paste("partialResults", jobName, ".txt*", sep="")->pRname
-	paste("WS", jobName, ".Rdata", sep="")->WSname
-
-	system(command=paste("ls ", pRname, " | grep -c ", pRname, sep=""), intern=TRUE) -> filecount
-
-	if (filecount=="0") {  #if file is absent 
-		startFromCheckpoint=FALSE
-		dataGenerationStep=0
-		cat("\nstart from checkpoint =", startFromCheckpoint, "\n")
-		cat("dataGenerationStep=", dataGenerationStep, "\n")
-		rejects<-c()
-	}
-
-	if (filecount=="1"){  #if file is present 
-		paste("partialResults", jobName, ".txt", sep="")->pRname
-		paste(load(pRname))
-		dataGenerationStep <- max(test$particleDataFrame$generation)
-		if (dataGenerationStep==nStepsPRC){
-			cat ("\n\nRun was finished already\n\n")
-		}
-		#paste(load(WSname))
-		cat ("\nstart from checkpoint =", startFromCheckpoint, "\n")
-		cat("dataGenerationStep=", dataGenerationStep, "\n")
-		nameVector<-c("generation", "attempt", "id", "parentid", "distance", "weight")
-		run.goingwell=TRUE
-		input.data<-test$input.data
-		boxcox.output<-test$boxcoxLambda
-		boxcoxLambda<-test$boxcox.output$lambda
-		boxcoxAddition<-test$boxcox.output$addition
-		prunedPlsResult<-test$boxcox.output$PlsResult
-		prunedSummaryValues<-test$boxcox.output$prunedSummaryValues
-		originalSummaryStats<-test$boxcox.output$originalSummaryStats
-		particleDataFrame<-test$particleDataFrame
-		epsilonDistance<-test$epsilonDistance
+timeStep<-1/TreeYears			
 	
-		toleranceVector<-test$toleranceVector
-			if (length(toleranceVector) < nStepsPRC){
-				#print(toleranceVector)
-				toleranceVector<-rep(epsilonDistance, nStepsPRC)
-				for (step in 2:nStepsPRC) {
-					toleranceVector[step]<-toleranceVector[step-1]*as.numeric(input.data[11])
-				}
-				#print(toleranceVector)
-			}	
-		todo<-test$todo
-		phy<-test$phy
-		splits<-getSimulationSplits(phy)
-		traits<-test$traits
-		rejects.gen.one<-test$rejects.gen.one
-		rejects<-test$rejects
-		particleWeights<-test$particleWeights
-		particleVector<-test$particleVector
-		numberParametersFree<-test$numberParametersFree
-		param.stdev<-test$param.stdev
-		weightedMeanParam<-test$weightedMeanParam
-		time.per.gen<-test$time.per.gen
-	}
-} #if(startFromCheckpoint) bracket
-library(foreach, quietly=T)
+splits<-getSimulationSplits(phy) #initialize this info
+		
+#figure out number of free params		
+numberParametersTotal<-dim(startingPriorsValues)[2] +  dim(intrinsicPriorsValues)[2] + dim(extrinsicPriorsValues)[2] 
+numberParametersFree<-numberParametersTotal
+numberParametersStarting<-0
+numberParametersIntrinsic<-0
+numberParametersExtrinsic<-0
+freevariables<-matrix(data=NA, nrow=2, ncol=0)
+titlevector<-c()
+freevector<-c()
+			
+#create PriorMatrix
+namesForPriorMatrix<-c() 
+PriorMatrix<-matrix(c(startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns), nrow=1, ncol=numberParametersTotal)
+for (a in 1:dim(startingPriorsValues)[2]) {
+	namesForPriorMatrix<-c(paste("StartingStates", a, sep=""))
+}
+for (b in 1:dim(intrinsicPriorsValues)[2]) {
+	namesForPriorMatrix<-append(namesForPriorMatrix, paste("IntrinsicValue", b, sep=""))
+}
+#print(extrinsicPriorsValues)
+for (c in 1:dim(extrinsicPriorsValues)[2]) {
+	namesForPriorMatrix <-append(namesForPriorMatrix, paste("ExtrinsicValue", c, sep=""))
+}
+PriorMatrix<-rbind(PriorMatrix, cbind(startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues))
+colnames(PriorMatrix)<-namesForPriorMatrix
+rownames(PriorMatrix)<-c("shape", "value1", "value2")
 
-cores=1
-if (multicore) {
-	library(doMC, quietly=T)
-	if (is.na(coreLimit)){
-		registerDoMC()
-		getDoParWorkers()->cores
+#Calculate freevector				
+for (i in 1:dim(startingPriorsValues)[2]) {
+	priorFn<-match.arg(arg=startingPriorsFns[i],choices=c("fixed", "uniform", "normal", "lognormal", "gamma", "exponential"),several.ok=FALSE)
+	if (priorFn=="fixed") {
+		numberParametersFree<-numberParametersFree-1
+		freevector<-c(freevector, FALSE)
 	}
 	else {
-		registerDoMC(coreLimit)
-		coreLimit->cores
+		numberParametersStarting<-numberParametersStarting+1
+		freevariables<-cbind(freevariables, startingPriorsValues[, i])
+		titlevector <-c(titlevector, paste("Starting", numberParametersStarting))
+		freevector<-c(freevector, TRUE)
+	}
+}
+for (i in 1:dim(intrinsicPriorsValues)[2]) {
+	priorFn<-match.arg(arg=intrinsicPriorsFns[i],choices=c("fixed", "uniform", "normal", "lognormal", "gamma", "exponential"),several.ok=FALSE)
+	if (priorFn=="fixed") {
+		numberParametersFree<-numberParametersFree-1
+		freevector<-c(freevector, FALSE)
+	}
+	else {
+		numberParametersIntrinsic<-numberParametersIntrinsic+1
+		freevariables<-cbind(freevariables, intrinsicPriorsValues[, i])
+		titlevector <-c(titlevector, paste("Intrinsic", numberParametersIntrinsic))
+		freevector<-c(freevector, TRUE)
+	}
+}
+for (i in 1:dim(extrinsicPriorsValues)[2]) {
+	priorFn<-match.arg(arg=extrinsicPriorsFns[i],choices=c("fixed", "uniform", "normal", "lognormal", "gamma", "exponential"),several.ok=FALSE)
+	if (priorFn=="fixed") {
+		numberParametersFree<-numberParametersFree-1
+		freevector<-c(freevector, FALSE)
+	}
+	else {
+		numberParametersExtrinsic<-numberParametersExtrinsic+1
+		freevariables<-cbind(freevariables, extrinsicPriorsValues[, i])
+		titlevector <-c(titlevector, paste("Extrinsic", numberParametersExtrinsic))
+		freevector<-c(freevector, TRUE)
+	}
+}
+		
+#initialize weighted mean sd matrices
+weightedMeanParam<-matrix(nrow=nStepsPRC, ncol=numberParametersTotal)
+colnames(weightedMeanParam)<-namesForPriorMatrix
+rownames(weightedMeanParam)<-paste("Gen", c(1: nStepsPRC), sep="")
+param.stdev<-matrix(nrow=nStepsPRC, ncol=numberParametersTotal)
+colnames(param.stdev)<-namesForPriorMatrix
+rownames(param.stdev)<-paste("Gen", c(1: nStepsPRC), sep="")
+
+#initialize guesses, if needed
+if (length(startingStatesGuess)==0) { #if no user guesses, try pulling a value from the prior
+	startingStatesGuess<-rep(NA,length(startingPriorsFns))
+	for (i in 1:length(startingPriorsFns)) {
+		startingStatesGuess[i]<-pullFromPrior(startingPriorsValues[,i],startingPriorsFns[i])
+	}
+}
+if (length(intrinsicStatesGuess)==0) { #if no user guesses, try pulling a value from the prior
+	intrinsicStatesGuess<-rep(NA,length(intrinsicPriorsFns))
+	for (i in 1:length(intrinsicPriorsFns)) {
+		intrinsicStatesGuess[i]<-pullFromPrior(intrinsicPriorsValues[,i],intrinsicPriorsFns[i])
+	}
+}
+if (length(extrinsicStatesGuess)==0) { #if no user guesses, try pulling a value from the prior
+	extrinsicStatesGuess<-rep(NA,length(extrinsicPriorsFns))
+	for (i in 1:length(extrinsicPriorsFns)) {
+		extrinsicStatesGuess[i]<-pullFromPrior(extrinsicPriorsValues[,i],extrinsicPriorsFns[i])
 	}
 }
 
-timeStep<-1/TreeYears			
-run.goingwell=FALSE
-	
-for (try in 1:maxTries)	{
-	cat("\n\n****  TRY", try, "of", maxTries, " ****\n\n")
-	while (!run.goingwell) {
-		run.goingwell=TRUE
-	
-		if (startFromCheckpoint==FALSE) {
+if (is.na(StartSims)) {
+	StartSims<-1000*numberParametersFree
+}
 
-			#run.finished=FALSE
-			splits<-getSimulationSplits(phy) #initialize this info
-		
-			numberParametersTotal<-dim(startingPriorsValues)[2] +  dim(intrinsicPriorsValues)[2] + dim(extrinsicPriorsValues)[2] #figure out number of free params
-			numberParametersFree<-numberParametersTotal
-			numberParametersStarting<-0
-			numberParametersIntrinsic<-0
-			numberParametersExtrinsic<-0
-			freevariables<-matrix(data=NA, nrow=2, ncol=0)
-			titlevector<-c()
-			freevector<-c()
-			
-			#create PriorMatrix
-			namesForPriorMatrix<-c() 
-			PriorMatrix<-matrix(c(startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns), nrow=1, ncol=numberParametersTotal)
-			for (a in 1:dim(startingPriorsValues)[2]) {
-				namesForPriorMatrix<-c(paste("StartingStates", a, sep=""))
-			}
-			for (b in 1:dim(intrinsicPriorsValues)[2]) {
-				namesForPriorMatrix<-append(namesForPriorMatrix, paste("IntrinsicValue", b, sep=""))
-			}
-			#print(extrinsicPriorsValues)
-			for (c in 1:dim(extrinsicPriorsValues)[2]) {
-				namesForPriorMatrix <-append(namesForPriorMatrix, paste("ExtrinsicValue", c, sep=""))
-			}
-			PriorMatrix<-rbind(PriorMatrix, cbind(startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues))
-			#PriorMatrix<-rbind(PriorMatrix1, PriorMatrix2)
-			colnames(PriorMatrix)<-namesForPriorMatrix
-			rownames(PriorMatrix)<-c("shape", "value1", "value2")
-			#print(PriorMatrix)
-				
-			for (i in 1:dim(startingPriorsValues)[2]) {
-				priorFn<-match.arg(arg=startingPriorsFns[i],choices=c("fixed", "uniform", "normal", "lognormal", "gamma", "exponential"),several.ok=FALSE)
-				if (priorFn=="fixed") {
-					numberParametersFree<-numberParametersFree-1
-					freevector<-c(freevector, FALSE)
-				}
-				else {
-					numberParametersStarting<-numberParametersStarting+1
-					freevariables<-cbind(freevariables, startingPriorsValues[, i])
-					titlevector <-c(titlevector, paste("Starting", numberParametersStarting))
-					freevector<-c(freevector, TRUE)
-				}
-				#print(numberParametersStarting)
-			}
-			for (i in 1:dim(intrinsicPriorsValues)[2]) {
-				priorFn<-match.arg(arg=intrinsicPriorsFns[i],choices=c("fixed", "uniform", "normal", "lognormal", "gamma", "exponential"),several.ok=FALSE)
-				if (priorFn=="fixed") {
-					numberParametersFree<-numberParametersFree-1
-					freevector<-c(freevector, FALSE)
-				}
-				else {
-					numberParametersIntrinsic<-numberParametersIntrinsic+1
-					freevariables<-cbind(freevariables, intrinsicPriorsValues[, i])
-					titlevector <-c(titlevector, paste("Intrinsic", numberParametersIntrinsic))
-					freevector<-c(freevector, TRUE)
-				}
-				#print(numberParametersIntrinsic)
-			}
-		
-			for (i in 1:dim(extrinsicPriorsValues)[2]) {
-				priorFn<-match.arg(arg=extrinsicPriorsFns[i],choices=c("fixed", "uniform", "normal", "lognormal", "gamma", "exponential"),several.ok=FALSE)
-				if (priorFn=="fixed") {
-					numberParametersFree<-numberParametersFree-1
-					freevector<-c(freevector, FALSE)
-				}
-				else {
-					numberParametersExtrinsic<-numberParametersExtrinsic+1
-					freevariables<-cbind(freevariables, extrinsicPriorsValues[, i])
-					titlevector <-c(titlevector, paste("Extrinsic", numberParametersExtrinsic))
-					freevector<-c(freevector, TRUE)
-				}
-				#print(numberParametersExtrinsic)
-			}
-		
-			param.stdev<-matrix(nrow=nStepsPRC, ncol=numberParametersTotal)
-			colnames(param.stdev)<-namesForPriorMatrix
-			rownames(param.stdev)<-paste("Gen", c(1: nStepsPRC), sep="")
-			weightedMeanParam<-matrix(nrow=nStepsPRC, ncol=numberParametersTotal)
-			colnames(weightedMeanParam)<-namesForPriorMatrix
-			rownames(weightedMeanParam)<-paste("Gen", c(1: nStepsPRC), sep="")
-			#names(param.stdev)<-c("Generation", )
-			#initialize guesses, if needed
-			if (length(startingStatesGuess)==0) { #if no user guesses, try pulling a value from the prior
-				startingStatesGuess<-rep(NA,length(startingPriorsFns))
-				for (i in 1:length(startingPriorsFns)) {
-					startingStatesGuess[i]<-pullFromPrior(startingPriorsValues[,i],startingPriorsFns[i])
-				}
-			}
-			if (length(intrinsicStatesGuess)==0) { #if no user guesses, try pulling a value from the prior
-				intrinsicStatesGuess<-rep(NA,length(intrinsicPriorsFns))
-				for (i in 1:length(intrinsicPriorsFns)) {
-					intrinsicStatesGuess[i]<-pullFromPrior(intrinsicPriorsValues[,i],intrinsicPriorsFns[i])
-				}
-			}
-			if (length(extrinsicStatesGuess)==0) { #if no user guesses, try pulling a value from the prior
-				extrinsicStatesGuess<-rep(NA,length(extrinsicPriorsFns))
-				for (i in 1:length(extrinsicPriorsFns)) {
-					extrinsicStatesGuess[i]<-pullFromPrior(extrinsicPriorsValues[,i],extrinsicPriorsFns[i])
-				}
-			}
-	if (is.na(StartSims)) {
-		StartSims<-1000*numberParametersFree
-	}
-	nrepSim<-StartSims*((2^try)/2) #If initial simulations are not enough, and we need to try again then new analysis will double number of initial simulations
-	input.data<-rbind(jobName, length(phy[[3]]), nrepSim, timeStep, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor, try, trueStartingState, trueIntrinsicState)		
-	cat(paste("Number of initial simulations set to", nrepSim, "\n"))
-	cat(paste("Using", cores, "core(s) for initial simulations \n\n"))
+nrepSim<-StartSims #Used to be = StartSims*((2^try)/2), If initial simulations are not enough, and we need to try again then new analysis will double number of initial simulations
+input.data<-rbind(jobName, length(phy[[3]]), nrepSim, timeStep, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor, trueStartingState, trueIntrinsicState)		
+cat(paste("Number of initial simulations set to", nrepSim, "\n"))
 	
 			#---------------------- Initial Simulations (Start) ------------------------------
 			#See Wegmann et al. Efficient Approximate Bayesian Computation Coupled With Markov Chain Monte Carlo Without Likelihood. Genetics (2009) vol. 182 (4) pp. 1207-1218 for more on the method
-			Time<-proc.time()[[3]]
-			trueFreeValues<-matrix(nrow=0, ncol= numberParametersFree)
-			summaryValues<-matrix(nrow=0, ncol=22+dim(traits)[1]) #there are 22 summary statistics possible, plus the raw data
-			#while(dim(trueFreeValuesANDSummaryValues)[1]>nrepSim){
-				trueFreeValuesANDSummaryValues<-foreach(1:nrepSim, .combine=rbind) %dopar% simulateData(startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, trueFreeValues, freevector, timeStep, intrinsicFn, extrinsicFn, jobName)
-			#}
-			
-			#print(trueFreeValuesANDSummaryValues)
-			
-			trueFreeValues<-trueFreeValuesANDSummaryValues[,1:numberParametersFree]
-			#print(trueFreeValues)
-			summaryValues<-trueFreeValuesANDSummaryValues[,-1:-numberParametersFree]
-			#print(trueFreeValues)
-			while(sink.number()>0) {sink()}
-			save(trueFreeValues,summaryValues,file=paste("CompletedSimulations",jobName,".Rdata",sep=""))
-			#system(command=paste("rm ", paste("RunningSimulations",jobName,".Rdata",sep="")))
-			simTime<-proc.time()[[3]]-Time
-			cat(paste("Initial simulations took", round(simTime, digits=3), "seconds"), "\n")
+Time<-proc.time()[[3]]
+trueFreeValues<-matrix(nrow=0, ncol= numberParametersFree)
+summaryValues<-matrix(nrow=0, ncol=22+dim(traits)[1]) #there are 22 summary statistics possible, plus the raw data
+
+parallelSimulation(nrepSim, coreLimit, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, trueFreeValues, freevector, timeStep, intrinsicFn, extrinsicFn, multicore, filename=filenames[1])
+cat("\n\n")
+trueFreeValuesANDSummaryValues<-loadSimulations(filenames)
+
+trueFreeValues<-trueFreeValuesANDSummaryValues[,1:numberParametersFree]
+summaryValues<-trueFreeValuesANDSummaryValues[,-1:-numberParametersFree]
+while(sink.number()>0) {sink()}
+save(trueFreeValues,summaryValues,file=paste("CompletedSimulations",jobName,".Rdata",sep=""))
+simTime<-proc.time()[[3]]-Time
+cat(paste("Initial simulations took", round(simTime, digits=3), "seconds"), "\n")
 			#---------------------- Initial Simulations (End) ------------------------------
 
 
 			#---------------------- Box-Cox transformation (Start) ------------------------------
-			library("car")
-			summaryDebugging<-c() #for boxcox debugging
-			summaryDebugging$preTransform<-summaryValues #for boxcox debugging
-			#now put this into the boxcox function to get best lambda for each summary stat
-			boxcoxLambda<-rep(NA, dim(summaryValues)[2])
-			boxcoxAddition<-rep(NA, dim(summaryValues)[2])
-			for (summaryValueIndex in 1:dim(summaryValues)[2]) {
-				boxcoxAddition[summaryValueIndex]<-0
-				lowValue<-min(summaryValues[, summaryValueIndex])-4*sd(summaryValues[, summaryValueIndex])
-				#print (lowValue)
-				if (lowValue<=0) {
-					boxcoxAddition[summaryValueIndex]<-4*abs(lowValue) #just for some protection against low values, since box.cox needs non-negative values
-				}
-				#cat("\nsummary values[", summaryValueIndex, "] = ")
-				#print(summaryValues[, summaryValueIndex])
-				summary<-summaryValues[, summaryValueIndex]+boxcoxAddition[summaryValueIndex]
-				summaryDebugging$boxcoxAddition<-summary #for boxcox debugging
-				boxcoxLambda[summaryValueIndex]<-1
-				if(sd(summaryValues[, summaryValueIndex])>0) { #box.cox fails if all values are identical
-					#print("now calculating newLambda")
-					#print("summary")
-					#print(summary)
-					newLambda<-as.numeric(try(powerTransform(summary,method="Nelder-Mead")$lambda)) #new car uses powerTransform instead of box.cox.powers
-					#print("done calculating newLambda")
-					if (!is.na(newLambda)) {
-						boxcoxLambda[summaryValueIndex]<-newLambda
-						#print(boxcoxLambda)
-					}
-				}
-				summaryValues[, summaryValueIndex]<-summary^boxcoxLambda[summaryValueIndex]
-			}
-			summaryDebugging$postTransform<-summaryValues
-			print(summaryDebugging)
-			save(summaryDebugging, file=paste("summaryDebugging", jobName, ".Rdata", sep=""))
+	boxcoxEstimates<-boxcoxEstimation(summaryValues)
+	boxcoxAddition<-boxcoxEstimates$boxcoxAddition
+	boxcoxLambda<-boxcoxEstimates$boxcoxLambda
+	boxcoxSummaryValues<-boxcoxEstimates$boxcoxSummaryValues
+	save(trueFreeValues, file="tFV")
+	save(boxcoxSummaryValues, file="bcSV")
+	plsEstimates<-plsEstimation(trueFreeValues, boxcoxSummaryValues, vipthresh)
+	prunedPlsResult<-plsEstimates$prunedPlsResult
+	vipResult<-plsEstimates$vipResult
+	prunedSummaryValues<-plsEstimates$prunedSummaryValues
+	todo<-plsEstimates$todo
+	
+			# library("car")
+			# boxcoxLambda<-rep(NA, dim(summaryValues)[2])
+			# boxcoxAddition<-rep(NA, dim(summaryValues)[2])
+			# for (summaryValueIndex in 1:dim(summaryValues)[2]) {
+				# boxcoxAddition[summaryValueIndex]<-0
+				# lowValue<-min(summaryValues[, summaryValueIndex])-4*sd(summaryValues[, summaryValueIndex])
+				# if (lowValue<=0) {
+					# boxcoxAddition[summaryValueIndex]<-4*abs(lowValue) #just for some protection against low values, since box.cox needs non-negative values
+				# }
+				# summary<-summaryValues[, summaryValueIndex]+boxcoxAddition[summaryValueIndex]
+				# boxcoxLambda[summaryValueIndex]<-1
+				# if(sd(summaryValues[, summaryValueIndex])>0) { #box.cox fails if all values are identical
+					# newLambda<-as.numeric(try(powerTransform(summary,method="Nelder-Mead")$lambda)) #new car uses powerTransform instead of box.cox.powers
+					# if (!is.na(newLambda)) {
+						# boxcoxLambda[summaryValueIndex]<-newLambda
+					# }
+				# }
+				# summaryValues[, summaryValueIndex]<-summary^boxcoxLambda[summaryValueIndex]
+			# }
+			
 			#---------------------- Box-Cox transformation (End) ------------------------------
 
 
-			#----------------- Find best set of summary stats to use for this problem. (Start) -----------------
+			#----------------- PLS regression: find best set of summary stats to use (Start) -----------------
 			#Use mixOmics to to find the optimal set of summary stats. Store this info in the todo vector. Note that this uses a different package (mixOmics rather than pls than that used by Weggman et al. because this package can calculate variable importance in projection and deals fine with NAs)
-			library("mixOmics")
-			plsResult<-pls(Y=trueFreeValues, X=summaryValues)
-			vipResult<-vip(plsResult)
-			todo<-rep(1, dim(summaryValues)[2]) #initialize the vector that indicates which summary stats to include
+			# library("mixOmics")
+			# plsResult<-pls(Y=trueFreeValues, X=summaryValues)
+			# vipResult<-vip(plsResult)
+			# todo<-rep(1, dim(summaryValues)[2]) #initialize the vector that indicates which summary stats to include
 			
-			summaryIndexOffset=0 #since R excludes invariant columns from regression, this offests so we don't try to extract from these columns
-			#print(vipResult)
-			#print(plsResult)
-			#print(dim(summaryValues))
-			nearZeroVarVector<-mixOmics:::nearZeroVar(summaryValues)
-			nearZeroVarVector<-nearZeroVarVector$Position
-			#print(nearZeroVarVector)
-			for (summaryIndex in 1:dim(summaryValues)[2]) {
+			# summaryIndexOffset=0 #since R excludes invariant columns from regression, this offests so we don't try to extract from these columns
+			# #print(vipResult)
+			# #print(plsResult)
+			# #print(dim(summaryValues))
+			# nearZeroVarVector<-mixOmics:::nearZeroVar(summaryValues)
+			# nearZeroVarVector<-nearZeroVarVector$Position
+			# #print(nearZeroVarVector)
+			# for (summaryIndex in 1:dim(summaryValues)[2]) {
 				
-				#print(summaryIndex)
-				if (summaryIndex %in% nearZeroVarVector) {
-					summaryIndexOffset=summaryIndexOffset+1
-					todo[summaryIndex]<-0 #exclude this summary stat because it lacks variation
-				}	
-				else if (max(vipResult[summaryIndex-summaryIndexOffset, ]) < vipthresh) {
-					todo[summaryIndex]<-0 #exclude this summary stat, because it is too unimportant
-				}	
-			}
+				# #print(summaryIndex)
+				# if (summaryIndex %in% nearZeroVarVector) {
+					# summaryIndexOffset=summaryIndexOffset+1
+					# todo[summaryIndex]<-0 #exclude this summary stat because it lacks variation
+				# }	
+				# else if (max(vipResult[summaryIndex-summaryIndexOffset, ]) < vipthresh) {
+					# todo[summaryIndex]<-0 #exclude this summary stat, because it is too unimportant
+				# }	
+			# }
 		
-			while(sink.number()>0) {sink()}
-			#print(todo)
+			# while(sink.number()>0) {sink()}
+			# #print(todo)
 			
-			prunedSummaryValues<-summaryValues[, which(todo>0)]
-			#print("prunedSummaryValues", prunedSummaryValues, "\n")
-			prunedPlsResult<-pls(Y=trueFreeValues, X=prunedSummaryValues)
-			#print("prunedPlsResult", prunedPlsResult, "\n")
+			# prunedSummaryValues<-summaryValues[, which(todo>0)]
+			# #print("prunedSummaryValues", prunedSummaryValues, "\n")
+			# prunedPlsResult<-pls(Y=trueFreeValues, X=prunedSummaryValues)
+			# #print("prunedPlsResult", prunedPlsResult, "\n")
 			originalSummaryStats<-boxcoxplsSummary(todo, summaryStatsLong(phy, traits, todo, jobName=jobName), prunedPlsResult, boxcoxLambda, boxcoxAddition)
 			
 			boxcox.output<-vector("list", 5)
@@ -312,7 +215,7 @@ for (try in 1:maxTries)	{
 			boxcox.output$PlsResult<-prunedPlsResult
 			boxcox.output$prunedSummaryValues<-prunedSummaryValues
 			boxcox.output$originalSummaryStats<-originalSummaryStats
-			#----------------- Find best set of summary stats to use for this problem. (End) -----------------
+			#----------------- PLS regression: find best set of summary stats to use (End) -----------------
 			
 			#----------------- Find distribution of distances (Start) ----------------------
 			predictResult<-as.matrix(predict(prunedPlsResult, prunedSummaryValues)$predict[, , 1])
@@ -418,11 +321,7 @@ for (try in 1:maxTries)	{
 				#cat("\n\nlength of vectorForDataFrame = ", length(vectorForDataFrame), "\n", "length of startingStates = ", length(startingStates), "\nlength of intrinsicValues = ", length(intrinsicValues), "\nlength of extrinsicValues = ", length(extrinsicValues), "\ndistance = ", distance(newparticleVector[[1]]), "\nweight = ", getWeight(newparticleVector[[1]]), "\n", vectorForDataFrame, "\n")
 				particleDataFrame<-rbind(particleDataFrame, vectorForDataFrame)
 				cat(particle-1, attempts, floor(numParticles*attempts/particle), startingStates(newparticleVector[[1]]), intrinsicValues(newparticleVector[[1]]), extrinsicValues(newparticleVector[[1]]), distance(newparticleVector[[1]]), "\n")
-					if (floor(numParticles*attempts/particle)>=floor(numParticles)*whenToKill){
-						run.goingwell=FALSE
-						cat ("\n\nexpected number of generations is too high\n\n")
-						break 
-					}
+					
 		} #while (particle<=numParticles) bracket
 		
 			names(particleDataFrame)<-nameVector
@@ -440,33 +339,6 @@ for (try in 1:maxTries)	{
 			#stdev.Intrinsic[i]<-sd(subset(all.a[[run]][which(all.a[[run]]$weight>0),], generation==i)[,param[2]])
 		
 		
-			if (!run.goingwell){	
-				if (try==maxTries){
-					write(input.data,file="Error.txt", append=TRUE)
-					ErrorParticleFrame<-vector("list", 4)
-					#names(particleDataFrame)<-nameVector
-					ErrorParticleFrame[[1]]<-input.data
-					ErrorParticleFrame[[2]]<-todo
-					ErrorParticleFrame[[3]]<-particleDataFrame
-					ErrorParticleFrame[[4]]<-toleranceVector
-					#ErrorParticleFrame->paste("ErrorParticleFrame", jobName, sep="")
-					save(ErrorParticleFrame, file=paste("ErrorParticleFrame", jobName, ".txt", sep=""))
-					cat("\n\nTried", maxTries, "times and all failed!")
-					cat("\ninput.data was appended to Error.txt file within the working directory\n\n") #priors might be really bad if this is the case.  Check prior distributions before setting up a new run.
-				}
-				else if (try < maxTries){
-					ErrorParticleFrame<-vector("list", 4)
-					#names(particleDataFrame)<-nameVector
-					ErrorParticleFrame[[1]]<-input.data
-					ErrorParticleFrame[[2]]<-todo
-					ErrorParticleFrame[[3]]<-particleDataFrame
-					ErrorParticleFrame[[4]]<-toleranceVector
-					#ErrorParticleFrame->paste("ErrorParticleFrame", jobName, sep="")
-					save(ErrorParticleFrame, file=paste("ErrorParticleFrame", jobName, ".txt", sep=""))
-					cat("\n\nAborting try", try, "of", maxTries, "at Generation 1\n\n")
-				}
-				break
-			}	
 
 			save.image(file=paste("WS", jobName, ".Rdata", sep=""))
 			test<-vector("list")
@@ -486,18 +358,14 @@ for (try in 1:maxTries)	{
 			test$boxcox.output<-boxcox.output
 			test$param.stdevtest$param.stdev<-param.stdev
 			test$weightedMeanParam<-weightedMeanParam
-			test$cores<-cores
 			test$simTime<-simTime
 			test$time.per.gen<-time.per.gen
 			test$vipResult<-vipResult
 			save(test, file=paste("partialResults", jobName, ".txt", sep=""))
 			
 			
-		} #startFromCheckpoint bracket
 		
-			if (startFromCheckpoint==TRUE || dataGenerationStep < nStepsPRC) {
 			
-				if (run.goingwell){
 				
 					while (dataGenerationStep < nStepsPRC) {
 						dataGenerationStep<-dataGenerationStep+1
@@ -695,18 +563,10 @@ for (try in 1:maxTries)	{
 
 							particleDataFrame<-rbind(particleDataFrame, vectorForDataFrame) #NOTE THAT WEIGHTS AREN'T NORMALIZED IN THIS DATAFRAME
 							cat(particle-1, attempts, floor(numParticles*attempts/particle), startingStates(newparticleVector[[1]]), intrinsicValues(newparticleVector[[1]]), extrinsicValues(newparticleVector[[1]]), distance(newparticleVector[[1]]), "\n")
-							if (floor(numParticles*attempts/particle)>=floor(numParticles)*whenToKill){
-								run.goingwell=FALSE
-								cat ("\n\nexpected number of generations is too high\n\n")
-								break 
-							}
-				
+											
 						} #while (particle<=numParticles) bracket
 					
-						if (!run.goingwell){
-							break
-						}		
-					
+									
 				
 						particleDataFrame[which(particleDataFrame$generation==dataGenerationStep), ]$weight<-particleDataFrame[which(particleDataFrame$generation==dataGenerationStep), ]$weight/(sum(particleDataFrame[which(particleDataFrame$generation==dataGenerationStep), ]$weight))
 				
@@ -757,40 +617,14 @@ for (try in 1:maxTries)	{
 						test$boxcox.output<-boxcox.output
 						test$param.stdev<-param.stdev
 						test$weightedMeanParam<-weightedMeanParam
-						test$cores<-cores
 						test$simTime
 						test$time.per.gen<-time.per.gen
 						test$vipResult<-vipResult
 						save(test, file=paste("partialResults", jobName, ".txt", sep=""))
 						
 					} #while (dataGenerationStep < nStepsPRC) bracket
-				} #if (run.goingwell) bracket
 			
-				if (!run.goingwell){	
-					if (try==maxTries){
-						write(input.data,file="Error.txt", append=TRUE)
-						ErrorParticleFrame<-vector("list", 4)
-						#names(particleDataFrame)<-nameVector
-						ErrorParticleFrame[[1]]<-input.data
-						ErrorParticleFrame[[2]]<-todo
-						ErrorParticleFrame[[3]]<-particleDataFrame
-						ErrorParticleFrame[[4]]<-toleranceVector
-						save(ErrorParticleFrame, file=paste("ErrorParticleFrame", jobName, ".txt", sep=""))
-						cat("\n\nTried", maxTries, "times and all failed!")
-						cat("\ninput.data was appended to Error.txt file within the working directory\n\n")
-					}
-					else if (try < maxTries){
-						ErrorParticleFrame<-vector("list", 4)
-						#names(particleDataFrame)<-nameVector
-						ErrorParticleFrame[[1]]<-input.data
-						ErrorParticleFrame[[2]]<-todo
-						ErrorParticleFrame[[3]]<-particleDataFrame
-						ErrorParticleFrame[[4]]<-toleranceVector
-						save(ErrorParticleFrame, file=paste("ErrorParticleFrame", jobName, ".txt", sep=""))
-						cat("\n\nAborting try", try, "of", maxTries, "at Generation", dataGenerationStep, "\n\n")
-					}
-					break
-				}		
+		
 				
 				names(particleDataFrame)<-nameVector
 				if(plot) {
@@ -804,7 +638,6 @@ for (try in 1:maxTries)	{
 				} 
 				
 				
-			} # if(startFromCheckpoint==TRUE || dataGenerationStep < nStepsPRC) bracket
 			
 			#---------------------- ABC-PRC (End) --------------------------------
 			
@@ -814,13 +647,12 @@ for (try in 1:maxTries)	{
 			}
 		
 		
-		} #while (!run.goingwell) bracket
 		
 		#Calculate summary statistics on final generation particles
 		FinalParamPredictions_CredInt<-CredInt(particleDataFrame)
 		FinalParamPredictions_HPD<-HPD(particleDataFrame)
 
-		input.data<-rbind(jobName, length(phy[[3]]), nrepSim, timeStep, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor, try, trueStartingState, trueIntrinsicState)
+		input.data<-rbind(jobName, length(phy[[3]]), nrepSim, timeStep, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor, trueStartingState, trueIntrinsicState)
 	
 		time3<-proc.time()[[3]]
 		genTimes<-c(time.per.gen, time3)
@@ -841,14 +673,12 @@ for (try in 1:maxTries)	{
 		test$boxcox.output<-boxcox.output
 		test$param.stdev<-param.stdev
 		test$weightedMeanParam<-weightedMeanParam
-		test$cores<-cores
 		test$simTime<-simTime
 		test$time.per.gen<-genTimes
 		test$vipResult<-vipResult
 		test$CredInt <-FinalParamPredictions_CredInt
 		test$HPD <-FinalParamPredictions_HPD
 	
-	} #for (try in 1:maxTries) bracket
 
 	registerDoMC(1) #set number of cores back to 1
 	print(test)

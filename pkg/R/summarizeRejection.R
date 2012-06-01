@@ -1,6 +1,6 @@
 summarizeRejection<-function(summaryValues, trueFreeValues, vipthresh, traits, todo, abcMethod, abcTolerance, jobName){
 	#get boxcoxLambda and boxcoxAddition
-	library(abc)
+	library(abc, quietly=T)
 	boxcoxEstimates<-boxcoxEstimation(summaryValues)
 	boxcoxAddition<-boxcoxEstimates$boxcoxAddition
 	boxcoxLambda<-boxcoxEstimates$boxcoxLambda

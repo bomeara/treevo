@@ -2,7 +2,7 @@
 ##TreeYears = 1000 if tree is in thousands of years
 
 
-doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, summaryFns=c(rawValuesSummaryStats, geigerUnivariateSummaryStats2), startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, startingStatesGuess=c(), intrinsicStatesGuess=c(), extrinsicStatesGuess=c(), TreeYears=1e+04, numParticles=1000, standardDevFactor=0.20, StartSims=NA, plot=FALSE, vipthresh=0.8, epsilonProportion=0.7, epsilonMultiplier=0.7, jobName=NA, debug=FALSE, trueStartingState=NA, trueIntrinsicState=NA, whenToKill=20, abcMethod="rejection", abcTolerance=0.1, multicore=TRUE, coreLimit=NA, filenames=c("rejectionsims.RData")) {
+doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, summaryFns=c(rawValuesSummaryStats, geigerUnivariateSummaryStats2), startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, startingStatesGuess=c(), intrinsicStatesGuess=c(), extrinsicStatesGuess=c(), TreeYears=1e+04, standardDevFactor=0.20, StartSims=NA, plot=FALSE, vipthresh=0.8, epsilonProportion=0.7, epsilonMultiplier=0.7, jobName=NA, debug=FALSE, trueStartingState=NA, trueIntrinsicState=NA, abcMethod="rejection", abcTolerance=0.1, multicore=FALSE, coreLimit=NA, filenames=c("rejectionsims.RData")) {
 
 	if (!is.binary.tree(phy)) {
 		print("Warning: Tree is not fully dichotomous")
@@ -102,7 +102,7 @@ doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, summaryFns=c(rawValue
 	}
 	
 	nrepSim<-StartSims #Used to be multiple tries where nrepSim = StartSims*((2^try)/2).  If initial simulations are not enough, and we need to try again then new analysis will double number of initial simulations
-	input.data<-rbind(jobName, length(phy[[3]]), nrepSim, timeStep, epsilonProportion, epsilonMultiplier,  numParticles, standardDevFactor, trueStartingState, trueIntrinsicState)		
+	input.data<-rbind(jobName, length(phy[[3]]), nrepSim, timeStep, epsilonProportion, epsilonMultiplier,  standardDevFactor, trueStartingState, trueIntrinsicState)		
 	cat(paste("Number of initial simulations set to", nrepSim, "\n"))
 	
 	trueFreeValues<-matrix(nrow=0, ncol= numberParametersFree)
