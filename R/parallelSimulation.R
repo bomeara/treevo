@@ -17,4 +17,5 @@ parallelSimulation<-function(nrepSim, coreLimit, startingPriorsValues, intrinsic
 
 	trueFreeValuesANDSummaryValues<-foreach(1:nrepSim, .combine=rbind) %dopar% simulateData(startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, trueFreeValues, freevector, timeStep, intrinsicFn, extrinsicFn)
 	save(trueFreeValuesANDSummaryValues,file=filename,compress=TRUE)
+	return(list(cores))
 }
