@@ -108,7 +108,7 @@ doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, summaryFns=c(rawValue
 	trueFreeValues<-matrix(nrow=0, ncol= numberParametersFree)
 	summaryValues<-matrix(nrow=0, ncol=22+dim(traits)[1]) #there are 22 summary statistics possible, plus the raw data
 	#do nrepSim using the inputs. If multicore, do that way
-	parallelSimulation(nrepSim, coreLimit, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, trueFreeValues, freevector, timeStep, intrinsicFn, extrinsicFn, multicore, filename=filenames[1])
+	parallelSimulation(nrepSim, coreLimit, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, trueFreeValues, freevector, timeStep, intrinsicFn, extrinsicFn, multicore, jobName, filename=filenames[1])
 	cat("\n\n")
 	#pull in all the simulation results: true values and the summary values
 	trueFreeValuesANDSummaryValues<-loadSimulations(filenames)
