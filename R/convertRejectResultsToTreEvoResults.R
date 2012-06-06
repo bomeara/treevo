@@ -10,12 +10,11 @@ convertRejectResultsToTreEvoResults<-function(RejectResults){
 		colnames(particleDataFrame)<-c("generation", "attempt", "id", "parentid", "distance", "weight")
 	}
 	if (class(RejectResults) == "abc"){ #if the entire abc result is input
-		particleDataFrame<-data.frame(cbind(rep(1, dim(RejectResults$unadj.values)[1]), as.vector(which(a$region)), seq(1:dim(RejectResults$unadj.values)[1]), rep(0, dim(RejectResults$unadj.values)[1]), RejectResults$dist, rep(1, dim(RejectResults$unadj.values)[1]), RejectResults$unadj.values  ))
+		particleDataFrame<-data.frame(cbind(rep(1, dim(RejectResults$unadj.values)[1]), as.vector(which(RejectResults$region)), seq(1:dim(RejectResults$unadj.values)[1]), rep(0, dim(RejectResults$unadj.values)[1]), RejectResults$dist, rep(1, dim(RejectResults$unadj.values)[1]), RejectResults$unadj.values  ))
 	
-		colnames(particleDataFrame)<-c("generation", "attempt", "id", "parentid", "distance", "weight",  a$names$parameter.names)
+		colnames(particleDataFrame)<-c("generation", "attempt", "id", "parentid", "distance", "weight",  RejectResults$names$parameter.names)
 	}
 	
 	return(particleDataFrame)
 }
 
-as.vector(which(a$region))

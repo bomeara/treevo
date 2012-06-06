@@ -117,7 +117,7 @@ doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, summaryFns=c(rawValue
 	trueFreeValues<-trueFreeValuesANDSummaryValues[,1:numberParametersFree]
 	summaryValues<-trueFreeValuesANDSummaryValues[,-1:-numberParametersFree]
 	results<-summarizeRejection(summaryValues, trueFreeValues, vipthresh, traits, todo, abcMethod, abcTolerance, jobName)
-
+print(results)
 input.data<-rbind(jobName, length(phy[[3]]), timeStep, StartSims, standardDevFactor, abcMethod, abcTolerance)
 
 
@@ -129,9 +129,10 @@ test$PriorMatrix<-PriorMatrix
 test$phy<-phy
 test$traits<-traits
 test$SimTime<-simTime
-test$results<-results
+test$todo<-results$todo
+test$abcResults<-results$abcResults
 
-print(test)
+print(test$todo)
 return(test)
 }
 

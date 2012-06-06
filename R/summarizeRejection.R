@@ -17,5 +17,5 @@ summarizeRejection<-function(summaryValues, trueFreeValues, vipthresh, traits, t
 	abcResults<-abc(target=originalSummaryStats, param=trueFreeValues, sumstat=prunedSummaryValues, tol=abcTolerance, method=abcMethod)
 	save(originalSummaryStats,trueFreeValues, prunedSummaryValues,file=paste("prunedSimulations",jobName,".Rdata",sep=""))
 
-	return(abcResults)
+	return(list(abcResults=abcResults, todo=todo))
 }
