@@ -128,8 +128,7 @@ test$input.data<-input.data
 test$PriorMatrix<-PriorMatrix
 test$phy<-phy
 test$traits<-traits
-test$SimTime<-SimTime
-test$abcRunTime<-abcRunTime
+test$SimTime<-simTime
 test$results<-results
 
 print(test)
