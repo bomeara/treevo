@@ -112,7 +112,7 @@ compareIPD<-function(particleDataFrame1, particleDataFrame2){
 		rownames(runIPD)<-paste("gen", c(1:max(particleDataFrame1$generation)), sep="")
 		colnames(runIPD)<-names(subpDF_1)
 		for (param in 1:dim(runIPD)[2]){ #each param
-			IPD<-((median(interparticleDistance(subpDF_1[,param], subpDF_1[,param])) + median(interparticleDistance(subpDF_2[,param], subpDF_2[,param])))/2) / median(interparticleDistance(subpDF_1[,param], subpDF_1[,param])) * median(interparticleDistance(subpDF_2[,param], subpDF_2[,param]))  #(medIPD(A)+medIPD(B)/2)/medIPD(A*B)
+			IPD<-(median(interparticleDistance(subpDF_1[,param], subpDF_2[,param]))^2)  / median(interparticleDistance(subpDF_1[,param], subpDF_2[,param]))*2
 			print(IPD)
 			runIPD[gen, param]<-IPD
 #			#paramIPD<-append(runIPD, IPD)
@@ -126,3 +126,45 @@ compareIPD<-function(particleDataFrame1, particleDataFrame2){
 	}
 	return(runIPD)
 }
+
+#will compare IPD from a list of particleDataFrames.  Calculates the ratio of IPD
+compareListIPD<-function(particleDataFrame, verbose=F){  #list of particleDataFrames
+	params<-dim(all.a[[1]][7:dim(all.a[[1]])[2]])[2]
+plot.new()
+nf<-layout(matrix(1:params, nrow=1, byrow=TRUE), respect=TRUE)
+	layout.show(nf)	
+	data1<-vector("list")
+	maxgen<-c()
+	for (list in 1:length(particleDataFrame)) {
+		data1[[list]]<-subset(particleDataFrame[[list]][which(particleDataFrame[[list]][,6]>0),], ) 
+		maxgen<-append(maxgen, max(data1[[list]]$generation))
+	}	
+	for (param in 1:params){
+		genvector<-vector()
+		IPDvector<-vector()
+		for (gen in 1:max(maxgen)){
+			IPDmatrix<-matrix(nrow=length(data1), ncol=length(data1))
+			for (row in 1: dim(IPDmatrix)[1]){
+				for (col in 1: dim(IPDmatrix)[2]){
+					IPDmatrix[row, col]<-(median(interparticleDistance(data1[[row]][which(data1[[row]]$generation==gen),6+param], data1[[col]][which(data1[[col]]$generation==gen),6+param]))^2)  / median(interparticleDistance(data1[[row]][which(data1[[row]]$generation==gen),6+param], data1[[col]][which(data1[[col]]$generation==gen),6+param]))*2
+					if (is.na(IPDmatrix[row, col])){  #protect against NAs, since we are dividing above (if sd(A and or B[param] = 0 then it will NA))
+						IPDmatrix[row, col]<-0
+					}
+				}
+			}
+			#print(paste("param = ", param))
+			#print(paste("generation = ", gen))
+			genvector<-append(genvector, rep(gen, length(unique(as.vector(IPDmatrix)))))
+			IPDvector<-append(IPDvector, unique(as.vector(IPDmatrix)))
+			#print(genvector)
+			#print(IPDvector)
+			if(verbose){
+				print(paste("param=", names(data1[[1]][6+param])))
+				print(cbind(genvector, IPDvector))
+			}
+		}
+		#pdf(paste("compareListIPD", jobName, ".pdf", sep=""))
+		plot(genvector, IPDvector, xlab="generation", ylab="IPD", sub=names(data1[[1]][6+param]))
+	}	
+}
+
