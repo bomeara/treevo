@@ -98,11 +98,13 @@ IPD_ratio<-function(particleDataFrame, plotDensity=T){  #include list of L?
 
 
 #move towards calculating IPD between gens of different runs to see if they are converging or not. 
-#Calculate IPD either within each generation or between parent-offspring gens
+#Calculate IPD as a ratio of medIPDs from two runs
 compareIPD<-function(particleDataFrame1, particleDataFrame2){
 	if (any(names(particleDataFrame1) != names(particleDataFrame2))){
 		warning("particleDataFrame names do not match, likely trying to compare different models")
 	}
+	particleDataFrame1<-convertabcResultsToTreEvoResults(particleDataFrame1)
+	particleDataFrame2<-convertabcResultsToTreEvoResults(particleDataFrame2)
 	runIPD<-matrix(nrow=max(particleDataFrame1$generation), ncol=dim(particleDataFrame1)[2]-6)
 	for (gen in 1:dim(runIPD)[1]){ #each parent-offspring generation
 		subpDF_1<-as.data.frame(subset(particleDataFrame1[which(particleDataFrame1$weight>0),], generation==gen)[7:dim(particleDataFrame1)[2]])
@@ -110,7 +112,7 @@ compareIPD<-function(particleDataFrame1, particleDataFrame2){
 		rownames(runIPD)<-paste("gen", c(1:max(particleDataFrame1$generation)), sep="")
 		colnames(runIPD)<-names(subpDF_1)
 		for (param in 1:dim(runIPD)[2]){ #each param
-			IPD<-median(interparticleDistance(subpDF_1[,param], subpDF_2[,param]))
+			IPD<-((median(interparticleDistance(subpDF_1[,param], subpDF_1[,param])) + median(interparticleDistance(subpDF_2[,param], subpDF_2[,param])))/2) / median(interparticleDistance(subpDF_1[,param], subpDF_1[,param])) * median(interparticleDistance(subpDF_2[,param], subpDF_2[,param]))  #(medIPD(A)+medIPD(B)/2)/medIPD(A*B)
 			print(IPD)
 			runIPD[gen, param]<-IPD
 #			#paramIPD<-append(runIPD, IPD)
