@@ -9,7 +9,7 @@ x<-particleDataFrame
 priors<-PriorMatrix
 
 if(class(x)=="abc" || class(x)=="matrix"){
-	x<-convertRejectResultsToTreEvoResults(x)
+	x<-convertabcResultsToTreEvoResults(x)
 }
 print(x)
 if(class(x)=="data.frame"){
