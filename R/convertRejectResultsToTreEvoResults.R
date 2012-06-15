@@ -1,4 +1,4 @@
-convertabcResultsToTreEvoResults<-function(abcResults){
+convertRejectResultsToTreEvoResults<-function(abcResults){
 	#wrapper function to convert results from rejection analyses in abc() to our particleDataFrame results for diagnostic or plotting functions
 	#could think about subsetting only those particles/simulations athat are accepted so that we don't have to do that in all the different functions downstream (could add object to do all gens or just last gen too)
 	if (class(abcResults) == "data.frame"){ #if TreEvo results are input
