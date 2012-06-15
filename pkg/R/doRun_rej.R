@@ -128,6 +128,7 @@ test$input.data<-input.data
 test$PriorMatrix<-PriorMatrix
 test$phy<-phy
 test$traits<-traits
+test$trueFreeValuesANDSummaryValues<-trueFreeValuesANDSummaryValues
 test$SimTime<-simTime
 test$todo<-results$todo
 test$abcResults<-results$abcResults
