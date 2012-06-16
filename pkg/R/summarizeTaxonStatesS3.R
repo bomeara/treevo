@@ -1,4 +1,4 @@
-summarizeTaxonStates<-function(taxa) {
+summarizeTaxonStatesS3<-function(taxa) {
 #print("in summarizeTaxonStates")
 	statesvector<-c()
 	taxonid<-c()

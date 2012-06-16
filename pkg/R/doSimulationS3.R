@@ -27,7 +27,7 @@ if (saveHistory) {
 	}
 #initial setup
 	timefrompresent=splits[1, 1]
-	taxa<-c(abctaxonS3(id=splits[1, 3], states=startingStates), abctaxonS3(id=splits[1, 4], states=startingStates))
+	taxa<-list(abctaxonS3(id=splits[1, 3], states=startingStates), abctaxonS3(id=splits[1, 4], states=startingStates))
 	splits<-splits[2:dim(splits)[1], ] #pop off top value
 	
 #start running
@@ -40,7 +40,8 @@ if (saveHistory) {
 			for (i in 1:originallength) {
 				if (taxa[[i]]$id==splits[1, 2]) {
 					taxontodelete<-i
-					taxa<-c(taxa, taxa[[i]], taxa[[i]])
+					taxa[[originallength+1]] <- taxa[[i]]
+					taxa[[originallength+2]] <- taxa[[i]]
 					taxa[[originallength+1]]$id<-splits[1, 3]
 					taxa[[originallength+1]]$timeSinceSpeciation<-0
 					taxa[[originallength+2]]$id<-splits[1, 4]
