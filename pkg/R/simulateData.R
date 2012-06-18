@@ -1,4 +1,4 @@
-simulateDataS3<-function(startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, trueFreeValues, freevector, timeStep, intrinsicFn, extrinsicFn, jobName) {
+simulateData<-function(startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, trueFreeValues, freevector, timeStep, intrinsicFn, extrinsicFn, jobName) {
 	trueStarting<-rep(NaN, dim(startingPriorsValues)[2])
 	trueIntrinsic<-rep(NaN, dim(intrinsicPriorsValues)[2])
 	trueExtrinsic<-rep(NaN, dim(extrinsicPriorsValues)[2])
@@ -15,7 +15,7 @@ simulateDataS3<-function(startingPriorsValues, intrinsicPriorsValues, extrinsicP
 	trueFreeValues<-rbind(trueFreeValues, trueInitial[freevector])
 
 	cat("~")
-	simdata<-summaryStatsLong(phy, convertTaxonFrameToGeigerData(doSimulationS3(splits=splits, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, startingStates=trueStarting, intrinsicValues=trueIntrinsic, extrinsicValues=trueExtrinsic, timeStep=timeStep), phy), jobName=jobName)
+	simdata<-summaryStatsLong(phy, convertTaxonFrameToGeigerData(doSimulation(splits=splits, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, startingStates=trueStarting, intrinsicValues=trueIntrinsic, extrinsicValues=trueExtrinsic, timeStep=timeStep), phy), jobName=jobName)
 	
 	simSummaryStats <-c(trueFreeValues, simdata)
 	#print(simSummaryStats)
