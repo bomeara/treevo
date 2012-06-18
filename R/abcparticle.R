@@ -1,9 +1,9 @@
-#create abcparticleS3 class object
-abcparticleS3 <- function( id=NA, generation=NA, weight=NA, distance=NA, startingStates=NA, intrinsicValues=NA, extrinsicValues=NA ) {
+#create abcparticle class object
+abcparticle <- function( id=NA, generation=NA, weight=NA, distance=NA, startingStates=NA, intrinsicValues=NA, extrinsicValues=NA ) {
 	particle <- list(id=id, generation=generation, weight=weight, distance=distance, 
 		startingStates=startingStates, intrinsticValues=intrinsicValues, 
 		extrinsicValues=extrinsicValues)
-	class(particle) <- "abcparticleS3"
+	class(particle) <- "abcparticle"
 	return(particle)
 }
 

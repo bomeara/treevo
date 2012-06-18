@@ -1,4 +1,4 @@
-doSimulationS3<-function(splits, intrinsicFn, extrinsicFn, startingStates, intrinsicValues, extrinsicValues, timeStep, saveHistory=FALSE, saveRealParams=FALSE, jobName="") {
+doSimulation<-function(splits, intrinsicFn, extrinsicFn, startingStates, intrinsicValues, extrinsicValues, timeStep, saveHistory=FALSE, saveRealParams=FALSE, jobName="") {
 if (saveRealParams){
 	RealParams<-vector("list", 2)
 	names(RealParams)<-c("matrix", "vector")	
@@ -27,7 +27,7 @@ if (saveHistory) {
 	}
 #initial setup
 	timefrompresent=splits[1, 1]
-	taxa<-list(abctaxonS3(id=splits[1, 3], states=startingStates), abctaxonS3(id=splits[1, 4], states=startingStates))
+	taxa<-list(abctaxon(id=splits[1, 3], states=startingStates), abctaxon(id=splits[1, 4], states=startingStates))
 	splits<-splits[2:dim(splits)[1], ] #pop off top value
 	
 #start running
@@ -100,5 +100,5 @@ if (saveHistory) {
 			taxa[[i]]$timeSinceSpeciation<-taxa[[i]]$timeSinceSpeciation+timeStep
 		}
 	}
-	return(summarizeTaxonStatesS3(taxa))
+	return(summarizeTaxonStates(taxa))
 }

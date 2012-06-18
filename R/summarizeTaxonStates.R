@@ -5,18 +5,12 @@ summarizeTaxonStates<-function(taxa) {
 	taxonname<-c()
 	taxontimesincespeciation<-c()
 	for (i in 1:length(taxa)) {
-#print(i)
-#		print(taxa)
-		statesvector<-c(statesvector, states(taxa[[i]]))
-#print("statesvector")
-		taxonid<-c(taxonid, id(taxa[[i]]) )
-#print("taxonid")
-		taxonname<-c(taxonname, name(taxa[[i]]) )
-#print("taxonname")
-		taxontimesincespeciation<-c(taxontimesincespeciation, timeSinceSpeciation(taxa[[i]]))
-#print("finished ", i)
+		statesvector<-c(statesvector, taxa[[i]]$states)
+		taxonid<-c(taxonid, taxa[[i]]$id )
+		taxonname<-c(taxonname, taxa[[i]]$name )
+		taxontimesincespeciation<-c(taxontimesincespeciation, taxa[[i]]$timeSinceSpeciation)
 	}
-	statesmatrix<-matrix(statesvector, ncol=length(states(taxa[[1]])), byrow=TRUE) #each row represents one taxon
+	statesmatrix<-matrix(statesvector, ncol=length(taxa[[1]]$states), byrow=TRUE) #each row represents one taxon
 	taxonframe<-data.frame(taxonid, taxonname, taxontimesincespeciation, statesmatrix)
 	return(taxonframe)
 }
