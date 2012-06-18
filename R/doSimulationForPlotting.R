@@ -27,8 +27,8 @@ if (plot || savePlot || saveHistory) {
 	}
 #initial setup
 	timefrompresent=splits[1, 1]
-	taxa<-c(new("abctaxon", id=splits[1, 3], states=startingStates), new("abctaxon", id=splits[1, 4], states=startingStates))
-	splits<-splits[2:dim(splits)[1], ] #pop off top value
+		taxa<-list(abctaxon(id=splits[1, 3], states=startingStates), abctaxon(id=splits[1, 4], states=startingStates))
+		splits<-splits[2:dim(splits)[1], ] #pop off top value
 	
 #start running
 	while(timefrompresent>0) {
@@ -38,13 +38,14 @@ if (plot || savePlot || saveHistory) {
 			originallength<-length(taxa)
 			taxontodelete<-Inf
 			for (i in 1:originallength) {
-				if (id(taxa[[i]])==splits[1, 2]) {
+				if (taxa[[i]]$id==splits[1, 2]) {
 					taxontodelete<-i
-					taxa<-c(taxa, taxa[[i]], taxa[[i]])
-					id(taxa[[originallength+1]])<-splits[1, 3]
-					timeSinceSpeciation(taxa[[originallength+1]])<-0
-					id(taxa[[originallength+2]])<-splits[1, 4]
-					timeSinceSpeciation(taxa[[originallength+2]])<-0
+					taxa[[originallength+1]] <- taxa[[i]]
+					taxa[[originallength+2]] <- taxa[[i]]
+					taxa[[originallength+1]]$id<-splits[1, 3]
+					taxa[[originallength+1]]$timeSinceSpeciation<-0
+					taxa[[originallength+2]]$id<-splits[1, 4]
+					taxa[[originallength+2]]$timeSinceSpeciation<-0
 				}
 			}
 #cat("taxontodelete = ", taxontodelete)
@@ -64,16 +65,16 @@ if (plot || savePlot || saveHistory) {
 			otherstatesvector<-c()
 			for (j in 1:length(taxa)) {
 				if (j!=i) {
-					otherstatesvector<-c(otherstatesvector, states(taxa[[j]]))
+					otherstatesvector<-c(otherstatesvector, taxa[[j]]$states)
 				}
 			}
 #print(taxa)
 #print(length(otherstatesvector))
-			otherstatesmatrix<-matrix(otherstatesvector, ncol=length(states(taxa[[i]])), byrow=TRUE) #each row represents one taxon
-			newvalues<-states(taxa[[i]])+intrinsicFn(params=intrinsicValues, states=states(taxa[[i]]), timefrompresent =timefrompresent)+extrinsicFn(params=extrinsicValues, selfstates=states(taxa[[i]]), otherstates=otherstatesmatrix, timefrompresent =timefrompresent)
-			nextstates(taxa[[i]])<-newvalues
+			otherstatesmatrix<-matrix(otherstatesvector, ncol=length(taxa), byrow=TRUE) #each row represents one taxon
+			newvalues<-taxa[[i]]$states+intrinsicFn(params=intrinsicValues, states=taxa[[i]]$states, timefrompresent =timefrompresent)+extrinsicFn(params=extrinsicValues, selfstates=taxa[[i]]$states, otherstates=otherstatesmatrix, timefrompresent =timefrompresent)
+			taxa[[i]]$nextstates<-newvalues
 			if (plot || savePlot || saveHistory) {
-				startVector<-append(startVector, states(taxa[[i]]))
+				startVector<-append(startVector, taxa[[i]]$states)
 				endVector <-append(endVector, newvalues)
 				startTime <-append(startTime, timefrompresent+timeStep)
 				endTime <-append(endTime, timefrompresent)
@@ -85,7 +86,7 @@ if (plot || savePlot || saveHistory) {
 		}
 		for (i in 1:length(taxa)) {
 
-			states(taxa[[i]])<-nextstates(taxa[[i]])
+			taxa[[i]]$states<-taxa[[i]]$nextstates
 
 			
 		}
@@ -95,7 +96,7 @@ if (plot || savePlot || saveHistory) {
 		
 		timefrompresent<-timefrompresent-timeStep
 		for (i in 1:length(taxa)) {
-			timeSinceSpeciation(taxa[[i]])<-timeSinceSpeciation(taxa[[i]])+timeStep
+			taxa[[i]]$timeSinceSpeciation<-taxa[[i]]$timeSinceSpeciation+timeStep
 		}
 	}
 	if (plot) {
