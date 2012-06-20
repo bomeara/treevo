@@ -2,7 +2,7 @@
 ##TreeYears = 1000 if tree is in thousands of years
 
 
-doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, summaryFns=c(rawValuesSummaryStats, geigerUnivariateSummaryStats2), startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, startingStatesGuess=c(), intrinsicStatesGuess=c(), extrinsicStatesGuess=c(), TreeYears=1e+04, standardDevFactor=0.20, StartSims=NA, vipthresh=0.8, jobName=NA, trueStartingState=NA, trueIntrinsicState=NA, abcMethod="rejection", abcTolerance=0.1, multicore=FALSE, coreLimit=NA, filenames=c("rejectionsims.RData")) {
+doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, summaryFns=c(rawValuesSummaryStats, geigerUnivariateSummaryStats2), startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, startingValuesGuess=c(), intrinsicStatesGuess=c(), extrinsicStatesGuess=c(), TreeYears=1e+04, standardDevFactor=0.20, StartSims=NA, vipthresh=0.8, jobName=NA, trueStartingState=NA, trueIntrinsicState=NA, abcMethod="rejection", abcTolerance=0.1, multicore=FALSE, coreLimit=NA, filenames=c("rejectionsims.RData")) {
 
 	if (!is.binary.tree(phy)) {
 		print("Warning: Tree is not fully dichotomous")
@@ -78,10 +78,10 @@ doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, summaryFns=c(rawValue
 	}
 	
 	#initialize guesses, if needed
-	if (length(startingStatesGuess)==0) { #if no user guesses, try pulling a value from the prior
-		startingStatesGuess<-rep(NA,length(startingPriorsFns))
+	if (length(startingValuesGuess)==0) { #if no user guesses, try pulling a value from the prior
+		startingValuesGuess<-rep(NA,length(startingPriorsFns))
 		for (i in 1:length(startingPriorsFns)) {
-			startingStatesGuess[i]<-pullFromPrior(startingPriorsValues[,i],startingPriorsFns[i])
+			startingValuesGuess[i]<-pullFromPrior(startingPriorsValues[,i],startingPriorsFns[i])
 		}
 	}
 	if (length(intrinsicStatesGuess)==0) { #if no user guesses, try pulling a value from the prior

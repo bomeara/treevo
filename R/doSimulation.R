@@ -1,12 +1,12 @@
-doSimulation<-function(splits, intrinsicFn, extrinsicFn, startingStates, intrinsicValues, extrinsicValues, timeStep, saveHistory=FALSE, saveRealParams=FALSE, jobName="") {
+doSimulation<-function(splits, intrinsicFn, extrinsicFn, startingValues, intrinsicValues, extrinsicValues, timeStep, saveHistory=FALSE, saveRealParams=FALSE, jobName="") {
 if (saveRealParams){
 	RealParams<-vector("list", 2)
 	names(RealParams)<-c("matrix", "vector")	
-	RealParams$vector<-c(startingStates, intrinsicValues, extrinsicValues)
-	maxLength<-(max(length(startingStates), length(intrinsicValues), length(extrinsicValues)))
+	RealParams$vector<-c(startingValues, intrinsicValues, extrinsicValues)
+	maxLength<-(max(length(startingValues), length(intrinsicValues), length(extrinsicValues)))
 	RealParams$matrix<-matrix(ncol=maxLength, nrow=3)
-	rownames(RealParams$matrix)<-c("startingStates", "intrinsicFn", "extrinsicFn")
-	RealParams$matrix[1,]<-c(startingStates, rep(NA, maxLength-length(startingStates)))
+	rownames(RealParams$matrix)<-c("startingValues", "intrinsicFn", "extrinsicFn")
+	RealParams$matrix[1,]<-c(startingValues, rep(NA, maxLength-length(startingValues)))
 	RealParams$matrix[2,]<-c(intrinsicValues, rep(NA, maxLength-length(intrinsicValues)))
 	RealParams$matrix[3,]<-c(extrinsicValues, rep(NA, maxLength-length(extrinsicValues)))
 	save(RealParams, file=paste("RealParams", jobName, ".Rdata", sep=""))
@@ -27,7 +27,7 @@ if (saveHistory) {
 	}
 #initial setup
 	timefrompresent=splits[1, 1]
-	taxa<-list(abctaxon(id=splits[1, 3], states=startingStates), abctaxon(id=splits[1, 4], states=startingStates))
+	taxa<-list(abctaxon(id=splits[1, 3], states=startingValues), abctaxon(id=splits[1, 4], states=startingValues))
 	splits<-splits[2:dim(splits)[1], ] #pop off top value
 	
 #start running

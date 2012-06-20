@@ -1,42 +1,42 @@
 #create abcparticle class object
-abcparticle <- function( id=NA, generation=NA, weight=NA, distance=NA, startingStates=NA, intrinsicValues=NA, extrinsicValues=NA ) {
+abcparticle <- function( id=NA, generation=NA, weight=NA, distance=NA, startingValues=NA, intrinsicValues=NA, extrinsicValues=NA ) {
 	particle <- list(id=id, generation=generation, weight=weight, distance=distance, 
-		startingStates=startingStates, intrinsticValues=intrinsicValues, 
+		startingValues=startingValues, intrinsicValues=intrinsicValues, 
 		extrinsicValues=extrinsicValues)
 	class(particle) <- "abcparticle"
 	return(particle)
 }
 
 initializeStatesFromMatrices <- function(particle, startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns) {
-	particle$startingStates  <- rep(NA,length=dim(startingPriorsValues)[2])
-	particle$intrinsicStates <- rep(NA,length=dim(intrinsicPriorsValues)[2])
-	particle$extrinsicStates <- rep(NA,length=dim(extrinsicPriorsValues)[2])
+	particle$startingValues  <- rep(NA,length=dim(startingPriorsValues)[2])
+	particle$intrinsicValues <- rep(NA,length=dim(intrinsicPriorsValues)[2])
+	particle$extrinsicValues <- rep(NA,length=dim(extrinsicPriorsValues)[2])
 	for (j in sequence(dim(startingPriorsValues)[2])) {
-		particle$startingStates[j] <- pullFromPrior(priorValues=startingPriorsValues[, j], priorFn=startingPriorsFns[j])
+		particle$startingValues[j] <- pullFromPrior(priorValues=startingPriorsValues[, j], priorFn=startingPriorsFns[j])
 	}
 	for (j in sequence(dim(intrinsicPriorsValues)[2])) {
-		particle$intrinsicStates[j] <- pullFromPrior(priorValues=intrinsicPriorsValues[, j], priorFn=intrinsicPriorsFns[j])
+		particle$intrinsicValues[j] <- pullFromPrior(priorValues=intrinsicPriorsValues[, j], priorFn=intrinsicPriorsFns[j])
 	}
 	for (j in sequence(dim(extrinsicPriorsValues)[2])) {
-		particle$extrinsicStates[j] <- pullFromPrior(priorValues=extrinsicPriorsValues[, j], priorFn=extrinsicPriorsFns[j])
+		particle$extrinsicValues[j] <- pullFromPrior(priorValues=extrinsicPriorsValues[, j], priorFn=extrinsicPriorsFns[j])
 	}
 	return(particle)
 }
 
 mutateStates <- function(particle, startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, standardDevFactor) {
 	for (j in sequence(dim(startingPriorsValues)[2])) {
-		particle$startingStates[j] <- mutateState(startingState=particle$startingStates[j], standardDevFactor=standardDevFactor, priorValues=startingPriorsValues[, j], priorFn=startingPriorsFns[j])
+		particle$startingValues[j] <- mutateState(startingState=particle$startingValues[j], standardDevFactor=standardDevFactor, priorValues=startingPriorsValues[, j], priorFn=startingPriorsFns[j])
 	}
 	for (j in sequence(dim(intrinsicPriorsValues)[2])) {
-		particle$intrinsicStates[j] <- mutateState(startingState=particle$intrinsicStates[j], standardDevFactor=standardDevFactor, priorValues=intrinsicPriorsValues[, j], priorFn=intrinsicPriorsFns[j])
+		particle$intrinsicValues[j] <- mutateState(startingState=particle$intrinsicValues[j], standardDevFactor=standardDevFactor, priorValues=intrinsicPriorsValues[, j], priorFn=intrinsicPriorsFns[j])
 	}
 	for (j in sequence(dim(extrinsicPriorsValues)[2])) {
-		particle$extrinsicStates[j] <- mutateState(startingState=particle$extrinsicStates[j], standardDevFactor=standardDevFactor, priorValues=extrinsicPriorsValues[, j], priorFn=extrinsicPriorsFns[j])
+		particle$extrinsicValues[j] <- mutateState(startingState=particle$extrinsicValues[j], standardDevFactor=standardDevFactor, priorValues=extrinsicPriorsValues[, j], priorFn=extrinsicPriorsFns[j])
 	}
 	return(particle)
 }
 
 simulateTips <- function(particle, splits, phy, intrinsicFn, extrinsicFn, timeStep) {
-	newtips<-convertTaxonFrameToGeigerData(doSimulation(splits, intrinsicFn, extrinsicFn, particle$startingStates, particle$intrinsicValues, particle$extrinsicValues, timeStep), phy)
+	newtips<-convertTaxonFrameToGeigerData(doSimulation(splits, intrinsicFn, extrinsicFn, particle$startingValues, particle$intrinsicValues, particle$extrinsicValues, timeStep), phy)
 	return(newtips)
 }

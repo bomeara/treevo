@@ -63,9 +63,9 @@ mutateState<-function(startingState, standardDevFactor, priorValues, priorFn) {
 		if (newState>maxBound){
 			validNewState<-FALSE
 			}	
-		if (!validNewState)	{
-			cat("newState ",newState," does not fit into one of the bounds (", minBound, "--", maxBound, ")\n")
-		}	
+#		if (!validNewState)	{
+			#cat("newState ",newState," does not fit into one of the bounds (", minBound, "--", maxBound, ")\n")
+#		}	
 	}
 	
 newState

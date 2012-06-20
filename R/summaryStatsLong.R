@@ -7,7 +7,7 @@ summaryStatsLong<-function(phy, data, todo=c(), jobName="") {
 			return("There are zero branch lengths at the tips of your trees--will not run properly")
 		}
 	}	
-	sink(file="/dev/null")
+	#sink(file="/dev/null")
 	if (length(todo)==0) {
 		todo=rep(1, 22+dim(data)[1]) #by default, include everything -- the 22 summary stats and the raw tip data
 	}
@@ -70,7 +70,7 @@ summaryStatsLong<-function(phy, data, todo=c(), jobName="") {
 			failurevector[i]=0 #means was not tried
 		}
 	}
-	print (paste("failurevector = ",failurevector,collapse="",sep=""))
+	#print (paste("failurevector = ",failurevector,collapse="",sep=""))
 	if (somethingfailed) {
 		failed.summarystats<-c(dput(brown), dput(lambda), dput(delta), dput(ou), dput(white))
 		GeigerFailure<-vector("list", 4)
