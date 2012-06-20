@@ -15,7 +15,7 @@ simulateData<-function(startingPriorsValues, intrinsicPriorsValues, extrinsicPri
 	trueFreeValues<-rbind(trueFreeValues, trueInitial[freevector])
 
 	cat("~")
-	simTraits<-convertTaxonFrameToGeigerData(doSimulation(splits=splits, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, startingStates=trueStarting, intrinsicValues=trueIntrinsic, extrinsicValues=trueExtrinsic, timeStep=timeStep), phy)
+	simTraits<-convertTaxonFrameToGeigerData(doSimulation(splits=splits, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, startingValues=trueStarting, intrinsicValues=trueIntrinsic, extrinsicValues=trueExtrinsic, timeStep=timeStep), phy)
 	simdata<-summaryStatsLong(phy, simTraits, jobName=jobName)
 	jobName<-paste(jobName, round(runif(1, 0, 1000000), 0), sep=".")
 	#save(startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, trueFreeValues, simTraits, simdata, phy, file=paste(jobName, "Rsave", sep="."))

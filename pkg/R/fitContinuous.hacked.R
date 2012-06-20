@@ -54,7 +54,7 @@ function(phy, data, data.names=NULL, model=c("BM", "OU", "lambda", "kappa", "del
     #--------------------------------
     #--- SET MODEL SPECIFICATIONS ---
     #--------------------------------
-    cat("Fitting ", model, "model:\n")
+    #cat("Fitting ", model, "model:\n")
     #-----------------------------
     #---  SET PARAMETER BOUNDS ---
     #-----------------------------
@@ -165,7 +165,6 @@ function(ds, print=TRUE)
 			mu<-rep(mu, n)
 			-dmvnorm(y, mu, vv, log=T)
 		}
-		
 		o<-nlm(tryFoo, p=start)
 		#o<-optim(foo, p=start, lower=lower, upper=upper, method="L")
 
@@ -553,7 +552,7 @@ function(ds, print=TRUE)
 		us<-lsol[gc,1]
 		usc<-sum((us-min(us))>0.01)			
 		out<-outTries[[b[1]]]	
-		print(out)
+		#print(out)
 	
 		if(usc>1) {out$message="Warning: likelihood surface is flat."}
 			
@@ -657,7 +656,7 @@ phylogMean<-function(phyvcv, data) {
 	#save(phyvcv, file="phyvcv")
 	ci<-try(solve(phyvcv), silent=T)
 	if(class(ci)=="try-error"){
-		print(paste("ci used pseudoinverse"))
+		#print(paste("ci used pseudoinverse"))
 		ci<-pseudoinverse(phyvcv)
 	}
 	#print("ci in phylogMean")
@@ -667,7 +666,7 @@ phylogMean<-function(phyvcv, data) {
 	#print(t(o) %*% ci %*% o)
 	m1<-try(solve(t(o) %*% ci %*% o), silent=T)
 	if (class(m1)=="try-error"){
-		print(paste("m1 used pseudoinverse"))
+		#print(paste("m1 used pseudoinverse"))
 		#save(ci, o, file="stuff")
 		m1<-pseudoinverse(t(o) %*% ci %*% o)
 	}
