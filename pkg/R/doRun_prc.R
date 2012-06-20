@@ -144,70 +144,20 @@ cat(paste("Initial simulations took", round(simTime, digits=3), "seconds"), "\n"
 	boxcoxAddition<-boxcoxEstimates$boxcoxAddition
 	boxcoxLambda<-boxcoxEstimates$boxcoxLambda
 	boxcoxSummaryValues<-boxcoxEstimates$boxcoxSummaryValues
-	save(trueFreeValues, file="tFV")
-	save(boxcoxSummaryValues, file="bcSV")
-	plsEstimates<-plsEstimation(trueFreeValues, boxcoxSummaryValues, vipthresh)
-	prunedPlsResult<-plsEstimates$prunedPlsResult
-	vipResult<-plsEstimates$vipResult
-	prunedSummaryValues<-plsEstimates$prunedSummaryValues
-	todo<-plsEstimates$todo
+	#save(trueFreeValues, file="tFV")
+	#save(boxcoxSummaryValues, file="bcSV")
 	
-			# library("car")
-			# boxcoxLambda<-rep(NA, dim(summaryValues)[2])
-			# boxcoxAddition<-rep(NA, dim(summaryValues)[2])
-			# for (summaryValueIndex in 1:dim(summaryValues)[2]) {
-				# boxcoxAddition[summaryValueIndex]<-0
-				# lowValue<-min(summaryValues[, summaryValueIndex])-4*sd(summaryValues[, summaryValueIndex])
-				# if (lowValue<=0) {
-					# boxcoxAddition[summaryValueIndex]<-4*abs(lowValue) #just for some protection against low values, since box.cox needs non-negative values
-				# }
-				# summary<-summaryValues[, summaryValueIndex]+boxcoxAddition[summaryValueIndex]
-				# boxcoxLambda[summaryValueIndex]<-1
-				# if(sd(summaryValues[, summaryValueIndex])>0) { #box.cox fails if all values are identical
-					# newLambda<-as.numeric(try(powerTransform(summary,method="Nelder-Mead")$lambda)) #new car uses powerTransform instead of box.cox.powers
-					# if (!is.na(newLambda)) {
-						# boxcoxLambda[summaryValueIndex]<-newLambda
-					# }
-				# }
-				# summaryValues[, summaryValueIndex]<-summary^boxcoxLambda[summaryValueIndex]
-			# }
 			
 			#---------------------- Box-Cox transformation (End) ------------------------------
 
 
 			#----------------- PLS regression: find best set of summary stats to use (Start) -----------------
 			#Use mixOmics to to find the optimal set of summary stats. Store this info in the todo vector. Note that this uses a different package (mixOmics rather than pls than that used by Weggman et al. because this package can calculate variable importance in projection and deals fine with NAs)
-			# library("mixOmics")
-			# plsResult<-pls(Y=trueFreeValues, X=summaryValues)
-			# vipResult<-vip(plsResult)
-			# todo<-rep(1, dim(summaryValues)[2]) #initialize the vector that indicates which summary stats to include
-			
-			# summaryIndexOffset=0 #since R excludes invariant columns from regression, this offests so we don't try to extract from these columns
-			# #print(vipResult)
-			# #print(plsResult)
-			# #print(dim(summaryValues))
-			# nearZeroVarVector<-mixOmics:::nearZeroVar(summaryValues)
-			# nearZeroVarVector<-nearZeroVarVector$Position
-			# #print(nearZeroVarVector)
-			# for (summaryIndex in 1:dim(summaryValues)[2]) {
-				
-				# #print(summaryIndex)
-				# if (summaryIndex %in% nearZeroVarVector) {
-					# summaryIndexOffset=summaryIndexOffset+1
-					# todo[summaryIndex]<-0 #exclude this summary stat because it lacks variation
-				# }	
-				# else if (max(vipResult[summaryIndex-summaryIndexOffset, ]) < vipthresh) {
-					# todo[summaryIndex]<-0 #exclude this summary stat, because it is too unimportant
-				# }	
-			# }
-		
-			# #while(sink.number()>0) {sink()}
-			# #print(todo)
-			
-			# prunedSummaryValues<-summaryValues[, which(todo>0)]
-			# #print("prunedSummaryValues", prunedSummaryValues, "\n")
-			# prunedPlsResult<-pls(Y=trueFreeValues, X=prunedSummaryValues)
-			# #print("prunedPlsResult", prunedPlsResult, "\n")
+			plsEstimates<-plsEstimation(trueFreeValues, boxcoxSummaryValues, vipthresh)
+			prunedPlsResult<-plsEstimates$prunedPlsResult
+			vipResult<-plsEstimates$vipResult
+			prunedSummaryValues<-plsEstimates$prunedSummaryValues
+			todo<-plsEstimates$todo
 			originalSummaryStats<-boxcoxplsSummary(todo, summaryStatsLong(phy, traits, todo, jobName=jobName), prunedPlsResult, boxcoxLambda, boxcoxAddition)
 			
 			boxcox.output<-vector("list", 5)
