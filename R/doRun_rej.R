@@ -120,7 +120,7 @@ doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, summaryFns=c(rawValue
 	boxcoxSummaryValuesMatrix<-boxcoxEstimates$boxcoxSummaryValuesMatrix
 	boxcoxOriginalSummaryStats<-boxcoxTransformation(summaryStatsLong(phy=phy, data=traits), boxcoxAddition, boxcoxLambda)
 
-	
+	library("mixOmics")
 	getVipSingleColumn<-function(trueFreeValuesColumn, boxcoxSummaryValuesMatrix) {
 		return(vip(pls(X=boxcoxSummaryValuesMatrix, Y=trueFreeValuesColumn, ncomp=1)))
 	}
