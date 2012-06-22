@@ -168,10 +168,9 @@ cat(paste("Initial simulations took", round(simTime, digits=3), "seconds"), "\n"
 			boxcox.output$originalSummaryStats<-originalSummaryStats
 			#----------------- PLS regression: find best set of summary stats to use (End) -----------------
 			
+			
 			#----------------- Find distribution of distances (Start) ----------------------
 			predictResult<-as.matrix(predict(plsResult, prunedSummaryValues)$predict[, , 1])
-			#print(predictResult) 
-			#print(dim(predictResult)[1])
 			distanceVector<-rep(NA, dim(predictResult)[1])
 		
 			for (simulationIndex in 1:dim(predictResult)[1]) {
@@ -215,8 +214,7 @@ cat(paste("Initial simulations took", round(simTime, digits=3), "seconds"), "\n"
 			cat("\n\n\nsuccesses", "attempts", "expected number of attempts required\n\n\n")
 			start.time<-proc.time()[[3]]
 			particleList<-list()
-			#cat("originalSummaryStats\n")
-			#print(originalSummaryStats)
+			
 			while (particle<=numParticles) {
 				attempts<-attempts+1
 				
