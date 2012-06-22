@@ -5,7 +5,7 @@
 #the doRun function takes input from the user and then automatically guesses optimal parameters, though user overriding is also possible.
 #the guesses are used to do simulations near the expected region. If omitted, they are set to the midpoint of the input parameter matrices
 
-doRun_prc<-function(phy, traits, intrinsicFn, extrinsicFn, summaryFns=c(rawValuesSummaryStats, geigerUnivariateSummaryStats2), startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, startingValuesGuess=c(), intrinsicValuesGuess=c(), extrinsicValuesGuess=c(), TreeYears=1e+04, toleranceVector=c(), numParticles=300, standardDevFactor=0.20, StartSims=300, plot=FALSE, vipthresh=0.8, epsilonProportion=0.7, epsilonMultiplier=0.7, nStepsPRC=5, jobName=NA, debug=TRUE, trueStartingState=NA, trueIntrinsicState=NA, stopRule=TRUE, stopValue=0.05, multicore=FALSE, coreLimit=NA, filenames=c("rejectionsims.RData")) {
+doRun_prc<-function(phy, traits, intrinsicFn, extrinsicFn, summaryFns=c(rawValuesSummaryStats, geigerUnivariateSummaryStats2), startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, startingValuesGuess=c(), intrinsicValuesGuess=c(), extrinsicValuesGuess=c(), TreeYears=1e+04, toleranceVector=c(), numParticles=300, standardDevFactor=0.20, StartSims=300, plot=FALSE, epsilonProportion=0.7, epsilonMultiplier=0.7, nStepsPRC=5, jobName=NA, debug=TRUE, trueStartingState=NA, trueIntrinsicState=NA, stopRule=TRUE, stopValue=0.05, multicore=FALSE, coreLimit=NA, filenames=c("rejectionsims.RData")) {
 
 if (!is.binary.tree(phy)) {
 	print("Warning: Tree is not fully dichotomous")
@@ -118,7 +118,7 @@ if (is.na(StartSims)) {
 
 	
 			#---------------------- Initial Simulations (Start) ------------------------------
-			#See Wegmann et al. Efficient Approximate Bayesian Computation Coupled With Markov Chain Monte Carlo Without Likelihood. Genetics (2009) vol. 182 (4) pp. 1207-1218 for more on the method
+			#See Wegmann et al. Efficient Approximate Bayesian Computation Coupled With Markov Chain Monte Carlo Without Likelihood. Genetics (2009) vol. 182 (4) pp. 1207-1218 for more on the method. Note, though, that we are not doing PLS, only Box-Cox transformation
 nrepSim<-StartSims #Used to be = StartSims*((2^try)/2), If initial simulations are not enough, and we need to try again then new analysis will double number of initial simulations
 input.data<-rbind(jobName, length(phy[[3]]), nrepSim, timeStep, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor, trueStartingState, trueIntrinsicState)		
 cat(paste("Number of initial simulations set to", nrepSim, "\n"))
@@ -152,24 +152,24 @@ cat(paste("Initial simulations took", round(simTime, digits=3), "seconds"), "\n"
 
 
 			#----------------- PLS regression: find best set of summary stats to use (Start) -----------------
-			#Use mixOmics to to find the optimal set of summary stats. Store this info in the todo vector. Note that this uses a different package (mixOmics rather than pls than that used by Weggman et al. because this package can calculate variable importance in projection and deals fine with NAs)
-			plsEstimates<-plsEstimation(trueFreeValues, boxcoxSummaryValues, vipthresh)
-			prunedPlsResult<-plsEstimates$prunedPlsResult
+			#Use mixOmics to to find the optimal set of summary stats. Note that this uses a different package (mixOmics rather than pls than that used by Weggman et al. because this package can calculate variable importance in projection and deals fine with NAs)
+			plsEstimates<-plsEstimation(trueFreeValues, boxcoxSummaryValues)
+			#prunedPlsResult<-plsEstimates$prunedPlsResult
+			plsResult<-plsEstimates$plsResult
 			vipResult<-plsEstimates$vipResult
 			prunedSummaryValues<-plsEstimates$prunedSummaryValues
-			todo<-plsEstimates$todo
-			originalSummaryStats<-boxcoxplsSummary(todo, summaryStatsLong(phy, traits, todo, jobName=jobName), prunedPlsResult, boxcoxLambda, boxcoxAddition)
+			originalSummaryStats<-boxcoxplsSummary(summaryStatsLong(phy, traits, jobName=jobName), plsResult, boxcoxLambda, boxcoxAddition)
 			
 			boxcox.output<-vector("list", 5)
 			boxcox.output$lambda<-boxcoxLambda
 			boxcox.output$addition<-boxcoxAddition
-			boxcox.output$PlsResult<-prunedPlsResult
+			boxcox.output$PlsResult<-plsResult
 			boxcox.output$prunedSummaryValues<-prunedSummaryValues
 			boxcox.output$originalSummaryStats<-originalSummaryStats
 			#----------------- PLS regression: find best set of summary stats to use (End) -----------------
 			
 			#----------------- Find distribution of distances (Start) ----------------------
-			predictResult<-as.matrix(predict(prunedPlsResult, prunedSummaryValues)$predict[, , 1])
+			predictResult<-as.matrix(predict(plsResult, prunedSummaryValues)$predict[, , 1])
 			#print(predictResult) 
 			#print(dim(predictResult)[1])
 			distanceVector<-rep(NA, dim(predictResult)[1])
@@ -191,7 +191,7 @@ cat(paste("Initial simulations took", round(simTime, digits=3), "seconds"), "\n"
 			#----------------- Find distribution of distances (End) ---------------------
 			
 			#------------------ ABC-PRC (Start) ------------------
-			#do not forget to use boxcoxLambda, and prunedPlsResult when computing distances
+			#do not forget to use boxcoxLambda, and plsResult when computing distances
 			
 			nameVector<-c("generation", "attempt", "id", "parentid", "distance", "weight")
 			if (plot) {
@@ -227,14 +227,14 @@ cat(paste("Initial simulations took", round(simTime, digits=3), "seconds"), "\n"
 				#print(newparticleList[[1]]$extrinsicValues)
 				#cat("\nintrinsicVector\n")
 				#print(newparticleList[[1]]$intrinsicValues)
-				newparticleList[[1]]$distance<-dist(matrix(c(boxcoxplsSummary(todo, summaryStatsLong(phy, convertTaxonFrameToGeigerData(doSimulation(splits, intrinsicFn, extrinsicFn, newparticleList[[1]]$startingValues, newparticleList[[1]]$intrinsicValues, newparticleList[[1]]$extrinsicValues, timeStep), phy), todo, jobName=jobName), prunedPlsResult, boxcoxLambda, boxcoxAddition), originalSummaryStats), nrow=2, byrow=TRUE))[1]
+				newparticleList[[1]]$distance<-dist(matrix(c(boxcoxplsSummary(summaryStatsLong(phy, convertTaxonFrameToGeigerData(doSimulation(splits, intrinsicFn, extrinsicFn, newparticleList[[1]]$startingValues, newparticleList[[1]]$intrinsicValues, newparticleList[[1]]$extrinsicValues, timeStep), phy), jobName=jobName), plsResult, boxcoxLambda, boxcoxAddition), originalSummaryStats), nrow=2, byrow=TRUE))[1]
 				if (is.na(newparticleList[[1]]$distance)) {
 					newparticleListError<-vector("list", 9)
 					newparticleListError[[1]]<-newparticleList[[1]]
-					newparticleListError[[2]]<-matrix(c(boxcoxplsSummary(todo, summaryStatsLong(phy, convertTaxonFrameToGeigerData(doSimulation(splits, intrinsicFn, extrinsicFn, newparticleList[[1]]$startingValues, newparticleList[[1]]$intrinsicValues, newparticleList[[1]]$extrinsicValues, timeStep), phy), todo, jobName=jobName), prunedPlsResult, boxcoxLambda, boxcoxAddition), originalSummaryStats), nrow=2, byrow=TRUE)
-					newparticleListError[[3]]<-c(boxcoxplsSummary(todo, summaryStatsLong(phy, convertTaxonFrameToGeigerData(doSimulation(splits, intrinsicFn, extrinsicFn, newparticleList[[1]]$startingValues, newparticleList[[1]]$intrinsicValues, newparticleList[[1]]$extrinsicValues, timeStep), phy), todo, jobName=jobName), prunedPlsResult, boxcoxLambda, boxcoxAddition), originalSummaryStats)
-					newparticleListError[[4]]<-todo
-					newparticleListError[[5]]<-summaryStatsLong(phy, convertTaxonFrameToGeigerData(doSimulation(splits, intrinsicFn, extrinsicFn, newparticleList[[1]]$startingValues, newparticleList[[1]]$intrinsicValues, newparticleList[[1]]$extrinsicValues, timeStep), phy), todo, jobName=jobName)
+					newparticleListError[[2]]<-matrix(c(boxcoxplsSummary(summaryStatsLong(phy, convertTaxonFrameToGeigerData(doSimulation(splits, intrinsicFn, extrinsicFn, newparticleList[[1]]$startingValues, newparticleList[[1]]$intrinsicValues, newparticleList[[1]]$extrinsicValues, timeStep), phy),  jobName=jobName), plsResult, boxcoxLambda, boxcoxAddition), originalSummaryStats), nrow=2, byrow=TRUE)
+					newparticleListError[[3]]<-c(boxcoxplsSummary(summaryStatsLong(phy, convertTaxonFrameToGeigerData(doSimulation(splits, intrinsicFn, extrinsicFn, newparticleList[[1]]$startingValues, newparticleList[[1]]$intrinsicValues, newparticleList[[1]]$extrinsicValues, timeStep), phy), jobName=jobName), plsResult, boxcoxLambda, boxcoxAddition), originalSummaryStats)
+					newparticleListError[[4]]<-NULL #used to be todo
+					newparticleListError[[5]]<-summaryStatsLong(phy, convertTaxonFrameToGeigerData(doSimulation(splits, intrinsicFn, extrinsicFn, newparticleList[[1]]$startingValues, newparticleList[[1]]$intrinsicValues, newparticleList[[1]]$extrinsicValues, timeStep), phy), jobName=jobName)
 					newparticleListError[[6]]<-phy
 					newparticleListError[[7]]<-vipResult
 					newparticleListError[[8]]<-convertTaxonFrameToGeigerData(doSimulation(splits, intrinsicFn, extrinsicFn, newparticleList[[1]]$startingValues, newparticleList[[1]]$intrinsicValues, newparticleList[[1]]$extrinsicValues, timeStep), phy)
@@ -299,7 +299,6 @@ cat(paste("Initial simulations took", round(simTime, digits=3), "seconds"), "\n"
 			names(test$particleDataFrame)<-nameVector
 			test$epsilonDistance<-epsilonDistance
 			test$toleranceVector<-toleranceVector
-			test$todo<-todo
 			test$phy<-phy
 			test$traits<-traits
 			test$rejects.gen.one<-rejects.gen.one
@@ -358,7 +357,7 @@ cat(paste("Initial simulations took", round(simTime, digits=3), "seconds"), "\n"
 							#cat("dput(newparticleList[[1]]) AFTER MUTATE STATES\n")
 							#dput(newparticleList[[1]])
 							
-							newparticleList[[1]]$distance<-dist(matrix(c(boxcoxplsSummary(todo, summaryStatsLong(phy, convertTaxonFrameToGeigerData(doSimulation(splits, intrinsicFn, extrinsicFn, newparticleList[[1]]$startingValues, newparticleList[[1]]$intrinsicValues, newparticleList[[1]]$extrinsicValues, timeStep), phy), todo, jobName=jobName), prunedPlsResult, boxcoxLambda, boxcoxAddition), originalSummaryStats), nrow=2, byrow=TRUE))[1]
+							newparticleList[[1]]$distance<-dist(matrix(c(boxcoxplsSummary(summaryStatsLong(phy, convertTaxonFrameToGeigerData(doSimulation(splits, intrinsicFn, extrinsicFn, newparticleList[[1]]$startingValues, newparticleList[[1]]$intrinsicValues, newparticleList[[1]]$extrinsicValues, timeStep), phy), jobName=jobName), plsResult, boxcoxLambda, boxcoxAddition), originalSummaryStats), nrow=2, byrow=TRUE))[1]
 							if (plot) {
 								plotcol="grey"
 								if (newparticleList[[1]]$distance<toleranceVector[dataGenerationStep]) {
@@ -533,7 +532,6 @@ cat(paste("Initial simulations took", round(simTime, digits=3), "seconds"), "\n"
 						names(test$particleDataFrame)<-nameVector
 						test$epsilonDistance<-epsilonDistance
 						test$toleranceVector<-toleranceVector
-						test$todo<-todo
 						test$phy<-phy
 						test$traits<-traits
 						test$rejects.gen.one<-rejects.gen.one
@@ -589,7 +587,6 @@ cat(paste("Initial simulations took", round(simTime, digits=3), "seconds"), "\n"
 		test$particleDataFrame<-particleDataFrame
 		test$epsilonDistance<-epsilonDistance
 		test$toleranceVector<-toleranceVector
-		test$todo<-todo
 		test$phy<-phy
 		test$traits<-traits
 		test$rejects.gen.one<-rejects.gen.one

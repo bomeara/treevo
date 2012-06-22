@@ -2,7 +2,7 @@
 ##TreeYears = 1000 if tree is in thousands of years
 
 
-doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, summaryFns=c(rawValuesSummaryStats, geigerUnivariateSummaryStats2), startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, startingValuesGuess=c(), intrinsicStatesGuess=c(), extrinsicStatesGuess=c(), TreeYears=1e+04, standardDevFactor=0.20, StartSims=NA, vipthresh=0.8, jobName=NA, trueStartingState=NA, trueIntrinsicState=NA, abcMethod="rejection", abcTolerance=0.1, multicore=FALSE, coreLimit=NA, filenames=c("rejectionsims.RData")) {
+doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, summaryFns=c(rawValuesSummaryStats, geigerUnivariateSummaryStats2), startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, startingValuesGuess=c(), intrinsicStatesGuess=c(), extrinsicStatesGuess=c(), TreeYears=1e+04, standardDevFactor=0.20, StartSims=NA, jobName=NA, trueStartingState=NA, trueIntrinsicState=NA, abcMethod="rejection", vipthresh=0.8, abcTolerance=0.1, multicore=FALSE, coreLimit=NA) {
 
 	if (!is.binary.tree(phy)) {
 		print("Warning: Tree is not fully dichotomous")
@@ -104,37 +104,36 @@ doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, summaryFns=c(rawValue
 	nrepSim<-StartSims #Used to be multiple tries where nrepSim = StartSims*((2^try)/2).  If initial simulations are not enough, and we need to try again then new analysis will double number of initial simulations
 	cat(paste("Number of initial simulations set to", nrepSim, "\n"))
 	
-	trueFreeValues<-matrix(nrow=0, ncol= numberParametersFree)
-	summaryValues<-matrix(nrow=0, ncol=22+dim(traits)[1]) #there are 22 summary statistics possible, plus the raw data
-	
-	parallelSimulation(nrepSim, coreLimit, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, trueFreeValues, freevector, timeStep, intrinsicFn, extrinsicFn, multicore, jobName, filename=filenames[1])
+	trueFreeValuesANDSummaryValues<-parallelSimulation(nrepSim, coreLimit, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn, multicore)
 	cat("\n\n")
 	simTime<-proc.time()[[3]]-startTime
 	cat(paste("Initial simulations took", round(simTime, digits=3), "seconds"), "\n")
 	
-	#pull in all the simulation results: true values and the summary values
-	trueFreeValuesANDSummaryValues<-loadSimulations(filenames)
-	trueFreeValues<-trueFreeValuesANDSummaryValues[,1:numberParametersFree]
-	summaryValues<-trueFreeValuesANDSummaryValues[,-1:-numberParametersFree]
-	results<-summarizeRejection(summaryValues, trueFreeValues, vipthresh, traits, todo, abcMethod, abcTolerance, jobName)
-print(results)
-input.data<-rbind(jobName, length(phy[[3]]), timeStep, StartSims, standardDevFactor, abcMethod, abcTolerance)
+	#separate the simulation results: true values and the summary values
+	trueFreeValuesMatrix<-trueFreeValuesANDSummaryValues[,1:numberParametersFree]
+	summaryValuesMatrix<-trueFreeValuesANDSummaryValues[,-1:-numberParametersFree]
+  
+  abcResults<-summarizeRejection(summaryValuesMatrix, trueFreeValuesMatrix, phy, traits, vipthresh, abcMethod, abcTolerance)
+  
+	#THEN EITHER COMBINE DISTANCES OR DO ABC TWICE AND GET THOSE PARTICLES IN THE TOP % OF EACH
+	
+	
+  print(abcResults)
+  input.data<-rbind(jobName, length(phy[[3]]), timeStep, StartSims, standardDevFactor, abcMethod, abcTolerance)
 
 
-test<-vector("list")
-#names(test)<-c("input.data", "PriorMatrix", "phy", "traits")
+  test<-vector("list")
+  #names(test)<-c("input.data", "PriorMatrix", "phy", "traits")
 
-test$input.data<-input.data
-test$PriorMatrix<-PriorMatrix
-test$phy<-phy
-test$traits<-traits
-test$trueFreeValuesANDSummaryValues<-trueFreeValuesANDSummaryValues
-test$SimTime<-simTime
-test$todo<-results$todo
-test$abcResults<-results$abcResults
-
-print(test$todo)
-return(test)
+  test$input.data<-input.data
+  test$PriorMatrix<-PriorMatrix
+  test$phy<-phy
+  test$traits<-traits
+  test$trueFreeValuesANDSummaryValues<-trueFreeValuesANDSummaryValues
+  test$SimTime<-simTime
+  test$unadj.values<-abcResults
+  
+  return(test)
 }
 
 

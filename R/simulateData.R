@@ -1,4 +1,4 @@
-simulateData<-function(startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, trueFreeValues, freevector, timeStep, intrinsicFn, extrinsicFn, jobName) {
+simulateData<-function(startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn) {
 	trueStarting<-rep(NaN, dim(startingPriorsValues)[2])
 	trueIntrinsic<-rep(NaN, dim(intrinsicPriorsValues)[2])
 	trueExtrinsic<-rep(NaN, dim(extrinsicPriorsValues)[2])
@@ -12,18 +12,12 @@ simulateData<-function(startingPriorsValues, intrinsicPriorsValues, extrinsicPri
 		trueExtrinsic[j]=pullFromPrior(extrinsicPriorsValues[,j],extrinsicPriorsFns[j])
 	}
 	trueInitial<-c(trueStarting, trueIntrinsic, trueExtrinsic)
-	trueFreeValues<-rbind(trueFreeValues, trueInitial[freevector])
+	trueFreeValues<-trueInitial[freevector]
 
-	cat("~")
+	cat(".")
 	simTraits<-convertTaxonFrameToGeigerData(doSimulation(splits=splits, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, startingValues=trueStarting, intrinsicValues=trueIntrinsic, extrinsicValues=trueExtrinsic, timeStep=timeStep), phy)
-	simdata<-summaryStatsLong(phy, simTraits, jobName=jobName)
-	jobName<-paste(jobName, round(runif(1, 0, 1000000), 0), sep=".")
-	#save(startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, trueFreeValues, simTraits, simdata, phy, file=paste(jobName, "Rsave", sep="."))
-	simSummaryStats <-c(trueFreeValues, simdata)
-	#print(simSummaryStats)
-	#print(rbind(simSummaryStats, simSummaryStats))
-	#save(simSummaryStats,file=paste("RunningSimulations",jobName,".Rdata",sep=""))
-	#print(simSummaryStats)
-	return(simSummaryStats)
+	simSumStats<-summaryStatsLong(phy, simTraits)
+	simTrueAndStats <-c(trueFreeValues, simSumStats)
+	return(simTrueAndStats)
 }
 
