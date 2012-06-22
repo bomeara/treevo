@@ -1,23 +1,13 @@
-plsEstimation<-function(trueFreeValues, boxcoxSummaryValues, vipthresh) {
+plsEstimation<-function(trueFreeValues, boxcoxSummaryValues, ncomp) {
 	library("mixOmics", quietly=T)
-	plsResult<-pls(Y=trueFreeValues, X=boxcoxSummaryValues)
+	plsResult<-pls(Y=trueFreeValues, X=boxcoxSummaryValues, ncomp=ncomp)
 	vipResult<-vip(plsResult)
-	todo<-rep(1, dim(boxcoxSummaryValues)[2]) #initialize the vector that indicates which summary stats to include
 			
 	summaryIndexOffset=0 #since R excludes invariant columns from regression, this offests so we don't try to extract from these columns
 	nearZeroVarVector<-mixOmics:::nearZeroVar(boxcoxSummaryValues)
 	nearZeroVarVector<-nearZeroVarVector$Position
 	#print(nearZeroVarVector)
-	for (summaryIndex in 1:dim(boxcoxSummaryValues)[2]) {
-		if (summaryIndex %in% nearZeroVarVector) {
-			summaryIndexOffset=summaryIndexOffset+1
-			todo[summaryIndex]<-0 #exclude this summary stat because it lacks variation
-		}	
-		else if (max(vipResult[summaryIndex-summaryIndexOffset, ]) < vipthresh) {
-			todo[summaryIndex]<-0 #exclude this summary stat, because it is too unimportant
-		}	
-	}
-	prunedSummaryValues<-boxcoxSummaryValues[, which(todo>0)]
-	prunedPlsResult<-pls(Y=trueFreeValues, X=prunedSummaryValues)
-	return(list(prunedSummaryValues=prunedSummaryValues,prunedPlsResult=prunedPlsResult,todo=todo, vipResult=vipResult))			
+	prunedSummaryValues<-boxcoxSummaryValues
+	#prunedPlsResult<-pls(Y=trueFreeValues, X=prunedSummaryValues)  #no need to do another pls(), so here for the prunedPlsResult, we can just use plsResult
+	return(list(prunedSummaryValues=prunedSummaryValues,plsResult=plsResult, vipResult=vipResult))			
 }
