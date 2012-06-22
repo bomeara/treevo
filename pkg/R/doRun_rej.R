@@ -10,7 +10,7 @@ doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, summaryFns=c(rawValue
 	startTime<-proc.time()[[3]]
 	timeStep<-1/TreeYears			
 	splits<-getSimulationSplits(phy) #initialize this info
-
+	
 	#figure out number of free params
 	numberParametersTotal<-dim(startingPriorsValues)[2] +  dim(intrinsicPriorsValues)[2] + dim(extrinsicPriorsValues)[2]
 	numberParametersFree<-numberParametersTotal
@@ -62,7 +62,7 @@ doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, summaryFns=c(rawValue
 			freevector<-c(freevector, TRUE)
 		}
 	}
-
+	
 	for (i in 1:dim(extrinsicPriorsValues)[2]) {
 		priorFn<-match.arg(arg=extrinsicPriorsFns[i],choices=c("fixed", "uniform", "normal", "lognormal", "gamma", "exponential"),several.ok=FALSE)
 		if (priorFn=="fixed") {
@@ -112,28 +112,53 @@ doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, summaryFns=c(rawValue
 	#separate the simulation results: true values and the summary values
 	trueFreeValuesMatrix<-trueFreeValuesANDSummaryValues[,1:numberParametersFree]
 	summaryValuesMatrix<-trueFreeValuesANDSummaryValues[,-1:-numberParametersFree]
-  
-  abcResults<-summarizeRejection(summaryValuesMatrix, trueFreeValuesMatrix, phy, traits, vipthresh, abcMethod, abcTolerance)
-  
-	#THEN EITHER COMBINE DISTANCES OR DO ABC TWICE AND GET THOSE PARTICLES IN THE TOP % OF EACH
 	
+	boxcoxEstimates<-boxcoxEstimation(summaryValuesMatrix)
+	boxcoxAddition<-boxcoxEstimates$boxcoxAddition
+	boxcoxLambda<-boxcoxEstimates$boxcoxLambda
+	boxcoxSummaryValuesMatrix<-boxcoxEstimates$boxcoxSummaryValuesMatrix
+	boxcoxOriginalSummaryStats<-boxcoxTransformation(summaryStatsLong(phy=phy, data=traits),boxcoxAddition, boxcoxLambda)
+
 	
-  print(abcResults)
-  input.data<-rbind(jobName, length(phy[[3]]), timeStep, StartSims, standardDevFactor, abcMethod, abcTolerance)
+	GetVipSingleColumn<-function(trueFreeValuesColumn,boxcoxSummaryValuesMatrix) {
+		return(vip(pls(X=boxcoxSummaryValuesMatrix,Y=trueFreeValuesColumn,ncomp=1)))
+	}
+	
+	#note this has vip for summary val 5, for true param 1, in row 5, column 1, and so forth
+	allVip<-apply(trueFreeValues,2,GetVipSingleColumn,boxcoxSummaryValuesMatrix)
+	
+	#this will have which summary vals have importance above the threshold
+	whichVip<-(allVip>vipthresh)
+	
+	abcDistancesRaw<-rep(0,dim(trueFreeValues)[1]) #will hold the distances for each particle
+	
+	#now we go true parameter by true parameter, using only the summary values with enough importance for each
+	#we get a distance for each particle from the observed particle for each true param
+	#then get a euclidean distance for all of these
+	#it's like getting delta X, then delta Y, and figuring out distance from the origin using
+	#sqrt((X-0)^2 + (Y-0)^2)
+	for (freeParamIndex in sequence(dim(trueFreeValues)[2])) {
+		abcDistancesRaw<-abcDistancesRaw+(abc(target=boxcoxOriginalSummaryStats[whichVip[,freeParamIndex]], param=trueFreeValuesMatrix[freeParamIndex], sumstat= boxcoxSummaryValuesMatrix[,whichVip[,freeParamIndex] ], tol=1, method=abcMethod)$dist)^2 #because we're doing euclidean distance, from observed, which has value 0, 0, 0, etc.
+	}
+	abcDistances<-sqrt(abcDistancesRaw) #Euclid rules.
+	abcResults<-trueFreeValuesMatrix[which(abcDistance<=quantile(abcDistance ,prob=abcTolerance)), ] #here's where we diy abc
+	
+	print(abcResults)
+	input.data<-rbind(jobName, length(phy[[3]]), timeStep, StartSims, standardDevFactor, abcMethod, abcTolerance)
 
 
-  test<-vector("list")
-  #names(test)<-c("input.data", "PriorMatrix", "phy", "traits")
+	test<-vector("list")
+	#names(test)<-c("input.data", "PriorMatrix", "phy", "traits")
 
-  test$input.data<-input.data
-  test$PriorMatrix<-PriorMatrix
-  test$phy<-phy
-  test$traits<-traits
-  test$trueFreeValuesANDSummaryValues<-trueFreeValuesANDSummaryValues
-  test$SimTime<-simTime
-  test$unadj.values<-abcResults
+	test$input.data<-input.data
+	test$PriorMatrix<-PriorMatrix
+	test$phy<-phy
+	test$traits<-traits
+	test$trueFreeValuesANDSummaryValues<-trueFreeValuesANDSummaryValues
+  	test$SimTime<-simTime
+	test$unadj.values<-abcResults
   
-  return(test)
+	return(test)
 }
 
 
