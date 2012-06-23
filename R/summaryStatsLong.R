@@ -40,11 +40,14 @@ summaryStatsLong<-function(phy, data) {
 	raw.min<-as.numeric(min(data))
 	raw.var<-as.numeric(var(data))
 	raw.median<-as.numeric(median(data[,]))	#cat("summaryStatsLong")
-	summarystats<-c(brown.lnl, brown.beta, brown.aic, lambda.lnl, lambda.beta, lambda.lambda, lambda.aic, delta.lnl, delta.beta, delta.delta, delta.aic, ou.lnl, ou.beta, ou.alpha, ou.aic, white.lnl, white.aic, raw.mean, raw.max, raw.min, raw.var, raw.median, data[[1]] )
-
-#add contrasts (2n-1)
-#add ancestral states (2n-1)
-#add variance on ancestral states (2n-1)
+	
+	pic<-as.vector(pic.ortho(as.matrix(data), phy))  #independent contrasts
+	aceResults<-ace(as.matrix(data), phy)
+	anc.states<-as.vector(aceResults$ace) #ancestral states 
+	anc.CIrange<-as.vector(aceResults$CI95[,2]-aceResults$CI95[,1]) #range between upper and lower 95% CI
+	
+	#combined summary stats	
+	summarystats<-c(brown.lnl, brown.beta, brown.aic, lambda.lnl, lambda.beta, lambda.lambda, lambda.aic, delta.lnl, delta.beta, delta.delta, delta.aic, ou.lnl, ou.beta, ou.alpha, ou.aic, white.lnl, white.aic, raw.mean, raw.max, raw.min, raw.var, raw.median, data[[1]], pic, anc.states, anc.CIrange)
 
 
 	summarystats[which(is.finite(summarystats)==FALSE)]<-NA
