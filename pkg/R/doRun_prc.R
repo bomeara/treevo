@@ -122,20 +122,22 @@ if (is.na(StartSims)) {
 nrepSim<-StartSims #Used to be = StartSims*((2^try)/2), If initial simulations are not enough, and we need to try again then new analysis will double number of initial simulations
 input.data<-rbind(jobName, length(phy[[3]]), nrepSim, timeStep, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor, trueStartingState, trueIntrinsicState)		
 cat(paste("Number of initial simulations set to", nrepSim, "\n"))
+cat("Doing simulations:")
 Time<-proc.time()[[3]]
 trueFreeValues<-matrix(nrow=0, ncol= numberParametersFree)
-summaryValues<-matrix(nrow=0, ncol=22+dim(traits)[1]) #there are 22 summary statistics possible, plus the raw data
-
-parallelSimulation(nrepSim, coreLimit, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, trueFreeValues, freevector, timeStep, intrinsicFn, extrinsicFn, multicore, jobName, filename=filenames[1])
+summaryValues<-matrix(nrow=0, ncol=length(summaryStatsLong(phy, traits))) #set up initial sum stats as length of SSL of original data
+trueFreeValuesANDSummaryValues<-parallelSimulation(nrepSim, coreLimit, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn, multicore)
 cat("\n\n")
-trueFreeValuesANDSummaryValues<-loadSimulations(filenames)
 
-trueFreeValues<-trueFreeValuesANDSummaryValues[,1:numberParametersFree]
-summaryValues<-trueFreeValuesANDSummaryValues[,-1:-numberParametersFree]
-#while(sink.number()>0) {sink()}
 save(trueFreeValues,summaryValues,file=paste("CompletedSimulations",jobName,".Rdata",sep=""))
 simTime<-proc.time()[[3]]-Time
 cat(paste("Initial simulations took", round(simTime, digits=3), "seconds"), "\n")
+
+#separate the simulation results: true values and the summary values
+trueFreeValues<-trueFreeValuesANDSummaryValues[,1:numberParametersFree]
+summaryValues<-trueFreeValuesANDSummaryValues[,-1:-numberParametersFree]
+#while(sink.number()>0) {sink()}
+
 			#---------------------- Initial Simulations (End) ------------------------------
 
 
@@ -290,26 +292,26 @@ cat(paste("Initial simulations took", round(simTime, digits=3), "seconds"), "\n"
 		
 
 			save.image(file=paste("WS", jobName, ".Rdata", sep=""))
-			test<-vector("list")
-			test$input.data<-input.data
-			test$PriorMatrix<-PriorMatrix
-			test$particleDataFrame<-particleDataFrame
-			names(test$particleDataFrame)<-nameVector
-			test$epsilonDistance<-epsilonDistance
-			test$toleranceVector<-toleranceVector
-			test$phy<-phy
-			test$traits<-traits
-			test$rejects.gen.one<-rejects.gen.one
-			#test$rejects<-rejects
-			test$particleWeights<-particleWeights
-			test$particleList<-particleList
-			test$boxcox.output<-boxcox.output
-			test$param.stdevtest$param.stdev<-param.stdev
-			test$weightedMeanParam<-weightedMeanParam
-			test$simTime<-simTime
-			test$time.per.gen<-time.per.gen
-			test$vipResult<-vipResult
-			save(test, file=paste("partialResults", jobName, ".txt", sep=""))
+			prcResults<-vector("list")
+			prcResults$input.data<-input.data
+			prcResults$PriorMatrix<-PriorMatrix
+			prcResults$particleDataFrame<-particleDataFrame
+			names(prcResults$particleDataFrame)<-nameVector
+			prcResults$epsilonDistance<-epsilonDistance
+			prcResults$toleranceVector<-toleranceVector
+			prcResults$phy<-phy
+			prcResults$traits<-traits
+			prcResults$rejects.gen.one<-rejects.gen.one
+			#prcResults$rejects<-rejects
+			prcResults$particleWeights<-particleWeights
+			prcResults$particleList<-particleList
+			prcResults$boxcox.output<-boxcox.output
+			prcResults$param.stdevprcResults$param.stdev<-param.stdev
+			prcResults$weightedMeanParam<-weightedMeanParam
+			prcResults$simTime<-simTime
+			prcResults$time.per.gen<-time.per.gen
+			prcResults$vipResult<-vipResult
+			save(prcResults, file=paste("partialResults", jobName, ".txt", sep=""))
 			
 			
 		
@@ -523,26 +525,26 @@ cat(paste("Initial simulations took", round(simTime, digits=3), "seconds"), "\n"
 						}	
 						
 						save.image(file=paste("WS", jobName, ".Rdata", sep=""))
-						test<-vector("list")
-						test$input.data<-input.data
-						test$PriorMatrix<-PriorMatrix
-						test$particleDataFrame<-particleDataFrame
-						names(test$particleDataFrame)<-nameVector
-						test$epsilonDistance<-epsilonDistance
-						test$toleranceVector<-toleranceVector
-						test$phy<-phy
-						test$traits<-traits
-						test$rejects.gen.one<-rejects.gen.one
-						test$rejects<-rejects
-						test$particleWeights<-particleWeights
-						test$particleList<-particleList
-						test$boxcox.output<-boxcox.output
-						test$param.stdev<-param.stdev
-						test$weightedMeanParam<-weightedMeanParam
-						test$simTime
-						test$time.per.gen<-time.per.gen
-						test$vipResult<-vipResult
-						save(test, file=paste("partialResults", jobName, ".txt", sep=""))
+						prcResults<-vector("list")
+						prcResults$input.data<-input.data
+						prcResults$PriorMatrix<-PriorMatrix
+						prcResults$particleDataFrame<-particleDataFrame
+						names(prcResults$particleDataFrame)<-nameVector
+						prcResults$epsilonDistance<-epsilonDistance
+						prcResults$toleranceVector<-toleranceVector
+						prcResults$phy<-phy
+						prcResults$traits<-traits
+						prcResults$rejects.gen.one<-rejects.gen.one
+						prcResults$rejects<-rejects
+						prcResults$particleWeights<-particleWeights
+						prcResults$particleList<-particleList
+						prcResults$boxcox.output<-boxcox.output
+						prcResults$param.stdev<-param.stdev
+						prcResults$weightedMeanParam<-weightedMeanParam
+						prcResults$simTime
+						prcResults$time.per.gen<-time.per.gen
+						prcResults$vipResult<-vipResult
+						save(prcResults, file=paste("partialResults", jobName, ".txt", sep=""))
 						
 					} #while (dataGenerationStep < nStepsPRC) bracket
 			
@@ -579,30 +581,30 @@ cat(paste("Initial simulations took", round(simTime, digits=3), "seconds"), "\n"
 		time3<-proc.time()[[3]]
 		genTimes<-c(time.per.gen, time3)
 	
-		test<-vector("list")
-		test$input.data<-input.data
-		test$PriorMatrix<-PriorMatrix
-		test$particleDataFrame<-particleDataFrame
-		test$epsilonDistance<-epsilonDistance
-		test$toleranceVector<-toleranceVector
-		test$phy<-phy
-		test$traits<-traits
-		test$rejects.gen.one<-rejects.gen.one
-		test$rejects<-rejects
-		test$particleWeights<-particleWeights
-		test$particleList<-particleList
-		test$boxcox.output<-boxcox.output
-		test$param.stdev<-param.stdev
-		test$weightedMeanParam<-weightedMeanParam
-		test$simTime<-simTime
-		test$time.per.gen<-genTimes
-		test$vipResult<-vipResult
-		test$CredInt <-FinalParamPredictions_CredInt
-		test$HPD <-FinalParamPredictions_HPD
+		prcResults<-vector("list")
+		prcResults$input.data<-input.data
+		prcResults$PriorMatrix<-PriorMatrix
+		prcResults$particleDataFrame<-particleDataFrame
+		prcResults$epsilonDistance<-epsilonDistance
+		prcResults$toleranceVector<-toleranceVector
+		prcResults$phy<-phy
+		prcResults$traits<-traits
+		prcResults$rejects.gen.one<-rejects.gen.one
+		prcResults$rejects<-rejects
+		prcResults$particleWeights<-particleWeights
+		prcResults$particleList<-particleList
+		prcResults$boxcox.output<-boxcox.output
+		prcResults$param.stdev<-param.stdev
+		prcResults$weightedMeanParam<-weightedMeanParam
+		prcResults$simTime<-simTime
+		prcResults$time.per.gen<-genTimes
+		prcResults$vipResult<-vipResult
+		prcResults$CredInt <-FinalParamPredictions_CredInt
+		prcResults$HPD <-FinalParamPredictions_HPD
 	
 
 	registerDoMC(1) #set number of cores back to 1
-	print(test)
+	print(prcResults)
 
 }
 

@@ -147,25 +147,25 @@ doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, summaryFns=c(rawValue
 	abcResults$unadj.values<-trueFreeValuesMatrix[which(abcDistances<=quantile(abcDistances, prob=abcTolerance)), ] #here's where we diy abc
 	abcResults$dist<-abcDistances[which(abcDistances<=quantile(abcDistances, prob=abcTolerance))]
 
-	print(paste("HERE", which(abcDistances<=quantile(abcDistances, prob=abcTolerance))))
 	particleDataFrame<-data.frame(cbind(rep(1, dim(abcResults$unadj.values)[1]), as.vector(which(abcDistances<=quantile(abcDistances, prob=abcTolerance))), seq(1:dim(abcResults$unadj.values)[1]), rep(0, dim(abcResults$unadj.values)[1]), abcResults$dist, rep(1, dim(abcResults$unadj.values)[1]), abcResults$unadj.values  ))
 	colnames(particleDataFrame)<-c("generation", "attempt", "id", "parentid", "distance", "weight",  paste("param", seq(dim(trueFreeValuesMatrix)[2])))
 
 	save(abcDistancesRaw, abcDistancesRawTotal, abcDistances, abcResults, particleDataFrame, file="BarbsDistances.Rdata")
 	input.data<-rbind(jobName, length(phy[[3]]), timeStep, StartSims, standardDevFactor, abcMethod, abcTolerance)
 
-	test<-vector("list")
-	#names(test)<-c("input.data", "PriorMatrix", "phy", "traits")
+	rejectionResults<-vector("list")
+	#names(rejectionResults)<-c("input.data", "PriorMatrix", "phy", "traits")
 
-	test$input.data<-input.data
-	test$PriorMatrix<-PriorMatrix
-	test$phy<-phy
-	test$traits<-traits
-	test$trueFreeValuesANDSummaryValues<-trueFreeValuesANDSummaryValues
-  	test$SimTime<-simTime
-	test$particleDataFrame<-particleDataFrame
+	rejectionResults$input.data<-input.data
+	rejectionResults$PriorMatrix<-PriorMatrix
+	rejectionResults$phy<-phy
+	rejectionResults$traits<-traits
+	rejectionResults$trueFreeValuesANDSummaryValues<-trueFreeValuesANDSummaryValues
+  	rejectionResults$SimTime<-simTime
+  	rejectionResults$vipSumStats<-whichVip
+	rejectionResults$particleDataFrame<-particleDataFrame
   
-	return(test)
+	return(rejectionResults)
 }
 
 
