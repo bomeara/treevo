@@ -131,17 +131,18 @@ doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, summaryFns=c(rawValue
 	#this will have which summary vals have importance above the threshold
 	whichVip<-(allVip>vipthresh)
 	
-	abcDistancesRaw<-rep(0,dim(trueFreeValuesMatrix)[1]) #will hold the distances for each particle
-	abcDistancesRawTotal<-vector(length=dim(trueFreeValuesMatrix)[1])
+	abcDistancesRaw<-matrix(nrow=dim(trueFreeValuesMatrix)[1], ncol=dim(trueFreeValuesMatrix)[2])  #rep(0,dim(trueFreeValuesMatrix)[1]) #will hold the distances for each particle
+	#abcDistancesRawTotal<-vector(length=dim(trueFreeValuesMatrix)[1])
 	#now we go true parameter by true parameter, using only the summary values with enough importance for each
 	#we get a distance for each particle from the observed particle for each true param
 	#then get a euclidean distance for all of these
 	#it's like getting delta X, then delta Y, and figuring out distance from the origin using
 	#sqrt((X-0)^2 + (Y-0)^2)
 	for (freeParamIndex in sequence(dim(trueFreeValuesMatrix)[2])) {
-		abcDistancesRaw<-abc(target=boxcoxOriginalSummaryStats[whichVip[,freeParamIndex]], param=trueFreeValuesMatrix[,freeParamIndex], sumstat= boxcoxSummaryValuesMatrix[,whichVip[,freeParamIndex] ], tol=1, method=abcMethod)$dist^2 #because we're doing euclidean distance, from observed, which has value 0, 0, 0, etc.
-		abcDistancesRawTotal<-abcDistancesRawTotal+abcDistancesRaw
+		abcDistancesRaw[,freeParamIndex]<-abc(target=boxcoxOriginalSummaryStats[whichVip[,freeParamIndex]], param=trueFreeValuesMatrix[,freeParamIndex], sumstat= boxcoxSummaryValuesMatrix[,whichVip[,freeParamIndex] ], tol=1, method=abcMethod)$dist^2 #because we're doing euclidean distance, from observed, which has value 0, 0, 0, etc.
+		#abcDistancesRawTotal<-abcDistancesRawTotal+abcDistancesRaw
 	}
+	abcDistancesRawTotal<-apply(abcDistancesRaw, 1, sum)
 	abcResults<-vector("list")
 	abcDistances<-sqrt(abcDistancesRawTotal) #Euclid rules.
 	abcResults$unadj.values<-trueFreeValuesMatrix[which(abcDistances<=quantile(abcDistances, prob=abcTolerance)), ] #here's where we diy abc
@@ -163,6 +164,7 @@ doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, summaryFns=c(rawValue
 	rejectionResults$trueFreeValuesANDSummaryValues<-trueFreeValuesANDSummaryValues
   	rejectionResults$SimTime<-simTime
   	rejectionResults$vipSumStats<-whichVip
+  	rejectionResults$abcDistancesRaw<-abcDistancesRaw
 	rejectionResults$particleDataFrame<-particleDataFrame
   
 	return(rejectionResults)
