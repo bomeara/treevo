@@ -2,10 +2,10 @@
 ##This seems to be working if partialResults does not exist.  If checkpoint=TRUE, then run fails.  
 
 #TreeYears = 1000000 if tree length is in in millions of years, 1000 if in thousand, etc.
-#the doRun function takes input from the user and then automatically guesses optimal parameters, though user overriding is also possible.
+#the doRun_prc function takes input from the user and then automatically guesses optimal parameters, though user overriding is also possible.
 #the guesses are used to do simulations near the expected region. If omitted, they are set to the midpoint of the input parameter matrices
 
-doRun_prc<-function(phy, traits, intrinsicFn, extrinsicFn, summaryFns=c(rawValuesSummaryStats, geigerUnivariateSummaryStats2), startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, startingValuesGuess=c(), intrinsicValuesGuess=c(), extrinsicValuesGuess=c(), TreeYears=1e+04, toleranceVector=c(), numParticles=300, standardDevFactor=0.20, StartSims=300, plot=FALSE, epsilonProportion=0.7, epsilonMultiplier=0.7, nStepsPRC=5, jobName=NA, debug=TRUE, trueStartingState=NA, trueIntrinsicState=NA, stopRule=TRUE, stopValue=0.05, multicore=FALSE, coreLimit=NA, filenames=c("rejectionsims.RData")) {
+doRun_prc<-function(phy, traits, intrinsicFn, extrinsicFn, summaryFns=c(rawValuesSummaryStats, geigerUnivariateSummaryStats2), startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, startingValuesGuess=c(), intrinsicValuesGuess=c(), extrinsicValuesGuess=c(), TreeYears=1e+04, toleranceVector=c(), numParticles=300, standardDevFactor=0.20, StartSims=300, plot=FALSE, epsilonProportion=0.7, epsilonMultiplier=0.7, nStepsPRC=5, jobName=NA, trueStartingState=NA, trueIntrinsicState=NA, stopRule=TRUE, stopValue=0.05, multicore=FALSE, coreLimit=NA, filenames=c("rejectionsims.RData")) {
 
 if (!is.binary.tree(phy)) {
 	print("Warning: Tree is not fully dichotomous")
@@ -320,11 +320,6 @@ summaryValues<-trueFreeValuesANDSummaryValues[,-1:-numberParametersFree]
 					while (dataGenerationStep < nStepsPRC) {
 						dataGenerationStep<-dataGenerationStep+1
 						cat("\n\n\n", "STARTING DATA GENERATION STEP ", dataGenerationStep, "\n\n\n")
-							if (debug){
-								cat(".Random Seed=", .Random.seed[1:6], "\n\n")
-								cat("runif=", runif(1), "\n\n")
-								#cat("toleranceVector=", toleranceVector, "\n\n")
-							}
 						start.time<-proc.time()[[3]]
 						particleWeights<-particleWeights/(sum(particleWeights,na.rm=TRUE)) #normalize to one
 						cat("particleWeights\n", particleWeights, "\n\n")
@@ -565,10 +560,6 @@ summaryValues<-trueFreeValuesANDSummaryValues[,-1:-numberParametersFree]
 			
 			#---------------------- ABC-PRC (End) --------------------------------
 			
-			if (debug){
-				cat("debug!!")
-				debugResults<-dget(doRun)
-			}
 		
 		
 		
