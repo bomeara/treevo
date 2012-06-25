@@ -102,7 +102,7 @@ plotPrior<-function(priorFn=match.arg(arg=priorFn,choices=c("fixed", "uniform", 
 
 results<-data.frame(cbind(quant, quant.value))
 if (plotLegend){
-	legend("topright", leg=paste(c(quant, signif(quant.value, digits=3))), title="Quantiles", ncol=2, bty="n")
+	legend("topright", legend=paste(c(quant, signif(quant.value, digits=3))), title="Quantiles", ncol=2, bty="n")
 }
 
 return(results)	
