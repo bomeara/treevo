@@ -105,6 +105,8 @@ doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, summaryFns=c(rawValue
 	cat(paste("Number of initial simulations set to", nrepSim, "\n"))
 	
 	trueFreeValuesANDSummaryValues<-parallelSimulation(nrepSim, coreLimit, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn, multicore)
+	
+	save(trueFreeValuesANDSummaryValues, file="tFVandSV.Rdata")
 	cat("\n\n")
 	simTime<-proc.time()[[3]]-startTime
 	cat(paste("Initial simulations took", round(simTime, digits=3), "seconds"), "\n")
@@ -147,6 +149,7 @@ doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, summaryFns=c(rawValue
 	abcDistances<-sqrt(abcDistancesRawTotal) #Euclid rules.
 	abcResults$unadj.values<-trueFreeValuesMatrix[which(abcDistances<=quantile(abcDistances, prob=abcTolerance)), ] #here's where we diy abc
 	abcResults$dist<-abcDistances[which(abcDistances<=quantile(abcDistances, prob=abcTolerance))]
+	print(abcResults)
 
 	particleDataFrame<-data.frame(cbind(rep(1, dim(abcResults$unadj.values)[1]), as.vector(which(abcDistances<=quantile(abcDistances, prob=abcTolerance))), seq(1:dim(abcResults$unadj.values)[1]), rep(0, dim(abcResults$unadj.values)[1]), abcResults$dist, rep(1, dim(abcResults$unadj.values)[1]), abcResults$unadj.values  ))
 	colnames(particleDataFrame)<-c("generation", "attempt", "id", "parentid", "distance", "weight",  paste("param", seq(dim(trueFreeValuesMatrix)[2])))
