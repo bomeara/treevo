@@ -1,4 +1,4 @@
-simulateData<-function(startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn) {
+simulateData<-function(splits, phy, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn) {
 	trueStarting<-rep(NaN, dim(startingPriorsValues)[2])
 	trueIntrinsic<-rep(NaN, dim(intrinsicPriorsValues)[2])
 	trueExtrinsic<-rep(NaN, dim(extrinsicPriorsValues)[2])

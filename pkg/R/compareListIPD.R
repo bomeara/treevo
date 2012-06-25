@@ -1,8 +1,8 @@
 #will compare IPD from a list of particleDataFrames.  Calculates the ratio of IPD
 compareListIPD<-function(particleDataFrame, verbose=F){  #list of particleDataFrames
-	params<-dim(all.a[[1]][7:dim(all.a[[1]])[2]])[2]
-plot.new()
-nf<-layout(matrix(1:params, nrow=1, byrow=TRUE), respect=TRUE)
+	params<-dim(particleDataFrame[[1]][7:dim(particleDataFrame[[1]])[2]])[2]
+	plot.new()
+	nf<-layout(matrix(1:params, nrow=1, byrow=TRUE), respect=TRUE)
 	layout.show(nf)	
 	data1<-vector("list")
 	maxgen<-c()

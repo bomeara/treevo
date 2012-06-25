@@ -12,7 +12,7 @@ PairwiseKS<-function(particleDataFrame) {
 	if(class(particleDataFrame)=="list"){
 		x<-vector("list")
 		for (list in 1:length(particleDataFrame)) {
-			x[[list]]<-subset(particleDataFrame[[list]][which(particleDataFrame[[list]][,6]>0),], generation==max(particleDataFrame[[list]]$generation)) 
+			x[[list]]<-subset(particleDataFrame[[list]][which(particleDataFrame[[list]][,6]>0),], particleDataFrame[[list]]$generation==max(particleDataFrame[[list]]$generation)) 
 		}	
 	
 		KSMatrixList<-vector("list", dim(x[[1]])[2]-6)

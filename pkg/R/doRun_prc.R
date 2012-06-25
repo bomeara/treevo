@@ -5,7 +5,7 @@
 #the doRun_prc function takes input from the user and then automatically guesses optimal parameters, though user overriding is also possible.
 #the guesses are used to do simulations near the expected region. If omitted, they are set to the midpoint of the input parameter matrices
 
-doRun_prc<-function(phy, traits, intrinsicFn, extrinsicFn, summaryFns=c(rawValuesSummaryStats, geigerUnivariateSummaryStats2), startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, startingValuesGuess=c(), intrinsicValuesGuess=c(), extrinsicValuesGuess=c(), TreeYears=1e+04, toleranceVector=c(), numParticles=300, standardDevFactor=0.20, StartSims=300, plot=FALSE, epsilonProportion=0.7, epsilonMultiplier=0.7, nStepsPRC=5, jobName=NA, trueStartingState=NA, trueIntrinsicState=NA, stopRule=TRUE, stopValue=0.05, multicore=FALSE, coreLimit=NA, filenames=c("rejectionsims.RData")) {
+doRun_prc<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, startingValuesGuess=c(), intrinsicValuesGuess=c(), extrinsicValuesGuess=c(), TreeYears=1e+04, toleranceVector=c(), numParticles=300, standardDevFactor=0.20, StartSims=300, plot=FALSE, epsilonProportion=0.7, epsilonMultiplier=0.7, nStepsPRC=5, jobName=NA, trueStartingState=NA, trueIntrinsicState=NA, stopRule=TRUE, stopValue=0.05, multicore=FALSE, coreLimit=NA, filenames=c("rejectionsims.RData")) {
 
 if (!is.binary.tree(phy)) {
 	print("Warning: Tree is not fully dichotomous")
@@ -160,7 +160,7 @@ summaryValues<-trueFreeValuesANDSummaryValues[,-1:-numberParametersFree]
 			plsResult<-plsEstimates$plsResult
 			vipResult<-plsEstimates$vipResult
 			prunedSummaryValues<-plsEstimates$prunedSummaryValues
-			originalSummaryStats<-boxcoxplsSummary(summaryStatsLong(phy, traits, jobName=jobName), plsResult, boxcoxLambda, boxcoxAddition)
+			originalSummaryStats<-boxcoxplsSummary(summaryStatsLong(phy, traits), plsResult, boxcoxLambda, boxcoxAddition)
 			
 			boxcox.output<-vector("list", 5)
 			boxcox.output$lambda<-boxcoxLambda
@@ -227,14 +227,14 @@ summaryValues<-trueFreeValuesANDSummaryValues[,-1:-numberParametersFree]
 				#print(newparticleList[[1]]$extrinsicValues)
 				#cat("\nintrinsicVector\n")
 				#print(newparticleList[[1]]$intrinsicValues)
-				newparticleList[[1]]$distance<-dist(matrix(c(boxcoxplsSummary(summaryStatsLong(phy, convertTaxonFrameToGeigerData(doSimulation(splits, intrinsicFn, extrinsicFn, newparticleList[[1]]$startingValues, newparticleList[[1]]$intrinsicValues, newparticleList[[1]]$extrinsicValues, timeStep), phy), jobName=jobName), plsResult, boxcoxLambda, boxcoxAddition), originalSummaryStats), nrow=2, byrow=TRUE))[1]
+				newparticleList[[1]]$distance<-dist(matrix(c(boxcoxplsSummary(summaryStatsLong(phy, convertTaxonFrameToGeigerData(doSimulation(splits, intrinsicFn, extrinsicFn, newparticleList[[1]]$startingValues, newparticleList[[1]]$intrinsicValues, newparticleList[[1]]$extrinsicValues, timeStep), phy)), plsResult, boxcoxLambda, boxcoxAddition), originalSummaryStats), nrow=2, byrow=TRUE))[1]
 				if (is.na(newparticleList[[1]]$distance)) {
 					newparticleListError<-vector("list", 9)
 					newparticleListError[[1]]<-newparticleList[[1]]
-					newparticleListError[[2]]<-matrix(c(boxcoxplsSummary(summaryStatsLong(phy, convertTaxonFrameToGeigerData(doSimulation(splits, intrinsicFn, extrinsicFn, newparticleList[[1]]$startingValues, newparticleList[[1]]$intrinsicValues, newparticleList[[1]]$extrinsicValues, timeStep), phy),  jobName=jobName), plsResult, boxcoxLambda, boxcoxAddition), originalSummaryStats), nrow=2, byrow=TRUE)
-					newparticleListError[[3]]<-c(boxcoxplsSummary(summaryStatsLong(phy, convertTaxonFrameToGeigerData(doSimulation(splits, intrinsicFn, extrinsicFn, newparticleList[[1]]$startingValues, newparticleList[[1]]$intrinsicValues, newparticleList[[1]]$extrinsicValues, timeStep), phy), jobName=jobName), plsResult, boxcoxLambda, boxcoxAddition), originalSummaryStats)
+					newparticleListError[[2]]<-matrix(c(boxcoxplsSummary(summaryStatsLong(phy, convertTaxonFrameToGeigerData(doSimulation(splits, intrinsicFn, extrinsicFn, newparticleList[[1]]$startingValues, newparticleList[[1]]$intrinsicValues, newparticleList[[1]]$extrinsicValues, timeStep), phy)), plsResult, boxcoxLambda, boxcoxAddition), originalSummaryStats), nrow=2, byrow=TRUE)
+					newparticleListError[[3]]<-c(boxcoxplsSummary(summaryStatsLong(phy, convertTaxonFrameToGeigerData(doSimulation(splits, intrinsicFn, extrinsicFn, newparticleList[[1]]$startingValues, newparticleList[[1]]$intrinsicValues, newparticleList[[1]]$extrinsicValues, timeStep), phy)), plsResult, boxcoxLambda, boxcoxAddition), originalSummaryStats)
 					newparticleListError[[4]]<-NULL #used to be todo
-					newparticleListError[[5]]<-summaryStatsLong(phy, convertTaxonFrameToGeigerData(doSimulation(splits, intrinsicFn, extrinsicFn, newparticleList[[1]]$startingValues, newparticleList[[1]]$intrinsicValues, newparticleList[[1]]$extrinsicValues, timeStep), phy), jobName=jobName)
+					newparticleListError[[5]]<-summaryStatsLong(phy, convertTaxonFrameToGeigerData(doSimulation(splits, intrinsicFn, extrinsicFn, newparticleList[[1]]$startingValues, newparticleList[[1]]$intrinsicValues, newparticleList[[1]]$extrinsicValues, timeStep), phy))
 					newparticleListError[[6]]<-phy
 					newparticleListError[[7]]<-vipResult
 					newparticleListError[[8]]<-convertTaxonFrameToGeigerData(doSimulation(splits, intrinsicFn, extrinsicFn, newparticleList[[1]]$startingValues, newparticleList[[1]]$intrinsicValues, newparticleList[[1]]$extrinsicValues, timeStep), phy)
@@ -279,16 +279,14 @@ summaryValues<-trueFreeValuesANDSummaryValues[,-1:-numberParametersFree]
 			dataGenerationStep=1
 			time<-proc.time()[[3]]-start.time
 			time.per.gen<-time
-			rejects.gen.one<-(dim(subset(particleDataFrame, id<0))[1])/(dim(subset(particleDataFrame,))[1])
+			rejects.gen.one<-(dim(subset(particleDataFrame, particleDataFrame$id<0))[1])/(dim(subset(particleDataFrame,))[1])
 			rejects<-c()
 			
 			for (i in 1:numberParametersTotal){
-				param.stdev[1,i]<-c(sd(subset(particleDataFrame, id>0)[,6+i]))
-				weightedMeanParam[1,i]<-weighted.mean(subset(particleDataFrame, id>0)[,6+i], subset(particleDataFrame, id>0)[,6])
+				param.stdev[1,i]<-c(sd(subset(particleDataFrame, particleDataFrame$id>0)[,6+i]))
+				weightedMeanParam[1,i]<-weighted.mean(subset(particleDataFrame, particleDataFrame$id>0)[,6+i], subset(particleDataFrame, particleDataFrame$id>0)[,6])
 				#c(mean(subset(particleDataFrame, X3>0)[,7:dim(particleDataFrame)[2]])/subset(particleDataFrame, X3>0)[,6])
 			}
-			#stdev.Intrinsic[i]<-sd(subset(all.a[[run]][which(all.a[[run]]$weight>0),], generation==i)[,param[2]])
-		
 		
 
 			save.image(file=paste("WS", jobName, ".Rdata", sep=""))
@@ -352,7 +350,7 @@ summaryValues<-trueFreeValuesANDSummaryValues[,-1:-numberParametersFree]
 							#cat("dput(newparticleList[[1]]) AFTER MUTATE STATES\n")
 							#dput(newparticleList[[1]])
 							
-							newparticleList[[1]]$distance<-dist(matrix(c(boxcoxplsSummary(summaryStatsLong(phy, convertTaxonFrameToGeigerData(doSimulation(splits, intrinsicFn, extrinsicFn, newparticleList[[1]]$startingValues, newparticleList[[1]]$intrinsicValues, newparticleList[[1]]$extrinsicValues, timeStep), phy), jobName=jobName), plsResult, boxcoxLambda, boxcoxAddition), originalSummaryStats), nrow=2, byrow=TRUE))[1]
+							newparticleList[[1]]$distance<-dist(matrix(c(boxcoxplsSummary(summaryStatsLong(phy, convertTaxonFrameToGeigerData(doSimulation(splits, intrinsicFn, extrinsicFn, newparticleList[[1]]$startingValues, newparticleList[[1]]$intrinsicValues, newparticleList[[1]]$extrinsicValues, timeStep), phy)), plsResult, boxcoxLambda, boxcoxAddition), originalSummaryStats), nrow=2, byrow=TRUE))[1]
 							if (plot) {
 								plotcol="grey"
 								if (newparticleList[[1]]$distance<toleranceVector[dataGenerationStep]) {
@@ -492,10 +490,10 @@ summaryValues<-trueFreeValuesANDSummaryValues[,-1:-numberParametersFree]
 				
 						time2<-proc.time()[[3]]-start.time
 						time.per.gen<-c(time.per.gen, time2)
-						rejects.per.gen<-(dim(subset(particleDataFrame, id<0))[1])/(dim(subset(particleDataFrame[which(particleDataFrame$generation==dataGenerationStep),],))[1])
+						rejects.per.gen<-(dim(subset(particleDataFrame, particleDataFrame$id<0))[1])/(dim(subset(particleDataFrame[which(particleDataFrame$generation==dataGenerationStep),],))[1])
 						rejects<-c(rejects, rejects.per.gen)
-						sub1<-subset(particleDataFrame, generation==dataGenerationStep)
-						sub2<-subset(sub1, id>0)
+						sub1<-subset(particleDataFrame, particleDataFrame$generation==dataGenerationStep)
+						sub2<-subset(sub1, sub1$id>0)
 						
 						for (i in 1:numberParametersTotal){
 							param.stdev[dataGenerationStep,i]<-c(sd(sub2[,6+i]))
@@ -551,9 +549,9 @@ summaryValues<-trueFreeValuesANDSummaryValues[,-1:-numberParametersFree]
 					plot(x=c(min(intrinsicPriorsValues), max(intrinsicPriorsValues)), y=c(0, 1), type="n")
 					for (i in 1:(length(toleranceVector)-1)) {
 						graycolor<-gray(0.5*(length(toleranceVector)-i)/length(toleranceVector))
-						lines(density(subset(particleDataFrame, generation==i)[, 8]), col= graycolor)
+						lines(density(subset(particleDataFrame, particleDataFrame$generation==i)[, 8]), col= graycolor)
 					}
-					lines(density(subset(particleDataFrame, generation==length(toleranceVector))[, 8]), col= "red")
+					lines(density(subset(particleDataFrame, particleDataFrame$generation==length(toleranceVector))[, 8]), col= "red")
 				} 
 				
 				
