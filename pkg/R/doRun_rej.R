@@ -103,14 +103,14 @@ doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
 	}
 	
 	nrepSim<-StartSims #Used to be multiple tries where nrepSim = StartSims*((2^try)/2).  If initial simulations are not enough, and we need to try again then new analysis will double number of initial simulations
-	cat(paste("Number of initial simulations set to", nrepSim, "\n"))
+	cat(paste("Number of simulations set to", nrepSim, "\n"))
 	
 	trueFreeValuesANDSummaryValues<-parallelSimulation(nrepSim, coreLimit, splits, phy, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn, multicore)
 	
 	#save(trueFreeValuesANDSummaryValues, file="tFVandSV.Rdata")
 	cat("\n\n")
 	simTime<-proc.time()[[3]]-startTime
-	cat(paste("Initial simulations took", round(simTime, digits=3), "seconds"), "\n")
+	cat(paste("Simulations took", round(simTime, digits=3), "seconds"), "\n")
 	
 	#separate the simulation results: true values and the summary values
 	trueFreeValuesMatrix<-trueFreeValuesANDSummaryValues[,1:numberParametersFree]
@@ -153,7 +153,7 @@ doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
 	particleDataFrame<-data.frame(cbind(rep(1, dim(abcResults$unadj.values)[1]), as.vector(which(abcDistances<=quantile(abcDistances, prob=abcTolerance))), seq(1:dim(abcResults$unadj.values)[1]), rep(0, dim(abcResults$unadj.values)[1]), abcResults$dist, rep(1, dim(abcResults$unadj.values)[1]), abcResults$unadj.values  ))
 	colnames(particleDataFrame)<-c("generation", "attempt", "id", "parentid", "distance", "weight",  paste("param", seq(dim(trueFreeValuesMatrix)[2])))
 
-	save(abcDistancesRaw, abcDistancesRawTotal, abcDistances, abcResults, particleDataFrame, file="BarbsDistances.Rdata")
+	#save(abcDistancesRaw, abcDistancesRawTotal, abcDistances, abcResults, particleDataFrame, file="BarbsDistances.Rdata")
 	input.data<-rbind(jobName, length(phy[[3]]), timeStep, StartSims, standardDevFactor, abcMethod, abcTolerance)
 
 	rejectionResults<-vector("list")
