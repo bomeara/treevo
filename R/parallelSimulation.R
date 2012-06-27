@@ -13,7 +13,7 @@ parallelSimulation<-function(nrepSim, coreLimit, splits, phy, startingPriorsValu
 			coreLimit->cores
 		}
 	}
-	cat(paste("Using", cores, "core(s) for initial simulations \n\n"))
+	cat(paste("Using", cores, "core(s) for simulations \n\n"))
 	cat("Doing simulations: ")
 	
 	trueFreeValuesANDSummaryValues<-foreach(1:nrepSim, .combine=rbind) %dopar% simulateData(splits, phy, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn)
