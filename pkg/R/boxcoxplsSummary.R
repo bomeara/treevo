@@ -9,7 +9,7 @@ boxcoxplsSummary<-function(summaryValues, plsResult, boxcoxLambda, boxcoxAdditio
 		predictSingleResult<-(predict(plsResult[[plsIndex]], matrix(prunedSummaryValues, nrow=1))$predict[, , 1])
 		predictResult<-append(predictResult, predictSingleResult)
 	}
-	
+	#print(paste("predictResult =", predictResult))
 	predictResult
 }
 
