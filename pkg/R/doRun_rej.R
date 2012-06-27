@@ -107,7 +107,7 @@ doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
 	
 	trueFreeValuesANDSummaryValues<-parallelSimulation(nrepSim, coreLimit, splits, phy, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn, multicore)
 	
-	save(trueFreeValuesANDSummaryValues, file="tFVandSV.Rdata")
+	#save(trueFreeValuesANDSummaryValues, file="tFVandSV.Rdata")
 	cat("\n\n")
 	simTime<-proc.time()[[3]]-startTime
 	cat(paste("Initial simulations took", round(simTime, digits=3), "seconds"), "\n")
@@ -143,11 +143,10 @@ doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
 	#sqrt((X-0)^2 + (Y-0)^2)
 	for (freeParamIndex in sequence(dim(trueFreeValuesMatrix)[2])) {
 		abcDistancesRaw[,freeParamIndex]<-abc(target=boxcoxOriginalSummaryStats[whichVip[,freeParamIndex]], param=trueFreeValuesMatrix[,freeParamIndex], sumstat= boxcoxSummaryValuesMatrix[,whichVip[,freeParamIndex] ], tol=1, method=abcMethod)$dist^2 #because we're doing euclidean distance, from observed, which has value 0, 0, 0, etc.
-		#abcDistancesRawTotal<-abcDistancesRawTotal+abcDistancesRaw
 	}
 	abcDistancesRawTotal<-apply(abcDistancesRaw, 1, sum)
-	abcResults<-vector("list")
 	abcDistances<-sqrt(abcDistancesRawTotal) #Euclid rules.
+	abcResults<-vector("list")
 	abcResults$unadj.values<-trueFreeValuesMatrix[which(abcDistances<=quantile(abcDistances, prob=abcTolerance)), ] #here's where we diy abc
 	abcResults$dist<-abcDistances[which(abcDistances<=quantile(abcDistances, prob=abcTolerance))]
 	

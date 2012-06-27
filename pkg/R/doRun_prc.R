@@ -5,7 +5,7 @@
 #the doRun_prc function takes input from the user and then automatically guesses optimal parameters, though user overriding is also possible.
 #the guesses are used to do simulations near the expected region. If omitted, they are set to the midpoint of the input parameter matrices
 
-doRun_prc<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, startingValuesGuess=c(), intrinsicValuesGuess=c(), extrinsicValuesGuess=c(), TreeYears=1e+04, toleranceVector=c(), numParticles=300, standardDevFactor=0.20, StartSims=300, plot=FALSE, epsilonProportion=0.7, epsilonMultiplier=0.7, nStepsPRC=5, jobName=NA, trueStartingState=NA, trueIntrinsicState=NA, stopRule=TRUE, stopValue=0.05, multicore=FALSE, coreLimit=NA, filenames=c("rejectionsims.RData")) {
+doRun_prc<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, startingValuesGuess=c(), intrinsicValuesGuess=c(), extrinsicValuesGuess=c(), TreeYears=1e+04, toleranceVector=c(), numParticles=300, standardDevFactor=0.20, StartSims=300, plot=FALSE, epsilonProportion=0.7, epsilonMultiplier=0.7, nStepsPRC=5, jobName=NA, trueStartingState=NA, trueIntrinsicState=NA, stopRule=TRUE, stopValue=0.05, vipthresh=0.8, multicore=FALSE, coreLimit=NA, filenames=c("rejectionsims.RData")) {
 
 if (!is.binary.tree(phy)) {
 	print("Warning: Tree is not fully dichotomous")
@@ -126,7 +126,7 @@ cat("Doing simulations:")
 Time<-proc.time()[[3]]
 trueFreeValues<-matrix(nrow=0, ncol= numberParametersFree)
 summaryValues<-matrix(nrow=0, ncol=length(summaryStatsLong(phy, traits))) #set up initial sum stats as length of SSL of original data
-trueFreeValuesANDSummaryValues<-parallelSimulation(nrepSim, coreLimit, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn, multicore)
+trueFreeValuesANDSummaryValues<-parallelSimulation(nrepSim, coreLimit, splits, phy, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn, multicore)
 cat("\n\n")
 
 save(trueFreeValues,summaryValues,file=paste("CompletedSimulations",jobName,".Rdata",sep=""))
@@ -134,61 +134,73 @@ simTime<-proc.time()[[3]]-Time
 cat(paste("Initial simulations took", round(simTime, digits=3), "seconds"), "\n")
 
 #separate the simulation results: true values and the summary values
-trueFreeValues<-trueFreeValuesANDSummaryValues[,1:numberParametersFree]
-summaryValues<-trueFreeValuesANDSummaryValues[,-1:-numberParametersFree]
+trueFreeValuesMatrix<-trueFreeValuesANDSummaryValues[,1:numberParametersFree]
+summaryValuesMatrix<-trueFreeValuesANDSummaryValues[,-1:-numberParametersFree]
 #while(sink.number()>0) {sink()}
 
 			#---------------------- Initial Simulations (End) ------------------------------
 
 
 			#---------------------- Box-Cox transformation (Start) ------------------------------
-	boxcoxEstimates<-boxcoxEstimation(summaryValues)
+	boxcoxEstimates<-boxcoxEstimation(summaryValuesMatrix)
 	boxcoxAddition<-boxcoxEstimates$boxcoxAddition
 	boxcoxLambda<-boxcoxEstimates$boxcoxLambda
-	boxcoxSummaryValues<-boxcoxEstimates$boxcoxSummaryValues
+	boxcoxSummaryValuesMatrix<-boxcoxEstimates$boxcoxSummaryValues
+	boxcoxOriginalSummaryStats<-boxcoxTransformation(summaryStatsLong(phy=phy, data=traits), boxcoxAddition, boxcoxLambda)
+
 	#save(trueFreeValues, file="tFV")
 	#save(boxcoxSummaryValues, file="bcSV")
-	
-			
+				
 			#---------------------- Box-Cox transformation (End) ------------------------------
 
 
 			#----------------- PLS regression: find best set of summary stats to use (Start) -----------------
 			#Use mixOmics to to find the optimal set of summary stats. Note that this uses a different package (mixOmics rather than pls than that used by Weggman et al. because this package can calculate variable importance in projection and deals fine with NAs)
-			plsEstimates<-plsEstimation(trueFreeValues, boxcoxSummaryValues)
-			#prunedPlsResult<-plsEstimates$prunedPlsResult
-			plsResult<-plsEstimates$plsResult
-			vipResult<-plsEstimates$vipResult
-			prunedSummaryValues<-plsEstimates$prunedSummaryValues
-			originalSummaryStats<-boxcoxplsSummary(summaryStatsLong(phy, traits), plsResult, boxcoxLambda, boxcoxAddition)
-			
-			boxcox.output<-vector("list", 5)
-			boxcox.output$lambda<-boxcoxLambda
-			boxcox.output$addition<-boxcoxAddition
-			boxcox.output$PlsResult<-plsResult
-			boxcox.output$prunedSummaryValues<-prunedSummaryValues
-			boxcox.output$originalSummaryStats<-originalSummaryStats
+
+	library("mixOmics")
+	getVipSingleColumn<-function(trueFreeValuesColumn, boxcoxSummaryValuesMatrix) {
+		return(vip(pls(X=boxcoxSummaryValuesMatrix, Y=trueFreeValuesColumn, ncomp=1)))
+	}
+	
+	allVip<-apply(trueFreeValuesMatrix, 2, getVipSingleColumn, boxcoxSummaryValuesMatrix)
+	whichVip<-(allVip>vipthresh)
+
+	#now we go true parameter by true parameter, using only the summary values with enough importance for each
+	#we get a distance for each particle from the observed particle for each true param
+	#then get a euclidean distance for all of these
+	#sqrt((X-0)^2 + (Y-0)^2)
+	plsResult<-vector("list")
+	predictResult<-matrix(nrow=dim(trueFreeValuesMatrix)[1], ncol=dim(trueFreeValuesMatrix)[2]) 
+	for (freeParamIndex in sequence(dim(trueFreeValuesMatrix)[2])) {
+		plsResult[[freeParamIndex]]<-pls(X=boxcoxSummaryValuesMatrix[,whichVip[,freeParamIndex]], Y=trueFreeValuesMatrix[,freeParamIndex], ncomp=1)  #calculate pls for each free param from vip sumStats
+		predictResult[,freeParamIndex]<-as.matrix(predict(plsResult[[freeParamIndex]], boxcoxSummaryValuesMatrix[,whichVip[,freeParamIndex]])$predict[, , 1])  #predict result from each sim; can be combined into one matrix here?  
+	}
+	
+	boxcox.output<-vector("list", 5)
+	boxcox.output$lambda<-boxcoxLambda
+	boxcox.output$addition<-boxcoxAddition
+	boxcox.output$PlsResult<-plsResult
+	boxcox.output$boxcoxOriginalSummaryStats<-boxcoxOriginalSummaryStats
+	
 			#----------------- PLS regression: find best set of summary stats to use (End) -----------------
 			
 			
 			#----------------- Find distribution of distances (Start) ----------------------
-			predictResult<-as.matrix(predict(plsResult, prunedSummaryValues)$predict[, , 1])
-			distanceVector<-rep(NA, dim(predictResult)[1])
-		
-			for (simulationIndex in 1:dim(predictResult)[1]) {
-					distanceVector[simulationIndex]<-dist(matrix(c(trueFreeValues[simulationIndex, ], predictResult[simulationIndex, ]), nrow=2, byrow=TRUE))[1]
-			}
-			#print("distanceVector", distanceVector, "\n")
-			densityDistanceVector<-density(distanceVector)
-			#plot(densityDistanceVector)
-			epsilonDistance<-quantile(distanceVector, probs=epsilonProportion) #this gives the distance such that epsilonProportion of the simulations starting from a given set of values will be rejected 
-			toleranceVector<-rep(epsilonDistance, nStepsPRC)
+	#calculate Raw Distances (note: these distances are the SAME when you do them together as they are when you do them sqrt(sum(seperate^2)). )
+	
+	distanceVector<-rep(NA, dim(predictResult)[1])
+	for (simulationIndex in 1:dim(predictResult)[1]) {
+			distanceVector[simulationIndex]<-dist(matrix(c(trueFreeValuesMatrix[simulationIndex, ], predictResult[simulationIndex, ]), nrow=2, byrow=TRUE))[1]  
+	}
+
+	epsilonDistance<-quantile(distanceVector, probs=epsilonProportion) #this gives the distance such that epsilonProportion of the simulations starting from a given set of values will be rejected 
+	toleranceVector<-rep(epsilonDistance, nStepsPRC)
 			
-			if(nStepsPRC>1){
-				for (step in 2:nStepsPRC) {
-					toleranceVector[step]<-toleranceVector[step-1]*epsilonMultiplier
-				}
-			}
+	if(nStepsPRC>1){
+		for (step in 2:nStepsPRC) {
+			toleranceVector[step]<-toleranceVector[step-1]*epsilonMultiplier
+		}
+	}
 			#----------------- Find distribution of distances (End) ---------------------
 			
 			#------------------ ABC-PRC (Start) ------------------
@@ -227,12 +239,13 @@ summaryValues<-trueFreeValuesANDSummaryValues[,-1:-numberParametersFree]
 				#print(newparticleList[[1]]$extrinsicValues)
 				#cat("\nintrinsicVector\n")
 				#print(newparticleList[[1]]$intrinsicValues)
-				newparticleList[[1]]$distance<-dist(matrix(c(boxcoxplsSummary(summaryStatsLong(phy, convertTaxonFrameToGeigerData(doSimulation(splits, intrinsicFn, extrinsicFn, newparticleList[[1]]$startingValues, newparticleList[[1]]$intrinsicValues, newparticleList[[1]]$extrinsicValues, timeStep), phy)), plsResult, boxcoxLambda, boxcoxAddition), originalSummaryStats), nrow=2, byrow=TRUE))[1]
+				save(whichVip, phy, splits, intrinsicFn, extrinsicFn, newparticleList, timeStep, plsResult, boxcoxLambda, boxcoxAddition, boxcoxOriginalSummaryStats, file="BarbsSaved.Rdata")
+				newparticleList[[1]]$distance<-dist(matrix(c(boxcoxplsSummary(summaryStatsLong(phy, convertTaxonFrameToGeigerData(doSimulation(splits, intrinsicFn, extrinsicFn, newparticleList[[1]]$startingValues, newparticleList[[1]]$intrinsicValues, newparticleList[[1]]$extrinsicValues, timeStep), phy)), plsResult, boxcoxLambda, boxcoxAddition, whichVip), boxcoxOriginalSummaryStats), nrow=2, byrow=TRUE))[1]
 				if (is.na(newparticleList[[1]]$distance)) {
 					newparticleListError<-vector("list", 9)
 					newparticleListError[[1]]<-newparticleList[[1]]
-					newparticleListError[[2]]<-matrix(c(boxcoxplsSummary(summaryStatsLong(phy, convertTaxonFrameToGeigerData(doSimulation(splits, intrinsicFn, extrinsicFn, newparticleList[[1]]$startingValues, newparticleList[[1]]$intrinsicValues, newparticleList[[1]]$extrinsicValues, timeStep), phy)), plsResult, boxcoxLambda, boxcoxAddition), originalSummaryStats), nrow=2, byrow=TRUE)
-					newparticleListError[[3]]<-c(boxcoxplsSummary(summaryStatsLong(phy, convertTaxonFrameToGeigerData(doSimulation(splits, intrinsicFn, extrinsicFn, newparticleList[[1]]$startingValues, newparticleList[[1]]$intrinsicValues, newparticleList[[1]]$extrinsicValues, timeStep), phy)), plsResult, boxcoxLambda, boxcoxAddition), originalSummaryStats)
+					newparticleListError[[2]]<-matrix(c(boxcoxplsSummary(summaryStatsLong(phy, convertTaxonFrameToGeigerData(doSimulation(splits, intrinsicFn, extrinsicFn, newparticleList[[1]]$startingValues, newparticleList[[1]]$intrinsicValues, newparticleList[[1]]$extrinsicValues, timeStep), phy)), plsResult, boxcoxLambda, boxcoxAddition, whichVip), boxcoxOriginalSummaryStats), nrow=2, byrow=TRUE)
+					newparticleListError[[3]]<-c(boxcoxplsSummary(summaryStatsLong(phy, convertTaxonFrameToGeigerData(doSimulation(splits, intrinsicFn, extrinsicFn, newparticleList[[1]]$startingValues, newparticleList[[1]]$intrinsicValues, newparticleList[[1]]$extrinsicValues, timeStep), phy)), plsResult, boxcoxLambda, boxcoxAddition, whichVip), boxcoxOriginalSummaryStats)
 					newparticleListError[[4]]<-NULL #used to be todo
 					newparticleListError[[5]]<-summaryStatsLong(phy, convertTaxonFrameToGeigerData(doSimulation(splits, intrinsicFn, extrinsicFn, newparticleList[[1]]$startingValues, newparticleList[[1]]$intrinsicValues, newparticleList[[1]]$extrinsicValues, timeStep), phy))
 					newparticleListError[[6]]<-phy
@@ -350,7 +363,7 @@ summaryValues<-trueFreeValuesANDSummaryValues[,-1:-numberParametersFree]
 							#cat("dput(newparticleList[[1]]) AFTER MUTATE STATES\n")
 							#dput(newparticleList[[1]])
 							
-							newparticleList[[1]]$distance<-dist(matrix(c(boxcoxplsSummary(summaryStatsLong(phy, convertTaxonFrameToGeigerData(doSimulation(splits, intrinsicFn, extrinsicFn, newparticleList[[1]]$startingValues, newparticleList[[1]]$intrinsicValues, newparticleList[[1]]$extrinsicValues, timeStep), phy)), plsResult, boxcoxLambda, boxcoxAddition), originalSummaryStats), nrow=2, byrow=TRUE))[1]
+							newparticleList[[1]]$distance<-dist(matrix(c(boxcoxplsSummary(summaryStatsLong(phy, convertTaxonFrameToGeigerData(doSimulation(splits, intrinsicFn, extrinsicFn, newparticleList[[1]]$startingValues, newparticleList[[1]]$intrinsicValues, newparticleList[[1]]$extrinsicValues, timeStep), phy)), plsResult, boxcoxLambda, boxcoxAddition, whichVip), boxcoxOriginalSummaryStats), nrow=2, byrow=TRUE))[1]
 							if (plot) {
 								plotcol="grey"
 								if (newparticleList[[1]]$distance<toleranceVector[dataGenerationStep]) {
