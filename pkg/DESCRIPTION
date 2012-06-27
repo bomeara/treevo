@@ -1,8 +1,8 @@
 Package: TreEvo
 Type: Package
 Title: Using ABC to understand trait evolution
-Version: 0.3
-Date: 2012-06-25
+Version: 0.3.1
+Date: 2012-06-27
 Author: Brian O'Meara, Barb L. Banbury
 Maintainer: BarbBanbury <darwinthesun@gmail.com>
 Depends: R (>= 2.13.0), abc, geiger, ape, gpclib, geometry, car, mixOmics, stats, corpcor, coda, foreach
@@ -12,7 +12,7 @@ License: GPL
 Collage: approximatebayesian.R
 URL: http://treevo.R-forge.R-project.org
 Repository: CRAN
-Packaged: 2012-06-25 23:00:00; BLB
-Date/Publication: 2012-06-25 23:00:00
+Packaged: 2012-06-27 23:00:00; BLB
+Date/Publication: 2012-06-27 23:00:00
 
 
