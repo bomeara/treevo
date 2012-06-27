@@ -8,9 +8,6 @@ plotPosteriors<-function(particleDataFrame, PriorMatrix, realParam=FALSE, realPa
 x<-particleDataFrame
 priors<-PriorMatrix
 
-if(class(x)=="abc" || class(x)=="matrix"){
-	x<-convertRejectResultsToTreEvoResults(x)
-}
 
 if(class(x)=="data.frame"){
 	data1<-subset(x[which(x$weight>0),], x$generation==max(x$generation)) #make generation and other names by column so it works for partial and complete 
@@ -21,7 +18,6 @@ if(class(x)=="data.frame"){
 if(class(x)=="list"){
 	all<-data.frame()
 	for (list in 1:length(x)) {
-		x[[list]]<-convertRejectResultsToTreEvoResults(x[[list]])
 		data1<-subset(x[[list]][which(x[[list]]$weight>0),], x[[list]]$generation==max(x[[list]]$generation)) #make generation and other names by column so it works for partial and complete 
 		run<-rep(list, dim(data1)[1])
 		x[[list]]<-cbind(run, data1)
