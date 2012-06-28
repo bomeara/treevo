@@ -73,16 +73,15 @@ if (saveHistory) {
 			otherstatesmatrix<-matrix(otherstatesvector, ncol=length(taxa[[i]]$states), byrow=TRUE) #each row represents one taxon
 			newvalues<-taxa[[i]]$states+intrinsicFn(params=intrinsicValues, states=taxa[[i]]$states, timefrompresent =timefrompresent)+extrinsicFn(params=extrinsicValues, selfstates=taxa[[i]]$states, otherstates=otherstatesmatrix, timefrompresent =timefrompresent)
 			taxa[[i]]$nextstates<-newvalues
-		}
 		
-		if (saveHistory) {
-			startVector<-append(startVector, taxa[[i]]$states)
-			endVector <-append(endVector, newvalues)
-			startTime <-append(startTime, timefrompresent+timeStep)
-			endTime <-append(endTime, timefrompresent)
-			save(startVector, endVector, startTime, endTime, file=paste("savedHistory", jobName, ".Rdata", sep=""))
+			if (saveHistory) {
+				startVector<-append(startVector, taxa[[i]]$states)
+				endVector <-append(endVector, newvalues)
+				startTime <-append(startTime, timefrompresent+timeStep)
+				endTime <-append(endTime, timefrompresent)
+				save(startVector, endVector, startTime, endTime, file=paste("savedHistory", jobName, ".Rdata", sep=""))
+			}
 		}
-			
 		for (i in 1:length(taxa)) {
 #print("\nbefore\n")
 #print(taxa[[i]])
