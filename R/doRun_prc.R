@@ -163,6 +163,7 @@ summaryValuesMatrix<-trueFreeValuesANDSummaryValues[,-1:-numberParametersFree]
 	
 	allVip<-apply(trueFreeValuesMatrix, 2, getVipSingleColumn, boxcoxSummaryValuesMatrix)
 	whichVip<-(allVip>vipthresh)
+	rownames(whichVip)<-sumStatNames(phy)
 
 	#now we go true parameter by true parameter, using only the summary values with enough importance for each
 	#we get a distance for each particle from the observed particle for each true param
@@ -318,7 +319,6 @@ summaryValuesMatrix<-trueFreeValuesANDSummaryValues[,-1:-numberParametersFree]
 			prcResults$weightedMeanParam<-weightedMeanParam
 			prcResults$simTime<-simTime
 			prcResults$time.per.gen<-time.per.gen
-			prcResults$allVip<-allVip
 			prcResults$whichVip<-whichVip
 			
 			save(prcResults, file=paste("partialResults", jobName, ".txt", sep=""))
@@ -548,7 +548,6 @@ summaryValuesMatrix<-trueFreeValuesANDSummaryValues[,-1:-numberParametersFree]
 						prcResults$weightedMeanParam<-weightedMeanParam
 						prcResults$simTime
 						prcResults$time.per.gen<-time.per.gen
-						prcResults$allVip<-allVip
 						prcResults$whichVip<-whichVip
 						
 						save(prcResults, file=paste("partialResults", jobName, ".txt", sep=""))
@@ -599,7 +598,6 @@ summaryValuesMatrix<-trueFreeValuesANDSummaryValues[,-1:-numberParametersFree]
 		prcResults$weightedMeanParam<-weightedMeanParam
 		prcResults$simTime<-simTime
 		prcResults$time.per.gen<-genTimes
-		prcResults$allVip<-allVip
 		prcResults$whichVip<-whichVip
 		prcResults$CredInt <-FinalParamPredictions_CredInt
 		prcResults$HPD <-FinalParamPredictions_HPD
