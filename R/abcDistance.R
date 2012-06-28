@@ -14,7 +14,7 @@ abcDistance<-function(trueFreeValuesMatrix,whichVip,boxcoxOriginalSummaryStats,b
 		return(dist(matrix(c(x,boxcoxOriginalSummaryStats),byrow=TRUE,nrow=2))[1])
 	}
 	for (freeParamIndex in sequence(dim(trueFreeValuesMatrix)[2])) {
-		abcDistancesRaw[,freeParamIndex]<-(apply(boxcoxSummaryValuesMatrix,1,distanceByRow,boxcoxOriginalSummaryStats=boxcoxOriginalSummaryStats))^2 #need to square for euclidean distance, finished being calculated below
+		abcDistancesRaw[,freeParamIndex]<-(apply(boxcoxSummaryValuesMatrix[,whichVip[,freeParamIndex]],1,distanceByRow,boxcoxOriginalSummaryStats=boxcoxOriginalSummaryStats[whichVip[,freeParamIndex]]))^2 #need to square for euclidean distance, finished being calculated below
 	}
 	abcDistancesRawTotal<-apply(abcDistancesRaw, 1, sum)
 	abcDistances<-sqrt(abcDistancesRawTotal) #Euclid rules.
