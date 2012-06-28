@@ -9,7 +9,7 @@ if (saveRealParams){
 	RealParams$matrix[1,]<-c(startingValues, rep(NA, maxLength-length(startingValues)))
 	RealParams$matrix[2,]<-c(intrinsicValues, rep(NA, maxLength-length(intrinsicValues)))
 	RealParams$matrix[3,]<-c(extrinsicValues, rep(NA, maxLength-length(extrinsicValues)))
-	save(RealParams, file=paste("RealParams", jobName, , ".Rdata", sep=""))
+	save(RealParams, file=paste("RealParams", jobName, ".Rdata", sep=""))
 }
 if (plot || savePlot || saveHistory) {
 	startVector<-c()
