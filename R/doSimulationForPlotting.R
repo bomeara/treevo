@@ -9,7 +9,7 @@ if (saveRealParams){
 	RealParams$matrix[1,]<-c(startingValues, rep(NA, maxLength-length(startingValues)))
 	RealParams$matrix[2,]<-c(intrinsicValues, rep(NA, maxLength-length(intrinsicValues)))
 	RealParams$matrix[3,]<-c(extrinsicValues, rep(NA, maxLength-length(extrinsicValues)))
-	save(RealParams, file=paste("RealParams", jobName, sep=""))
+	save(RealParams, file=paste("RealParams", jobName, , ".Rdata", sep=""))
 }
 if (plot || savePlot || saveHistory) {
 	startVector<-c()
@@ -20,15 +20,15 @@ if (plot || savePlot || saveHistory) {
 	numberofsteps<-floor(splits[1, 1]/timeStep)
 	mininterval<-min(splits[1:(dim(splits)[1]-1), 1]-splits[2:(dim(splits)[1]), 1])
 	if (numberofsteps<1000) {
-		warning(paste("You have only ", numberofsteps, " but should probably have a lot more. I would suggest decreasing timeStep to no more than ", splits[1, 1]/1000))
+		#warning(paste("You have only ", numberofsteps, " but should probably have a lot more. I would suggest decreasing timeStep to no more than ", splits[1, 1]/1000))
 	}
 	if (floor(mininterval/timeStep)<50) {
-		warning(paste("You have only ", floor(mininterval/timeStep), " on the shortest interval but should probably have a lot more. I would suggest decreasing timeStep to no more than ", mininterval/50))
+		#warning(paste("You have only ", floor(mininterval/timeStep), " on the shortest interval but should probably have a lot more. I would suggest decreasing timeStep to no more than ", mininterval/50))
 	}
 #initial setup
 	timefrompresent=splits[1, 1]
-		taxa<-list(abctaxon(id=splits[1, 3], states=startingValues), abctaxon(id=splits[1, 4], states=startingValues))
-		splits<-splits[2:dim(splits)[1], ] #pop off top value
+	taxa<-list(abctaxon(id=splits[1, 3], states=startingValues), abctaxon(id=splits[1, 4], states=startingValues))
+	splits<-splits[2:dim(splits)[1], ] #pop off top value
 	
 #start running
 	while(timefrompresent>0) {
@@ -70,7 +70,7 @@ if (plot || savePlot || saveHistory) {
 			}
 #print(taxa)
 #print(length(otherstatesvector))
-			otherstatesmatrix<-matrix(otherstatesvector, ncol=length(taxa), byrow=TRUE) #each row represents one taxon
+			otherstatesmatrix<-matrix(otherstatesvector, ncol=length(taxa[[i]]$states), byrow=TRUE) #each row represents one taxon
 			newvalues<-taxa[[i]]$states+intrinsicFn(params=intrinsicValues, states=taxa[[i]]$states, timefrompresent =timefrompresent)+extrinsicFn(params=extrinsicValues, selfstates=taxa[[i]]$states, otherstates=otherstatesmatrix, timefrompresent =timefrompresent)
 			taxa[[i]]$nextstates<-newvalues
 			if (plot || savePlot || saveHistory) {
