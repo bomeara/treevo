@@ -74,9 +74,9 @@ for (param in 1:dim(priors)[2]) {
 			max=as.numeric(max(priors[2, param], priors[3, param]))
 			x<-runif(1000, min, max)
 			poly<-curve(dunif(x), xlim=c(min(min-(.3*(max-min)), min(q)), max(max+(.3*(max-min)), max(q))), ylim=c(0, max(1.5, max(r))), type="n", xlab=names(all)[which.param], ylab="Density", bty="n")
-			rect(min, 0, max, 1, border=rgb(1, 0, 0), lwd=1.5)
+			rect(min, 0, max, 1, border="blue", lwd=1.5)
 			if (realParam) {
-				segments(realParamValues[param], 0, realParamValues[param], max(1.5, max(r)), col=rgb(0, 0, 1), lwd=1.5)
+				segments(realParamValues[param], 0, realParamValues[param], max(1.5, max(r)), col="red", lwd=1.5)
 			}
 		}
 		else if (priors[1, param]=="normal") {
@@ -85,9 +85,9 @@ for (param in 1:dim(priors)[2]) {
 			stdev=as.numeric(priors[3, param])
 			x<-rnorm(1000, mean, stdev)
 			w<-density(x)
-			poly<-curve(dnorm(x, mean, stdev), from=min(x), to=max(x), xlim=c(min(min(w$x), min(q)), max(max(w$x), max(q))), ylim=c(0, max(max(w$y), max(r))), xlab=names(all)[which.param], ylab="Density", col=rgb(1, 0, 0), lwd=1.5, bty="n")
+			poly<-curve(dnorm(x, mean, stdev), from=min(x), to=max(x), xlim=c(min(min(w$x), min(q)), max(max(w$x), max(q))), ylim=c(0, max(max(w$y), max(r))), xlab=names(all)[which.param], ylab="Density", col="blue", lwd=1.5, bty="n")
 			if (realParam) {
-				segments(realParamValues[param], 0, realParamValues[param], max(max(w$y), max(r)), col=rgb(0, 0, 1), lwd=1.5)
+				segments(realParamValues[param], 0, realParamValues[param], max(max(w$y), max(r)), col="red", lwd=1.5)
 			}
 		}
 		else if (priors[1, param]=="lognormal") {  
@@ -95,9 +95,9 @@ for (param in 1:dim(priors)[2]) {
 			stdev=as.numeric(priors[3, param])
 			x<-rlnorm(1000, mean, stdev)
 			w<-density(x)
-			poly<-curve(dlnorm(x, mean, stdev), from=0, to=qlnorm(0.99, mean, stdev), xlim=c(min(min(w$x), min(q)), max(max(w$x), max(q))), ylim=c(0, max(max(w$y), max(r))), xlab=names(all)[which.param], ylab="Density", col=rgb(1, 0, 0), lwd=1.5, bty="n")
+			poly<-curve(dlnorm(x, mean, stdev), from=0, to=qlnorm(0.99, mean, stdev), xlim=c(min(min(w$x), min(q)), max(max(w$x), max(q))), ylim=c(0, max(max(w$y), max(r))), xlab=names(all)[which.param], ylab="Density", col="blue", lwd=1.5, bty="n")
 			if (realParam) {
-				segments(realParamValues[param], 0, realParamValues[param], max(max(w$y), max(r)), col=rgb(0, 0, 1), lwd=1.5)
+				segments(realParamValues[param], 0, realParamValues[param], max(max(w$y), max(r)), col="red", lwd=1.5)
 			}
 		}
 		else if (priors[1, param]=="gamma") {
@@ -105,9 +105,9 @@ for (param in 1:dim(priors)[2]) {
 			scale=as.numeric(priors[3, param])
 			x<-rgamma(1000, shape, scale)
 			w<-density(x)
-			poly<-curve(dgamma(x, shape, scale), from=0, to=qgamma(0.99, shape, scale), xlim=c(min(min(w$x), min(q)), max(max(w$x), max(q))), ylim=c(0, max(max(w$y), max(r))), xlab=names(all)[which.param], ylab="Density", col=rgb(1, 0, 0), lwd=1.5, bty="n")
+			poly<-curve(dgamma(x, shape, scale), from=0, to=qgamma(0.99, shape, scale), xlim=c(min(min(w$x), min(q)), max(max(w$x), max(q))), ylim=c(0, max(max(w$y), max(r))), xlab=names(all)[which.param], ylab="Density", col="blue", lwd=1.5, bty="n")
 			if (realParam) {
-				segments(realParamValues[param], 0, realParamValues[param], max(max(w$y), max(r)), col=rgb(0, 0, 1), lwd=1.5)
+				segments(realParamValues[param], 0, realParamValues[param], max(max(w$y), max(r)), col="red", lwd=1.5)
 			}
 		}
 		else if (priors[1, param]=="exponential") {
@@ -115,9 +115,9 @@ for (param in 1:dim(priors)[2]) {
 			rate=as.numeric(priors[2, param])
 			x<-rexp(1000, rate)
 			w<-density(x)
-			poly<-curve(dexp(x, rate), from=0, to=qexp(0.99, rate), xlim=c(min(min(w$x), min(q)), max(max(w$x), max(q))), ylim=c(0, max(max(w$y), max(r))), xlab=names(all)[which.param], ylab="Density", col=rgb(1, 0, 0), lwd=1.5, bty="n") #, sub=names(data)[which.param]
+			poly<-curve(dexp(x, rate), from=0, to=qexp(0.99, rate), xlim=c(min(min(w$x), min(q)), max(max(w$x), max(q))), ylim=c(0, max(max(w$y), max(r))), xlab=names(all)[which.param], ylab="Density", col="blue", lwd=1.5, bty="n") #, sub=names(data)[which.param]
 			if (realParam) {
-				segments(realParamValues[param], 0, realParamValues[param], max(max(w$y), max(r)), col=rgb(0, 0, 1), lwd=1.5)
+				segments(realParamValues[param], 0, realParamValues[param], max(max(w$y), max(r)), col="red", lwd=1.5)
 			}
 		}
 		
