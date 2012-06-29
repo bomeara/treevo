@@ -122,7 +122,7 @@ doRun_rej2<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues
 print(res)
 	rejectionResults<-vector("list")
 	#names(rejectionResults)<-c("input.data", "PriorMatrix", "phy", "traits")
-save(trueFreeValuesMatrix,res, file="BarbsTestofDistanceCalc2.Rdata")
+#save(trueFreeValuesMatrix,res, file="BarbsTestofDistanceCalc2.Rdata")
 	rejectionResults$input.data<-input.data
 	rejectionResults$PriorMatrix<-PriorMatrix
 	rejectionResults$phy<-phy
