@@ -2,7 +2,7 @@
 ##TreeYears = 1000 if tree is in thousands of years
 
 
-doRun_rej2<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, startingValuesGuess=c(), intrinsicStatesGuess=c(), extrinsicStatesGuess=c(), TreeYears=1e+04, standardDevFactor=0.20, StartSims=NA, jobName=NA, trueStartingState=NA, trueIntrinsicState=NA, abcMethod="rejection", vipthresh=0.8, abcTolerance=0.1, multicore=FALSE, coreLimit=NA) {
+doRun_rej2<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, startingValuesGuess=c(), intrinsicStatesGuess=c(), extrinsicStatesGuess=c(), TreeYears=1e+04, standardDevFactor=0.20, StartSims=NA, jobName=NA, trueStartingState=NA, trueIntrinsicState=NA, abcMethod="rejection", vipthresh=0.8, abcTolerance=0.1, multicore=FALSE, coreLimit=NA, checkpointFile=NULL, checkpointFreq=24) {
 	library(geiger)
 	library(abc)
 	if (!is.binary.tree(phy)) {
@@ -105,7 +105,7 @@ doRun_rej2<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues
 	nrepSim<-StartSims #Used to be multiple tries where nrepSim = StartSims*((2^try)/2).  If initial simulations are not enough, and we need to try again then new analysis will double number of initial simulations
 	cat(paste("Number of simulations set to", nrepSim, "\n"))
 	
-	trueFreeValuesANDSummaryValues<-parallelSimulation(nrepSim, coreLimit, splits, phy, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn, multicore)
+	trueFreeValuesANDSummaryValues<-parallelSimulation(nrepSim, coreLimit, splits, phy, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn, multicore, checkpointFile, checkpointFreq)
 	
 	#save(trueFreeValuesANDSummaryValues, file="tFVandSV.Rdata")
 	cat("\n\n")
