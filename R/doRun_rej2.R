@@ -104,7 +104,10 @@ doRun_rej2<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues
 	
 	nrepSim<-StartSims #Used to be multiple tries where nrepSim = StartSims*((2^try)/2).  If initial simulations are not enough, and we need to try again then new analysis will double number of initial simulations
 	cat(paste("Number of simulations set to", nrepSim, "\n"))
-	
+	if(!is.null(checkpointFile)) {
+		save(list=ls(),file=paste(checkpointFile,".intialsettings.Rsave",sep=""))
+	}
+
 	trueFreeValuesANDSummaryValues<-parallelSimulation(nrepSim, coreLimit, splits, phy, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn, multicore, checkpointFile, checkpointFreq)
 	
 	#save(trueFreeValuesANDSummaryValues, file="tFVandSV.Rdata")
