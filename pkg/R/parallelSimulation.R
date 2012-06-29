@@ -23,6 +23,7 @@ parallelSimulation<-function(nrepSim, coreLimit, splits, phy, startingPriorsValu
 		trueFreeValuesANDSummaryValues<-foreach(1:nrepSim, .combine=rbind) %dopar% simulateData(splits, phy, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn)
 	}
 	else {
+		checkpointFileName<-paste(checkpointFile,".trueFreeValuesANDSummaryValues.Rsave",sep="")
 		trueFreeValuesANDSummaryValues<-c()
 		checkpointFreqAdjusted<-max(cores*round(checkpointFreq/cores),1)
 		numberSimsInCheckpointRuns<-checkpointFreqAdjusted * floor(nrepSim/checkpointFreqAdjusted)
@@ -34,8 +35,8 @@ parallelSimulation<-function(nrepSim, coreLimit, splits, phy, startingPriorsValu
 		}
 		for (rep in sequence(numberLoops)) {
 			trueFreeValuesANDSummaryValues<-rbind(trueFreeValuesANDSummaryValues, foreach(1:numberSimsPerLoop, .combine=rbind) %dopar% simulateData(splits, phy, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn))
-			save(trueFreeValuesANDSummaryValues,file=checkpointFile)
-			print(paste("Just finished",dim(trueFreeValuesANDSummaryValues)[1],"of",nrepSim,"simulations; progress so far saved in",checkpointFile))
+			save(trueFreeValuesANDSummaryValues,file=checkpointFileName)
+			print(paste("Just finished",dim(trueFreeValuesANDSummaryValues)[1],"of",nrepSim,"simulations; progress so far saved in",checkpointFileName))
 		}
 		trueFreeValuesANDSummaryValues<-rbind(trueFreeValuesANDSummaryValues, foreach(1:numberSimsAfterLastCheckpoint, .combine=rbind) %dopar% simulateData(splits, phy, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn))
 	}
