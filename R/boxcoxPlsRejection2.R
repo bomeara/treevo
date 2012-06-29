@@ -18,7 +18,7 @@ boxcoxPlsRejection2<-function(summaryValuesMatrix, trueFreeValuesMatrix, phy, tr
 	whichVip<-(allVip>vipthresh)
 	rownames(whichVip)<-sumStatNames(phy)
 	
-	save(trueFreeValuesMatrix, whichVip, boxcoxOriginalSummaryStats, boxcoxSummaryValuesMatrix, file="BarbsDistObjects.Rdata")
+	#save(trueFreeValuesMatrix, whichVip, boxcoxOriginalSummaryStats, boxcoxSummaryValuesMatrix, file="BarbsDistObjects.Rdata")
 	#calculatedDist<-abcDistance(trueFreeValuesMatrix, whichVip, boxcoxOriginalSummaryStats, boxcoxSummaryValuesMatrix) #THIS DOESN'T USE DIST IT STILL USES ABC!!!
 	abcDistancesRaw<-matrix(nrow=dim(trueFreeValuesMatrix)[1], ncol=dim(trueFreeValuesMatrix)[2])  #rep(0,dim(trueFreeValuesMatrix)[1]) #will hold the distances for each particle
 	abcDistancesRawTotal<-vector(length=dim(trueFreeValuesMatrix)[1])
