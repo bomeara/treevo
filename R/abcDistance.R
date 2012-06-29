@@ -10,15 +10,13 @@ abcDistance<-function(trueFreeValuesMatrix,whichVip,boxcoxOriginalSummaryStats,b
 	#then get a euclidean distance for all of these
 	#it's like getting delta X, then delta Y, and figuring out distance from the origin using
 	#sqrt((X-0)^2 + (Y-0)^2)
-    numParticles<-dim(trueFreeValuesMatrix)[1]
-    if (numParticles==1) { #because abc() fails with just one particle,make up data, then only return the real data (due to the sequence(numParticles) at the end
-    	boxcoxSummaryValuesMatrix<-rbind(boxcoxSummaryValuesMatrix,boxcoxOriginalSummaryStats)
-    	trueFreeValuesMatrix<-rbind(trueFreeValuesMatrix,rnorm(dim(trueFreeValuesMatrix)[2]))
-    }
+	distanceByRow<-function(x,boxcoxOriginalSummaryStats) {
+		return(dist(matrix(c(x,boxcoxOriginalSummaryStats),byrow=TRUE,nrow=2))[1])
+	}
 	for (freeParamIndex in sequence(dim(trueFreeValuesMatrix)[2])) {
-		abcDistancesRaw[,freeParamIndex]<-abc(target=boxcoxOriginalSummaryStats[whichVip[,freeParamIndex]], param=trueFreeValuesMatrix[,freeParamIndex], sumstat= boxcoxSummaryValuesMatrix[,whichVip[,freeParamIndex]], tol=1, method=abcMethod)$dist^2 #because we're doing euclidean distance, from observed, which has value 0, 0, 0, etc.
+		abcDistancesRaw[,freeParamIndex]<-(apply(boxcoxSummaryValuesMatrix[,whichVip[,freeParamIndex]],1,distanceByRow,boxcoxOriginalSummaryStats=boxcoxOriginalSummaryStats[whichVip[,freeParamIndex]]))^2 #need to square for euclidean distance, finished being calculated below
 	}
 	abcDistancesRawTotal<-apply(abcDistancesRaw, 1, sum)
 	abcDistances<-sqrt(abcDistancesRawTotal) #Euclid rules.
-	return(list(abcDistances=abcDistances[sequence(numParticles),], abcDistancesRaw=abcDistancesRaw[sequence(numParticles),])) #this will be a single value if we've passed it a single particle to compare with observed
+	return(list(abcDistances=abcDistances, abcDistancesRaw=abcDistancesRaw)) #this will be a single value if we've passed it a single particle to compare with observed
 }
