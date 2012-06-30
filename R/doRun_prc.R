@@ -220,11 +220,7 @@ summaryValuesMatrix<-trueFreeValuesANDSummaryValues[,-1:-numberParametersFree]
 				newparticleList<-list(abcparticle(id=particle, generation=1, weight=0))
 				newparticleList[[1]]<-initializeStatesFromMatrices(newparticleList[[1]], startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns)
 
-				#save(whichVip, phy, splits, intrinsicFn, extrinsicFn, newparticleList, timeStep, plsResult, boxcoxLambda, boxcoxAddition, file="BarbsSaved.Rdata")
 				boxcoxOneSimSumStats<-boxcoxTransformation(summaryStatsLong(phy, convertTaxonFrameToGeigerData(doSimulation(splits, intrinsicFn, extrinsicFn, newparticleList[[1]]$startingValues, newparticleList[[1]]$intrinsicValues, newparticleList[[1]]$extrinsicValues, timeStep), phy)), boxcoxAddition, boxcoxLambda)
-
-	save(trueFreeValuesMatrix, whichVip, boxcoxOriginalSummaryStats, boxcoxSummaryValuesMatrix, calculatedDist, boxcoxAddition, boxcoxLambda, boxcoxOneSimSumStats, file="BarbscalcDist.Rdata")
-
 
 				newparticleList[[1]]$distance<-abcDistance(trueFreeValuesMatrix, whichVip, boxcoxOriginalSummaryStats, rbind(boxcoxOneSimSumStats, boxcoxOneSimSumStats))$abcDistances[1] #trueFreeValuesMatrix is used here just for finding dims, not distances.  #silly way around the one-row matrix issue--rbind the same data and then extract the first element.  
 				#boxcoxSummaryValuesMatrix<-matrix(boxcoxParticleSummaryStats,nrow=1)
