@@ -37,7 +37,9 @@ if (saveHistory) {
 		while ((timefrompresent-timeStep)<=splits[1, 1]) { #do speciation. changed from if to while to deal with effectively polytomies
 			originallength<-length(taxa)
 			taxontodelete<-Inf
-			for (i in 1:originallength) {
+			originallength<-length(taxa)
+			taxontodelete<-Inf
+			for (i in 1:originallength) { #need to merge this from my branch still -DG
 				if (taxa[[i]]$id==splits[1, 2]) {
 					taxontodelete<-i
 					taxa[[originallength+1]] <- taxa[[i]]
@@ -61,19 +63,17 @@ if (saveHistory) {
 #summarizeTaxonStates(taxa)
 		}
 #trait evolution step
-		for (i in 1:length(taxa)) {
-			otherstatesvector<-c()
-			for (j in 1:length(taxa)) {
-				if (j!=i) {
-					otherstatesvector<-c(otherstatesvector, taxa[[j]]$states)
-				}
-			}
-#print(taxa)
-#print(length(otherstatesvector))
-			otherstatesmatrix<-matrix(otherstatesvector, ncol=length(taxa[[i]]$states), byrow=TRUE) #each row represents one taxon
-			newvalues<-taxa[[i]]$states+intrinsicFn(params=intrinsicValues, states=taxa[[i]]$states, timefrompresent =timefrompresent)+extrinsicFn(params=extrinsicValues, selfstates=taxa[[i]]$states, otherstates=otherstatesmatrix, timefrompresent =timefrompresent)
-			taxa[[i]]$nextstates<-newvalues
-		
+otherstatefn<-function(x){
+  taxa[[x]]$states
+}
+
+otherMatrix<-function(i){
+  taxvec<-c(1:length(taxa))
+  taxvec<-taxvec[-which(taxvec==i)]
+  otherstatesvector<-sapply(taxvec,otherstatefn)
+  otherstatesmatrix<-matrix(otherstatesvector, ncol=length(taxa[[i]]$states), byrow=TRUE) #each row represents one taxon
+  newvalues<-taxa[[i]]$states+intrinsicFn(params=intrinsicValues, states=taxa[[i]]$states, timefrompresent =timefrompresent)+extrinsicFn(params=extrinsicValues, selfstates=taxa[[i]]$states, otherstates=otherstatesmatrix, timefrompresent =timefrompresent)
+  taxa[[i]]$nextstates<-newvalues
 			if (saveHistory) {
 				startVector<-append(startVector, taxa[[i]]$states)
 				endVector <-append(endVector, newvalues)
@@ -81,23 +81,29 @@ if (saveHistory) {
 				endTime <-append(endTime, timefrompresent)
 				save(startVector, endVector, startTime, endTime, file=paste("savedHistory", jobName, ".Rdata", sep=""))
 			}
-		}
-		for (i in 1:length(taxa)) {
-#print("\nbefore\n")
-#print(taxa[[i]])
-			taxa[[i]]$states<-taxa[[i]]$nextstates
-#print("\nafter\n")
-#print(taxa[[i]])
+                
+                
+  return(taxa[[i]])
+              }
+taxvec<-c(1:length(taxa))
+taxa<-lapply(taxvec,otherMatrix)
+                
+		stateNextState<-function(i){
+			i$states<-i$nextstates
+                        return(i)
 			
 		}
+                taxa<-lapply(taxa,stateNextState)
 #print("------------------- step -------------------")
 #print(taxa)
 #summarizeTaxonStates(taxa)
 		
 		timefrompresent<-timefrompresent-timeStep
-		for (i in 1:length(taxa)) {
-			taxa[[i]]$timeSinceSpeciation<-taxa[[i]]$timeSinceSpeciation+timeStep
+		timeSinceSp<-function(i) {
+			i$timeSinceSpeciation<-i$timeSinceSpeciation+timeStep
+                        return(i)
 		}
+                taxa<-lapply(taxa,timeSinceSp)
 	}
 	return(summarizeTaxonStates(taxa))
 }
