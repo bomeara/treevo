@@ -5,7 +5,7 @@
 #the doRun_prc function takes input from the user and then automatically guesses optimal parameters, though user overriding is also possible.
 #the guesses are used to do simulations near the expected region. If omitted, they are set to the midpoint of the input parameter matrices
 
-doRun_prc<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, startingValuesGuess=c(), intrinsicValuesGuess=c(), extrinsicValuesGuess=c(), TreeYears=1e+04, numParticles=300, standardDevFactor=0.20, StartSims=300, plot=FALSE, epsilonProportion=0.7, epsilonMultiplier=0.7, nStepsPRC=5, jobName=NA, trueStartingState=NA, trueIntrinsicState=NA, stopRule=FALSE, stopValue=0.05, vipthresh=0.8, multicore=FALSE, coreLimit=NA) {
+doRun_prc<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, startingValuesGuess=c(), intrinsicValuesGuess=c(), extrinsicValuesGuess=c(), TreeYears=1e+04, numParticles=300, standardDevFactor=0.20, StartSims=300, plot=FALSE, epsilonProportion=0.7, epsilonMultiplier=0.7, nStepsPRC=5, jobName=NA, stopRule=FALSE, stopValue=0.05, vipthresh=0.8, multicore=FALSE, coreLimit=NA) {
 
 if (!is.binary.tree(phy)) {
 	print("Warning: Tree is not fully dichotomous")
@@ -120,7 +120,7 @@ if (is.na(StartSims)) {
 			#---------------------- Initial Simulations (Start) ------------------------------
 			#See Wegmann et al. Efficient Approximate Bayesian Computation Coupled With Markov Chain Monte Carlo Without Likelihood. Genetics (2009) vol. 182 (4) pp. 1207-1218 for more on the method. Note, though, that we are not doing PLS, only Box-Cox transformation
 nrepSim<-StartSims #Used to be = StartSims*((2^try)/2), If initial simulations are not enough, and we need to try again then new analysis will double number of initial simulations
-input.data<-rbind(jobName, length(phy[[3]]), nrepSim, timeStep, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor, trueStartingState, trueIntrinsicState)		
+input.data<-rbind(jobName, length(phy[[3]]), nrepSim, TreeYears, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor)		
 cat(paste("Number of initial simulations set to", nrepSim, "\n"))
 cat("Doing simulations:")
 Time<-proc.time()[[3]]
@@ -262,8 +262,8 @@ summaryValuesMatrix<-trueFreeValuesANDSummaryValues[,-1:-numberParametersFree]
 			dataGenerationStep=1
 			time<-proc.time()[[3]]-start.time
 			time.per.gen<-time
-			rejects.gen.one<-(dim(subset(particleDataFrame, particleDataFrame$id<0))[1])/(dim(subset(particleDataFrame,))[1])
-			rejects<-c()
+			#rejects.gen.one<-(dim(subset(particleDataFrame, particleDataFrame$id<0))[1])/(dim(subset(particleDataFrame,))[1])
+			#rejects<-c()
 			
 			for (i in 1:numberParametersTotal){
 				param.stdev[1,i]<-c(sd(subset(particleDataFrame, particleDataFrame$id>0)[,6+i]))
@@ -278,16 +278,9 @@ summaryValuesMatrix<-trueFreeValuesANDSummaryValues[,-1:-numberParametersFree]
 			prcResults$PriorMatrix<-PriorMatrix
 			prcResults$particleDataFrame<-particleDataFrame
 			names(prcResults$particleDataFrame)<-nameVector
-			prcResults$epsilonDistance<-epsilonDistance
 			prcResults$toleranceVector<-toleranceVector
 			prcResults$phy<-phy
 			prcResults$traits<-traits
-			prcResults$rejects.gen.one<-rejects.gen.one
-			#prcResults$rejects<-rejects
-			prcResults$particleWeights<-particleWeights
-			prcResults$particleList<-particleList
-			prcResults$param.stdevprcResults$param.stdev<-param.stdev
-			prcResults$weightedMeanParam<-weightedMeanParam
 			prcResults$simTime<-simTime
 			prcResults$time.per.gen<-time.per.gen
 			prcResults$whichVip<-whichVip
@@ -474,8 +467,8 @@ summaryValuesMatrix<-trueFreeValuesANDSummaryValues[,-1:-numberParametersFree]
 				
 						time2<-proc.time()[[3]]-start.time
 						time.per.gen<-c(time.per.gen, time2)
-						rejects.per.gen<-(dim(subset(particleDataFrame, particleDataFrame$id<0))[1])/(dim(subset(particleDataFrame[which(particleDataFrame$generation==dataGenerationStep),],))[1])
-						rejects<-c(rejects, rejects.per.gen)
+						#rejects.per.gen<-(dim(subset(particleDataFrame, particleDataFrame$id<0))[1])/(dim(subset(particleDataFrame[which(particleDataFrame$generation==dataGenerationStep),],))[1])
+						#rejects<-c(rejects, rejects.per.gen)
 						sub1<-subset(particleDataFrame, particleDataFrame$generation==dataGenerationStep)
 						sub2<-subset(sub1, sub1$id>0)
 						
@@ -507,16 +500,9 @@ summaryValuesMatrix<-trueFreeValuesANDSummaryValues[,-1:-numberParametersFree]
 						prcResults$PriorMatrix<-PriorMatrix
 						prcResults$particleDataFrame<-particleDataFrame
 						names(prcResults$particleDataFrame)<-nameVector
-						prcResults$epsilonDistance<-epsilonDistance
 						prcResults$toleranceVector<-toleranceVector
 						prcResults$phy<-phy
 						prcResults$traits<-traits
-						prcResults$rejects.gen.one<-rejects.gen.one
-						prcResults$rejects<-rejects
-						prcResults$particleWeights<-particleWeights
-						prcResults$particleList<-particleList
-						prcResults$param.stdev<-param.stdev
-						prcResults$weightedMeanParam<-weightedMeanParam
 						prcResults$simTime
 						prcResults$time.per.gen<-time.per.gen
 						prcResults$whichVip<-whichVip
@@ -542,12 +528,8 @@ summaryValuesMatrix<-trueFreeValuesANDSummaryValues[,-1:-numberParametersFree]
 			
 			#---------------------- ABC-PRC (End) --------------------------------
 			
-				
-		#Calculate summary statistics on final generation particles
-		FinalParamPredictions_CredInt<-CredInt(particleDataFrame)
-		FinalParamPredictions_HPD<-HPD(particleDataFrame)
 
-		input.data<-rbind(jobName, length(phy[[3]]), nrepSim, timeStep, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor, trueStartingState, trueIntrinsicState)
+		input.data<-rbind(jobName, length(phy[[3]]), nrepSim, TreeYears, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor)
 	
 		time3<-proc.time()[[3]]
 		genTimes<-c(time.per.gen, time3)
@@ -556,21 +538,14 @@ summaryValuesMatrix<-trueFreeValuesANDSummaryValues[,-1:-numberParametersFree]
 		prcResults$input.data<-input.data
 		prcResults$PriorMatrix<-PriorMatrix
 		prcResults$particleDataFrame<-particleDataFrame
-		prcResults$epsilonDistance<-epsilonDistance
 		prcResults$toleranceVector<-toleranceVector
 		prcResults$phy<-phy
 		prcResults$traits<-traits
-		prcResults$rejects.gen.one<-rejects.gen.one
-		prcResults$rejects<-rejects
-		prcResults$particleWeights<-particleWeights
-		prcResults$particleList<-particleList
-		prcResults$param.stdev<-param.stdev
-		prcResults$weightedMeanParam<-weightedMeanParam
 		prcResults$simTime<-simTime
 		prcResults$time.per.gen<-genTimes
 		prcResults$whichVip<-whichVip
-		prcResults$CredInt <-FinalParamPredictions_CredInt
-		prcResults$HPD <-FinalParamPredictions_HPD
+		prcResults$CredInt <-CredInt(particleDataFrame)
+		prcResults$HPD <-HPD(particleDataFrame)
 	
 
 	registerDoMC(1) #set number of cores back to 1
