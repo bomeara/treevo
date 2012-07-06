@@ -12,14 +12,10 @@ convertTaxonFrameToGeigerData(taxonframe, phy)
   \item{taxonframe}{data frame with species values}
   \item{phy}{Tree (ape phylo format)}
 }
-\details{
-}
 \value{
 Returns a data frame in geiger format
 
-	}
+}
 \references{O'Meara and Banbury, unpublished}
 \author{Brian O'Meara and Barb Banbury}
-\seealso{
-}
 

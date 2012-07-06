@@ -3,6 +3,7 @@
 
 \title{Simulation Splits}
 
+\description{This function retrieves branch lengths and ancestor-decendant relationships from a tree}
 
 \usage{
 getSimulationSplits(phy)
@@ -12,7 +13,7 @@ getSimulationSplits(phy)
   \item{phy}{Tree (ape phylo format)}
 }
 \details{
-	This function is used by other TreEvo functions for internal calculations.  It retrieves branch lengths and ancestor-decendant relationships from a tree. 
+	This function is used by other TreEvo functions for internal calculations. 
 }
 \value{
 A data frame of branching times, ancestor and descendant vectors

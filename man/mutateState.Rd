@@ -3,6 +3,7 @@
 
 \title{Mutate Character State}
 
+\description{This function mutates the character state of a given taxon by one discrete time step}
 
 \usage{
 mutateState(startingState, standardDevFactor, priorValues, priorFn)
@@ -14,10 +15,8 @@ mutateState(startingState, standardDevFactor, priorValues, priorFn)
   \item{priorValues}{Vector of priorValues}
   \item{priorFn}{Prior shape}
 }
-\details{This function mutates the character state of a given taxon by one discrete time step
-}
-\value{
-	}
+
+
 \references{O'Meara and Banbury, unpublished}
 \author{Brian O'Meara and Barb Banbury}
 
