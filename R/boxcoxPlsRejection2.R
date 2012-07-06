@@ -1,4 +1,4 @@
-boxcoxPlsRejection2<-function(summaryValuesMatrix, trueFreeValuesMatrix, phy, traits, vipthresh, abcMethod, abcTolerance, verbose=TRUE){
+boxcoxPlsRejection2<-function(summaryValuesMatrix, trueFreeValuesMatrix, phy, traits, vipthresh, abcTolerance, verbose=TRUE){
 	#boxcox transform summary values
 	if (verbose) {
 		print("Starting boxcox transformation")
@@ -24,7 +24,7 @@ boxcoxPlsRejection2<-function(summaryValuesMatrix, trueFreeValuesMatrix, phy, tr
 	whichVip<-(allVip>vipthresh)
 	rownames(whichVip)<-sumStatNames(phy)
 	
-	#save(trueFreeValuesMatrix, whichVip, boxcoxOriginalSummaryStats, boxcoxSummaryValuesMatrix, file="BarbsDistObjects.Rdata")
+	save(trueFreeValuesMatrix, whichVip, boxcoxOriginalSummaryStats, boxcoxSummaryValuesMatrix, file="BarbsDistObjects.Rdata")
 	if (verbose) {
 		print("Calculating distances")
 	}

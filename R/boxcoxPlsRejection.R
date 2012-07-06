@@ -1,4 +1,4 @@
-boxcoxPlsRejection<-function(summaryValuesMatrix, trueFreeValuesMatrix, phy, traits, vipthresh, abcMethod, abcTolerance){
+boxcoxPlsRejection<-function(summaryValuesMatrix, trueFreeValuesMatrix, phy, traits, vipthresh, abcTolerance){
 	#boxcox transform summary values
 	boxcoxEstimates<-boxcoxEstimation(summaryValuesMatrix)
 	boxcoxAddition<-boxcoxEstimates$boxcoxAddition
@@ -26,7 +26,7 @@ boxcoxPlsRejection<-function(summaryValuesMatrix, trueFreeValuesMatrix, phy, tra
 	#it's like getting delta X, then delta Y, and figuring out distance from the origin using
 	#sqrt((X-0)^2 + (Y-0)^2)
 	for (freeParamIndex in sequence(dim(trueFreeValuesMatrix)[2])) {
-		abcDistancesRaw[,freeParamIndex]<-abc(target=boxcoxOriginalSummaryStats[whichVip[,freeParamIndex]], param=trueFreeValuesMatrix[,freeParamIndex], sumstat= boxcoxSummaryValuesMatrix[,whichVip[,freeParamIndex]], tol=1, method=abcMethod)$dist^2 #because we're doing euclidean distance, from observed, which has value 0, 0, 0, etc.
+		abcDistancesRaw[,freeParamIndex]<-abc(target=boxcoxOriginalSummaryStats[whichVip[,freeParamIndex]], param=trueFreeValuesMatrix[,freeParamIndex], sumstat= boxcoxSummaryValuesMatrix[,whichVip[,freeParamIndex]], tol=1, method="rejection")$dist^2 #because we're doing euclidean distance, from observed, which has value 0, 0, 0, etc.
 	}
 	abcDistancesRawTotal<-apply(abcDistancesRaw, 1, sum)
 	abcDistances<-sqrt(abcDistancesRawTotal) #Euclid rules.
