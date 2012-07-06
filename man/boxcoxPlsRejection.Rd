@@ -38,29 +38,12 @@ particleDataFrame=particleDataFrame, abcDistancesRaw=abcDistancesRaw, whichVip=w
 \references{O'Meara and Banbury, unpublished; Sisson et al. 2007, Wegmann et al. 2009}
 \author{Brian O'Meara and Barb Banbury}
 \examples{
-data(simData)
+#data(res)
 
-#c<-doRun_rej( #make sure priors are uniform with this one! 
-#	phy=simPhy, 
-#	traits=simChar,
-#	intrinsicFn=brownianIntrinsic, 
-#	extrinsicFn=nullExtrinsic, 
-#	startingPriorsFns="normal",
-#	startingPriorsValues=matrix(c(mean(char[,1]), sd(char[,1]))),
-#	intrinsicPriorsFns=c("exponential"),
-#	intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE), #grep for normal in pkg
-#	extrinsicPriorsFns=c("fixed"),
-#	extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
-#	StartSims=1000, 
-#	jobName="run_c", 
-#	abcTolerance=0.05, 
-#	multicore=F, 
-#	coreLimit=1 
-#)			
-	
+#boxcoxPlsRejection(summaryValuesMatrix=res$summaryValuesMatrix, trueFreeValuesMatrix=res$trueFreeValuesMatrix, phy=res$phy, traits=res$traits, vipthresh=0.8, abcTolerance=0.05)
+
 
 }
-\keyword{doRun}
-\keyword{doRun_rej}
+\keyword{boxcoxPlsRejection}
 \keyword{abc}
 
