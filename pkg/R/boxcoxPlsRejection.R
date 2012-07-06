@@ -1,4 +1,4 @@
-boxcoxPlsRejection2<-function(summaryValuesMatrix, trueFreeValuesMatrix, phy, traits, vipthresh, abcTolerance, verbose=TRUE){
+boxcoxPlsRejection<-function(summaryValuesMatrix, trueFreeValuesMatrix, phy, traits, vipthresh, abcTolerance, verbose=TRUE){
 	#boxcox transform summary values
 	if (verbose) {
 		print("Starting boxcox transformation")
