@@ -1,0 +1,22 @@
+\name{getSimulationSplits}
+\alias{getSimulationSplits}
+
+\title{Simulation Splits}
+
+
+\usage{
+getSimulationSplits(phy)
+}
+
+\arguments{
+  \item{phy}{Tree (ape phylo format)}
+}
+\details{
+	This function is used by other TreEvo functions for internal calculations.  It retrieves branch lengths and ancestor-decendant relationships from a tree. 
+}
+\value{
+A data frame of branching times, ancestor and descendant vectors
+}
+\references{O'Meara and Banbury, unpublished}
+\author{Brian O'Meara and Barb Banbury}
+

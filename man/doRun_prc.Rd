@@ -1,6 +1,6 @@
 \name{doRun_prc}
 \alias{doRun_prc}
-\title{Approximate Bayesian computation for comparative methods}
+\title{Approximate Bayesian computation for comparative methods-Partial Rejection Control}
 \description{
 	Starts the abc-prc run
 }
@@ -60,7 +60,7 @@ doRun_prc(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues, startingP
   
 }
 
-\references{O'Meara and Banbury, unpublished}
+\references{O'Meara and Banbury, unpublished; Sisson et al. 2007, Wegmann et al. 2009}
 \author{Brian O'Meara and Barb Banbury}
 \examples{
 data(simData)
