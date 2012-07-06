@@ -1,4 +1,4 @@
-summarizeRejection<-function(summaryValuesMatrix, trueFreeValuesMatrix, phy, traits, vipthresh, abcMethod, abcTolerance){
+summarizeRejection<-function(summaryValuesMatrix, trueFreeValuesMatrix, phy, traits, vipthresh, abcTolerance){
 	#get boxcoxLambda and boxcoxAddition
 	library(abc, quietly=T)
 	boxcoxEstimates<-boxcoxEstimation(summaryValuesMatrix)
