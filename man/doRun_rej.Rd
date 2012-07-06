@@ -5,7 +5,7 @@
 	Starts the abc-rejection run
 }
 \usage{
-doRun_rej(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, startingValuesGuess=c(), intrinsicStatesGuess=c(), extrinsicStatesGuess=c(), TreeYears=1e+04, standardDevFactor=0.20, StartSims=NA, jobName=NA, vipthresh=0.8, abcTolerance=0.1, multicore=FALSE, coreLimit=NA) 
+doRun_rej(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, startingValuesGuess=c(), intrinsicStatesGuess=c(), extrinsicStatesGuess=c(), TreeYears=1e+04, standardDevFactor=0.20, StartSims=NA, jobName=NA, vipthresh=0.8, abcTolerance=0.1, multicore=FALSE, coreLimit=NA, checkpointFile=NULL, checkpointFreq=24) 
 }
 \arguments{
   \item{phy}{Tree (Phylogenetic tree in phylo format)}
@@ -29,6 +29,8 @@ doRun_rej(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues, startingP
   \item{abcTolerance}{Proportion of accepted simulations}
   \item{multicore}{If TRUE, initial simulations will be split among coreLimit nodes}
   \item{coreLimit}{Number of cores for initial simulations}
+  \item{checkpointFile}{Optional file name for checkpointing simulations}
+  \item{checkpointFreq}{Saving frequency for checkpointing}
 
 }
 
