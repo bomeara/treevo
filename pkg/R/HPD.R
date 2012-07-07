@@ -1,21 +1,21 @@
-HPD<-function(particleDataFrame, abc=F, percent=0.95, returnData=F){
+HPD<-function(particleDataFrame, percent=0.95, returnData=F){
 	library(coda, quietly=T)
 	summary<-vector("list")
-	if (abc){
-		Ints<-matrix(nrow=(dim(particleDataFrame)[2]), ncol=4)
-		colnames(Ints)<-c("mean", "sd", paste("LowerHPD_", percent, sep=""), paste("UpperHPD_", percent, sep=""))	
-		rownames(Ints)<-names(particleDataFrame)
-		if (is.null(names(particleDataFrame))){
-			print(paste("Parameter names are NULL from abc output. Assumed to be in the same order."))
-		}
-		subpDF<-as.data.frame(particleDataFrame) 
-	}
-	else{
+	#if (abc){
+	#	Ints<-matrix(nrow=(dim(particleDataFrame)[2]), ncol=4)
+	#	colnames(Ints)<-c("mean", "sd", paste("LowerHPD_", percent, sep=""), paste("UpperHPD_", percent, sep=""))	
+	#	rownames(Ints)<-names(particleDataFrame)
+	#	if (is.null(names(particleDataFrame))){
+	#		print(paste("Parameter names are NULL from abc output. Assumed to be in the same order."))
+	#	}
+	#	subpDF<-as.data.frame(particleDataFrame) 
+	#}
+	#else{
 		Ints<-matrix(nrow=(dim(particleDataFrame)[2]-6), ncol=4)
 		colnames(Ints)<-c("mean", "sd", paste("LowerHPD_", percent, sep=""), paste("UpperHPD_", percent, sep=""))	
 		rownames(Ints)<-names(particleDataFrame[7: dim(particleDataFrame)[2]])
 		subpDF<-as.data.frame(subset(particleDataFrame[which(particleDataFrame$weight>0),], generation==max(particleDataFrame$generation))[7:dim(particleDataFrame)[2]])
-	}
+	#}
 	for(i in 1:dim(subpDF)[2]){
 		if(sd(subpDF[,i]) != 0) {
 
