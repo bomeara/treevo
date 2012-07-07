@@ -1,13 +1,13 @@
-\name{meanFromPrior}
-\alias{meanFromPrior}
+\name{pullFromPrior}
+\alias{pullFromPrior}
 
 
-\title{Get Mean Value from Prior}
+\title{Pull value from prior}
 
-\description{This function retreives a mean value from variable prior functions}
+\description{This function retreives random value from variable prior functions}
 
 \usage{
-meanFromPrior(priorValues, priorFn)
+pullFromPrior(priorValues, priorFn)
 }
 
 \arguments{
