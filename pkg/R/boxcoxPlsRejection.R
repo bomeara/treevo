@@ -55,5 +55,5 @@ boxcoxPlsRejection<-function(summaryValuesMatrix, trueFreeValuesMatrix, phy, tra
 	particleDataFrame<-data.frame(cbind(rep(1, dim(acceptedParticles)[1]), as.vector(which(abcDistances<=quantile(abcDistances, prob=abcTolerance))), seq(1:dim(acceptedParticles)[1]), rep(0, dim(acceptedParticles)[1]), acceptedDistances, rep(1, dim(acceptedParticles)[1]), acceptedParticles))
 	colnames(particleDataFrame)<-c("generation", "attempt", "id", "parentid", "distance", "weight",  paste("param", seq(dim(trueFreeValuesMatrix)[2])))
 
-	return(list(particleDataFrame=particleDataFrame, abcDistancesRaw=abcDistancesRaw, whichVip=whichVip, boxcoxSummaryValuesMatrix=boxcoxSummaryValuesMatrix, boxcoxOriginalSummaryStats=boxcoxOriginalSummaryStats))
+	return(list(particleDataFrame=particleDataFrame, abcDistancesRaw=calculatedDist$abcDistancesRaw, whichVip=whichVip, boxcoxSummaryValuesMatrix=boxcoxSummaryValuesMatrix, boxcoxOriginalSummaryStats=boxcoxOriginalSummaryStats))
 }

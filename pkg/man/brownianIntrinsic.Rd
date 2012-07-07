@@ -1,24 +1,24 @@
-\name{boundaryIntrinsic}
-\alias{boundaryIntrinsic}
+\name{brownianIntrinsic}
+\alias{brownianIntrinsic}
 
 \title{Intrinsic Character Evolution Models}
 
-\description{This function describes a model of intrinsic character evolution. Character change is restricted above a minimum and below a maximum threshold}
+\description{This function describes a model of intrinsic character evolution via Brownian motion.}
 
 \usage{
-boundaryIntrinsic(params, states, timefrompresent)
+brownianIntrinsic(params, states, timefrompresent)
 }
 
 \arguments{
-  \item{params}{describes input paramaters for the model. \code{boundaryMinIntrinsic} params = sd, minimum, maximum}   
+  \item{params}{describes input paramaters for the model. \code{boundaryIntrinsic} params = sd}   
   \item{states}{vector of states for each taxon}
   \item{timefrompresent}{which time slice in the tree}
 }
-\details{
-}
+
 \value{
 	A matrix of values representing character displacement from a single time step in the tree.
-	}
+}
+
 \references{O'Meara and Banbury, unpublished}
 \author{Brian O'Meara and Barb Banbury}
 
