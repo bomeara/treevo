@@ -11,6 +11,7 @@
 \arguments{
   \item{priorValues}{Variables needed to describe the shape of the distribution.  uniform distributions=c(min, max); normal distributions=c(mean, sd); lognormal distributions=c(mean, sd); gamma distributions=c(shape, scale); exponential distributions=c(rate)}
   \item{priorFn}{Prior shape; either "fixed", "uniform", "normal", "lognormal", "gamma", "exponential"}
+  \item{nPoints}{Number of points}
   \item{from}{Lower bound, if any}
   \item{to}{Upper bound, if any}
   \item{prob}{Probability content of HPD}
