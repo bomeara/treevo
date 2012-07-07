@@ -14,11 +14,11 @@ boundaryIntrinsic(params, states, timefrompresent)
   \item{states}{vector of states for each taxon}
   \item{timefrompresent}{which time slice in the tree}
 }
-\details{
-}
+
 \value{
 	A matrix of values representing character displacement from a single time step in the tree.
-	}
+}
+
 \references{O'Meara and Banbury, unpublished}
 \author{Brian O'Meara and Barb Banbury}
 

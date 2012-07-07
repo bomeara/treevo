@@ -26,7 +26,6 @@ parallelSimulation(nrepSim, coreLimit, splits, phy, startingPriorsValues, intrin
   \item{intrinsicFn}{Name of intrinsic function characters should be simulated under (as used by doSimulation)}
   \item{extrinsicFn}{Name of extrinsic function characters should be simulated under (as used by doSimulation)}
   \item{multicore}{Whether to use multicore, default is FALSE}
-  \item{checkpointFile}{Value for when to stop the analysis if NAs are present}
   \item{checkpointFile}{Optional file name for checkpointing simulations}
   \item{checkpointFreq}{Saving frequency for checkpointing}
 }
