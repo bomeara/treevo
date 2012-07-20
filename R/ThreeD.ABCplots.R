@@ -6,18 +6,18 @@ library(geometry)
 	
 x<-particleDataFrame	
 param.position<-parameter
-	nParticles<-dim(subset(x[which(x$weight>0),], x$generation==max(x$generation)))[1]
+	nParticles<-dim(subset(particleDataFrame[which(particleDataFrame$weight>0),], generation==max(particleDataFrame$generation)))[1]
 	nparams<-dim(x)[2]-6
 	
 	q<-vector() #vector of x vals
 	r<-vector() #vector of y vals
 	s<-vector() #generation each x-y coord is found
 
-	if (max(subset(x[which(x$weight>0),])[,param.position])-min(subset(x[which(x$weight>0),])[,param.position])!=0) {
-	v<-vector("list", max(x$generation))
-		for (i in 1:max(x$generation)){
+	if (max(subset(particleDataFrame[which(particleDataFrame$weight>0),])[,param.position])-min(subset(particleDataFrame[which(particleDataFrame$weight>0),])[,param.position])!=0) {
+	v<-vector("list", max(particleDataFrame$generation))
+		for (i in 1:max(particleDataFrame$generation)){
 			which.gen<-(i+1)-1
-			v[[i]]<-density(subset(x[which(x$weight>0),], x$generation==i)[,param.position], weights=nParticles*subset(x[which(x$weight>0),], x$generation==i)[,6]/sum(nParticles*subset(x[which(x$weight>0),], x$generation==i)[,6]))
+			v[[i]]<-density(subset(particleDataFrame[which(particleDataFrame$weight>0),], generation==i)[,param.position], weights=nParticles*subset(particleDataFrame[which(particleDataFrame$weight>0),], generation==i)[,6]/sum(nParticles*subset(particleDataFrame[which(particleDataFrame$weight>0),], generation==i)[,6]))
 			q<-c(q, v[[i]]$x)
 			r<-c(r, v[[i]]$y)
 			#s<-c(s, v[[i]]$x)	# return a$generation which v[[i]]
@@ -33,12 +33,12 @@ param.position<-parameter
 		open3d()  #make bigger window
 		#bg3d("color)  #gives background color for plot
 
-		plot3d(x, y, z, col="black", box=FALSE, type="n", xlab="", ylab="", zlab="", zlim=c(0, max(x$generation)), ylim=c(0, max(y)))
+		plot3d(x, y, z, col="black", box=FALSE, type="n", xlab="", ylab="", zlab="", zlim=c(0, max(particleDataFrame$generation)), ylim=c(0, max(y)))
+print(paste("HERE"))
 		rgl.viewpoint(35, 1, 90)  #sets viewpoint for initial plot
 		title3d(colnames(x)[param.position], col='red', pos=c(NA, -2, max(z))) 
 		#text3d(x=min(x), y=mean(y), z=max(z), text="Density" col='blue') 
 		#title3d("Starting States", col='purple', pos=c(NA, 0, max(which.gen))) 
-
 		for (i in 1:max(s)){
 			ngen<-(i+1)-1
 			triangles<-triangulate(as(cbind(x[which(z==i)],y[which(z==i)]), "gpc.poly"))
@@ -62,8 +62,8 @@ param.position<-parameter
 		
 		
 show.particles<-match.arg(arg=show.particles, choices=c("none", "weights", "distance"),several.ok=FALSE)
-kept<-subset(x[which(x$id>0),])[,]	
-reject<-subset(x[which(x$id<0),])[,]
+kept<-subset(particleDataFrame[which(particleDataFrame$id>0),])[,]	
+reject<-subset(particleDataFrame[which(particleDataFrame$id<0),])[,]
 short.kept<-subset(kept[which(kept$generation>1),])[,]
 
 	if (show.particles=="none"){
