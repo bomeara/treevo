@@ -5,7 +5,7 @@ Version: 0.3.3
 Date: 2012-07-02
 Author: Brian O'Meara, Barb L. Banbury
 Maintainer: BarbBanbury <darwinthesun@gmail.com>
-Depends: R (>= 2.13.0), abc, geiger, ape, gpclib, geometry, car, mixOmics, stats, corpcor, coda, foreach
+Depends: R (>= 2.13.0), abc, geiger, ape, gpclib, geometry, pls, stats, corpcor, coda, foreach
 Suggests: doMC, rgl, partitions, parallel
 LazyData:yes
 Description: Various functions for estimating parameters of trait evolution using Approximate Bayesian Computation.
