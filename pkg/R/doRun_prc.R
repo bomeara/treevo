@@ -4,7 +4,7 @@
 #the doRun_prc function takes input from the user and then automatically guesses optimal parameters, though user overriding is also possible.
 #the guesses are used to do simulations near the expected region. If omitted, they are set to the midpoint of the input parameter matrices
 
-doRun_prc<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, startingValuesGuess=c(), intrinsicValuesGuess=c(), extrinsicValuesGuess=c(), TreeYears=1e+04, numParticles=300, standardDevFactor=0.20, StartSims=300, plot=FALSE, epsilonProportion=0.7, epsilonMultiplier=0.7, nStepsPRC=5, jobName=NA, stopRule=FALSE, stopValue=0.05, vipthresh=0.8, multicore=FALSE, coreLimit=NA) {
+doRun_prc<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, startingValuesGuess=c(), intrinsicValuesGuess=c(), extrinsicValuesGuess=c(), TreeYears=1e+04, numParticles=300, standardDevFactor=0.20, StartSims=300, plot=FALSE, epsilonProportion=0.7, epsilonMultiplier=0.7, nStepsPRC=5, jobName=NA, stopRule=FALSE, stopValue=0.05, multicore=FALSE, coreLimit=NA, validation="CV", scale=TRUE, variance.cutoff=95) {
 
 if (!is.binary.tree(phy)) {
 	print("Warning: Tree is not fully dichotomous")
@@ -117,7 +117,9 @@ if (is.na(StartSims)) {
 
 	
 			#---------------------- Initial Simulations (Start) ------------------------------
-			#See Wegmann et al. Efficient Approximate Bayesian Computation Coupled With Markov Chain Monte Carlo Without Likelihood. Genetics (2009) vol. 182 (4) pp. 1207-1218 for more on the method. Note, though, that we are not doing PLS, only Box-Cox transformation
+			#See Wegmann et al. Efficient Approximate Bayesian Computation Coupled With Markov Chain Monte Carlo Without Likelihood. Genetics (2009) vol. 182 (4) pp. 1207-1218 for more on the method. 
+      #We are doing pls and scaling built into pls. Unlike Wegmann et al., we are doing PLS for each parameter separately. Otherwise, the PLS tends to
+      #optimize for just one parameter, and estimates for the less-favored one are quite bad because the summary stats tend to be used for the other.
 nrepSim<-StartSims #Used to be = StartSims*((2^try)/2), If initial simulations are not enough, and we need to try again then new analysis will double number of initial simulations
 input.data<-rbind(jobName, length(phy[[3]]), nrepSim, TreeYears, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor)		
 cat(paste("Number of initial simulations set to", nrepSim, "\n"))
@@ -140,42 +142,14 @@ summaryValuesMatrix<-trueFreeValuesANDSummaryValues[,-1:-numberParametersFree]
 			#---------------------- Initial Simulations (End) ------------------------------
 
 
-			#---------------------- Box-Cox transformation (Start) ------------------------------
-	boxcoxEstimates<-boxcoxEstimation(summaryValuesMatrix)
-	boxcoxAddition<-boxcoxEstimates$boxcoxAddition
-	boxcoxLambda<-boxcoxEstimates$boxcoxLambda
-	boxcoxSummaryValuesMatrix<-boxcoxEstimates$boxcoxSummaryValues
-
-	#save(trueFreeValues, file="tFV")
-	#save(boxcoxSummaryValues, file="bcSV")
-				
-			#---------------------- Box-Cox transformation (End) ------------------------------
-
-
-			#----------------- PLS regression: find best set of summary stats to use (Start) -----------------
-			#Use mixOmics to to find the optimal set of summary stats. Note that this uses a different package (mixOmics rather than pls than that used by Weggman et al. because this package can calculate variable importance in projection and deals fine with NAs)
-
-	library("mixOmics")
-	getVipSingleColumn<-function(trueFreeValuesColumn, boxcoxSummaryValuesMatrix) {
-		return(vip(pls(X=boxcoxSummaryValuesMatrix, Y=trueFreeValuesColumn, ncomp=1)))
-	}
+  pls.model.list <- apply(trueFreeValuesMatrix, 2, returnPLSModel, summaryValuesMatrix=summaryValuesMatrix, validation=validation, scale=scale, variance.cutoff=variance.cutoff)
 	
-	allVip<-apply(trueFreeValuesMatrix, 2, getVipSingleColumn, boxcoxSummaryValuesMatrix)
-	whichVip<-(allVip>vipthresh)
-	rownames(whichVip)<-sumStatNames(phy)
-	
-	#Now using abcDistance to calculate euclid distance rather than abc()
-	boxcoxOriginalSummaryStats<-boxcoxTransformation(summaryStatsLong(phy=phy, data=traits), boxcoxAddition, boxcoxLambda) #boxcox empirical data 
-	calculatedDist<-abcDistance(trueFreeValuesMatrix, whichVip, boxcoxOriginalSummaryStats, boxcoxSummaryValuesMatrix) 
-	distanceVector<-calculatedDist$abcDistances
-	#print(calculatedDist)
+  originalSummaryValues <- summaryStatsLong(phy=phy, data=traits)
 
-
-			#----------------- PLS regression: find best set of summary stats to use (End) -----------------
+  distanceVector<-abcDistance(summaryValuesMatrix, originalSummaryValues, pls.model.list)
 			
 			
 			#----------------- Find distribution of distances (Start) ----------------------
-	#calculate Raw Distances (note: these distances are the SAME when you do them together as they are when you do them sqrt(sum(seperate^2)). )
 	
 	epsilonDistance<-quantile(distanceVector, probs=epsilonProportion) #this gives the distance such that epsilonProportion of the simulations starting from a given set of values will be rejected 
 	toleranceVector<-rep(epsilonDistance, nStepsPRC)
@@ -188,7 +162,6 @@ summaryValuesMatrix<-trueFreeValuesANDSummaryValues[,-1:-numberParametersFree]
 			#----------------- Find distribution of distances (End) ---------------------
 			
 			#------------------ ABC-PRC (Start) ------------------
-			#do not forget to use boxcoxLambda, and plsResult when computing distances
 			
 			nameVector<-c("generation", "attempt", "id", "parentid", "distance", "weight")
 			if (plot) {
@@ -219,10 +192,8 @@ summaryValuesMatrix<-trueFreeValuesANDSummaryValues[,-1:-numberParametersFree]
 				newparticleList<-list(abcparticle(id=particle, generation=1, weight=0))
 				newparticleList[[1]]<-initializeStatesFromMatrices(newparticleList[[1]], startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns)
 
-				boxcoxOneSimSumStats<-boxcoxTransformation(summaryStatsLong(phy, convertTaxonFrameToGeigerData(doSimulation(splits, intrinsicFn, extrinsicFn, newparticleList[[1]]$startingValues, newparticleList[[1]]$intrinsicValues, newparticleList[[1]]$extrinsicValues, timeStep), phy)), boxcoxAddition, boxcoxLambda)
-
-				newparticleList[[1]]$distance<-abcDistance(trueFreeValuesMatrix, whichVip, boxcoxOriginalSummaryStats, rbind(boxcoxOneSimSumStats, boxcoxOneSimSumStats))$abcDistances[1] #trueFreeValuesMatrix is used here just for finding dims, not distances.  #silly way around the one-row matrix issue--rbind the same data and then extract the first element.  
-				#boxcoxSummaryValuesMatrix<-matrix(boxcoxParticleSummaryStats,nrow=1)
+				newparticleList[[1]]$distance<-abcDistance(summaryStatsLong(phy, convertTaxonFrameToGeigerData(doSimulation(splits, intrinsicFn, extrinsicFn, newparticleList[[1]]$startingValues, newparticleList[[1]]$intrinsicValues, newparticleList[[1]]$extrinsicValues, timeStep), phy))
+                                                   , originalSummaryValues, pls.model.list)
 				
 				if (is.na(newparticleList[[1]]$distance)) {
 					warning("newparticleList[[1]]$distance = NA, likely an underflow/overflow problem")
@@ -280,7 +251,6 @@ summaryValuesMatrix<-trueFreeValuesANDSummaryValues[,-1:-numberParametersFree]
 			prcResults$traits<-traits
 			prcResults$simTime<-simTime
 			prcResults$time.per.gen<-time.per.gen
-			prcResults$whichVip<-whichVip
 			
 			save(prcResults, file=paste("partialResults", jobName, ".txt", sep=""))
 			
@@ -323,9 +293,8 @@ summaryValuesMatrix<-trueFreeValuesANDSummaryValues[,-1:-numberParametersFree]
 							#cat("dput(newparticleList[[1]]) AFTER MUTATE STATES\n")
 							#dput(newparticleList[[1]])
 							
-							boxcoxOneSimSumStats<-boxcoxTransformation(summaryStatsLong(phy, convertTaxonFrameToGeigerData(doSimulation(splits, intrinsicFn, extrinsicFn, newparticleList[[1]]$startingValues, newparticleList[[1]]$intrinsicValues, newparticleList[[1]]$extrinsicValues, timeStep), phy)), boxcoxAddition, boxcoxLambda)
-
-							newparticleList[[1]]$distance<-abcDistance(trueFreeValuesMatrix, whichVip, boxcoxOriginalSummaryStats, rbind(boxcoxOneSimSumStats, boxcoxOneSimSumStats))$abcDistances[1] #trueFreeValuesMatrix is used here just for finding dims, not distances.  #silly way around the one-row matrix issue--rbind the same data and then extract the first element.  
+							newparticleList[[1]]$distance<-abcDistance(summaryStatsLong(phy, convertTaxonFrameToGeigerData(doSimulation(splits, intrinsicFn, extrinsicFn, newparticleList[[1]]$startingValues, newparticleList[[1]]$intrinsicValues, newparticleList[[1]]$extrinsicValues, timeStep), phy))
+							                                           , originalSummaryValues, pls.model.list)
 							if (plot) {
 								plotcol="grey"
 								if (newparticleList[[1]]$distance<toleranceVector[dataGenerationStep]) {
@@ -501,7 +470,6 @@ summaryValuesMatrix<-trueFreeValuesANDSummaryValues[,-1:-numberParametersFree]
 						prcResults$traits<-traits
 						prcResults$simTime
 						prcResults$time.per.gen<-time.per.gen
-						prcResults$whichVip<-whichVip
 						
 						save(prcResults, file=paste("partialResults", jobName, ".txt", sep=""))
 						
@@ -539,7 +507,6 @@ summaryValuesMatrix<-trueFreeValuesANDSummaryValues[,-1:-numberParametersFree]
 		prcResults$traits<-traits
 		prcResults$simTime<-simTime
 		prcResults$time.per.gen<-genTimes
-		prcResults$whichVip<-whichVip
 		prcResults$CredInt <-CredInt(particleDataFrame)
 		prcResults$HPD <-HPD(particleDataFrame)
 	

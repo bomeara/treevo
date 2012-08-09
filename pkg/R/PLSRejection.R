@@ -1,10 +1,10 @@
-PLSRejection<-function(summaryValuesMatrix, trueFreeValuesMatrix, phy, traits, abcTolerance, verbose=TRUE) {
+PLSRejection<-function(summaryValuesMatrix, trueFreeValuesMatrix, phy, traits, abcTolerance, verbose=TRUE, validation="CV", scale=TRUE, variance.cutoff=95) {
   originalSummaryValues<-summaryStatsLong(phy=phy, data=traits)
   if (verbose) {
     print("Done getting originalSummaryValues") 
   }
   abcDistancesRaw<-sapply(sequence(dim(trueFreeValuesMatrix)[2]), SingleParameterPLSDistanceSquared, summaryValuesMatrix=summaryValuesMatrix, 
-         trueFreeValuesMatrix=trueFreeValuesMatrix, originalSummaryValues=originalSummaryValues)
+         trueFreeValuesMatrix=trueFreeValuesMatrix, originalSummaryValues=originalSummaryValues, validation=validation, scale=scale, variance.cutoff=variance.cutoff)
   abcDistancesRawTotal<-apply(abcDistancesRaw, 1, sum)
   abcDistances<-sqrt(abcDistancesRawTotal) #Euclid rules.
   
@@ -17,15 +17,11 @@ PLSRejection<-function(summaryValuesMatrix, trueFreeValuesMatrix, phy, traits, a
   return(list(particleDataFrame=particleDataFrame, abcDistances=abcDistances))
 }
 
-SingleParameterPLSDistanceSquared<-function(index, summaryValuesMatrix, trueFreeValuesMatrix, originalSummaryValues) {
-  print(paste("my index is ",index))
+SingleParameterPLSDistanceSquared<-function(index, summaryValuesMatrix, trueFreeValuesMatrix, originalSummaryValues, validation="CV", scale=TRUE, variance.cutoff=95) {
   trueFreeValuesMatrix<-trueFreeValuesMatrix[,index]
-  pls.model<-returnPLSModel(trueFreeValuesMatrix,summaryValuesMatrix)
-  print("got pls.model")
+  pls.model<-returnPLSModel(trueFreeValuesMatrix,summaryValuesMatrix, validation=validation, scale=scale, variance.cutoff=variance.cutoff)
   summaryValues.transformed<-PLSTransform(summaryValuesMatrix, pls.model)
-  print("did PLS transform on SV")
   originalSummaryValues.transformed<-PLSTransform(originalSummaryValues, pls.model)
-  print("did PLS transform on original SV")
   distanceByRow<-function(x,originalSummaryValues.transformed) {
     return(dist(matrix(c(x,originalSummaryValues.transformed),byrow=TRUE,nrow=2))[1])
   }
