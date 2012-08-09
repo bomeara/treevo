@@ -118,11 +118,10 @@ doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
 	#separate the simulation results: true values and the summary values
 	trueFreeValuesMatrix<-trueFreeValuesANDSummaryValues[,1:numberParametersFree]
 	summaryValuesMatrix<-trueFreeValuesANDSummaryValues[,-1:-numberParametersFree]
-
-	res<-boxcoxPlsRejection(summaryValuesMatrix, trueFreeValuesMatrix, phy, traits, vipthresh, abcTolerance)
+	res<-PLSRejection(summaryValuesMatrix, trueFreeValuesMatrix, phy, traits, abcTolerance)
 	#save(abcDistancesRaw, abcDistancesRawTotal, abcDistances, abcResults, particleDataFrame, file="")
 	input.data<-rbind(jobName, length(phy[[3]]), timeStep, StartSims, standardDevFactor, abcTolerance)
-print(res)
+  print(res)
 	rejectionResults<-vector("list")
 	#names(rejectionResults)<-c("input.data", "PriorMatrix", "phy", "traits")
 #save(trueFreeValuesMatrix,res, file="BarbsTestofDistanceCalc2.Rdata")
@@ -131,11 +130,10 @@ print(res)
 	rejectionResults$phy<-phy
 	rejectionResults$traits<-traits
 	rejectionResults$trueFreeValuesANDSummaryValues<-trueFreeValuesANDSummaryValues
-  	rejectionResults$SimTime<-simTime
-  	rejectionResults$vipSumStats<-res$whichVip
-  	rejectionResults$abcDistancesRaw<-res$abcDistancesRaw
+  rejectionResults$SimTime<-simTime
+  rejectionResults$abcDistances<-res$abcDistances
 	rejectionResults$particleDataFrame<-res$particleDataFrame
-  	rejectionResults$CredInt<-CredInt(res$particleDataFrame)
+  rejectionResults$CredInt<-CredInt(res$particleDataFrame)
 	rejectionResults$HPD<-HPD(res$particleDataFrame)
 
   
