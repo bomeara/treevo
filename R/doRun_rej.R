@@ -2,7 +2,7 @@
 ##TreeYears = 1000 if tree is in thousands of years
 
 
-doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, startingValuesGuess=c(), intrinsicStatesGuess=c(), extrinsicStatesGuess=c(), TreeYears=1e+04, standardDevFactor=0.20, StartSims=NA, jobName=NA, vipthresh=0.8, abcTolerance=0.1, multicore=FALSE, coreLimit=NA, checkpointFile=NULL, checkpointFreq=24) {
+doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, startingValuesGuess=c(), intrinsicStatesGuess=c(), extrinsicStatesGuess=c(), TreeYears=1e+04, standardDevFactor=0.20, StartSims=NA, jobName=NA, abcTolerance=0.1, multicore=FALSE, coreLimit=NA, checkpointFile=NULL, checkpointFreq=24, validation="CV", scale=TRUE, variance.cutoff=95) {
 	library(geiger)
 	library(abc)
 	if (!is.binary.tree(phy)) {
