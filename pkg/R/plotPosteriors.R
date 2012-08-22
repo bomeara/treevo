@@ -10,7 +10,7 @@ priors<-PriorMatrix
 
 
 if(class(x)=="data.frame"){
-	data1<-subset(x[which(x$weight>0),], x$generation==max(x$generation)) #make generation and other names by column so it works for partial and complete 
+	data1<-subset(x[which(x$weight>0),], generation==max(x$generation)) #make generation and other names by column so it works for partial and complete 
 	run<-rep(1, dim(data1)[1])
 	all<-cbind(run, data1)
 }
@@ -18,7 +18,7 @@ if(class(x)=="data.frame"){
 if(class(x)=="list"){
 	all<-data.frame()
 	for (list in 1:length(x)) {
-		data1<-subset(x[[list]][which(x[[list]]$weight>0),], x[[list]]$generation==max(x[[list]]$generation)) #make generation and other names by column so it works for partial and complete 
+		data1<-subset(x[[list]][which(x[[list]]$weight>0),], generation==max(x[[list]]$generation)) #make generation and other names by column so it works for partial and complete 
 		run<-rep(list, dim(data1)[1])
 		x[[list]]<-cbind(run, data1)
 		all<-rbind(all, x[[list]])		
