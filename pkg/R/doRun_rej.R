@@ -4,7 +4,7 @@
 
 doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, startingValuesGuess=c(), intrinsicStatesGuess=c(), extrinsicStatesGuess=c(), TreeYears=1e+04, standardDevFactor=0.20, StartSims=NA, jobName=NA, abcTolerance=0.1, multicore=FALSE, coreLimit=NA, checkpointFile=NULL, checkpointFreq=24, validation="CV", scale=TRUE, variance.cutoff=95) {
 	library(geiger)
-	library(abc)
+	library(pls)
 	if (!is.binary.tree(phy)) {
 		print("Warning: Tree is not fully dichotomous")
 	}
