@@ -259,6 +259,12 @@ genomeDuplication<-function(params, states, timefrompresent) {
 	attraction<-params[3]	#in this model, this should be between zero and one
 	doubling.prob<-params[4]
 	newdisplacement<-rnorm(n=length(states),mean=(attractor-states)*attraction,sd=sd) #subtract current states because we want displacement
+	for (i in length(newdisplacement)) {
+		newstate<-newdisplacement[i]+states[i]
+		if (newstate<0) { #newstate less than min
+			newdisplacement[i]<-0-states[i] #so, rather than go below the minimum, this moves the new state to the minimum
+		}
+	}
 	if (runif(1,0,1)<doubling.prob) { #we double
 		newdisplacement<-states
 	}
