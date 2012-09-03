@@ -249,3 +249,18 @@ varyingBoundariesVaryingSigmaIntrinsic<-function(params,states, timefrompresent)
 	}
 	return(newdisplacement)
 }
+
+#this model assumes a pull (perhaps weak) to a certain genome size, but with
+#    occasional doublings
+genomeDuplication<-function(params, states, timefrompresent) {
+	#params = [sd, attractor, attraction, doubling.prob]
+	sd<-params[1] 
+	attractor<-params[2] 
+	attraction<-params[3]	#in this model, this should be between zero and one
+	doubling.prob<-params[4]
+	newdisplacement<-rnorm(n=length(states),mean=(attractor-states)*attraction,sd=sd) #subtract current states because we want displacement
+	if (runif(1,0,1)<doubling.prob) { #we double
+		newdisplacement<-states
+	}
+	return(newdisplacement)
+}
