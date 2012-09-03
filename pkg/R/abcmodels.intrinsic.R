@@ -264,3 +264,18 @@ genomeDuplication<-function(params, states, timefrompresent) {
 	}
 	return(newdisplacement)
 }
+
+#This is the same as the above model, but where the states are in log units
+#  The only difference is how doubling occurs
+genomeDuplicationLogScale<-function(params, states, timefrompresent) {
+	#params = [sd, attractor, attraction, doubling.prob]
+	sd<-params[1] 
+	attractor<-params[2] 
+	attraction<-params[3]	#in this model, this should be between zero and one
+	doubling.prob<-params[4]
+	newdisplacement<-rnorm(n=length(states),mean=(attractor-states)*attraction,sd=sd) #subtract current states because we want displacement
+	if (runif(1,0,1)<doubling.prob) { #we double
+		newdisplacement<-log(2*exp(states))-states
+	}
+	return(newdisplacement)
+}
