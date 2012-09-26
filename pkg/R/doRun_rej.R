@@ -110,7 +110,7 @@ doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
 
 	trueFreeValuesANDSummaryValues<-parallelSimulation(nrepSim, coreLimit, splits, phy, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn, multicore, checkpointFile, checkpointFreq)
 	
-	save(trueFreeValuesANDSummaryValues, file=paste("tFVandSV", jobName, ".Rdata", sep="")
+	save(trueFreeValuesANDSummaryValues, file=paste("tFVandSV", jobName, ".Rdata", sep=""))
 	cat("\n\n")
 	simTime<-proc.time()[[3]]-startTime
 	cat(paste("Simulations took", round(simTime, digits=3), "seconds"), "\n")
