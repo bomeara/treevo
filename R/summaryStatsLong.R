@@ -5,8 +5,10 @@ summaryStatsLong<-function(phy, data) {
 			return("There are zero branch lengths at the tips of your trees--will not run properly")
 		}
 	}	
+	data<-as.data.frame(data)
 	#sink(file="/dev/null")
-	
+	#print(paste("class =", class(data)))
+	#print(paste("dim =", dim(data)))
 	brown<-fitContinuous.hacked(phy=phy, data=data, model="BM")[[1]] #will only run if want to do brownian summary stats
 	brown.lnl<-as.numeric(brown$lnl) #divide by zero so we get Inf if we don't want that summary stat
 	brown.beta <-as.numeric(brown$beta)
