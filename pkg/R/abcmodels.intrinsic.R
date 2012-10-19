@@ -252,7 +252,7 @@ varyingBoundariesVaryingSigmaIntrinsic<-function(params,states, timefrompresent)
 
 #this model assumes a pull (perhaps weak) to a certain genome size, but with
 #    occasional doublings
-genomeDuplication<-function(params, states, timefrompresent) {
+genomeDuplicationAttraction<-function(params, states, timefrompresent) {
 	#params = [sd, attractor, attraction, doubling.prob]
 	sd<-params[1] 
 	attractor<-params[2] 
@@ -273,7 +273,7 @@ genomeDuplication<-function(params, states, timefrompresent) {
 
 #This is the same as the above model, but where the states are in log units
 #  The only difference is how doubling occurs
-genomeDuplicationLogScale<-function(params, states, timefrompresent) {
+genomeDuplicationAttractionLogScale<-function(params, states, timefrompresent) {
 	#params = [sd, attractor, attraction, doubling.prob]
 	sd<-params[1] 
 	attractor<-params[2] 
@@ -282,6 +282,21 @@ genomeDuplicationLogScale<-function(params, states, timefrompresent) {
 	newdisplacement<-rnorm(n=length(states),mean=(attractor-states)*attraction,sd=sd) #subtract current states because we want displacement
 	if (runif(1,0,1)<doubling.prob) { #we double
 		newdisplacement<-log(2*exp(states))-states
+	}
+	return(newdisplacement)
+}
+
+
+#Genome duplication, but with no attraction. However, each duplication may shortly result in less than a full doubling. Basically, the increased size is based on a beta distribution. If you want pure doubling only,
+#shape param 1 = Inf and param 2 = 1
+genomeDuplicationPartialDoublingLogScale<-function(params, states, timefrompresent) {
+	#params = [sd, shape1, doubling.prob]
+	sd<-params[1] 
+	beta.shape1<-params[2] #the larger this is, the more the duplication is exactly a doubling. To see what this looks like, plot(density(1+rbeta(10000, beta.shape1, 1)))
+	duplication.prob<-params[3]
+	newdisplacement<-rnorm(n=length(states),mean=states,sd=sd) #subtract current states because we want displacement
+	if (runif(1,0,1)<duplication.prob) { #we duplicate
+		newdisplacement<-log((1+rbeta(1,beta.shape1,1))*exp(states))-states
 	}
 	return(newdisplacement)
 }
