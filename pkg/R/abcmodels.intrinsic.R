@@ -294,7 +294,7 @@ genomeDuplicationPartialDoublingLogScale<-function(params, states, timefromprese
 	sd<-params[1] 
 	beta.shape1<-params[2] #the larger this is, the more the duplication is exactly a doubling. To see what this looks like, plot(density(1+rbeta(10000, beta.shape1, 1)))
 	duplication.prob<-params[3]
-	newdisplacement<-rnorm(n=length(states),mean=states,sd=sd) #subtract current states because we want displacement
+	newdisplacement<-rnorm(n=length(states),mean=0,sd=sd) 
 	if (runif(1,0,1)<duplication.prob) { #we duplicate
 		newdisplacement<-log((1+rbeta(1,beta.shape1,1))*exp(states))-states
 	}
