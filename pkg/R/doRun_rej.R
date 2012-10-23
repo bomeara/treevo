@@ -22,7 +22,7 @@ doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
 		   discrete.time.sd<-sqrt(discrete.time.sigma.squared)
 		   return(discrete.time.sd)
 		}
-		LikelihoodRateEst<-GetBrownianSDRate(phy, test, timeStep)
+		LikelihoodRateEst<-GetBrownianSDRate(phy, traits, timeStep)
 		intrinsicPriorsValues[1]<-LikelihoodRateEst^-1
 		print(paste("LikelihoodRateEst =", LikelihoodRateEst, "; Mean of exp distribution for prior is ~", mean(rexp(10000, LikelihoodRateEst^-1)), "; exp rate =",  LikelihoodRateEst^-1))
 	}
