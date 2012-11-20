@@ -63,7 +63,7 @@ everyoneDisplacementExtrinsic<-function(params,selfstates,otherstates, timefromp
 #Extra functions for calculating Exponential Decay Push priors
 GetExpPushPriors<-function(numSteps, data) {
   #returns a matrix with exponential rates for the three Exponential push priors
-  sd<-GetBMRatePrior(phy, traits, timeStep)  #new TreEvo function
+  sd<-GetBMRatePrior(phy, data, timeStep)  #new TreEvo function
   data.sort<-sort(data[,1])
   data.min.diff<-min(abs(data.sort[1:(length(data.sort)-1)]-data.sort[2:(length(data.sort))]))
   data.max.diff<-abs(max(data.sort)-min(data.sort))
