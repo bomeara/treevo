@@ -5,7 +5,18 @@
 	Starts the abc-prc run
 }
 \usage{
-doRun_prc(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, startingValuesGuess=c(), intrinsicValuesGuess=c(), extrinsicValuesGuess=c(), TreeYears=1e+04, numParticles=300, standardDevFactor=0.20, StartSims=300, plot=FALSE, epsilonProportion=0.7, epsilonMultiplier=0.7, nStepsPRC=5, jobName=NA, stopRule=FALSE, stopValue=0.05, vipthresh=0.8, multicore=FALSE, coreLimit=NA) 
+doRun_prc(phy, traits, intrinsicFn, extrinsicFn,
+                 startingPriorsValues, startingPriorsFns,
+                 intrinsicPriorsValues, intrinsicPriorsFns,
+                 extrinsicPriorsValues, extrinsicPriorsFns,
+                 startingValuesGuess = c(), intrinsicValuesGuess = c(),
+                 extrinsicValuesGuess = c(), TreeYears = 10000,
+                 numParticles = 300, standardDevFactor = 0.2, StartSims
+                 = 300, plot = FALSE, epsilonProportion = 0.7,
+                 epsilonMultiplier = 0.7, nStepsPRC = 5, jobName = NA,
+                 stopRule = FALSE, stopValue = 0.05, multicore = FALSE,
+                 coreLimit = NA, validation = "CV", scale = TRUE,
+                 variance.cutoff = 95) 
 }
 \arguments{
   \item{phy}{Tree (Phylogenetic tree in phylo format)}
@@ -32,10 +43,12 @@ doRun_prc(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues, startingP
   \item{jobName}{Optional job name}
   \item{stopRule}{If TRUE, an analysis will be terminated prior to set number of generations if the ratio of all parameters from one generation to the next falls below the stopValue}
   \item{stopValue}{Threshold value for terminating an analysis prior to nStpesPRC}
-  \item{vipthresh}{Threshold value for pls regression of vip summary stats}
   \item{multicore}{If TRUE, initial simulations will be split among coreLimit nodes}
   \item{coreLimit}{Number of cores for initial simulations}
-
+  \item{validation}{Cross Validation procedure for abc}
+  \item{scale}{scale for pls.model.list}
+  \item{variance.cutoff}{variance cutoff for pls.model.list}
+  
 }
 
 \details{
