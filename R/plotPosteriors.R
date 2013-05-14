@@ -10,6 +10,7 @@ priors<-PriorMatrix
 
 
 if(class(x)=="data.frame"){
+	generation<-NULL #to satisfy CRAN check
 	data1<-subset(x[which(x$weight>0),], generation==max(x$generation)) #make generation and other names by column so it works for partial and complete 
 	run<-rep(1, dim(data1)[1])
 	all<-cbind(run, data1)
