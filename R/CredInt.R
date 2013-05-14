@@ -1,4 +1,5 @@
 CredInt<-function(particleDataFrame, percent=0.95) { 
+	generation<-NULL #to appease R CMD CHECK with subset
 	PercentTail<-(1-percent)/2
 	Ints<-matrix(nrow=(dim(particleDataFrame)[2]-6), ncol=4)
 	colnames(Ints)<-c("mean", "sd", "LowerCI", "UpperCI")

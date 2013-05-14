@@ -496,7 +496,7 @@ function(ds, print=TRUE)
 				failureCount<-failureCount+1
 				if (failureCount>failureCountSwitch) { #nlm isn't working, let's try optim
 					#toptim<-try(outTries[[i+2]]<-nlm(tryFoo, p=start), silent=T)
-					toptim<-try(outTries[[i+2]]<-optim(foo, p=start, lower=lower, upper=upper, method="L"), silent=T)
+					toptim<-try(outTries[[i+2]]<-optim(foo, par=start, lower=lower, upper=upper, method="L"), silent=T)
 					if (class(toptim)!="try-error") {
 						outTries[[i+2]]$estimate<-outTries[[i+2]]$par
 						outTries[[i+2]]$minimum<-outTries[[i+2]]$value
@@ -523,7 +523,7 @@ function(ds, print=TRUE)
 				failureCount<-failureCount+1
 				if (failureCount>failureCountSwitch) { #nlm isn't working, let's try optim
 					#toptim<-try(outTries[[i+12]]<-nlm(tryFoo, p=start), silent=T)
-					toptim<-try(outTries[[i+12]]<-optim(foo, p=start, lower=lower, upper=upper, method="L"), silent=T)
+					toptim<-try(outTries[[i+12]]<-optim(foo, par=start, lower=lower, upper=upper, method="L"), silent=T)
 					if (class(toptim)!="try-error") {
 						outTries[[i+12]]$estimate<-outTries[[i+12]]$par
 						outTries[[i+12]]$minimum<-outTries[[i+12]]$value
