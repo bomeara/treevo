@@ -5,6 +5,8 @@ summaryStatsLong<-function(phy, traits) {
 			return("There are zero branch lengths at the tips of your trees--will not run properly")
 		}
 	}	
+	if(is.null(names(traits)))
+		names(traits) <- rownames(traits)
 	tratis<-as.data.frame(traits)
 	brown<-fitContinuous(phy=phy, dat=traits, model="BM") 
 	brown.lnl<-as.numeric(brown$opt$lnL) 
