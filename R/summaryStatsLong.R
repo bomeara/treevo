@@ -1,55 +1,52 @@
-summaryStatsLong<-function(phy, data) {
+summaryStatsLong<-function(phy, traits) {
 	if (any(phy$edge.length==0)){
 		if(!any(phy$edge[which(phy$edge.length==0),2] %in% phy$edge[,1])){
 		#if(any(phy$edge.length==0)){
 			return("There are zero branch lengths at the tips of your trees--will not run properly")
 		}
 	}	
-	data<-as.data.frame(data)
-	#sink(file="/dev/null")
-	#print(paste("class =", class(data)))
-	#print(paste("dim =", dim(data)))
-	brown<-fitContinuous.hacked(phy=phy, data=data, model="BM")[[1]] #will only run if want to do brownian summary stats
-	brown.lnl<-as.numeric(brown$lnl) #divide by zero so we get Inf if we don't want that summary stat
-	brown.beta <-as.numeric(brown$beta)
-	brown.aic <-as.numeric(brown$aic)
+	tratis<-as.data.frame(traits)
+	brown<-fitContinuous(phy=phy, dat=traits, model="BM") 
+	brown.lnl<-as.numeric(brown$opt$lnL) 
+	brown.beta <-as.numeric(brown$opt$sigsq)
+	brown.aic <-as.numeric(brown$opt$aic)
 
-	lambda<-fitContinuous.hacked(phy=phy, data=data, model="lambda")[[1]]
-	lambda.lnl <-as.numeric(lambda$lnl)
-	lambda.beta <-as.numeric(lambda$beta)
-	lambda.lambda <-as.numeric(lambda$lambda)
-	lambda.aic <-as.numeric(lambda$aic)
+	lambda<-fitContinuous(phy=phy, dat=traits, model="lambda")
+	lambda.lnl <-as.numeric(lambda$opt$lnL)
+	lambda.beta <-as.numeric(lambda$opt$sigsq)
+	lambda.lambda <-as.numeric(lambda$opt$lambda)
+	lambda.aic <-as.numeric(lambda$opt$aic)
 
-	delta<-fitContinuous.hacked(phy=phy, data=data, model="delta")[[1]]
-	delta.lnl <-as.numeric(delta$lnl)
-	delta.beta <-as.numeric(delta$beta)
-	delta.delta <-as.numeric(delta$delta)
-	delta.aic <-as.numeric(delta$aic)
+	delta<-fitContinuous(phy=phy, dat=traits, model="delta")
+	delta.lnl <-as.numeric(delta$opt$lnL)
+	delta.beta <-as.numeric(delta$opt$sigsq)
+	delta.delta <-as.numeric(delta$opt$delta)
+	delta.aic <-as.numeric(delta$opt$aic)
 	
-	ou<-fitContinuous.hacked(phy=phy, data=data, model="OU")[[1]]
-	ou.lnl <-as.numeric(ou$lnl)
-	ou.beta <-as.numeric(ou$beta)
-	ou.alpha <-as.numeric(ou$alpha)
-	ou.aic <-as.numeric(ou$aic)
+	ou<-fitContinuous(phy=phy, dat=traits, model="OU")
+	ou.lnl <-as.numeric(ou$opt$lnL)
+	ou.beta <-as.numeric(ou$opt$sigsq)
+	ou.alpha <-as.numeric(ou$opt$alpha)
+	ou.aic <-as.numeric(ou$opt$aic)
 	
-	white<-fitContinuous.hacked(phy=phy, data=data, model="white")[[1]]
-	white.lnl<-as.numeric(white$lnl)
-	white.aic<-as.numeric(white$aic)
+	white<-fitContinuous(phy=phy, dat=traits, model="white")
+	white.lnl<-as.numeric(white$opt$lnL)
+	white.aic<-as.numeric(white$opt$aic)
 	
 	
-	raw.mean<-as.numeric(mean(data))
-	raw.max<-as.numeric(max(data))
-	raw.min<-as.numeric(min(data))
-	raw.var<-as.numeric(var(data))
-	raw.median<-as.numeric(median(data[,]))	#cat("summaryStatsLong")
+	raw.mean<-as.numeric(mean(traits))
+	raw.max<-as.numeric(max(traits))
+	raw.min<-as.numeric(min(traits))
+	raw.var<-as.numeric(var(traits))
+	raw.median<-as.numeric(median(traits[,]))	#cat("summaryStatsLong")
 	
-	pic<-as.vector(pic.ortho(as.matrix(data), phy))  #independent contrasts
-	aceResults<-ace(as.matrix(data), phy)
+	pic<-as.vector(pic.ortho(as.matrix(traits), phy))  #independent contrasts
+	aceResults<-ace(as.matrix(traits), phy)
 	anc.states<-as.vector(aceResults$ace) #ancestral states 
 	anc.CIrange<-as.vector(aceResults$CI95[,2]-aceResults$CI95[,1]) #range between upper and lower 95% CI
 	
 	#combined summary stats	
-	summarystats<-c(brown.lnl, brown.beta, brown.aic, lambda.lnl, lambda.beta, lambda.lambda, lambda.aic, delta.lnl, delta.beta, delta.delta, delta.aic, ou.lnl, ou.beta, ou.alpha, ou.aic, white.lnl, white.aic, raw.mean, raw.max, raw.min, raw.var, raw.median, data[[1]], pic, anc.states, anc.CIrange)
+	summarystats<-c(brown.lnl, brown.beta, brown.aic, lambda.lnl, lambda.beta, lambda.lambda, lambda.aic, delta.lnl, delta.beta, delta.delta, delta.aic, ou.lnl, ou.beta, ou.alpha, ou.aic, white.lnl, white.aic, raw.mean, raw.max, raw.min, raw.var, raw.median, traits[[1]], pic, anc.states, anc.CIrange)
 
 
 	summarystats[which(is.finite(summarystats)==FALSE)]<-NA
