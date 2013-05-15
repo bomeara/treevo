@@ -1,5 +1,5 @@
 PLSRejection<-function(summaryValuesMatrix, trueFreeValuesMatrix, phy, traits, abcTolerance, verbose=TRUE, validation="CV", scale=TRUE, variance.cutoff=95) {
-  originalSummaryValues<-summaryStatsLong(phy=phy, data=traits)
+  originalSummaryValues<-summaryStatsLong(phy=phy, traits=traits)
   if (verbose) {
     print("Done getting originalSummaryValues") 
   }
