@@ -144,7 +144,7 @@ summaryValuesMatrix<-trueFreeValuesANDSummaryValues[,-1:-numberParametersFree]
 
   pls.model.list <- apply(trueFreeValuesMatrix, 2, returnPLSModel, summaryValuesMatrix=summaryValuesMatrix, validation=validation, scale=scale, variance.cutoff=variance.cutoff)
 	
-  originalSummaryValues <- summaryStatsLong(phy=phy, data=traits)
+  originalSummaryValues <- summaryStatsLong(phy, traits)
 
   distanceVector<-abcDistance(summaryValuesMatrix, originalSummaryValues, pls.model.list)
 			
