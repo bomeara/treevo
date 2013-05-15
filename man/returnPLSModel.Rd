@@ -6,7 +6,7 @@
 \description{Returns a PLS Model}
 
 \usage{
-returnPLSModel(trueFreeValuesMatrix,summaryValuesMatrix, validation=validation, scale=scale, variance.cutoff=variance.cutoff)
+returnPLSModel(trueFreeValuesMatrix, summaryValuesMatrix, validation="CV", scale=TRUE, variance.cutoff=95)
 }
 \arguments{
   \item{trueFreeValuesMatrix}{Matrix of true free values from simulations}
