@@ -24,6 +24,7 @@ Maintainer: Barb Banbury <darwinthesun@gmail.com>
 
 \examples{
 #Continuous character simulation under Brownian motion
+library(ape)
 phy<-rcoal(20)
 char<-doSimulation(
 	splits=getSimulationSplits(phy), 
