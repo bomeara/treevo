@@ -1,5 +1,5 @@
 boxcoxEstimation<-function (summaryValuesMatrix) {
-  library("car", quietly = T)
+  #library("car", quietly = T)
   boxcoxLambda <- rep(NA, dim(summaryValuesMatrix)[2])
   boxcoxAddition <- rep(NA, dim(summaryValuesMatrix)[2])
   for (summaryValueIndex in 1:dim(summaryValuesMatrix)[2]) {
