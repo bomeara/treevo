@@ -1,7 +1,7 @@
 PairwiseESS<-function(particleDataFrame) {
 #Combine doRun$particleDataFrame results and test effective sample size
 
-	library(coda)
+	#library(coda)
 	# particleDataFrame can be single or a list of particleDataFrames (1:n)
 	x<-particleDataFrame
 	

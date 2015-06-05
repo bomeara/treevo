@@ -1,6 +1,6 @@
 HPD<-function(particleDataFrame, percent=0.95, returnData=F){
   generation<-NULL #to appease R CMD CHECK
-	library(coda, quietly=T)
+#	library(coda, quietly=T)
 	summary<-vector("list")
 	subpDF<-as.data.frame(subset(particleDataFrame[which(particleDataFrame$weight>0),], generation==max(particleDataFrame$generation))[7:dim(particleDataFrame)[2]])
 	for(i in 1:dim(subpDF)[2]){

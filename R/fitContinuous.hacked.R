@@ -1,4 +1,4 @@
-library(corpcor)
+#library(corpcor)
 
 
 `fitContinuous.hacked` <-
