@@ -6,8 +6,7 @@ Date: 2015-06-06
 Author: Brian O'Meara, Barb L. Banbury
 Maintainer: Brian O'Meara <omeara.brian@gmail.com>
 Depends: R (>= 2.13.0), ape
-Imports: abc, geiger, gpclib, geometry, pls, stats, corpcor, coda, foreach
-Suggests: doMC, rgl, partitions, parallel, car
+Imports: abc, geiger, gpclib, geometry, pls, stats, corpcor, coda, foreach, doMC, rgl, partitions, parallel, car, mvtnorm
 LazyData:yes
 Description: Various functions for estimating parameters of trait evolution using Approximate Bayesian Computation.
 License: GPL
