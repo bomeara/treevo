@@ -1,3 +1,23 @@
+#' getUnivariatePriorCurve
+#' 
+#' This function pulls random values from the prior
+#' 
+#' 
+#' @param priorValues Variables needed to describe the shape of the
+#' distribution.  uniform distributions=c(min, max); normal
+#' distributions=c(mean, sd); lognormal distributions=c(mean, sd); gamma
+#' distributions=c(shape, scale); exponential distributions=c(rate)
+#' @param priorFn Prior shape; either "fixed", "uniform", "normal",
+#' "lognormal", "gamma", "exponential"
+#' @param nPoints Number of points
+#' @param from Lower bound, if any
+#' @param to Upper bound, if any
+#' @param prob Probability content of HPD
+#' @return Returns a list of x and y density coordinates, mean, and lower and
+#' upper HPD
+#' @author Barb Banbury and Brian O'Meara
+#' @references O'Meara and Banbury, unpublished
+#' @keywords getUnivariatePriorCurve
 getUnivariatePriorCurve<-function(priorValues, priorFn, nPoints=100000, from=NULL, to=NULL, prob=0.95) {
 	samples<-replicate(nPoints,pullFromPrior(priorValues, priorFn))
 	if (is.null(from)) {
@@ -14,6 +34,22 @@ getUnivariatePriorCurve<-function(priorValues, priorFn, nPoints=100000, from=NUL
 	return(list(x=result$x,y=result$y, mean=mean(samples), lower=hpd.result[1,1], upper=hpd.result[1,2]))
 }
 
+
+
+#' getUnivariatePosteriorCurve
+#' 
+#' This function pulls values from the posterior distribution
+#' 
+#' 
+#' @param acceptedValues Vector of accepted particle values
+#' @param from Lower bound, if any
+#' @param to Upper bound, if any
+#' @param prob Probability content of HPD
+#' @return Returns a list of x and y density coordinates, mean, and lower and
+#' upper HPD
+#' @author Barb Banbury and Brian O'Meara
+#' @references O'Meara and Banbury, unpublished
+#' @keywords getUnivariatePosteriorCurve
 getUnivariatePosteriorCurve<-function(acceptedValues, from=NULL, to=NULL, prob=0.95) {
 	if (is.null(from)) {
 		from<-min(acceptedValues)
@@ -26,6 +62,22 @@ getUnivariatePosteriorCurve<-function(acceptedValues, from=NULL, to=NULL, prob=0
 	return(list(x=result$x, y=result$y, mean=mean(acceptedValues), lower=hpd.result[1,1], upper=hpd.result[1,2]))
 }
 
+
+
+#' plotUnivariatePosteriorVsPrior
+#' 
+#' This function plots density distributions from the prior and posterior
+#' 
+#' 
+#' @param posteriorCurve Kernal density estimates for the posterior
+#' @param priorCurve Kernal density estimates for the prior
+#' @param label X label for plot
+#' @param trueValue True parameter value, if any
+#' @param prob Probability content of HPD
+#' @return Returns a plot
+#' @author Barb Banbury and Brian O'Meara
+#' @references O'Meara and Banbury, unpublished
+#' @keywords plotUnivariatePosteriorVsPrior
 plotUnivariatePosteriorVsPrior<-function(posteriorCurve, priorCurve, label="parameter", trueValue=NULL, prob=0.95) {
 	plot(x=range(c(posteriorCurve$x, priorCurve$x)), y=range(c(posteriorCurve$y, priorCurve$y)), type="n", xlab=label, ylab="", bty="n", yaxt="n")
 	polygon(x=c(priorCurve$x, max(priorCurve$x), priorCurve$x[1]), y=c(priorCurve$y, 0, 0), col=rgb(0,0,0,0.3),border=rgb(0,0,0,0.3))

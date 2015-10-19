@@ -3,12 +3,49 @@
 #otherstates has one row per taxon, one column per state
 #states is a vector for each taxon, with length=nchar
 
+
+
+#' Extrinsic Character Evolution Models
+#' 
+#' This function describes a model of no extrinsic character evolution
+#' 
+#' 
+#' @param params describes input paramaters for the model
+#' @param selfstates vector of states for each taxon
+#' @param otherstates matrix of character states, one row per taxon and once
+#' column per state
+#' @param timefrompresent which time slice in the tree
+#' @return A matrix of values representing character displacement from a single
+#' time step in the tree.
+#' @author Brian O'Meara and Barb Banbury
+#' @references O'Meara and Banbury, unpublished
+#' @keywords nullExtrinsic extrinsic
 nullExtrinsic<-function(params,selfstates,otherstates, timefrompresent) {
 	newdisplacement<-0*selfstates
 	return(newdisplacement)
 }
 
 
+
+
+#' Extrinsic Character Evolution Models
+#' 
+#' This function describes a model of extrinsic character evolution.  Character
+#' values of a focal taxon depend on values of closest relatives on the tree
+#' 
+#' 
+#' @param params describes input paramaters for the model.
+#' \code{nearestNeighborDisplacementExtrinsic} params = sd, springK, maximum
+#' force
+#' @param selfstates vector of states for each taxon
+#' @param otherstates matrix of character states, one row per taxon and once
+#' column per state
+#' @param timefrompresent which time slice in the tree
+#' @return A matrix of values representing character displacement from a single
+#' time step in the tree.
+#' @author Brian O'Meara and Barb Banbury
+#' @references O'Meara and Banbury, unpublished
+#' @keywords nearestNeighborDisplacementExtrinsic extrinsic
 nearestNeighborDisplacementExtrinsic<-function(params,selfstates,otherstates, timefrompresent) { 
 	#params[1] is sd, params[2] is springK, params[3] is maxforce
 	repulsorTaxon<-which.min(abs(otherstates-selfstates))
@@ -25,6 +62,26 @@ nearestNeighborDisplacementExtrinsic<-function(params,selfstates,otherstates, ti
 	return(newdisplacement)
 }
 
+
+
+#' Extrinsic Character Evolution Models
+#' 
+#' This function describes a model of extrinsic character evolution.  Character
+#' values of a focal taxon pushes away harder from other taxa with like values;
+#' "push" exponentially decays as the values become less similar
+#' 
+#' 
+#' @param params describes input paramaters for the model.
+#' \code{ExponentiallyDecayingPush} params = sd, maximum force, half distance
+#' @param selfstates vector of states for each taxon
+#' @param otherstates matrix of character states, one row per taxon and once
+#' column per state
+#' @param timefrompresent which time slice in the tree
+#' @return A matrix of values representing character displacement from a single
+#' time step in the tree.
+#' @author Brian O'Meara and Barb Banbury
+#' @references O'Meara and Banbury, unpublished
+#' @keywords ExponentiallyDecayingPush extrinsic
 ExponentiallyDecayingPush<-function(params,selfstates,otherstates, timefrompresent) { 
 	#params[1] is sd, params[2] is maxForce when character difference = 0, params[3] is half distance (the phenotypic distance at which repulsion is half maxForce)
 	repulsorTaxon<-which.min(abs(otherstates-selfstates))
@@ -41,6 +98,26 @@ ExponentiallyDecayingPush<-function(params,selfstates,otherstates, timefromprese
 	return(newdisplacement)
 }
 
+
+
+#' Extrinsic Character Evolution Models
+#' 
+#' This function describes a model of extrinsic character evolution.  Character
+#' values of a focal taxon depend on values of all relatives on the tree
+#' 
+#' 
+#' @param params describes input paramaters for the model.
+#' \code{nearestNeighborDisplacementExtrinsic} params = sd, springK, maximum
+#' force
+#' @param selfstates vector of states for each taxon
+#' @param otherstates matrix of character states, one row per taxon and once
+#' column per state
+#' @param timefrompresent which time slice in the tree
+#' @return A matrix of values representing character displacement from a single
+#' time step in the tree.
+#' @author Brian O'Meara and Barb Banbury
+#' @references O'Meara and Banbury, unpublished
+#' @keywords everyoneDisplacementExtrinsic extrinsic
 everyoneDisplacementExtrinsic<-function(params,selfstates,otherstates, timefrompresent) { #this is set up for one character only right now
 	#params[1] is sd, params[2] is springK, params[3] is maxforce
 	sd<-params[1]

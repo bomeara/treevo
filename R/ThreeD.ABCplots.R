@@ -1,3 +1,32 @@
+#' 3D ABCplots
+#' 
+#' Plot posterior density distribution for each generation in 3d plot window
+#' 
+#' This opens a new interactive 3d plotting window and plots the posterior
+#' density distribution of accepted particles from each generation.  Several
+#' options are available to add to the plot: plotting particles by weight or
+#' distance, plotting particle parantage, and plotting the real parameter
+#' values (if known).
+#' 
+#' @param particleDataFrame particleDataFrame output from doRun
+#' @param parameter column number of parameter of interest from
+#' particleDataFrame
+#' @param show.particles option to show particles on 3d plot as "none" or as a
+#' function of "weights" or "distance"
+#' @param plot.parent option to plot lines on the floor of the 3d plot to show
+#' particle parantage
+#' @param realParam option to display real parameter value as a solid line,
+#' also must give actual value for this (realParamValues).  Note: this should
+#' only be done with simulated data where real param values are recorded
+#' @param realParamValues Value for (realParam)
+#' @author Barb Banbury
+#' @references O'Meara and Banbury, unpublished
+#' @keywords ThreeD.ABCplots
+#' @examples
+#' 
+#' #data(res)
+#' #ThreeD.ABCplots(particleDataFrame=res$particleDataFrame, parameter=7, show.particles="none", plot.parent=FALSE, realParam=FALSE, realParamValues=NA) 
+#' 
 ThreeD.ABCplots<-function(particleDataFrame, parameter, show.particles="none", plot.parent=FALSE, realParam=FALSE, realParamValues=NA) {
 generation<-NULL #to appease R CMD CHECK
 #library(gpclib)

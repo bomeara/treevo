@@ -1,3 +1,65 @@
+#' Discrete Time Character Simulation
+#' 
+#' This function evolves continuous characters in a discrete time process
+#' 
+#' When saveHistory is TRUE, processor time will increase quite a bit.
+#' SaveRealParams is useful for tracking the "real" true values if simulating
+#' data for abc runs.  It is not useful for empirical abc runs.
+#' 
+#' @param splits Output from the function getSimulationSplits; is a data frame
+#' of branching times, ancestor and descendant vectors
+#' @param intrinsicFn Name of intrinsic function characters should be simulated
+#' under
+#' @param extrinsicFn Name of extrinsic function characters should be simulated
+#' under
+#' @param startingValues State at the root
+#' @param intrinsicValues Vector of values corresponding to the params of the
+#' intrinsic model
+#' @param extrinsicValues Vector of values corresponding to the params of the
+#' extrinsic model
+#' @param timeStep This value corresponds to the number of discrete time steps
+#' on the shortest branch
+#' @param plot Will create a new interactive window that plots character values
+#' throughout the history of the tree
+#' @param savePlot Saves the character tree using jobName
+#' @param saveHistory Saves the character history throughout the simulation
+#' @param saveRealParams Saves intrinsicValues and extrinsicValues as both a
+#' matrix and a vector
+#' @param jobName Optional name for the job
+#' @return A data frame of species character (tip) values in the tree.
+#' @author Brian O'Meara and Barb Banbury
+#' @references O'Meara and Banbury, unpublished
+#' @keywords doSimulation doSimulationForPlotting
+#' @examples
+#' 
+#' 
+#' phy<-rcoal(30)
+#' 
+#' #Simple Brownian motion
+#' char<-doSimulationForPlotting(
+#' 	splits=getSimulationSplits(phy), 
+#' 	intrinsicFn=brownianIntrinsic,
+#' 	extrinsicFn=nullExtrinsic,
+#' 	startingValues=c(10), #root state
+#' 	intrinsicValues=c(0.01),
+#' 	extrinsicValues=c(0),
+#' 	timeStep=0.0001,
+#' 	plot=FALSE,
+#' 	saveHistory=FALSE)
+#' 
+#' 
+#' #Character displacement model with minimum bound
+#' char<-doSimulationForPlotting(
+#' 	splits=getSimulationSplits(phy), 
+#' 	intrinsicFn=boundaryMinIntrinsic,
+#' 	extrinsicFn=ExponentiallyDecayingPush,
+#' 	startingValues=c(10), #root state
+#' 	intrinsicValues=c(0.05, 10, 0.01),
+#' 	extrinsicValues=c(0, .1, .25),
+#' 	timeStep=0.001,
+#' 	plot=TRUE,
+#' 	saveHistory=FALSE)
+#' 
 doSimulationForPlotting<-function(splits, intrinsicFn, extrinsicFn, startingValues, intrinsicValues, extrinsicValues, timeStep, plot=FALSE, savePlot=FALSE, saveHistory=FALSE, saveRealParams=FALSE, jobName="") {
 if (saveRealParams){
 	RealParams<-vector("list", 2)

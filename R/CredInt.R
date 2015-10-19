@@ -1,3 +1,14 @@
+#' Bayesian Credible Interval
+#' 
+#' This function calculates credible interval for each free parameter
+#' 
+#' 
+#' @param particleDataFrame particleDataFrame output from doRun
+#' @param percent Probability content of HPD
+#' @return Returns a matrix with weighted mean, sd, upper and lower credible
+#' intervals for each free parameter
+#' @author Brian O'Meara and Barb Banbury
+#' @references O'Meara and Banbury, unpublished
 CredInt<-function(particleDataFrame, percent=0.95) { 
 	generation<-NULL #to appease R CMD CHECK with subset
 	PercentTail<-(1-percent)/2

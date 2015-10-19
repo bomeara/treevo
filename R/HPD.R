@@ -1,3 +1,15 @@
+#' Highest Posterior Density
+#' 
+#' This function calculates HPD for each free parameter
+#' 
+#' 
+#' @param particleDataFrame particleDataFrame output from doRun
+#' @param percent Probability content of HPD
+#' @param returnData Option to return data that falls within HPD interval
+#' @return Returns a matrix with weighted mean, sd, upper and lower HPD for
+#' each free parameter
+#' @author Brian O'Meara and Barb Banbury
+#' @references O'Meara and Banbury, unpublished
 HPD<-function(particleDataFrame, percent=0.95, returnData=F){
   generation<-NULL #to appease R CMD CHECK
 #	library(coda, quietly=T)

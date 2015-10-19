@@ -1,3 +1,25 @@
+#' Calculate summary statistics
+#' 
+#' This function creates a vector of summary statistics for TreEvo analysis
+#' 
+#' Caluclates 17 summary statistics from the fitContinuous.hacked function
+#' (brown.lnl, brown.beta, brown.aic, lambda.lnl, lambda.beta, lambda.lambda,
+#' lambda.aic, delta.lnl, delta.beta, delta.delta, delta.aic, ou.lnl, ou.beta,
+#' ou.alpha, ou.aic, white.lnl, white.aic), plus raw.mean, raw.max, raw.min,
+#' raw.var, raw.median, and all tip character values, phylogenetic independent
+#' contrasts, ancestral state reconstruction values, and the range of ancestral
+#' state reconstruction confidence interval.
+#' 
+#' @param phy Tree (Phylogenetic tree in phylo format)
+#' @param traits data matrix with rownames equal to phy
+#' @return Returns a vector of summary statistics
+#' @author Brian O'Meara and Barb Banbury
+#' @references O'Meara and Banbury, unpublished
+#' @keywords summaryStatsLong
+#' @examples
+#' 
+#' #summaryStatsLong(phy, char)
+#' 
 summaryStatsLong<-function(phy, traits) {
 	if (any(phy$edge.length==0)){
 		if(!any(phy$edge[which(phy$edge.length==0),2] %in% phy$edge[,1])){

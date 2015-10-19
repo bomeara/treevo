@@ -1,3 +1,26 @@
+#' Plotting parent-offspring particles
+#' 
+#' This function uses the particleDataFrame from TreEvo results and plots
+#' parent-offspring particles from generation to generation.
+#' 
+#' Each parameter is plotted twice for parent-offspring relationships through
+#' the generations.  In the top row, particles are plotted as a measure of
+#' distance to the observed data; the farther away the particle the bigger the
+#' circle.  Gray circles indicate rejected particles.  In the bottom row,
+#' particles are plotted as a measure of their weights; larger circles are
+#' closer to observed data and therefore carry more weight in the analysis.
+#' Grayed out stars represent rejected particles.
+#' 
+#' @param particleDataFrame particleDataFrame from TreEvo results
+#' @return Returns a layout of parent-offspring plots
+#' @author Brian O'Meara and Barb Banbury
+#' @references O'Meara and Banbury, unpublished
+#' @keywords parentOffspringPlots
+#' @examples
+#' 
+#' #data(res)
+#' #parentOffspringPlots(res$particleDataFrame)
+#' 
 parentOffspringPlots<-function(particleDataFrame){
 
 x<-particleDataFrame

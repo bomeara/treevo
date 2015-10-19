@@ -3,18 +3,67 @@
 #otherstates has one row per taxon, one column per state
 #states is a vector for each taxon, with length=nchar
 
+
+
+#' Intrinsic Character Evolution Models
+#' 
+#' This function describes a model of no intrinsic character change
+#' 
+#' 
+#' @param params describes input paramaters for the model
+#' @param states vector of states for each taxon
+#' @param timefrompresent which time slice in the tree
+#' @return A matrix of values representing character displacement from a single
+#' time step in the tree.
+#' @author Brian O'Meara and Barb Banbury
+#' @references O'Meara and Banbury, unpublished
+#' @keywords nullIntrinsic intrinsic
 nullIntrinsic<-function(params,states, timefrompresent) {
 	newdisplacement<-0*states
 	return(newdisplacement)
 }
 
 
+
+
+#' Intrinsic Character Evolution Models
+#' 
+#' This function describes a model of intrinsic character evolution via
+#' Brownian motion.
+#' 
+#' 
+#' @param params describes input paramaters for the model.
+#' \code{boundaryIntrinsic} params = sd
+#' @param states vector of states for each taxon
+#' @param timefrompresent which time slice in the tree
+#' @return A matrix of values representing character displacement from a single
+#' time step in the tree.
+#' @author Brian O'Meara and Barb Banbury
+#' @references O'Meara and Banbury, unpublished
+#' @keywords boundaryIntrinsic intrinsic
 brownianIntrinsic<-function(params,states, timefrompresent) {
 	newdisplacement<-rnorm(n=length(states),mean=0,sd=params) #mean=0 because we ADD this to existing values
 	return(newdisplacement)
 }
 
 
+
+
+#' Intrinsic Character Evolution Models
+#' 
+#' This function describes a model of intrinsic character evolution. Character
+#' change is restricted above a minimum and below a maximum threshold
+#' 
+#' 
+#' @param params describes input paramaters for the model.
+#' \code{boundaryMinIntrinsic} params = sd, minimum, maximum
+#' @param states vector of states for each taxon
+#' @param timefrompresent which time slice in the tree
+#' @return A matrix of values representing character displacement from a single
+#' time step in the tree.
+#' @author Brian O'Meara and Barb Banbury
+#' @references O'Meara and Banbury, unpublished
+#' @keywords boundaryIntrinsic intrinsic
 boundaryIntrinsic<-function(params, states, timefrompresent) {
 	#params[1] is sd, params[2] is min, params[3] is max. params[2] could be 0 or -Inf, for example
 	newdisplacement<-rnorm(n=length(states),mean=0,sd=params[1])
@@ -31,6 +80,23 @@ boundaryIntrinsic<-function(params, states, timefrompresent) {
 }
 
 
+
+
+#' Intrinsic Character Evolution Models
+#' 
+#' This function describes a model of intrinsic character evolution. Character
+#' change is restricted above a minimum threshold
+#' 
+#' 
+#' @param params describes input paramaters for the model.
+#' \code{boundaryMinIntrinsic} params = sd, minimum
+#' @param states vector of states for each taxon
+#' @param timefrompresent which time slice in the tree
+#' @return A matrix of values representing character displacement from a single
+#' time step in the tree.
+#' @author Brian O'Meara and Barb Banbury
+#' @references O'Meara and Banbury, unpublished
+#' @keywords boundaryMinIntrinsic intrinsic
 boundaryMinIntrinsic <-function(params, states, timefrompresent) {
 	#params[1] is sd, params[2] is min boundary
 	newdisplacement<-rnorm(n=length(states),mean=0,sd=params[1])
@@ -44,6 +110,25 @@ boundaryMinIntrinsic <-function(params, states, timefrompresent) {
 }
 
 
+
+
+#' Intrinsic Character Evolution Models
+#' 
+#' This function describes a model of intrinsic character evolution. New
+#' character values are generated after one time step via a discrete-time OU
+#' process.
+#' 
+#' 
+#' @param params describes input paramaters for the model.
+#' \code{autoregressiveIntrinsic} params = sd (sigma), attractor (character
+#' mean), attraction (alpha)
+#' @param states vector of states for each taxon
+#' @param timefrompresent which time slice in the tree
+#' @return A matrix of values representing character displacement from a single
+#' time step in the tree.
+#' @author Brian O'Meara and Barb Banbury
+#' @references O'Meara and Banbury, unpublished
+#' @keywords autoregressiveIntrinsic intrinsic
 autoregressiveIntrinsic<-function(params,states, timefrompresent) { #a discrete time OU, same sd, mean, and attraction for all chars
 	#params[1] is sd (sigma), params[2] is attractor (ie. character mean), params[3] is attraction (ie. alpha)
 	sd<-params[1] 
@@ -55,6 +140,25 @@ autoregressiveIntrinsic<-function(params,states, timefrompresent) { #a discrete 
 } 
 
 
+
+
+#' Intrinsic Character Evolution Models
+#' 
+#' This function describes a model of intrinsic character evolution. New
+#' character values are generated after one time step via a discrete-time OU
+#' process with a minimum bound.
+#' 
+#' 
+#' @param params describes input paramaters for the model.
+#' \code{MinBoundaryAutoregressiveIntrinsic} params = sd (sigma), attractor
+#' (character mean), attraction (alpha), minimum
+#' @param states vector of states for each taxon
+#' @param timefrompresent which time slice in the tree
+#' @return A matrix of values representing character displacement from a single
+#' time step in the tree.
+#' @author Brian O'Meara and Barb Banbury
+#' @references O'Meara and Banbury, unpublished
+#' @keywords MinBoundaryAutoregressiveIntrinsic intrinsic
 MinBoundaryAutoregressiveIntrinsic<-function(params,states, timefrompresent) { #a discrete time OU, same sd, mean, and attraction for all chars
 	#params[1] is sd (sigma), params[2] is attractor (ie. character mean), params[3] is attraction (ie. alpha), params[4] is min bound
 	sd<-params[1] 
@@ -75,6 +179,29 @@ MinBoundaryAutoregressiveIntrinsic<-function(params,states, timefrompresent) { #
 }
 
 
+
+
+#' Intrinsic Character Evolution Models
+#' 
+#' This function describes a model of intrinsic character evolution. New
+#' character values are generated after one time step via a discrete-time OU
+#' process with differing means, sigma, and attraction over time
+#' 
+#' In the TimeSlices models, time threshold units are in time before present
+#' (i.e., 65 could be 65 MYA). The last time threshold should be 0.
+#' 
+#' @param params describes input paramaters for the model.
+#' \code{autoregressiveIntrinsicTimeSlices} params = sd-1 (sigma-1),
+#' attractor-1 (character mean-1), attraction-1 (alpha-1), time threshold-1,
+#' sd-2 (sigma-2), attractor-2 (character mean-2), attraction-2 (alpha-2), time
+#' threshold-2
+#' @param states vector of states for each taxon
+#' @param timefrompresent which time slice in the tree
+#' @return A matrix of values representing character displacement from a single
+#' time step in the tree.
+#' @author Brian O'Meara and Barb Banbury
+#' @references O'Meara and Banbury, unpublished
+#' @keywords autoregressiveIntrinsicTimeSlices intrinsic
 autoregressiveIntrinsicTimeSlices<-function(params,states, timefrompresent) { #a discrete time OU, differing mean, sigma, and attaction with time
 	#params=[sd1, attractor1, attraction1, timethreshold1, sd2, attractor2, attraction2, timethreshold2, ...]
 	#time is time before present (i.e., 65 could be 65 MYA). The last time threshold should be 0, one before that is the end of the previous epoch, etc.
@@ -105,6 +232,28 @@ autoregressiveIntrinsicTimeSlices<-function(params,states, timefrompresent) { #a
 	return(newdisplacement)
 }
 
+
+
+#' Intrinsic Character Evolution Models
+#' 
+#' This function describes a model of intrinsic character evolution. New
+#' character values are generated after one time step via a discrete-time OU
+#' process with differing sigma and attraction over time
+#' 
+#' In the TimeSlices models, time threshold units are in time before present
+#' (i.e., 65 could be 65 MYA). The last time threshold should be 0.
+#' 
+#' @param params describes input paramaters for the model.
+#' \code{autoregressiveIntrinsicTimeSlicesConstantMean} params = sd-1
+#' (sigma-1), attraction-1 (alpha-1), time threshold-1, sd-2 (sigma-2),
+#' attraction-2 (alpha-2), time threshold-2, attractor (character mean)
+#' @param states vector of states for each taxon
+#' @param timefrompresent which time slice in the tree
+#' @return A matrix of values representing character displacement from a single
+#' time step in the tree.
+#' @author Brian O'Meara and Barb Banbury
+#' @references O'Meara and Banbury, unpublished
+#' @keywords autoregressiveIntrinsicTimeSlicesConstantMean intrinsic
 autoregressiveIntrinsicTimeSlicesConstantMean<-function(params,states, timefrompresent) { #a discrete time OU, constant mean, differing sigma, and differing attaction with time
 	#params=[sd1 (sigma1), attraction1 (alpha 1), timethreshold1, sd2 (sigma2), attraction2 (alpha 2), timethreshold2, ..., attractor (mean)]
 	#time is time before present (i.e., 65 could be 65 MYA). The last time threshold should be 0, one before that is the end of the previous epoch, etc.
@@ -127,6 +276,28 @@ autoregressiveIntrinsicTimeSlicesConstantMean<-function(params,states, timefromp
 	return(newdisplacement)
 }
 
+
+
+#' Intrinsic Character Evolution Models
+#' 
+#' This function describes a model of intrinsic character evolution. New
+#' character values are generated after one time step via a discrete-time OU
+#' process with differing means and attraction over time.
+#' 
+#' In the TimeSlices models, time threshold units are in time before present
+#' (i.e., 65 could be 65 MYA). The last time threshold should be 0.
+#' 
+#' @param params describes input paramaters for the model.
+#' \code{autoregressiveIntrinsicTimeSlicesConstantSigma} params = sd (sigma),
+#' attractor-1 (character mean-1), attraction-1 (alpha-1), time threshold-1,
+#' attractor-2 (character mean-2), attraction-2 (alpha-2), time threshold-2
+#' @param states vector of states for each taxon
+#' @param timefrompresent which time slice in the tree
+#' @return A matrix of values representing character displacement from a single
+#' time step in the tree.
+#' @author Brian O'Meara and Barb Banbury
+#' @references O'Meara and Banbury, unpublished
+#' @keywords autoregressiveIntrinsicTimeSlicesConstantSigma intrinsic
 autoregressiveIntrinsicTimeSlicesConstantSigma<-function(params,states, timefrompresent) { #a discrete time OU, differing mean, constant sigma, and attaction with time
 	#params=[sd, attractor1, attraction1, timethreshold1, attractor2, attraction2, timethreshold2, ...]
 	#time is time before present (i.e., 65 could be 65 MYA). The last time threshold should be 0, one before that is the end of the previous epoch, etc.

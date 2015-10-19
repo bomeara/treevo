@@ -1,3 +1,14 @@
+#' Pull value from prior
+#' 
+#' This function retreives random value from variable prior functions
+#' 
+#' 
+#' @param priorValues Matrix with ncol=number of states (characters) at root
+#' and nrow=2 (two parameters to pass to prior distribution)
+#' @param priorFn Prior shape
+#' @return Returns mean
+#' @author Brian O'Meara and Barb Banbury
+#' @references O'Meara and Banbury, unpublished
 pullFromPrior<-function(priorValues, priorFn) {
 	#fixed, uniform, normal, lognormal, gamma, exponential
 	x<-NA

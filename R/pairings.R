@@ -1,3 +1,13 @@
+#' Find unique pairings
+#' 
+#' This function finds all possible pairwise combinations for multiple runs.
+#' 
+#' Used in several internal functions for analysis of results
+#' 
+#' @param nRuns Numeric value representing haw many runs to compare
+#' @return Returns a matrix of combinations
+#' @author Brian O'Meara and Barb Banbury
+#' @references O'Meara and Banbury, unpublished
 pairings<-function (nRuns) {
 #library(partitions)
 #each output colum has a 1 in the rows corresponding to the runs you will combine for the ESS

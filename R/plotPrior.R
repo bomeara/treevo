@@ -3,6 +3,35 @@
 #plotPrior("exponential", c(1), plotQuants=FALSE)
 
 
+
+
+#' Plot prior distribution
+#' 
+#' This function plots the distribution of priors
+#' 
+#' This functions is to help visualize the shape of the priors for TreEvo abc
+#' analyses.
+#' 
+#' @param priorFn Prior shape; either "fixed", "uniform", "normal",
+#' "lognormal", "gamma", "exponential"
+#' @param priorVariables Variables needed to describe the shape of the
+#' distribution.  uniform distributions=c(min, max); normal
+#' distributions=c(mean, sd); lognormal distributions=c(mean, sd); gamma
+#' distributions=c(shape, scale); exponential distributions=c(rate)
+#' @param plotQuants If TRUE, plots line segments at the quantiles
+#' @param plotLegend If TRUE, plots legend box with quantile values
+#' @return Returns a distribution plot
+#' @author Brian O'Meara and Barb Banbury
+#' @references O'Meara and Banbury, unpublished
+#' @keywords plotPrior prior
+#' @examples
+#' 
+#' 	plotPrior(priorFn="exponential", priorVariables=c(10))
+#' 	
+#' 	plotPrior("normal", c(1,2))
+#' 	
+#' 	plotPrior("gamma", c(2, .2), plotQuants=FALSE, plotLegend=FALSE)
+#' 
 plotPrior<-function(priorFn=match.arg(arg=priorFn,choices=c("fixed", "uniform", "normal", "lognormal", "gamma", "exponential"),several.ok=FALSE), priorVariables, plotQuants=TRUE, plotLegend=TRUE){
 	#plot.new()
 	x<-NA

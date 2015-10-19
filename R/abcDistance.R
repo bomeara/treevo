@@ -1,3 +1,24 @@
+#' Calculate ABC Distances
+#' 
+#' This function uses results from pls model to calculate the distance from
+#' each sim to the original data.
+#' 
+#' This function runs a PLS regression on each free param in the model, unlike
+#' a true multivariate PLS regression.  For ABC, this seems to result in much
+#' better results, without one parameter dominating the combined variance.
+#' 
+#' @param summaryValuesMatrix Matrix of summary statistics from simulations
+#' @param originalSummaryValues Original summary stats
+#' @param pls.model.list indexing of a list of pls models for different params
+#' @return Returns euclidean distance of each simulation's summary values to
+#' the original summary stats.
+#' @author Brian O'Meara and Barb Banbury
+#' @references O'Meara and Banbury, unpublished
+#' @keywords abcDistance
+#' @examples
+#' 
+#' #abcDistance(summaryValuesMatrix, originalSummaryValues, pls.model.list)
+#' 
 abcDistance<-function(summaryValuesMatrix, originalSummaryValues, pls.model.list) {
   abcDistancesRaw<-sapply(sequence(length(pls.model.list)), SingleParameterPLSDistanceSquaredFixedPLS, pls.model.list=pls.model.list, summaryValuesMatrix=summaryValuesMatrix, originalSummaryValues=originalSummaryValues, scale=scale)
   if (class(abcDistancesRaw)!="matrix") { #it must be a vector, but apply likes matrices

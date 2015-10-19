@@ -1,3 +1,34 @@
+#' Plot posterior distributions
+#' 
+#' This function plots posterior distributions from the last generation of each
+#' free parameter
+#' 
+#' If the particleDataFrame is a list of seperate TreEvo runs, posteriors will
+#' be layered over eachother to check for repeatability.  Grayscale of
+#' posteriors depends on total number of runs.
+#' 
+#' If the PriorMatrix is a list of matrices, only the first matrix will be
+#' plotted.  In other words, prior matrices MUST be identical for all runs.
+#' 
+#' realParam and realParamValues should only be used with simulated data, where
+#' the true values are known.
+#' 
+#' @param particleDataFrame particleDataFrame from TreEvo results, can be a
+#' single data frame or a list of data frames
+#' @param PriorMatrix PriorMatrix from TreEvo results, can be a single matrix
+#' or a list of matrices
+#' @param realParam Plot line segments where real parameter values are known
+#' @param realParamValues Values for real paramters, include a value for each
+#' parameter (inlcuding fixed values)
+#' @return Returns a plot for each free parameter.
+#' @author Barb Banbury and Brian O'Meara
+#' @references O'Meara and Banbury, unpublished
+#' @keywords plotPosteriors
+#' @examples
+#' 
+#' #data(Res)
+#' #plotPosteriors(particleDataFrame=res$particleDataFrame, PriorMatrix=res$priorMatrix, realParam=FALSE, realParamValues=NA)
+#' 
 plotPosteriors<-function(particleDataFrame, PriorMatrix, realParam=FALSE, realParamValues=NA) {
 # particleDataFrame can be single or a list of particleDataFrames (1:n)
 # priors can also be single matrix or a list of matrices (Note that priors have to be the same to make comparison across runs, therefore if a list of priors is given, this function will extract only the first matrix)

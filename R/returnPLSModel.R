@@ -1,3 +1,24 @@
+#' return PLS Model
+#' 
+#' Returns a PLS Model
+#' 
+#' This function runs a PLS regression on each free param in the model, unlike
+#' a true multivariate PLS regression.  For ABC, this seems to result in much
+#' better results, without one parameter dominating the combined variance.
+#' 
+#' @param trueFreeValuesMatrix Matrix of true free values from simulations
+#' @param summaryValuesMatrix Matrix of summary statistics from simulations
+#' @param validation Cross Validation procedure for abc
+#' @param scale scale for pls.model.list
+#' @param variance.cutoff variance cutoff for pls.model.list
+#' @return Returns a pls model
+#' @author Brian O'Meara and Barb Banbury
+#' @references O'Meara and Banbury, unpublished
+#' @keywords returnPLSModel PLSTransform PLS
+#' @examples
+#' 
+#' #returnPLSModel(trueFreeValuesMatrix,summaryValuesMatrix, validation="CV", scale=scale, variance.cutoff=variance.cutoff)
+#' 
 returnPLSModel<-function(trueFreeValuesMatrix, summaryValuesMatrix, validation="CV", scale=TRUE, variance.cutoff=95) {
   #note that this assumes that trueFreeValues is for a single param at a time, which works MUCH better
   trueFreeValuesMatrix<-trueFreeValuesMatrix

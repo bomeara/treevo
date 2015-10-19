@@ -1,3 +1,15 @@
+#' Mutate Character State
+#' 
+#' This function mutates the character state of a given taxon by one discrete
+#' time step
+#' 
+#' 
+#' @param startingState Character state prior to mutating
+#' @param standardDevFactor Standard deviation
+#' @param priorValues Vector of priorValues
+#' @param priorFn Prior shape
+#' @author Brian O'Meara and Barb Banbury
+#' @references O'Meara and Banbury, unpublished
 mutateState<-function(startingState, standardDevFactor, priorValues, priorFn) {
 	newState<-NA
 	minBound=-Inf
