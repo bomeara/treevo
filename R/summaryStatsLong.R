@@ -27,9 +27,15 @@ summaryStatsLong<-function(phy, traits) {
 			return("There are zero branch lengths at the tips of your trees--will not run properly")
 		}
 	}	
-	if(is.null(names(traits)))
-		names(traits) <- rownames(traits)
-	tratis<-as.data.frame(traits)
+	if(class(traits)=="matrix" | class(traits)=="data.frame") {
+		my.names <- rownames(traits)
+		traits <- as.numeric(traits[,1])
+		names(traits) <- my.names
+	}
+	
+#	if(is.null(names(traits)))
+#		names(traits) <- rownames(traits)
+#	traits<-as.data.frame(traits)
 	brown<-fitContinuous(phy=phy, dat=traits, model="BM") 
 	brown.lnl<-as.numeric(brown$opt$lnL) 
 	brown.beta <-as.numeric(brown$opt$sigsq)
@@ -62,10 +68,10 @@ summaryStatsLong<-function(phy, traits) {
 	raw.max<-as.numeric(max(traits))
 	raw.min<-as.numeric(min(traits))
 	raw.var<-as.numeric(var(traits))
-	raw.median<-as.numeric(median(traits[,]))	#cat("summaryStatsLong")
+	raw.median<-as.numeric(median(traits))	#cat("summaryStatsLong")
 	
 	pic<-as.vector(pic.ortho(as.matrix(traits), phy))  #independent contrasts
-	aceResults<-ace(as.matrix(traits), phy)
+	aceResults<-ace(traits, phy)
 	anc.states<-as.vector(aceResults$ace) #ancestral states 
 	anc.CIrange<-as.vector(aceResults$CI95[,2]-aceResults$CI95[,1]) #range between upper and lower 95% CI
 	
