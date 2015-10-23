@@ -14,7 +14,7 @@ test_that("doPRC runs correctly", {
 	  TreeYears=1000,
 	  standardDevFactor=0.2,
 	  plot=FALSE,
-	  StartSims=300,
+	  StartSims=10,
 	  epsilonProportion=0.7,
 	  epsilonMultiplier=0.7,
 	  nStepsPRC=5,
