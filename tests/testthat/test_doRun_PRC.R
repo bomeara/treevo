@@ -9,7 +9,8 @@ test_that("simulation ran", {
  	extrinsicValues=c(0),
  	timeStep=0.0001,
  	saveHistory=FALSE)
-	expect_is(class(char$statesmatrix), "numeric")
+	expect_equal(class(char$statesmatrix), "numeric")
+	expect_equal(length(char$statesmatrix), 30)
 })
 
 
@@ -29,11 +30,11 @@ test_that("doPRC runs correctly", {
 	  TreeYears=1000,
 	  standardDevFactor=0.2,
 	  plot=FALSE,
-	  StartSims=5,
+	  StartSims=10,
 	  epsilonProportion=0.7,
 	  epsilonMultiplier=0.7,
 	  nStepsPRC=3,
-	  numParticles=10,
+	  numParticles=20,
 	  jobName="exampleRun",
 	  stopRule=FALSE,
 	  multicore=FALSE,
