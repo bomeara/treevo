@@ -1,11 +1,11 @@
 #' Discrete Time Character Simulation
-#' 
+#'
 #' This function evolves continuous characters in a discrete time process.
-#' 
+#'
 #' When saveHistory is TRUE, processor time will increase quite a bit.
 #' SaveRealParams is useful for tracking the "real" true values if simulating
 #' data for abc runs.  It is not useful for empirical abc runs.
-#' 
+#'
 #' @param splits Output from the function getSimulationSplits; is a data frame
 #' of branching times, ancestor and descendant vectors
 #' @param intrinsicFn Name of intrinsic function characters should be simulated
@@ -28,13 +28,13 @@
 #' @references O'Meara and Banbury, unpublished
 #' @keywords doSimulation
 #' @examples
-#' 
-#' 
+#'
+#'
 #' phy<-rcoal(30)
-#' 
+#'
 #' #Simple Brownian motion
 #' char<-doSimulation(
-#' 	splits=getSimulationSplits(phy), 
+#' 	splits=getSimulationSplits(phy),
 #' 	intrinsicFn=brownianIntrinsic,
 #' 	extrinsicFn=nullExtrinsic,
 #' 	startingValues=c(10), #root state
@@ -42,11 +42,11 @@
 #' 	extrinsicValues=c(0),
 #' 	timeStep=0.0001,
 #' 	saveHistory=FALSE)
-#' 
-#' 
+#'
+#'
 #' #Character displacement model with minimum bound
 #' char<-doSimulation(
-#' 	splits=getSimulationSplits(phy), 
+#' 	splits=getSimulationSplits(phy),
 #' 	intrinsicFn=boundaryMinIntrinsic,
 #' 	extrinsicFn=ExponentiallyDecayingPush,
 #' 	startingValues=c(10), #root state
@@ -54,11 +54,11 @@
 #' 	extrinsicValues=c(0, .1, .25),
 #' 	timeStep=0.001,
 #' 	saveHistory=FALSE)
-#' 
+#'
 doSimulation<-function(splits, intrinsicFn, extrinsicFn, startingValues, intrinsicValues, extrinsicValues, timeStep, saveHistory=FALSE, saveRealParams=FALSE, jobName="") {
 if (saveRealParams){
 	RealParams<-vector("list", 2)
-	names(RealParams)<-c("matrix", "vector")	
+	names(RealParams)<-c("matrix", "vector")
 	RealParams$vector<-c(startingValues, intrinsicValues, extrinsicValues)
 	maxLength<-(max(length(startingValues), length(intrinsicValues), length(extrinsicValues)))
 	RealParams$matrix<-matrix(ncol=maxLength, nrow=3)
@@ -86,7 +86,7 @@ if (saveHistory) {
 	timefrompresent=splits[1, 1]
 	taxa<-list(abctaxon(id=splits[1, 3], states=startingValues), abctaxon(id=splits[1, 4], states=startingValues))
 	splits<-splits[2:dim(splits)[1], ] #pop off top value
-	
+
 #start running
 	while(timefrompresent>0) {
 #print(timefrompresent)
@@ -127,7 +127,7 @@ otherstatefn<-function(x){
 otherMatrix<-function(i){
   taxvec<-c(1:length(taxa))
   taxvec<-taxvec[-which(taxvec==i)]
-  otherstatesvector<-sapply(taxvec,otherstatefn)
+  otherstatesvector<-sapply(taxvec,otherstatefn) # NOTE this step is slow. Figure out way to make it faster. taxa is a list of abctaxon objects, so taxa$state won't work
   otherstatesmatrix<-matrix(otherstatesvector, ncol=length(taxa[[i]]$states), byrow=TRUE) #each row represents one taxon
   newvalues<-taxa[[i]]$states+intrinsicFn(params=intrinsicValues, states=taxa[[i]]$states, timefrompresent =timefrompresent)+extrinsicFn(params=extrinsicValues, selfstates=taxa[[i]]$states, otherstates=otherstatesmatrix, timefrompresent =timefrompresent)
   taxa[[i]]$nextstates<-newvalues
@@ -138,23 +138,23 @@ otherMatrix<-function(i){
 				endTime <-append(endTime, timefrompresent)
 				save(startVector, endVector, startTime, endTime, file=paste("savedHistory", jobName, ".Rdata", sep=""))
 			}
-                
-                
+
+
   return(taxa[[i]])
               }
 taxvec<-c(1:length(taxa))
 taxa<-lapply(taxvec,otherMatrix)
-                
+
 		stateNextState<-function(i){
 			i$states<-i$nextstates
                         return(i)
-			
+
 		}
                 taxa<-lapply(taxa,stateNextState)
 #print("------------------- step -------------------")
 #print(taxa)
 #summarizeTaxonStates(taxa)
-		
+
 		timefrompresent<-timefrompresent-timeStep
 		timeSinceSp<-function(i) {
 			i$timeSinceSpeciation<-i$timeSinceSpeciation+timeStep

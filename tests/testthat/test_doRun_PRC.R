@@ -1,3 +1,17 @@
+test_that("simulation ran", {
+	data(simData)
+	 char<-doSimulation(
+ 	splits=getSimulationSplits(simPhy),
+ 	intrinsicFn=brownianIntrinsic,
+ 	extrinsicFn=nullExtrinsic,
+ 	startingValues=c(10), #root state
+ 	intrinsicValues=c(0.01),
+ 	extrinsicValues=c(0),
+ 	timeStep=0.0001,
+ 	saveHistory=FALSE)
+})
+
+
 test_that("doPRC runs correctly", {
 	data(simData)
 	results <- doRun_prc(
@@ -14,15 +28,15 @@ test_that("doPRC runs correctly", {
 	  TreeYears=1000,
 	  standardDevFactor=0.2,
 	  plot=FALSE,
-	  StartSims=10,
+	  StartSims=5,
 	  epsilonProportion=0.7,
 	  epsilonMultiplier=0.7,
-	  nStepsPRC=5,
-	  numParticles=100,
+	  nStepsPRC=3,
+	  numParticles=10,
 	  jobName="exampleRun",
 	  stopRule=FALSE,
 	  multicore=FALSE,
 	  coreLimit=1
 	)
-	expect_is(results, "list")	
+	expect_is(results, "list")
 })

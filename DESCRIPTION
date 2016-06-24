@@ -2,18 +2,32 @@ Package: TreEvo
 Type: Package
 Title: Using ABC to understand trait evolution
 Version: 0.4.0
-Date: 2015-10-22
+Date: 2016-06-23
 Author: Brian O'Meara, Barb L. Banbury
 Maintainer: Brian O'Meara <omeara.brian@gmail.com>
-Depends: R (>= 2.13.0), ape
-Imports: geiger, pls, stats, corpcor, coda, foreach, doMC, rgl, partitions, car, mvtnorm
-Suggests: testthat
-LazyData:yes
-Description: Various functions for estimating parameters of trait evolution using Approximate Bayesian Computation.
+Depends:
+    R (>= 2.13.0),
+    ape
+Imports:
+    geiger,
+    pls,
+    stats,
+    corpcor,
+    coda,
+    foreach,
+    doMC,
+    rgl,
+    partitions,
+    car,
+    mvtnorm
+Suggests:
+    testthat
+LazyData: yes
+Description: Various functions for estimating parameters of trait evolution
+    using Approximate Bayesian Computation.
 License: GPL
 URL: http://treevo.R-forge.R-project.org
 Repository: CRAN
 Packaged: 2012-07-02 16:00:00; BCO
 Date/Publication: 2012-07-02 16:00:00
-
-
+RoxygenNote: 5.0.1
