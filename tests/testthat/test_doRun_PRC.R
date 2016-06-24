@@ -9,6 +9,7 @@ test_that("simulation ran", {
  	extrinsicValues=c(0),
  	timeStep=0.0001,
  	saveHistory=FALSE)
+	expect_is(class(char$statesmatrix), "numeric")
 })
 
 

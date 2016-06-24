@@ -13,7 +13,7 @@ doRun_prc(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
   StartSims = 300, plot = FALSE, epsilonProportion = 0.7,
   epsilonMultiplier = 0.7, nStepsPRC = 5, jobName = NA,
   stopRule = FALSE, stopValue = 0.05, multicore = FALSE, coreLimit = NA,
-  validation = "CV", scale = TRUE, variance.cutoff = 95)
+  validation = "CV", scale = TRUE, variance.cutoff = 95, niter.goal = 5)
 }
 \arguments{
 \item{phy}{Tree (Phylogenetic tree in phylo format)}
@@ -91,6 +91,8 @@ nodes}
 \item{scale}{scale for pls.model.list}
 
 \item{variance.cutoff}{variance cutoff for pls.model.list}
+
+\item{niter.goal}{Adjust number of starting points for Geiger to return the best parameter estimates this number of times on average}
 }
 \value{
 \item{input.data}{Input variables: jobName, number of taxa, nrepSim,
@@ -136,8 +138,8 @@ data(simData)
 #doRun_prc(
 #  phy = simPhy,
 #  traits = simChar,
-#  intrinsicFn=brownianIntrinsic, 
-#  extrinsicFn=nullExtrinsic, 
+#  intrinsicFn=brownianIntrinsic,
+#  extrinsicFn=nullExtrinsic,
 #  startingPriorsFns="normal",
 #  startingPriorsValues=matrix(c(mean(simChar[,1]), sd(simChar[,1]))),
 #  intrinsicPriorsFns=c("exponential"),
@@ -156,7 +158,7 @@ data(simData)
 #  stopRule=FALSE,
 #  multicore=FALSE,
 #  coreLimit=1
-#)		
+#)
 
 
 }

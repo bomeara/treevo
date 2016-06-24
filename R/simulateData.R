@@ -1,11 +1,11 @@
 #' Simulate data for initial TreEvo analysis
-#' 
+#'
 #' This function pulls parameters from prior distributions and simulates
 #' continuous characters
-#' 
+#'
 #' Used by TreEvo doRun function to calculate simulations for doRun_prc and
 #' doRun_rej.
-#' 
+#'
 #' @param splits simulation splits (from getSimulationSplits
 #' @param phy Tree (Phylogenetic tree in phylo format)
 #' @param startingPriorsValues Matrix with ncol=number of states (characters)
@@ -31,11 +31,16 @@
 #' @param extrinsicFn Name of extrinsic function characters should be simulated
 #' under (as used by doSimulation)
 #' @param giveUpAttempts Value for when to stop the analysis if NAs are present
+#' @param niter.brown Number of random starts for BM model (min of 2)
+#' @param niter.lambda Number of random starts for lambda model (min of 2)
+#' @param niter.delta Number of random starts for delta model (min of 2)
+#' @param niter.OU Number of random starts for OU model (min of 2)
+#' @param niter.white Number of random starts for white model (min of 2)
 #' @return Returns matrix of trueFreeValues and summary statistics for
 #' simulations
 #' @author Brian O'Meara and Barb Banbury
 #' @references O'Meara and Banbury, unpublished
-simulateData<-function(splits, phy, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn,giveUpAttempts=10) {
+simulateData<-function(splits, phy, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn,giveUpAttempts=10, niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) {
 	simTrueAndStats<-rep(NA,10) #no particular reason for it to be 10 wide
 	n.attempts<-0
 	while (length(which(is.na(simTrueAndStats)))>0) {
@@ -57,10 +62,10 @@ simulateData<-function(splits, phy, startingPriorsValues, intrinsicPriorsValues,
 		}
 		trueInitial<-c(trueStarting, trueIntrinsic, trueExtrinsic)
 		trueFreeValues<-trueInitial[freevector]
-	
+
 		cat(".")
 		simTraits<-convertTaxonFrameToGeigerData(doSimulation(splits=splits, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, startingValues=trueStarting, intrinsicValues=trueIntrinsic, extrinsicValues=trueExtrinsic, timeStep=timeStep), phy)
-		simSumStats<-summaryStatsLong(phy, simTraits)
+		simSumStats<-summaryStatsLong(phy, simTraits, niter.brown, niter.lambda, niter.delta, niter.OU, niter.white)
 		simTrueAndStats <-c(trueFreeValues, simSumStats)
 	}
 	if(n.attempts>1) {
@@ -68,4 +73,3 @@ simulateData<-function(splits, phy, startingPriorsValues, intrinsicPriorsValues,
 	}
 	return(simTrueAndStats)
 }
-

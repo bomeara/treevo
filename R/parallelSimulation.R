@@ -1,9 +1,9 @@
 #' Simulate data for initial TreEvo analysis
-#' 
+#'
 #' This is a wrapper function for simulateData that allows for multithreading
 #' and checkpointing
-#' 
-#' 
+#'
+#'
 #' @param nrepSim Number of simulations
 #' @param coreLimit Number of cores to be used
 #' @param splits simulation splits (from getSimulationSplits
@@ -33,11 +33,16 @@
 #' @param multicore Whether to use multicore, default is FALSE
 #' @param checkpointFile Optional file name for checkpointing simulations
 #' @param checkpointFreq Saving frequency for checkpointing
+#' @param niter.brown Number of random starts for BM model (min of 2)
+#' @param niter.lambda Number of random starts for lambda model (min of 2)
+#' @param niter.delta Number of random starts for delta model (min of 2)
+#' @param niter.OU Number of random starts for OU model (min of 2)
+#' @param niter.white Number of random starts for white model (min of 2)
 #' @return Returns matrix of trueFreeValues and summary statistics for
 #' simulations
 #' @author Brian O'Meara and Barb Banbury
 #' @references O'Meara and Banbury, unpublished
-parallelSimulation<-function(nrepSim, coreLimit, splits, phy, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn, multicore,checkpointFile=NULL,checkpointFreq=24) {
+parallelSimulation<-function(nrepSim, coreLimit, splits, phy, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn, multicore,checkpointFile=NULL,checkpointFreq=24, niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) {
 	#library(doMC, quietly=T)
 	#library(foreach, quietly=T)
 	cores=1
@@ -78,5 +83,5 @@ parallelSimulation<-function(nrepSim, coreLimit, splits, phy, startingPriorsValu
 		}
 		trueFreeValuesANDSummaryValues<-rbind(trueFreeValuesANDSummaryValues, foreach(1:numberSimsAfterLastCheckpoint, .combine=rbind) %dopar% simulateData(splits, phy, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn))
 	}
-	return(trueFreeValuesANDSummaryValues) 
+	return(trueFreeValuesANDSummaryValues)
 }

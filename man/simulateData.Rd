@@ -7,7 +7,8 @@
 simulateData(splits, phy, startingPriorsValues, intrinsicPriorsValues,
   extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns,
   extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn,
-  giveUpAttempts = 10)
+  giveUpAttempts = 10, niter.brown = 25, niter.lambda = 25,
+  niter.delta = 25, niter.OU = 25, niter.white = 25)
 }
 \arguments{
 \item{splits}{simulation splits (from getSimulationSplits}
@@ -47,6 +48,16 @@ under (as used by doSimulation)}
 under (as used by doSimulation)}
 
 \item{giveUpAttempts}{Value for when to stop the analysis if NAs are present}
+
+\item{niter.brown}{Number of random starts for BM model (min of 2)}
+
+\item{niter.lambda}{Number of random starts for lambda model (min of 2)}
+
+\item{niter.delta}{Number of random starts for delta model (min of 2)}
+
+\item{niter.OU}{Number of random starts for OU model (min of 2)}
+
+\item{niter.white}{Number of random starts for white model (min of 2)}
 }
 \value{
 Returns matrix of trueFreeValues and summary statistics for
