@@ -19,7 +19,10 @@ Imports:
     rgl,
     partitions,
     car,
-    mvtnorm
+    mvtnorm,
+    methods,
+    grDevices,
+    graphics
 Suggests:
     testthat,
     covr
