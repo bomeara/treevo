@@ -41,4 +41,5 @@ test_that("doPRC runs correctly", {
 	  coreLimit=1
 	)
 	expect_is(results, "list")
+	expect_false(any(is.na(PairwiseESS(results$particleDataFrame))))
 })
