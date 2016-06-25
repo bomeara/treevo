@@ -4,3 +4,7 @@ warnings_are_errors: false
 
 before_install:
   - sudo apt-get install libgmp3-dev
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
+  - Rscript -e 'covr::codecov()'
