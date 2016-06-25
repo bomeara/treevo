@@ -21,7 +21,8 @@ Imports:
     car,
     mvtnorm
 Suggests:
-    testthat
+    testthat,
+    covr
 LazyData: yes
 Description: Various functions for estimating parameters of trait evolution
     using Approximate Bayesian Computation.
