@@ -24,8 +24,8 @@
 #' @keywords ThreeD.ABCplots
 #' @examples
 #' 
-#' #data(res)
-#' #ThreeD.ABCplots(particleDataFrame=res$particleDataFrame, parameter=7, show.particles="none", plot.parent=FALSE, realParam=FALSE, realParamValues=NA) 
+#' #data(simRun)
+#' #ThreeD.ABCplots(particleDataFrame=results$particleDataFrame, parameter=7, show.particles="none", plot.parent=FALSE, realParam=FALSE, realParamValues=NA) 
 #' 
 ThreeD.ABCplots<-function(particleDataFrame, parameter, show.particles="none", plot.parent=FALSE, realParam=FALSE, realParamValues=NA) {
 generation<-NULL #to appease R CMD CHECK

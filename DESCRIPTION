@@ -22,7 +22,8 @@ Imports:
     mvtnorm,
     methods,
     grDevices,
-    graphics
+    graphics,
+    rgeos
 Suggests:
     testthat,
     covr

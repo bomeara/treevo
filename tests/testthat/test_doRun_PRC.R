@@ -43,3 +43,10 @@ test_that("doPRC runs correctly", {
 	expect_is(results, "list")
 	expect_false(any(is.na(PairwiseESS(results$particleDataFrame))))
 })
+
+
+test_that("plotting works", {
+	data(simRun)
+	expect_error(plotPosteriors(results$particleDataFrame, results$PriorMatrix), NA)	
+})
+	
