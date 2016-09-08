@@ -5,7 +5,8 @@
 \title{abctaxon}
 \usage{
 abctaxon(id = 0, name = "taxon0", timeSinceSpeciation = 0, states = NA,
-  nextstates = NA)
+  nextstates = NA, startTime = 0, endTime = Inf, terminal = TRUE,
+  ancestorId = NA)
 }
 \arguments{
 \item{id}{Simulation ID}
@@ -17,6 +18,14 @@ abctaxon(id = 0, name = "taxon0", timeSinceSpeciation = 0, states = NA,
 \item{states}{States of taxon}
 
 \item{nextstates}{States of taxon after mutation}
+
+\item{startTime}{When this lineage starts}
+
+\item{endTime}{When this lineage stops}
+
+\item{terminal}{If TRUE, is a terminal taxon}
+
+\item{ancestorId}{ID of the ancestor of this node.}
 }
 \description{
 Internal TreEvo function to create a list of objects

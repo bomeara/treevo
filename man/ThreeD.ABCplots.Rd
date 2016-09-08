@@ -37,8 +37,8 @@ values (if known).
 }
 \examples{
 
-#data(res)
-#ThreeD.ABCplots(particleDataFrame=res$particleDataFrame, parameter=7, show.particles="none", plot.parent=FALSE, realParam=FALSE, realParamValues=NA) 
+#data(simRun)
+#ThreeD.ABCplots(particleDataFrame=results$particleDataFrame, parameter=7, show.particles="none", plot.parent=FALSE, realParam=FALSE, realParamValues=NA) 
 
 }
 \author{
