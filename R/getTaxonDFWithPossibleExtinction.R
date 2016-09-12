@@ -20,7 +20,7 @@ getTaxonDFWithPossibleExtinction<-function(phy) {
 	for (col.id in sequence(dim(result)[2])) {
 		result[,col.id] <- unlist(result[,col.id])
 	}
-	return(taxon.list)
+	return(result)
 }
 
 

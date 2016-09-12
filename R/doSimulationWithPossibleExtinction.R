@@ -109,7 +109,7 @@ doSimulationWithPossibleExtinction<-function(taxon.df, intrinsicFn, extrinsicFn,
 		if(length(ids.speciating)>0) {
 			for (speciating.taxon.index in sequence(length(ids.speciating))) {
 				ancestor.row <- which(taxon.df$id==ids.speciating[speciating.taxon.index])
-				descendant.rows <- which(taxon.df$ancestorId==ancestor.row$id)
+				descendant.rows <- which(taxon.df$ancestorId==taxon.df$id[ancestor.row])
 				taxon.df$states[descendant.rows] <- taxon.df$states[ancestor.row]
 			}
 		}
