@@ -23,7 +23,8 @@
 #' @param saveRealParams Saves intrinsicValues and extrinsicValues as both a
 #' matrix and a vector
 #' @param jobName Optional name for the job
-#' @return A data frame of species character (tip) values in the tree.
+#' @param returnAll If true, returns the values at each node
+#' @return A data frame of species character (tip) values in the tree (unless returnAll==TRUE, in which case it returns the raw df from the sim).
 #' @author Brian O'Meara and Barb Banbury
 #' @references O'Meara and Banbury, unpublished
 #' @keywords doSimulation
@@ -55,7 +56,7 @@
 #' 	timeStep=0.001,
 #' 	saveHistory=FALSE)
 #'
-doSimulationWithPossibleExtinction<-function(taxon.df, intrinsicFn, extrinsicFn, startingValues, intrinsicValues, extrinsicValues, timeStep, saveHistory=FALSE, saveRealParams=FALSE, jobName="") {
+doSimulationWithPossibleExtinction<-function(taxon.df, intrinsicFn, extrinsicFn, startingValues, intrinsicValues, extrinsicValues, timeStep, saveHistory=FALSE, saveRealParams=FALSE, jobName="", returnAll = FALSE) {
 	if (saveRealParams){
 		RealParams<-vector("list", 2)
 		names(RealParams)<-c("matrix", "vector")
@@ -115,6 +116,9 @@ doSimulationWithPossibleExtinction<-function(taxon.df, intrinsicFn, extrinsicFn,
 		}
 		depthfrompresent <- depth.end
 		heightfromroot <- height.end
+	}
+	if(returnAll) {
+		return(taxon.df)
 	}
 	final.results <- subset(taxon.df, terminal==TRUE)
 	final.result.df <- data.frame(states=final.results$states)

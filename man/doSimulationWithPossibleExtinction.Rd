@@ -6,7 +6,8 @@
 \usage{
 doSimulationWithPossibleExtinction(taxon.df, intrinsicFn, extrinsicFn,
   startingValues, intrinsicValues, extrinsicValues, timeStep,
-  saveHistory = FALSE, saveRealParams = FALSE, jobName = "")
+  saveHistory = FALSE, saveRealParams = FALSE, jobName = "",
+  returnAll = FALSE)
 }
 \arguments{
 \item{taxon.df}{Output from the function getTaxonDFWithPossibleExtinction; is a data frame
@@ -35,9 +36,11 @@ on the shortest branch}
 matrix and a vector}
 
 \item{jobName}{Optional name for the job}
+
+\item{returnAll}{If true, returns the values at each node}
 }
 \value{
-A data frame of species character (tip) values in the tree.
+A data frame of species character (tip) values in the tree (unless returnAll==TRUE, in which case it returns the raw df from the sim).
 }
 \description{
 This function evolves continuous characters in a discrete time process.
