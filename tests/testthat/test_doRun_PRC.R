@@ -9,8 +9,8 @@ test_that("simulation ran", {
  	extrinsicValues=c(0),
  	timeStep=0.0001,
  	saveHistory=FALSE)
-	expect_equal(class(char$statesmatrix), "numeric")
-	expect_equal(length(char$statesmatrix), 30)
+	expect_equal(class(char[,1], "numeric")
+	expect_equal(dim(char)[1], 30)
 })
 
 
