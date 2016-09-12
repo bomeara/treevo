@@ -132,7 +132,8 @@ if (!is.binary.tree(phy)) {
 
 timeStep<-1/TreeYears
 
-splits<-getSimulationSplits(phy) #initialize this info
+#splits<-getSimulationSplits(phy) #initialize this info
+taxon.df <- getTaxonDFWithPossibleExtinction(phy)
 
 #figure out number of free params
 numberParametersTotal<-dim(startingPriorsValues)[2] +  dim(intrinsicPriorsValues)[2] + dim(extrinsicPriorsValues)[2]
@@ -266,7 +267,7 @@ cat("Doing simulations:")
 Time<-proc.time()[[3]]
 trueFreeValues<-matrix(nrow=0, ncol= numberParametersFree)
 summaryValues<-matrix(nrow=0, ncol=length(summaryStatsLong(phy, traits, niter.brown=200, niter.lambda=200, niter.delta=200, niter.OU=200, niter.white=200))) #set up initial sum stats as length of SSL of original data
-trueFreeValuesANDSummaryValues<-parallelSimulation(nrepSim, coreLimit, splits, phy, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn, multicore, niter.brown=niter.brown.g, niter.lambda=niter.lambda.g, niter.delta=niter.delta.g, niter.OU=niter.OU.g, niter.white=niter.white.g)
+trueFreeValuesANDSummaryValues<-parallelSimulation(nrepSim, coreLimit, taxon.df, phy, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn, multicore, niter.brown=niter.brown.g, niter.lambda=niter.lambda.g, niter.delta=niter.delta.g, niter.OU=niter.OU.g, niter.white=niter.white.g)
 cat("\n\n")
 
 save(trueFreeValues,summaryValues,file=paste("CompletedSimulations",jobName,".Rdata",sep=""))
@@ -331,7 +332,7 @@ summaryValuesMatrix<-trueFreeValuesANDSummaryValues[,-1:-numberParametersFree]
 				newparticleList<-list(abcparticle(id=particle, generation=1, weight=0))
 				newparticleList[[1]]<-initializeStatesFromMatrices(newparticleList[[1]], startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns)
 
-				newparticleList[[1]]$distance<-abcDistance(summaryStatsLong(phy, convertTaxonFrameToGeigerData(doSimulation(splits, intrinsicFn, extrinsicFn, newparticleList[[1]]$startingValues, newparticleList[[1]]$intrinsicValues, newparticleList[[1]]$extrinsicValues, timeStep), phy), niter.brown=niter.brown.g, niter.lambda=niter.lambda.g, niter.delta=niter.delta.g, niter.OU=niter.OU.g, niter.white=niter.white.g)
+				newparticleList[[1]]$distance<-abcDistance(summaryStatsLong(phy, doSimulationWithPossibleExtinction(taxon.df, intrinsicFn, extrinsicFn, newparticleList[[1]]$startingValues, newparticleList[[1]]$intrinsicValues, newparticleList[[1]]$extrinsicValues, timeStep), niter.brown=niter.brown.g, niter.lambda=niter.lambda.g, niter.delta=niter.delta.g, niter.OU=niter.OU.g, niter.white=niter.white.g)
                                                    , originalSummaryValues, pls.model.list)
 
 				if (is.na(newparticleList[[1]]$distance)) {
@@ -432,7 +433,7 @@ summaryValuesMatrix<-trueFreeValuesANDSummaryValues[,-1:-numberParametersFree]
 							#cat("dput(newparticleList[[1]]) AFTER MUTATE STATES\n")
 							#dput(newparticleList[[1]])
 
-							newparticleList[[1]]$distance<-abcDistance(summaryStatsLong(phy, convertTaxonFrameToGeigerData(doSimulation(splits, intrinsicFn, extrinsicFn, newparticleList[[1]]$startingValues, newparticleList[[1]]$intrinsicValues, newparticleList[[1]]$extrinsicValues, timeStep), phy), niter.brown=niter.brown.g, niter.lambda=niter.lambda.g, niter.delta=niter.delta.g, niter.OU=niter.OU.g, niter.white=niter.white.g)
+							newparticleList[[1]]$distance<-abcDistance(summaryStatsLong(phy, doSimulationWithPossibleExtinction(taxon.df, intrinsicFn, extrinsicFn, newparticleList[[1]]$startingValues, newparticleList[[1]]$intrinsicValues, newparticleList[[1]]$extrinsicValues, timeStep), niter.brown=niter.brown.g, niter.lambda=niter.lambda.g, niter.delta=niter.delta.g, niter.OU=niter.OU.g, niter.white=niter.white.g)
 							                                           , originalSummaryValues, pls.model.list)
 							if (plot) {
 								plotcol="grey"

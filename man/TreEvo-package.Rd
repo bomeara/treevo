@@ -18,13 +18,13 @@ in trait evolution
 #Continuous character simulation under Brownian motion
 library(ape)
 phy<-rcoal(20)
-char<-doSimulation(
-	splits=getSimulationSplits(phy), 
-	intrinsicFn=brownianIntrinsic, 
-	extrinsicFn=nullExtrinsic, 
-	startingValues=c(30), 
-	intrinsicValues=c(.01), 
-	extrinsicValues=c(0), 
+char<-doSimulationWithPossibleExtinction(
+	taxon.df=getTaxonDFWithPossibleExtinction(phy),
+	intrinsicFn=brownianIntrinsic,
+	extrinsicFn=nullExtrinsic,
+	startingValues=c(30),
+	intrinsicValues=c(.01),
+	extrinsicValues=c(0),
 	timeStep=0.001)
 
 }

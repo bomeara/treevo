@@ -6,7 +6,7 @@
 #' Used by TreEvo doRun function to calculate simulations for doRun_prc and
 #' doRun_rej.
 #'
-#' @param splits simulation splits (from getSimulationSplits
+#' @param taxon.df starting object from getTaxonDFWithPossibleExtinction
 #' @param phy Tree (Phylogenetic tree in phylo format)
 #' @param startingPriorsValues Matrix with ncol=number of states (characters)
 #' at root and nrow=2 (two parameters to pass to prior distribution)
@@ -40,7 +40,7 @@
 #' simulations
 #' @author Brian O'Meara and Barb Banbury
 #' @references O'Meara and Banbury, unpublished
-simulateData<-function(splits, phy, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn,giveUpAttempts=10, niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) {
+simulateData<-function(taxon.df, phy, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn,giveUpAttempts=10, niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) {
 	simTrueAndStats<-rep(NA,10) #no particular reason for it to be 10 wide
 	n.attempts<-0
 	while (length(which(is.na(simTrueAndStats)))>0) {
@@ -64,7 +64,7 @@ simulateData<-function(splits, phy, startingPriorsValues, intrinsicPriorsValues,
 		trueFreeValues<-trueInitial[freevector]
 
 		cat(".")
-		simTraits<-convertTaxonFrameToGeigerData(doSimulation(splits=splits, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, startingValues=trueStarting, intrinsicValues=trueIntrinsic, extrinsicValues=trueExtrinsic, timeStep=timeStep), phy)
+		simTraits<-doSimulationWithPossibleExtinction(taxon.df=taxon.df, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, startingValues=trueStarting, intrinsicValues=trueIntrinsic, extrinsicValues=trueExtrinsic, timeStep=timeStep)
 		simSumStats<-summaryStatsLong(phy, simTraits, niter.brown, niter.lambda, niter.delta, niter.OU, niter.white)
 		simTrueAndStats <-c(trueFreeValues, simSumStats)
 	}

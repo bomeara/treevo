@@ -4,14 +4,14 @@
 \alias{simulateData}
 \title{Simulate data for initial TreEvo analysis}
 \usage{
-simulateData(splits, phy, startingPriorsValues, intrinsicPriorsValues,
+simulateData(taxon.df, phy, startingPriorsValues, intrinsicPriorsValues,
   extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns,
   extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn,
   giveUpAttempts = 10, niter.brown = 25, niter.lambda = 25,
   niter.delta = 25, niter.OU = 25, niter.white = 25)
 }
 \arguments{
-\item{splits}{simulation splits (from getSimulationSplits}
+\item{taxon.df}{starting object from getTaxonDFWithPossibleExtinction}
 
 \item{phy}{Tree (Phylogenetic tree in phylo format)}
 

@@ -2,11 +2,11 @@
 
 
 #' abcparticle
-#' 
+#'
 #' An internal TreEvo function that creates a list of objects in class
 #' abcparticle
-#' 
-#' 
+#'
+#'
 #' @param id Simulation ID
 #' @param generation Simulation generation
 #' @param weight Simulation weight
@@ -17,8 +17,8 @@
 #' @author Brian O'Meara and Barb Banbury
 #' @references O'Meara and Banbury, unpublished
 abcparticle <- function( id=NA, generation=NA, weight=NA, distance=NA, startingValues=NA, intrinsicValues=NA, extrinsicValues=NA ) {
-	particle <- list(id=id, generation=generation, weight=weight, distance=distance, 
-		startingValues=startingValues, intrinsicValues=intrinsicValues, 
+	particle <- list(id=id, generation=generation, weight=weight, distance=distance,
+		startingValues=startingValues, intrinsicValues=intrinsicValues,
 		extrinsicValues=extrinsicValues)
 	class(particle) <- "abcparticle"
 	return(particle)
@@ -53,7 +53,12 @@ mutateStates <- function(particle, startingPriorsValues, startingPriorsFns, intr
 	return(particle)
 }
 
-simulateTips <- function(particle, splits, phy, intrinsicFn, extrinsicFn, timeStep) {
-	newtips<-convertTaxonFrameToGeigerData(doSimulation(splits, intrinsicFn, extrinsicFn, particle$startingValues, particle$intrinsicValues, particle$extrinsicValues, timeStep), phy)
+# simulateTips <- function(particle, splits, phy, intrinsicFn, extrinsicFn, timeStep) {
+# 	newtips<-convertTaxonFrameToGeigerData(doSimulation(splits, intrinsicFn, extrinsicFn, particle$startingValues, particle$intrinsicValues, particle$extrinsicValues, timeStep), phy)
+# 	return(newtips)
+# }
+
+simulateTips <- function(particle, taxon.df, phy, intrinsicFn, extrinsicFn, timeStep) {
+	newtips<-doSimulationWithPossibleExtinction(taxon.df, intrinsicFn, extrinsicFn, particle$startingValues, particle$intrinsicValues, particle$extrinsicValues, timeStep)
 	return(newtips)
 }

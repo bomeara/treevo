@@ -1,7 +1,7 @@
 test_that("simulation ran", {
 	data(simData)
-	 char<-doSimulation(
- 	splits=getSimulationSplits(simPhy),
+	 char<-doSimulationWithPossibleExtinction(
+ 	taxon.df=getTaxonDFWithPossibleExtinction(simPhy),
  	intrinsicFn=brownianIntrinsic,
  	extrinsicFn=nullExtrinsic,
  	startingValues=c(10), #root state
@@ -47,6 +47,5 @@ test_that("doPRC runs correctly", {
 
 test_that("plotting works", {
 	data(simRun)
-	expect_error(plotPosteriors(results$particleDataFrame, results$PriorMatrix), NA)	
+	expect_error(plotPosteriors(results$particleDataFrame, results$PriorMatrix), NA)
 })
-	
