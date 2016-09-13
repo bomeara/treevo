@@ -1,6 +1,7 @@
 import(geiger)
 import(ape)
 import(stats)
+import(phytools)
 #importFrom(abc, )
 #importFrom(gpclib, )
 #importFrom(geometry, )
