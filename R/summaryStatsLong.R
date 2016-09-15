@@ -8,8 +8,8 @@
 solnfreq <- function(x, tol = .Machine$double.eps^0.5){
 			ll=logLik(x)
 			aa=abs(x$res[,"lnL"]-ll)<=tol
-			sum(aa)/length(aa)
-	}
+			max(1,sum(aa[!is.na(aa)]))/length(aa)
+}
 
 
 
