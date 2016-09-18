@@ -86,8 +86,8 @@ doSimulationWithPossibleExtinction<-function(taxon.df, intrinsicFn, extrinsicFn,
 		warning(paste("You have only ", floor(mininterval/timeStep), " on the shortest interval but should probably have a lot more if you expect change on this branch. I would suggest decreasing timeStep to no more than ", mininterval/50))
 	}
 	if (floor(mininterval/timeStep)<3) {
-		warning(paste("You have only ", floor(mininterval/timeStep), " on the shortest interval but should probably have a lot more if you expect change on this branch. I would suggest decreasing timeStep to no more than ", mininterval/50, "but we are automatically adjusting it to", mininterval/3))
-		timeStep <- mininterval/3
+		warning(paste("You have only ", floor(mininterval/timeStep), " on the shortest interval but should probably have a lot more if you expect change on this branch. I would suggest decreasing timeStep to no more than ", mininterval/50,"we would suggest at least", mininterval/3))
+	#	timeStep <- mininterval/3
 	}
 	#initial setup
 	depthfrompresent = max(taxon.df$endTime)
@@ -110,7 +110,22 @@ doSimulationWithPossibleExtinction<-function(taxon.df, intrinsicFn, extrinsicFn,
 		current.states <- taxon.df$states[alive.rows]
 		#first evolve in this interval, then speciate
 		for (taxon.index in sequence(length(alive.rows))) {
-			taxon.df$states[alive.rows[taxon.index]] <- taxon.df$states[alive.rows[taxon.index]] + intrinsicFn(params=intrinsicValues, states=current.states[taxon.index], timefrompresent =depthfrompresent)+extrinsicFn(params=extrinsicValues, selfstates=current.states[taxon.index], otherstates=curent.states[-taxon.index], timefrompresent =depthfrompresent)
+			new.state <- taxon.df$states[alive.rows[taxon.index]] + intrinsicFn(params=intrinsicValues, states=current.states[taxon.index], timefrompresent =depthfrompresent)+extrinsicFn(params=extrinsicValues, selfstates=current.states[taxon.index], otherstates=curent.states[-taxon.index], timefrompresent =depthfrompresent)
+			if(is.na(new.state)) {
+				warning("got bad sim")
+				attempt.count=0
+				while(is.na(new.state) & attempt.count < 100) {
+					old = taxon.df$states[alive.rows[taxon.index]]
+					intrinsic.displacement = intrinsicFn(params=intrinsicValues, states=current.states[taxon.index], timefrompresent =depthfrompresent)
+					extrinsic.displacement = extrinsicFn(params=extrinsicValues, selfstates=current.states[taxon.index], otherstates=curent.states[-taxon.index], timefrompresent =depthfrompresent)
+					new.state <- old + intrinsic.displacement + extrinsic.displacement
+					warning(paste("Attempt ", attempt.count, "led to using old value of", old, "intrinsicFn return of ",intrinsic.displacement, "and extrinsicFn return of ", extrinsic.displacement))
+				}
+				if(is.na(new.state) & attempt.count==100) {
+					stop(paste("Simulating with these parameters resulted in problematic results; for one example, taxon.df$states[alive.rows[taxon.index]] was ", taxon.df$states[alive.rows[taxon.index]], "intrinsicFn returned ", intrinsicFn(params=intrinsicValues, states=current.states[taxon.index], timefrompresent =depthfrompresent), "and extrinsicFn returned", extrinsicFn(params=extrinsicValues, selfstates=current.states[taxon.index], otherstates=curent.states[-taxon.index], timefrompresent =depthfrompresent)))
+				}
+			}
+			taxon.df$states[alive.rows[taxon.index]] <- new.state
 		}
 		if(length(ids.speciating)>0) {
 			for (speciating.taxon.index in sequence(length(ids.speciating))) {
