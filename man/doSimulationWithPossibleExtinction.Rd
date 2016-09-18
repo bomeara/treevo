@@ -7,7 +7,7 @@
 doSimulationWithPossibleExtinction(taxon.df, intrinsicFn, extrinsicFn,
   startingValues, intrinsicValues, extrinsicValues, timeStep,
   saveHistory = FALSE, saveRealParams = FALSE, jobName = "",
-  returnAll = FALSE, verbose = FALSE)
+  returnAll = FALSE, verbose = FALSE, reject.NaN = TRUE)
 }
 \arguments{
 \item{taxon.df}{Output from the function getTaxonDFWithPossibleExtinction; is a data frame
@@ -40,6 +40,8 @@ matrix and a vector}
 \item{returnAll}{If true, returns the values at each node}
 
 \item{verbose}{If TRUE, chat about how the sim is going}
+
+\item{reject.NaN}{Stop run if any simulated value is NaN}
 }
 \value{
 A data frame of species character (tip) values in the tree (unless returnAll==TRUE, in which case it returns the raw df from the sim).

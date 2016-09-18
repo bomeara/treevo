@@ -25,6 +25,7 @@
 #' @param jobName Optional name for the job
 #' @param returnAll If true, returns the values at each node
 #' @param verbose If TRUE, chat about how the sim is going
+#' @param reject.NaN Stop run if any simulated value is NaN
 #' @return A data frame of species character (tip) values in the tree (unless returnAll==TRUE, in which case it returns the raw df from the sim).
 #' @author Brian O'Meara and Barb Banbury
 #' @references O'Meara and Banbury, unpublished
@@ -57,7 +58,7 @@
 #' 	timeStep=0.001,
 #' 	saveHistory=FALSE)
 #'
-doSimulationWithPossibleExtinction<-function(taxon.df, intrinsicFn, extrinsicFn, startingValues, intrinsicValues, extrinsicValues, timeStep, saveHistory=FALSE, saveRealParams=FALSE, jobName="", returnAll = FALSE, verbose=FALSE) {
+doSimulationWithPossibleExtinction<-function(taxon.df, intrinsicFn, extrinsicFn, startingValues, intrinsicValues, extrinsicValues, timeStep, saveHistory=FALSE, saveRealParams=FALSE, jobName="", returnAll = FALSE, verbose=FALSE, reject.NaN=TRUE) {
 	if (saveRealParams){
 		RealParams<-vector("list", 2)
 		names(RealParams)<-c("matrix", "vector")
@@ -92,8 +93,11 @@ doSimulationWithPossibleExtinction<-function(taxon.df, intrinsicFn, extrinsicFn,
 	depthfrompresent = max(taxon.df$endTime)
 	heightfromroot = 0
 	taxon.df$states[which(taxon.df$startTime==0)] <- startingValues
-
+	taxon.df.previous <- taxon.df
 	while(depthfrompresent>0) {
+		if(reject.NaN) {
+			taxon.df.previous <- taxon.df
+		}
 		depth.start <- depthfrompresent
 		depth.end <- depthfrompresent - timeStep
 		height.start <- heightfromroot
@@ -120,6 +124,12 @@ doSimulationWithPossibleExtinction<-function(taxon.df, intrinsicFn, extrinsicFn,
 		if(verbose) {
 			print(paste("now at height", height.end, "finishing at", max(taxon.df$endTime)))
 			print(taxon.df)
+		}
+		if(reject.NaN) {
+			if(any(is.nan(taxon.df$states))) {
+				save(list=ls(), file="ErrorRun.rda")
+				stop(paste("There was an NaN generated. See saved objects in ", getwd(), "/ErrorRun.rda", sep=""))
+			}
 		}
 	}
 	if(returnAll) {
