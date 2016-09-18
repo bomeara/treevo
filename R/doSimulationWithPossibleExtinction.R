@@ -104,12 +104,16 @@ doSimulationWithPossibleExtinction<-function(taxon.df, intrinsicFn, extrinsicFn,
 		height.end <- heightfromroot + timeStep
 		ids.alive.at.start <- taxon.df$id[which(taxon.df$startTime <= height.start & taxon.df$endTime > height.start)]
 		ids.alive.at.end <-  taxon.df$id[which(taxon.df$endTime > height.end & taxon.df$startTime <= height.end)]
-		ids.changing.status <-  ids.alive.at.start[!(ids.alive.at.start  %in% ids.alive.at.end)]
-		ids.speciating <- taxon.df$id[which((taxon.df$id %in% ids.changing.status) & (!taxon.df$terminal))]
+		ids.only.alive.in.interval <- taxon.df$id[which(taxon.df$startTime > height.start & taxon.df$endTime < height.end)]
+		ids.changing.status <-  c(ids.alive.at.start[!(ids.alive.at.start  %in% ids.alive.at.end)], ids.only.alive.in.interval)
+		ids.speciating <- c(taxon.df$id[which((taxon.df$id %in% ids.changing.status) & (!taxon.df$terminal))], ids.only.alive.in.interval)
 		alive.rows <- which(taxon.df$id %in% ids.alive.at.start)
 		current.states <- taxon.df$states[alive.rows]
 		#first evolve in this interval, then speciate
 		for (taxon.index in sequence(length(alive.rows))) {
+			if(is.na(taxon.df$states[alive.rows[taxon.index]])) {
+				taxon.df$states[alive.rows[taxon.index]] <- taxon.df$states[which(taxon.df$id==taxon.df$ancestorId[alive.rows[taxon.index]])]
+			}
 			new.state <- taxon.df$states[alive.rows[taxon.index]] + intrinsicFn(params=intrinsicValues, states=current.states[taxon.index], timefrompresent =depthfrompresent)+extrinsicFn(params=extrinsicValues, selfstates=current.states[taxon.index], otherstates=curent.states[-taxon.index], timefrompresent =depthfrompresent)
 			if(is.na(new.state)) {
 				warning("got bad sim")
@@ -120,6 +124,8 @@ doSimulationWithPossibleExtinction<-function(taxon.df, intrinsicFn, extrinsicFn,
 					extrinsic.displacement = extrinsicFn(params=extrinsicValues, selfstates=current.states[taxon.index], otherstates=curent.states[-taxon.index], timefrompresent =depthfrompresent)
 					new.state <- old + intrinsic.displacement + extrinsic.displacement
 					warning(paste("Attempt ", attempt.count, "led to using old value of", old, "intrinsicFn return of ",intrinsic.displacement, "and extrinsicFn return of ", extrinsic.displacement))
+					print("IntrinsicValues")
+					print(intrinsicValues)
 				}
 				if(is.na(new.state) & attempt.count==100) {
 					stop(paste("Simulating with these parameters resulted in problematic results; for one example, taxon.df$states[alive.rows[taxon.index]] was ", taxon.df$states[alive.rows[taxon.index]], "intrinsicFn returned ", intrinsicFn(params=intrinsicValues, states=current.states[taxon.index], timefrompresent =depthfrompresent), "and extrinsicFn returned", extrinsicFn(params=extrinsicValues, selfstates=current.states[taxon.index], otherstates=curent.states[-taxon.index], timefrompresent =depthfrompresent)))
