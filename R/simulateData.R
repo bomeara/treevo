@@ -36,11 +36,12 @@
 #' @param niter.delta Number of random starts for delta model (min of 2)
 #' @param niter.OU Number of random starts for OU model (min of 2)
 #' @param niter.white Number of random starts for white model (min of 2)
+#' @param verbose If TRUE, chat about how the sim is going
 #' @return Returns matrix of trueFreeValues and summary statistics for
 #' simulations
 #' @author Brian O'Meara and Barb Banbury
 #' @references O'Meara and Banbury, unpublished
-simulateData<-function(taxon.df, phy, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn,giveUpAttempts=10, niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) {
+simulateData<-function(taxon.df, phy, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn,giveUpAttempts=10, niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25, verbose=FALSE) {
 	simTrueAndStats<-rep(NA,10) #no particular reason for it to be 10 wide
 	n.attempts<-0
 	while (length(which(is.na(simTrueAndStats)))>0) {
@@ -64,7 +65,7 @@ simulateData<-function(taxon.df, phy, startingPriorsValues, intrinsicPriorsValue
 		trueFreeValues<-trueInitial[freevector]
 
 		cat(".")
-		simTraits<-doSimulationWithPossibleExtinction(taxon.df=taxon.df, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, startingValues=trueStarting, intrinsicValues=trueIntrinsic, extrinsicValues=trueExtrinsic, timeStep=timeStep)
+		simTraits<-doSimulationWithPossibleExtinction(taxon.df=taxon.df, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, startingValues=trueStarting, intrinsicValues=trueIntrinsic, extrinsicValues=trueExtrinsic, timeStep=timeStep, verbose=verbose)
 		simSumStats<-summaryStatsLong(phy, simTraits, niter.brown, niter.lambda, niter.delta, niter.OU, niter.white)
 		simTrueAndStats <-c(trueFreeValues, simSumStats)
 	}

@@ -5,7 +5,8 @@
 \title{Calculate summary statistics}
 \usage{
 summaryStatsLong(phy, traits, niter.brown = 25, niter.lambda = 25,
-  niter.delta = 25, niter.OU = 25, niter.white = 25)
+  niter.delta = 25, niter.OU = 25, niter.white = 25,
+  do.CI = is.ultrametric(phy))
 }
 \arguments{
 \item{phy}{Tree (Phylogenetic tree in phylo format)}
@@ -21,6 +22,8 @@ summaryStatsLong(phy, traits, niter.brown = 25, niter.lambda = 25,
 \item{niter.OU}{Number of random starts for OU model (min of 2)}
 
 \item{niter.white}{Number of random starts for white model (min of 2)}
+
+\item{do.CI}{Use confidence interval? By default, only for ultrametric trees}
 }
 \value{
 Returns a vector of summary statistics

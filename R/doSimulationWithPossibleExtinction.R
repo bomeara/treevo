@@ -24,6 +24,7 @@
 #' matrix and a vector
 #' @param jobName Optional name for the job
 #' @param returnAll If true, returns the values at each node
+#' @param verbose If TRUE, chat about how the sim is going
 #' @return A data frame of species character (tip) values in the tree (unless returnAll==TRUE, in which case it returns the raw df from the sim).
 #' @author Brian O'Meara and Barb Banbury
 #' @references O'Meara and Banbury, unpublished
@@ -56,7 +57,7 @@
 #' 	timeStep=0.001,
 #' 	saveHistory=FALSE)
 #'
-doSimulationWithPossibleExtinction<-function(taxon.df, intrinsicFn, extrinsicFn, startingValues, intrinsicValues, extrinsicValues, timeStep, saveHistory=FALSE, saveRealParams=FALSE, jobName="", returnAll = FALSE) {
+doSimulationWithPossibleExtinction<-function(taxon.df, intrinsicFn, extrinsicFn, startingValues, intrinsicValues, extrinsicValues, timeStep, saveHistory=FALSE, saveRealParams=FALSE, jobName="", returnAll = FALSE, verbose=FALSE) {
 	if (saveRealParams){
 		RealParams<-vector("list", 2)
 		names(RealParams)<-c("matrix", "vector")
@@ -116,6 +117,10 @@ doSimulationWithPossibleExtinction<-function(taxon.df, intrinsicFn, extrinsicFn,
 		}
 		depthfrompresent <- depth.end
 		heightfromroot <- height.end
+		if(verbose) {
+			print(paste("now at height", height.end, "finishing at", max(taxon.df$endTime)))
+			print(taxon.df)
+		}
 	}
 	if(returnAll) {
 		return(taxon.df)

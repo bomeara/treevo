@@ -6,7 +6,7 @@
 #'
 #' @param nrepSim Number of simulations
 #' @param coreLimit Number of cores to be used
-#' @param splits simulation splits (from getSimulationSplits
+#' @param taxon.df object from getTaxonDFWithPossibleExtinction
 #' @param phy Tree (Phylogenetic tree in phylo format)
 #' @param startingPriorsValues Matrix with ncol=number of states (characters)
 #' at root and nrow=2 (two parameters to pass to prior distribution)
@@ -42,7 +42,7 @@
 #' simulations
 #' @author Brian O'Meara and Barb Banbury
 #' @references O'Meara and Banbury, unpublished
-parallelSimulation<-function(nrepSim, coreLimit, splits, phy, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn, multicore,checkpointFile=NULL,checkpointFreq=24, niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) {
+parallelSimulation<-function(nrepSim, coreLimit, taxon.df, phy, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn, multicore,checkpointFile=NULL,checkpointFreq=24, niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) {
 	#library(doMC, quietly=T)
 	#library(foreach, quietly=T)
 	cores=1
@@ -63,7 +63,7 @@ parallelSimulation<-function(nrepSim, coreLimit, splits, phy, startingPriorsValu
 
 	cat("Doing simulations: ")
 	if (is.null(checkpointFile)) {
-		trueFreeValuesANDSummaryValues<-foreach(1:nrepSim, .combine=rbind) %dopar% simulateData(splits, phy, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn)
+		trueFreeValuesANDSummaryValues<-foreach(1:nrepSim, .combine=rbind) %dopar% simulateData(taxon.df, phy, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn)
 	}
 	else {
 		checkpointFileName<-paste(checkpointFile,".trueFreeValuesANDSummaryValues.Rsave",sep="")
@@ -77,11 +77,11 @@ parallelSimulation<-function(nrepSim, coreLimit, splits, phy, startingPriorsValu
 			warning(paste("Checkpoint frequency adjusted from",checkpointFreq,"to",checkpointFreqAdjusted,"to reduce the wasted time on unused cores"))
 		}
 		for (rep in sequence(numberLoops)) {
-			trueFreeValuesANDSummaryValues<-rbind(trueFreeValuesANDSummaryValues, foreach(1:numberSimsPerLoop, .combine=rbind) %dopar% simulateData(splits, phy, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn))
+			trueFreeValuesANDSummaryValues<-rbind(trueFreeValuesANDSummaryValues, foreach(1:numberSimsPerLoop, .combine=rbind) %dopar% simulateData(taxon.df, phy, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn))
 			save(trueFreeValuesANDSummaryValues,file=checkpointFileName)
 			print(paste("Just finished",dim(trueFreeValuesANDSummaryValues)[1],"of",nrepSim,"simulations; progress so far saved in",checkpointFileName))
 		}
-		trueFreeValuesANDSummaryValues<-rbind(trueFreeValuesANDSummaryValues, foreach(1:numberSimsAfterLastCheckpoint, .combine=rbind) %dopar% simulateData(splits, phy, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn))
+		trueFreeValuesANDSummaryValues<-rbind(trueFreeValuesANDSummaryValues, foreach(1:numberSimsAfterLastCheckpoint, .combine=rbind) %dopar% simulateData(taxon.df, phy, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn))
 	}
 	return(trueFreeValuesANDSummaryValues)
 }

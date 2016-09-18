@@ -4,7 +4,7 @@
 \alias{parallelSimulation}
 \title{Simulate data for initial TreEvo analysis}
 \usage{
-parallelSimulation(nrepSim, coreLimit, splits, phy, startingPriorsValues,
+parallelSimulation(nrepSim, coreLimit, taxon.df, phy, startingPriorsValues,
   intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns,
   intrinsicPriorsFns, extrinsicPriorsFns, freevector, timeStep, intrinsicFn,
   extrinsicFn, multicore, checkpointFile = NULL, checkpointFreq = 24,
@@ -16,7 +16,7 @@ parallelSimulation(nrepSim, coreLimit, splits, phy, startingPriorsValues,
 
 \item{coreLimit}{Number of cores to be used}
 
-\item{splits}{simulation splits (from getSimulationSplits}
+\item{taxon.df}{object from getTaxonDFWithPossibleExtinction}
 
 \item{phy}{Tree (Phylogenetic tree in phylo format)}
 

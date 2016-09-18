@@ -8,7 +8,7 @@ simulateData(taxon.df, phy, startingPriorsValues, intrinsicPriorsValues,
   extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns,
   extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn,
   giveUpAttempts = 10, niter.brown = 25, niter.lambda = 25,
-  niter.delta = 25, niter.OU = 25, niter.white = 25)
+  niter.delta = 25, niter.OU = 25, niter.white = 25, verbose = FALSE)
 }
 \arguments{
 \item{taxon.df}{starting object from getTaxonDFWithPossibleExtinction}
@@ -58,6 +58,8 @@ under (as used by doSimulation)}
 \item{niter.OU}{Number of random starts for OU model (min of 2)}
 
 \item{niter.white}{Number of random starts for white model (min of 2)}
+
+\item{verbose}{If TRUE, chat about how the sim is going}
 }
 \value{
 Returns matrix of trueFreeValues and summary statistics for

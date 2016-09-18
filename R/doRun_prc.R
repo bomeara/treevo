@@ -78,6 +78,7 @@
 #' @param scale scale for pls.model.list
 #' @param variance.cutoff variance cutoff for pls.model.list
 #' @param niter.goal Adjust number of starting points for Geiger to return the best parameter estimates this number of times on average
+#' @param generation.time The number of years per generation. This sets the coarseness of the simulation; if it's set to 1000, for example, the population moves every 1000 years.
 #' @return \item{input.data}{Input variables: jobName, number of taxa, nrepSim,
 #' treeYears, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles,
 #' standardDevFactor} \item{PriorMatrix}{Matrix of prior distributions}
@@ -124,13 +125,18 @@
 #' #)
 #'
 #'
-doRun_prc<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, startingValuesGuess=c(), intrinsicValuesGuess=c(), extrinsicValuesGuess=c(), TreeYears=1e+04, numParticles=300, standardDevFactor=0.20, StartSims=300, plot=FALSE, epsilonProportion=0.7, epsilonMultiplier=0.7, nStepsPRC=5, jobName=NA, stopRule=FALSE, stopValue=0.05, multicore=FALSE, coreLimit=NA, validation="CV", scale=TRUE, variance.cutoff=95, niter.goal=5) {
+doRun_prc<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, startingValuesGuess=c(), intrinsicValuesGuess=c(), extrinsicValuesGuess=c(), TreeYears=1e+04, numParticles=300, standardDevFactor=0.20, StartSims=300, plot=FALSE, epsilonProportion=0.7, epsilonMultiplier=0.7, nStepsPRC=5, jobName=NA, stopRule=FALSE, stopValue=0.05, multicore=FALSE, coreLimit=NA, validation="CV", scale=TRUE, variance.cutoff=95, niter.goal=5, generation.time=1) {
 
 if (!is.binary.tree(phy)) {
 	print("Warning: Tree is not fully dichotomous")
 }
 
-timeStep<-1/TreeYears
+if(min(phy$edge.length) < 0.00001) {
+	warning("Tree has zero or nearly zero length branches")
+	print("Tree has zero or nearly zero length branches")
+}
+
+timeStep<-generation.time/TreeYears
 
 #splits<-getSimulationSplits(phy) #initialize this info
 taxon.df <- getTaxonDFWithPossibleExtinction(phy)

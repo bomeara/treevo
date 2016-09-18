@@ -13,7 +13,8 @@ doRun_prc(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
   StartSims = 300, plot = FALSE, epsilonProportion = 0.7,
   epsilonMultiplier = 0.7, nStepsPRC = 5, jobName = NA,
   stopRule = FALSE, stopValue = 0.05, multicore = FALSE, coreLimit = NA,
-  validation = "CV", scale = TRUE, variance.cutoff = 95, niter.goal = 5)
+  validation = "CV", scale = TRUE, variance.cutoff = 95, niter.goal = 5,
+  generation.time = 1)
 }
 \arguments{
 \item{phy}{Tree (Phylogenetic tree in phylo format)}
@@ -93,6 +94,8 @@ nodes}
 \item{variance.cutoff}{variance cutoff for pls.model.list}
 
 \item{niter.goal}{Adjust number of starting points for Geiger to return the best parameter estimates this number of times on average}
+
+\item{generation.time}{The number of years per generation. This sets the coarseness of the simulation; if it's set to 1000, for example, the population moves every 1000 years.}
 }
 \value{
 \item{input.data}{Input variables: jobName, number of taxa, nrepSim,

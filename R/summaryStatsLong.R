@@ -33,6 +33,7 @@ solnfreq <- function(x, tol = .Machine$double.eps^0.5){
 #' @param niter.delta Number of random starts for delta model (min of 2)
 #' @param niter.OU Number of random starts for OU model (min of 2)
 #' @param niter.white Number of random starts for white model (min of 2)
+#' @param do.CI Use confidence interval? By default, only for ultrametric trees
 #' @return Returns a vector of summary statistics
 #' @author Brian O'Meara and Barb Banbury
 #' @references O'Meara and Banbury, unpublished
@@ -41,7 +42,7 @@ solnfreq <- function(x, tol = .Machine$double.eps^0.5){
 #'
 #' #summaryStatsLong(phy, char)
 #'
-summaryStatsLong<-function(phy, traits, niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) {
+summaryStatsLong<-function(phy, traits, niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25, do.CI=is.ultrametric(phy)) {
 	if (any(phy$edge.length==0)){
 		if(!any(phy$edge[which(phy$edge.length==0),2] %in% phy$edge[,1])){
 		#if(any(phy$edge.length==0)){
@@ -94,10 +95,14 @@ summaryStatsLong<-function(phy, traits, niter.brown=25, niter.lambda=25, niter.d
 	pic<-as.vector(pic.ortho(as.matrix(traits), phy))  #independent contrasts
 	aceResults<-ace(traits, phy)
 	anc.states<-as.vector(aceResults$ace) #ancestral states
-	anc.CIrange<-as.vector(aceResults$CI95[,2]-aceResults$CI95[,1]) #range between upper and lower 95% CI
 
 	#combined summary stats
-	summarystats<-c(brown.lnl, brown.beta, brown.aic, lambda.lnl, lambda.beta, lambda.lambda, lambda.aic, delta.lnl, delta.beta, delta.delta, delta.aic, ou.lnl, ou.beta, ou.alpha, ou.aic, white.lnl, white.aic, raw.mean, raw.max, raw.min, raw.var, raw.median, traits[[1]], pic, anc.states, anc.CIrange)
+	summarystats<-c(brown.lnl, brown.beta, brown.aic, lambda.lnl, lambda.beta, lambda.lambda, lambda.aic, delta.lnl, delta.beta, delta.delta, delta.aic, ou.lnl, ou.beta, ou.alpha, ou.aic, white.lnl, white.aic, raw.mean, raw.max, raw.min, raw.var, raw.median, traits[[1]], pic, anc.states)
+
+	if(do.CI) {
+		anc.CIrange<-as.vector(aceResults$CI95[,2]-aceResults$CI95[,1]) #range between upper and lower 95% CI
+		summarystats <- c(summarystats, anc.CIrange)
+	}
 
 
 	summarystats[which(is.finite(summarystats)==FALSE)]<-NA
