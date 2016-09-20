@@ -4,9 +4,9 @@
 
 
 #' Approximate Bayesian computation for comparative methods-Rejection
-#' 
+#'
 #' Starts the abc-rejection run
-#' 
+#'
 #' This function performs an abc-rejection analysis using an input phylogeny
 #' (phy), character data set (traits), models (intrinsicFn, extrinsicFn), and
 #' priors (startingPriorsValues, startingPriorsFns, intrinsicPriorsValues,
@@ -18,7 +18,7 @@
 #' input data is calculated, and those that fall under the abcTolerance are
 #' kept as accepted particles. These describe the posterior distributions of
 #' parameters.
-#' 
+#'
 #' @param phy Tree (Phylogenetic tree in phylo format)
 #' @param traits data matrix with rownames equal to phy
 #' @param intrinsicFn Name of (previously-defined) function that governs how
@@ -78,29 +78,29 @@
 #' al. 2009
 #' @keywords doRun doRun_rej abc
 #' @examples
-#' 
+#'
 #' data(simData)
-#' 
-#' #c<-doRun_rej( #make sure priors are uniform with this one! 
-#' #	phy=simPhy, 
+#'
+#' #c<-doRun_rej( #make sure priors are uniform with this one!
+#' #	phy=simPhy,
 #' #	traits=simChar,
-#' #	intrinsicFn=brownianIntrinsic, 
-#' #	extrinsicFn=nullExtrinsic, 
+#' #	intrinsicFn=brownianIntrinsic,
+#' #	extrinsicFn=nullExtrinsic,
 #' #	startingPriorsFns="normal",
 #' #	startingPriorsValues=matrix(c(mean(char[,1]), sd(char[,1]))),
 #' #	intrinsicPriorsFns=c("exponential"),
 #' #	intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE), #grep for normal in pkg
 #' #	extrinsicPriorsFns=c("fixed"),
 #' #	extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
-#' #	StartSims=1000, 
-#' #	jobName="run_c", 
-#' #	abcTolerance=0.05, 
-#' #	multicore=F, 
-#' #	coreLimit=1 
-#' #)			
-#' 	
-#' 
-#' 
+#' #	StartSims=1000,
+#' #	jobName="run_c",
+#' #	abcTolerance=0.05,
+#' #	multicore=F,
+#' #	coreLimit=1
+#' #)
+#'
+#'
+#'
 doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, startingValuesGuess=c(), intrinsicStatesGuess=c(), extrinsicStatesGuess=c(), TreeYears=1e+04, standardDevFactor=0.20, StartSims=NA, jobName=NA, abcTolerance=0.1, multicore=FALSE, coreLimit=NA, checkpointFile=NULL, checkpointFreq=24, validation="CV", scale=TRUE, variance.cutoff=95, savesims=F) {
 	#library(geiger)
 	#library(pls)
@@ -108,9 +108,10 @@ doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
 		print("Warning: Tree is not fully dichotomous")
 	}
 	startTime<-proc.time()[[3]]
-	timeStep<-1/TreeYears			
-	splits<-getSimulationSplits(phy) #initialize this info
-	
+	timeStep<-1/TreeYears
+	#splits<-getSimulationSplits(phy) #initialize this info
+	taxon.df <- getTaxonDFWithPossibleExtinction(phy)
+
 
 	#figure out number of free params
 	numberParametersTotal<-dim(startingPriorsValues)[2] +  dim(intrinsicPriorsValues)[2] + dim(extrinsicPriorsValues)[2]
@@ -121,7 +122,7 @@ doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
 	freevariables<-matrix(data=NA, nrow=2, ncol=0)
 	titlevector<-c()
 	freevector<-c()
-	
+
 	namesForPriorMatrix<-c()
 	PriorMatrix<-matrix(c(startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns), nrow=1, ncol=numberParametersTotal)
 	for (a in 1:dim(startingPriorsValues)[2]) {
@@ -136,7 +137,7 @@ doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
 	PriorMatrix<-rbind(PriorMatrix, cbind(startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues))
 	colnames(PriorMatrix)<-namesForPriorMatrix
 	rownames(PriorMatrix)<-c("shape", "value1", "value2")
-		
+
 	for (i in 1:dim(startingPriorsValues)[2]) {
 		priorFn<-match.arg(arg=startingPriorsFns[i],choices=c("fixed", "uniform", "normal", "lognormal", "gamma", "exponential"),several.ok=FALSE)
 		if (priorFn=="fixed") {
@@ -163,7 +164,7 @@ doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
 			freevector<-c(freevector, TRUE)
 		}
 	}
-	
+
 	for (i in 1:dim(extrinsicPriorsValues)[2]) {
 		priorFn<-match.arg(arg=extrinsicPriorsFns[i],choices=c("fixed", "uniform", "normal", "lognormal", "gamma", "exponential"),several.ok=FALSE)
 		if (priorFn=="fixed") {
@@ -177,7 +178,7 @@ doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
 			freevector<-c(freevector, TRUE)
 		}
 	}
-	
+
 	#initialize guesses, if needed
 	if (length(startingValuesGuess)==0) { #if no user guesses, try pulling a value from the prior
 		startingValuesGuess<-rep(NA,length(startingPriorsFns))
@@ -197,23 +198,23 @@ doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
 			extrinsicStatesGuess[i]<-pullFromPrior(extrinsicPriorsValues[,i],extrinsicPriorsFns[i])
 		}
 	}
-	
+
 	if (is.na(StartSims)) {
 		StartSims<-1000*numberParametersFree
 	}
-	
+
 	nrepSim<-StartSims #Used to be multiple tries where nrepSim = StartSims*((2^try)/2).  If initial simulations are not enough, and we need to try again then new analysis will double number of initial simulations
 	cat(paste("Number of simulations set to", nrepSim, "\n"))
 	if(!is.null(checkpointFile)) {
 		save(list=ls(),file=paste(checkpointFile,".intialsettings.Rsave",sep=""))
 	}
 
-	trueFreeValuesANDSummaryValues<-parallelSimulation(nrepSim, coreLimit, splits, phy, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn, multicore, checkpointFile, checkpointFreq)
-	
+	trueFreeValuesANDSummaryValues<-parallelSimulation(nrepSim, coreLimit, taxon.df, phy, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn, multicore, checkpointFile, checkpointFreq)
+
 	cat("\n\n")
 	simTime<-proc.time()[[3]]-startTime
 	cat(paste("Simulations took", round(simTime, digits=3), "seconds"), "\n")
-	
+
 	#separate the simulation results: true values and the summary values
 	trueFreeValuesMatrix<-trueFreeValuesANDSummaryValues[,1:numberParametersFree]
 	summaryValuesMatrix<-trueFreeValuesANDSummaryValues[,-1:-numberParametersFree]
@@ -238,12 +239,7 @@ doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
   rejectionResults$CredInt<-CredInt(res$particleDataFrame)
 	rejectionResults$HPD<-HPD(res$particleDataFrame)
 
-  
-  
+
+
 	return(rejectionResults)
 }
-
-
-
-
-
