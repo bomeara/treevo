@@ -60,6 +60,8 @@
 #' @param scale scale for pls.model.list
 #' @param variance.cutoff variance cutoff for pls.model.list
 #' @param savesims option to save individual simulations
+#' @param niter.goal Adjust number of starting points for Geiger to return the best parameter estimates this number of times on average
+#' @param generation.time The number of years per generation. This sets the coarseness of the simulation; if it's set to 1000, for example, the population moves every 1000 years.
 #' @return \item{input.data}{Input variables: jobName, number of taxa, nrepSim,
 #' treeYears, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles,
 #' standardDevFactor} \item{PriorMatrix}{Matrix of prior distributions}
@@ -101,14 +103,14 @@
 #'
 #'
 #'
-doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, startingValuesGuess=c(), intrinsicStatesGuess=c(), extrinsicStatesGuess=c(), TreeYears=1e+04, standardDevFactor=0.20, StartSims=NA, jobName=NA, abcTolerance=0.1, multicore=FALSE, coreLimit=NA, checkpointFile=NULL, checkpointFreq=24, validation="CV", scale=TRUE, variance.cutoff=95, savesims=F) {
+doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, startingValuesGuess=c(), intrinsicStatesGuess=c(), extrinsicStatesGuess=c(), TreeYears=1e+04, standardDevFactor=0.20, StartSims=NA, jobName=NA, abcTolerance=0.1, multicore=FALSE, coreLimit=NA, checkpointFile=NULL, checkpointFreq=24, validation="CV", scale=TRUE, variance.cutoff=95, savesims=FALSE, niter.goal=5, generation.time=1) {
 	#library(geiger)
 	#library(pls)
 	if (!is.binary.tree(phy)) {
 		print("Warning: Tree is not fully dichotomous")
 	}
 	startTime<-proc.time()[[3]]
-	timeStep<-1/TreeYears
+	timeStep<-generation.time/TreeYears
 	#splits<-getSimulationSplits(phy) #initialize this info
 	taxon.df <- getTaxonDFWithPossibleExtinction(phy)
 

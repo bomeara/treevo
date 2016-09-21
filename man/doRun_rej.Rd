@@ -11,7 +11,8 @@ doRun_rej(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
   TreeYears = 10000, standardDevFactor = 0.2, StartSims = NA,
   jobName = NA, abcTolerance = 0.1, multicore = FALSE, coreLimit = NA,
   checkpointFile = NULL, checkpointFreq = 24, validation = "CV",
-  scale = TRUE, variance.cutoff = 95, savesims = F)
+  scale = TRUE, variance.cutoff = 95, savesims = FALSE, niter.goal = 5,
+  generation.time = 1)
 }
 \arguments{
 \item{phy}{Tree (Phylogenetic tree in phylo format)}
@@ -80,6 +81,10 @@ nodes}
 \item{variance.cutoff}{variance cutoff for pls.model.list}
 
 \item{savesims}{option to save individual simulations}
+
+\item{niter.goal}{Adjust number of starting points for Geiger to return the best parameter estimates this number of times on average}
+
+\item{generation.time}{The number of years per generation. This sets the coarseness of the simulation; if it's set to 1000, for example, the population moves every 1000 years.}
 }
 \value{
 \item{input.data}{Input variables: jobName, number of taxa, nrepSim,
@@ -116,24 +121,24 @@ parameters.
 
 data(simData)
 
-#c<-doRun_rej( #make sure priors are uniform with this one! 
-#	phy=simPhy, 
+#c<-doRun_rej( #make sure priors are uniform with this one!
+#	phy=simPhy,
 #	traits=simChar,
-#	intrinsicFn=brownianIntrinsic, 
-#	extrinsicFn=nullExtrinsic, 
+#	intrinsicFn=brownianIntrinsic,
+#	extrinsicFn=nullExtrinsic,
 #	startingPriorsFns="normal",
 #	startingPriorsValues=matrix(c(mean(char[,1]), sd(char[,1]))),
 #	intrinsicPriorsFns=c("exponential"),
 #	intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE), #grep for normal in pkg
 #	extrinsicPriorsFns=c("fixed"),
 #	extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
-#	StartSims=1000, 
-#	jobName="run_c", 
-#	abcTolerance=0.05, 
-#	multicore=F, 
-#	coreLimit=1 
-#)			
-	
+#	StartSims=1000,
+#	jobName="run_c",
+#	abcTolerance=0.05,
+#	multicore=F,
+#	coreLimit=1
+#)
+
 
 
 }
