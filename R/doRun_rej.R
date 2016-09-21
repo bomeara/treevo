@@ -209,7 +209,28 @@ doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
 		save(list=ls(),file=paste(checkpointFile,".intialsettings.Rsave",sep=""))
 	}
 
-	trueFreeValuesANDSummaryValues<-parallelSimulation(nrepSim, coreLimit, taxon.df, phy, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn, multicore, checkpointFile, checkpointFreq)
+
+
+	#Figure out how many iterations to use for optimization in Geiger.
+	brown<-fitContinuous(phy=phy, dat=traits, model="BM", ncores=1, control=list(niter=100)) #it actually runs faster without checking for cores. And we parallelize elsewhere
+	lambda<-fitContinuous(phy=phy, dat=traits, model="lambda", ncores=1, control=list(niter=100))
+	delta<-fitContinuous(phy=phy, dat=traits, model="delta", ncores=1, control=list(niter=100))
+	ou<-fitContinuous(phy=phy, dat=traits, model="OU", ncores=1, control=list(niter=100))
+	white<-fitContinuous(phy=phy, dat=traits, model="white", ncores=1, control=list(niter=100))
+
+	cat("Setting number of starting points for Geiger optimization to")
+	niter.brown.g <- round(max(10, min(niter.goal/solnfreq(brown),100)))
+	cat(paste("\n",niter.brown.g, "for Brownian motion"))
+	niter.lambda.g <- round(max(10, min(niter.goal/solnfreq(lambda),100)))
+	cat(paste("\n",niter.lambda.g, "for lambda"))
+	niter.delta.g <- round(max(10, min(niter.goal/solnfreq(delta),100)))
+	cat(paste("\n",niter.delta.g, "for delta"))
+	niter.OU.g <- round(max(10, min(niter.goal/solnfreq(ou),100)))
+	cat(paste("\n",niter.OU.g, "for OU"))
+	niter.white.g <- round(max(10, min(niter.goal/solnfreq(white),100)))
+	cat(paste("\n",niter.white.g, "for white noise"))
+
+	trueFreeValuesANDSummaryValues<-parallelSimulation(nrepSim, coreLimit, taxon.df, phy, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn, multicore, checkpointFile, checkpointFreq, niter.brown=niter.brown.g, niter.lambda=niter.lambda.g, niter.delta=niter.delta.g, niter.OU=niter.OU.g, niter.white=niter.white.g)
 
 	cat("\n\n")
 	simTime<-proc.time()[[3]]-startTime
