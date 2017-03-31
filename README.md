@@ -4,4 +4,5 @@
 
 Package for creating comparative methods with R: work between Brian O'Meara and Barb Banbury
 
+You can see help at http://bomeara.github.io/treevo/reference/index.html
 
