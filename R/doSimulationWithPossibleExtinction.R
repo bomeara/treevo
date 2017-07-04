@@ -121,7 +121,7 @@ doSimulationWithPossibleExtinction<-function(taxon.df, intrinsicFn, extrinsicFn,
 				while(is.na(new.state) & attempt.count < 100) {
 					old = taxon.df$states[alive.rows[taxon.index]]
 					intrinsic.displacement = intrinsicFn(params=intrinsicValues, states=current.states[taxon.index], timefrompresent =depthfrompresent)
-					extrinsic.displacement = extrinsicFn(params=extrinsicValues, selfstates=current.states[taxon.index], otherstates=curent.states[-taxon.index], timefrompresent =depthfrompresent)
+					extrinsic.displacement = extrinsicFn(params=extrinsicValues, selfstates=current.states[taxon.index], otherstates=current.states[-taxon.index], timefrompresent =depthfrompresent)
 					new.state <- old + intrinsic.displacement + extrinsic.displacement
 					warning(paste("Attempt ", attempt.count, "led to using old value of", old, "intrinsicFn return of ",intrinsic.displacement, "and extrinsicFn return of ", extrinsic.displacement))
 					print("IntrinsicValues")
@@ -156,7 +156,7 @@ doSimulationWithPossibleExtinction<-function(taxon.df, intrinsicFn, extrinsicFn,
 	if(returnAll) {
 		return(taxon.df)
 	}
-	final.results <- subset(taxon.df, terminal==TRUE)
+	final.results <- subset(taxon.df, taxon.df$terminal==TRUE)
 	final.result.df <- data.frame(states=final.results$states)
 	rownames(final.result.df) <- final.results$name
 
