@@ -24,11 +24,12 @@
 #' @author Barb Banbury and Brian O'Meara
 #' @references O'Meara and Banbury, unpublished
 #' @keywords plotPosteriors
+
 #' @examples
 #' 
-#' #data(Res)
-#' #plotPosteriors(particleDataFrame=res$particleDataFrame,
-#'     PriorMatrix=res$priorMatrix, realParam=FALSE, realParamValues=NA)
+#' # data(Res)
+#' # plotPosteriors(particleDataFrame=res$particleDataFrame,
+#' #    PriorMatrix=res$priorMatrix, realParam=FALSE, realParamValues=NA)
 #' 
 plotPosteriors<-function(particleDataFrame, PriorMatrix, realParam=FALSE, realParamValues=NA) {
 # particleDataFrame can be single or a list of particleDataFrames (1:n)
