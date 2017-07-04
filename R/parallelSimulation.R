@@ -54,7 +54,7 @@ parallelSimulation<-function(nrepSim, coreLimit, taxon.df, phy, startingPriorsVa
 	cores=1
 	if (multicore) {
 		if (is.na(coreLimit)){
-			registerDoMCregisterMulticoreEnv()
+			registerMulticoreEnv()
 			getDoParWorkers()->cores
 		}else{
 			registerMulticoreEnv(coreLimit)

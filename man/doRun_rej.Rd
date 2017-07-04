@@ -119,7 +119,7 @@ parameters.
 }
 \examples{
 
-data(simData)
+data(simRun)
 
 #c<-doRun_rej( #make sure priors are uniform with this one!
 #	phy=simPhy,

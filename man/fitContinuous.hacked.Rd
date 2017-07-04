@@ -42,7 +42,7 @@ See Geiger's fitContinuous for details.
 \examples{
 
 
-data(simData)
+data(simRun)
 fitContinuous.hacked(simPhy, simChar, model="lambda")
 
 }

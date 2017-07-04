@@ -30,7 +30,7 @@
 #' @examples
 #' 
 #' 
-#' data(simData)
+#' data(simRun)
 #' fitContinuous.hacked(simPhy, simChar, model="lambda")
 #' 
 `fitContinuous.hacked` <-
