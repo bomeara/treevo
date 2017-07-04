@@ -8,7 +8,7 @@ registerMulticoreEnv<-function(nCore){
 		doMC::registerDoMC(nCore)	#set number of cores back to 1
 	}else{
 		if(hasDoParallel){
-			doParallel:registerDoParallel(nCore)
+			doParallel::registerDoParallel(nCore)
 		}else{
 			stop("Argument multicore requires either suggested package 'doMC' or package 'doParallel' installed")
 			}
