@@ -119,7 +119,7 @@ NULL
 #' @export GetBMRatePrior
 #' @export doSimulationWithPossibleExtinction
 #' @export getTaxonDFWithPossibleExtinction
-#' @export createAbcTaxonFromHeightsRow)
+#' @export createAbcTaxonFromHeightsRow
 
 #'
 NULL
