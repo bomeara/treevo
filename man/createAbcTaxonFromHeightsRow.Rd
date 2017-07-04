@@ -19,4 +19,3 @@ created within getAbcTaxonListWithPossibleExtinction
 \author{
 Brian O'Meara
 }
-

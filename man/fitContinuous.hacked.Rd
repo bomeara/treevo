@@ -46,12 +46,11 @@ data(simData)
 fitContinuous.hacked(simPhy, simChar, model="lambda")
 
 }
+\references{
+O'Meara and Banbury, unpublished; Harmon et al. 2007
+}
 \author{
 Luke J. Harmon and Wendell Challenger, Brian O'Meara and Barb
 Banbury
 }
-\references{
-O'Meara and Banbury, unpublished; Harmon et al. 2007
-}
 \keyword{fitContinuous.hacked}
-

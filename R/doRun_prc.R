@@ -666,8 +666,8 @@ summaryValuesMatrix<-trueFreeValuesANDSummaryValues[,-1:-numberParametersFree]
 	#------------------ ABC-PRC (end) ------------------
 
 registerMulticoreEnv<-function(nCore){	
-    hasDoParallel<-requireNamespace("doParallel", quietly = TRUE),
-    hasDoMC<-requireNamespace("doMC", quietly = TRUE))			 
+    hasDoParallel<-requireNamespace("doParallel", quietly = TRUE)
+    hasDoMC<-requireNamespace("doMC", quietly = TRUE)			 
 	#
 	if(hasDoMc){
 		doMC::registerDoMC(nCore)	#set number of cores back to 1

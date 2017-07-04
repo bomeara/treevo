@@ -17,10 +17,9 @@ Returns a data frame in geiger format
 \description{
 This function takes simulated data and converts it to geigers formatting.
 }
-\author{
-Brian O'Meara and Barb Banbury
-}
 \references{
 O'Meara and Banbury, unpublished
 }
-
+\author{
+Brian O'Meara and Barb Banbury
+}

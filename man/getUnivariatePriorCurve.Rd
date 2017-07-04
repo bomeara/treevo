@@ -31,11 +31,10 @@ upper HPD
 \description{
 This function pulls random values from the prior
 }
-\author{
-Barb Banbury and Brian O'Meara
-}
 \references{
 O'Meara and Banbury, unpublished
 }
+\author{
+Barb Banbury and Brian O'Meara
+}
 \keyword{getUnivariatePriorCurve}
-

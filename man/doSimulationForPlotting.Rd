@@ -84,12 +84,11 @@ char<-doSimulationForPlotting(
 	saveHistory=FALSE)
 
 }
-\author{
-Brian O'Meara and Barb Banbury
-}
 \references{
 O'Meara and Banbury, unpublished
 }
+\author{
+Brian O'Meara and Barb Banbury
+}
 \keyword{doSimulation}
 \keyword{doSimulationForPlotting}
-

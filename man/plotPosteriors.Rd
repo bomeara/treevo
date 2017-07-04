@@ -43,11 +43,10 @@ the true values are known.
 #plotPosteriors(particleDataFrame=res$particleDataFrame, PriorMatrix=res$priorMatrix, realParam=FALSE, realParamValues=NA)
 
 }
-\author{
-Barb Banbury and Brian O'Meara
-}
 \references{
 O'Meara and Banbury, unpublished
 }
+\author{
+Barb Banbury and Brian O'Meara
+}
 \keyword{plotPosteriors}
-

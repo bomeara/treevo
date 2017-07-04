@@ -2,9 +2,9 @@
 % Please edit documentation in R/treevo-package.R
 \docType{data}
 \name{simData}
-\alias{simChar}
 \alias{simData}
 \alias{simPhy}
+\alias{simChar}
 \title{Simulated data}
 \format{simPhy in phylo format and simChar in single column matrix}
 \description{
@@ -12,4 +12,3 @@ Simulated 30-taxon coalescent tree and simulated character data from BM
 intrinsic model. Character data was generated using doSimulation.
 }
 \keyword{datasets}
-

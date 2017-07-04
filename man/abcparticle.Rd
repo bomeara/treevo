@@ -26,10 +26,9 @@ abcparticle(id = NA, generation = NA, weight = NA, distance = NA,
 An internal TreEvo function that creates a list of objects in class
 abcparticle
 }
-\author{
-Brian O'Meara and Barb Banbury
-}
 \references{
 O'Meara and Banbury, unpublished
 }
-
+\author{
+Brian O'Meara and Barb Banbury
+}

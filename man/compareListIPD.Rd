@@ -18,10 +18,9 @@ Returns a plot with IPD between runs per generation
 This function plots interparticle distance between runs for each free
 parameter
 }
-\author{
-Brian O'Meara and Barb Banbury
-}
 \references{
 O'Meara and Banbury, unpublished
 }
-
+\author{
+Brian O'Meara and Barb Banbury
+}

@@ -34,13 +34,12 @@ better results, without one parameter dominating the combined variance.
 #returnPLSModel(trueFreeValuesMatrix,summaryValuesMatrix, validation="CV", scale=scale, variance.cutoff=variance.cutoff)
 
 }
-\author{
-Brian O'Meara and Barb Banbury
-}
 \references{
 O'Meara and Banbury, unpublished
+}
+\author{
+Brian O'Meara and Barb Banbury
 }
 \keyword{PLS}
 \keyword{PLSTransform}
 \keyword{returnPLSModel}
-

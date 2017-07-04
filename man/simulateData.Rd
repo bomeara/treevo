@@ -73,10 +73,9 @@ continuous characters
 Used by TreEvo doRun function to calculate simulations for doRun_prc and
 doRun_rej.
 }
-\author{
-Brian O'Meara and Barb Banbury
-}
 \references{
 O'Meara and Banbury, unpublished
 }
-
+\author{
+Brian O'Meara and Barb Banbury
+}

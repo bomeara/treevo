@@ -22,12 +22,11 @@ time step in the tree.
 This function describes a model of intrinsic character evolution. Character
 change is restricted above a minimum and below a maximum threshold
 }
-\author{
-Brian O'Meara and Barb Banbury
-}
 \references{
 O'Meara and Banbury, unpublished
 }
+\author{
+Brian O'Meara and Barb Banbury
+}
 \keyword{boundaryIntrinsic}
 \keyword{intrinsic}
-

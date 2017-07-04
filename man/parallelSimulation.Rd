@@ -76,10 +76,9 @@ simulations
 This is a wrapper function for simulateData that allows for multithreading
 and checkpointing
 }
-\author{
-Brian O'Meara and Barb Banbury
-}
 \references{
 O'Meara and Banbury, unpublished
 }
-
+\author{
+Brian O'Meara and Barb Banbury
+}

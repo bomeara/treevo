@@ -20,12 +20,11 @@ time step in the tree.
 \description{
 This function describes a model of no intrinsic character change
 }
-\author{
-Brian O'Meara and Barb Banbury
-}
 \references{
 O'Meara and Banbury, unpublished
 }
+\author{
+Brian O'Meara and Barb Banbury
+}
 \keyword{intrinsic}
 \keyword{nullIntrinsic}
-

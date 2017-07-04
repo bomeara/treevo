@@ -23,11 +23,10 @@ upper HPD
 \description{
 This function pulls values from the posterior distribution
 }
-\author{
-Barb Banbury and Brian O'Meara
-}
 \references{
 O'Meara and Banbury, unpublished
 }
+\author{
+Barb Banbury and Brian O'Meara
+}
 \keyword{getUnivariatePosteriorCurve}
-
