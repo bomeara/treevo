@@ -39,9 +39,9 @@ the true values are known.
 }
 \examples{
 
-#data(Res)
-#plotPosteriors(particleDataFrame=res$particleDataFrame,
-    PriorMatrix=res$priorMatrix, realParam=FALSE, realParamValues=NA)
+# data(Res)
+# plotPosteriors(particleDataFrame=res$particleDataFrame,
+#    PriorMatrix=res$priorMatrix, realParam=FALSE, realParamValues=NA)
 
 }
 \references{

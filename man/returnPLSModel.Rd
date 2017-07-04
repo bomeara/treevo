@@ -31,8 +31,8 @@ better results, without one parameter dominating the combined variance.
 }
 \examples{
 
-#returnPLSModel(trueFreeValuesMatrix,summaryValuesMatrix,
-   validation="CV", scale=scale, variance.cutoff=variance.cutoff)
+# returnPLSModel(trueFreeValuesMatrix,summaryValuesMatrix,
+#   validation="CV", scale=scale, variance.cutoff=variance.cutoff)
 
 }
 \references{
