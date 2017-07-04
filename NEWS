@@ -1,0 +1,5 @@
+VERSION - 0.4.1 - 07-04-17
+- TreEvo is now Windows-capable, by removing calls to quartz() and also allowing package doParallel to be used in replacement of package doMC
+	- doMC moved to Suggests, and doParallel added to Suggests
+- NAMESPACE file converted over to now be automatically handled by roxygen2
+- Added NEWS file for tracking changes to TreEvo
