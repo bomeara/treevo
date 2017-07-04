@@ -30,7 +30,12 @@
 #' under (as used by doSimulation)
 #' @param extrinsicFn Name of extrinsic function characters should be simulated
 #' under (as used by doSimulation)
-#' @param multicore Whether to use multicore, default is FALSE
+
+#' @param multicore Whether to use multicore, default is FALSE. If TRUE, one of
+#' two suggested packages must be installed, either 'doMC' (for UNIX systems) or
+#' 'doParallel' (for Windows), which are used to activate multithreading.
+#' If neither package is installed, this function will fail if multicore=TRUE.
+
 #' @param checkpointFile Optional file name for checkpointing simulations
 #' @param checkpointFreq Saving frequency for checkpointing
 #' @param niter.brown Number of random starts for BM model (min of 2)

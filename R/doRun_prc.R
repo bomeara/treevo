@@ -71,7 +71,13 @@
 #' next falls below the stopValue
 #' @param stopValue Threshold value for terminating an analysis prior to
 #' nStpesPRC
-#' @param multicore If TRUE, initial simulations will be split among coreLimit
+
+#' @param multicore Whether to use multicore, default is FALSE. If TRUE, initial simulations
+#' will be split among \code{coreLimit} cores. Also, if TRUE, one of
+#' two suggested packages must be installed, either 'doMC' (for UNIX systems) or
+#' 'doParallel' (for Windows), which are used to activate multithreading.
+#' If neither package is installed, this function will fail if multicore=TRUE.
+
 #' nodes
 #' @param coreLimit Number of cores for initial simulations
 #' @param validation Cross Validation procedure for abc

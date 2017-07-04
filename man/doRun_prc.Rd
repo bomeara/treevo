@@ -82,7 +82,11 @@ next falls below the stopValue}
 \item{stopValue}{Threshold value for terminating an analysis prior to
 nStpesPRC}
 
-\item{multicore}{If TRUE, initial simulations will be split among coreLimit
+\item{multicore}{Whether to use multicore, default is FALSE. If TRUE, initial simulations
+will be split among \code{coreLimit} cores. Also, if TRUE, one of
+two suggested packages must be installed, either 'doMC' (for UNIX systems) or
+'doParallel' (for Windows), which are used to activate multithreading.
+If neither package is installed, this function will fail if multicore=TRUE.
 nodes}
 
 \item{coreLimit}{Number of cores for initial simulations}
