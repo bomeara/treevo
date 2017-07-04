@@ -665,20 +665,7 @@ summaryValuesMatrix<-trueFreeValuesANDSummaryValues[,-1:-numberParametersFree]
 
 	#------------------ ABC-PRC (end) ------------------
 
-registerMulticoreEnv<-function(nCore){	
-    hasDoParallel<-requireNamespace("doParallel", quietly = TRUE)
-    hasDoMC<-requireNamespace("doMC", quietly = TRUE)			 
-	#
-	if(hasDoMc){
-		doMC::registerDoMC(nCore)	#set number of cores back to 1
-	}else{
-		if(hasDoParallel){
-			doParallel:registerDoParallel(nCore)
-		}else{
-			stop("Argument multicore requires either suggested package 'doMC' or package 'doParallel' installed")
-			}
-		}
-	}	
+
 	
 	
 	
