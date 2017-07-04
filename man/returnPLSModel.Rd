@@ -2,7 +2,7 @@
 % Please edit documentation in R/returnPLSModel.R
 \name{returnPLSModel}
 \alias{returnPLSModel}
-\title{return PLS Model}
+\title{Return PLS Model}
 \usage{
 returnPLSModel(trueFreeValuesMatrix, summaryValuesMatrix, validation = "CV",
   scale = TRUE, variance.cutoff = 95)
@@ -31,7 +31,8 @@ better results, without one parameter dominating the combined variance.
 }
 \examples{
 
-#returnPLSModel(trueFreeValuesMatrix,summaryValuesMatrix, validation="CV", scale=scale, variance.cutoff=variance.cutoff)
+#returnPLSModel(trueFreeValuesMatrix,summaryValuesMatrix,
+   validation="CV", scale=scale, variance.cutoff=variance.cutoff)
 
 }
 \references{
