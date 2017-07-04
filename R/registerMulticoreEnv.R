@@ -4,7 +4,7 @@ registerMulticoreEnv<-function(nCore){
     hasDoParallel<-requireNamespace("doParallel", quietly = TRUE)
     hasDoMC<-requireNamespace("doMC", quietly = TRUE)			 
 	#
-	if(hasDoMc){
+	if(hasDoMC){
 		doMC::registerDoMC(nCore)	#set number of cores back to 1
 	}else{
 		if(hasDoParallel){

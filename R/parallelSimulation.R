@@ -51,13 +51,11 @@ parallelSimulation<-function(nrepSim, coreLimit, taxon.df, phy, startingPriorsVa
 		if (is.na(coreLimit)){
 			registerDoMCregisterMulticoreEnv()
 			getDoParWorkers()->cores
-		}
-		else {
+		}else{
 			registerMulticoreEnv(coreLimit)
 			coreLimit->cores
+			}
 		}
-		
-	}
 	cat(paste("Using", cores, "core(s) for simulations \n\n"))
 	if (nrepSim %%cores != 0) {
 		warning("The simulation is most efficient if the number of nrepSim is a multiple of the number of cores")

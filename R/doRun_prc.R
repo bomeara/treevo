@@ -656,8 +656,9 @@ summaryValuesMatrix<-trueFreeValuesANDSummaryValues[,-1:-numberParametersFree]
 		prcResults$CredInt <-CredInt(particleDataFrame)
 		prcResults$HPD <-HPD(particleDataFrame)
 
-
-	registerMulticoreEnv(nCore=1)
+	if(multicore){
+		registerMulticoreEnv(nCore=1)
+		}
 		
 	print(prcResults)
 
