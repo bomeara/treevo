@@ -103,7 +103,7 @@
 #' @keywords doRun doRun_prc abc
 #' @examples
 #'
-#' data(simData)
+#' data(simRun)
 #'
 #' #doRun_prc(
 #' #  phy = simPhy,

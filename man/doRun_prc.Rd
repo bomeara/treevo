@@ -140,7 +140,7 @@ parameters.
 }
 \examples{
 
-data(simData)
+data(simRun)
 
 #doRun_prc(
 #  phy = simPhy,
