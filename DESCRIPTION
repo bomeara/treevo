@@ -28,7 +28,8 @@ Imports:
 Suggests:
     testthat,
     covr,
-    doMC
+    doMC,
+	doParallel
 LazyData: yes
 Description: Various functions for estimating parameters of trait evolution
     using Approximate Bayesian Computation.
