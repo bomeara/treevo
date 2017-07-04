@@ -42,19 +42,21 @@
 #' simulations
 #' @author Brian O'Meara and Barb Banbury
 #' @references O'Meara and Banbury, unpublished
+
 parallelSimulation<-function(nrepSim, coreLimit, taxon.df, phy, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn, multicore,checkpointFile=NULL,checkpointFreq=24, niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) {
 	#library(doMC, quietly=T)
 	#library(foreach, quietly=T)
 	cores=1
 	if (multicore) {
 		if (is.na(coreLimit)){
-			registerDoMC()
+			registerDoMCregisterMulticoreEnv()
 			getDoParWorkers()->cores
 		}
 		else {
-			registerDoMC(coreLimit)
+			registerMulticoreEnv(coreLimit)
 			coreLimit->cores
 		}
+		
 	}
 	cat(paste("Using", cores, "core(s) for simulations \n\n"))
 	if (nrepSim %%cores != 0) {

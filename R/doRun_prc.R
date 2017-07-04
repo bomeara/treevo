@@ -625,7 +625,7 @@ summaryValuesMatrix<-trueFreeValuesANDSummaryValues[,-1:-numberParametersFree]
 
 				names(particleDataFrame)<-nameVector
 				if(plot) {
-					quartz()
+					dev.new()
 					plot(x=c(min(intrinsicPriorsValues), max(intrinsicPriorsValues)), y=c(0, 1), type="n")
 					for (i in 1:(length(toleranceVector)-1)) {
 						graycolor<-gray(0.5*(length(toleranceVector)-i)/length(toleranceVector))
@@ -657,9 +657,28 @@ summaryValuesMatrix<-trueFreeValuesANDSummaryValues[,-1:-numberParametersFree]
 		prcResults$HPD <-HPD(particleDataFrame)
 
 
-	registerDoMC(1) #set number of cores back to 1
+	registerMulticoreEnv(nCore=1)
+		
 	print(prcResults)
 
 }
 
 	#------------------ ABC-PRC (end) ------------------
+
+registerMulticoreEnv<-function(nCore){	
+    hasDoParallel<-requireNamespace("doParallel", quietly = TRUE),
+    hasDoMC<-requireNamespace("doMC", quietly = TRUE))			 
+	#
+	if(hasDoMc){
+		doMC::registerDoMC(nCore)	#set number of cores back to 1
+	}else{
+		if(hasDoParallel){
+			doParallel:registerDoParallel(nCore)
+		}else{
+			stop("Argument multicore requires either suggested package 'doMC' or package 'doParallel' installed")
+			}
+		}
+	}	
+	
+	
+	
