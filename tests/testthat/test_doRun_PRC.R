@@ -1,5 +1,5 @@
 test_that("simulation ran", {
-	data(simData)
+	data(simRun)
 	 char<-doSimulationWithPossibleExtinction(
  	taxon.df=getTaxonDFWithPossibleExtinction(simPhy),
  	intrinsicFn=brownianIntrinsic,
@@ -15,7 +15,7 @@ test_that("simulation ran", {
 
 
 test_that("doPRC runs correctly", {
-	data(simData)
+	data(simRun)
 	results <- doRun_prc(
 	  phy = simPhy,
 	  traits = simChar,

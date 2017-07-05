@@ -30,12 +30,11 @@ process with differing means, sigma, and attraction over time
 In the TimeSlices models, time threshold units are in time before present
 (i.e., 65 could be 65 MYA). The last time threshold should be 0.
 }
-\author{
-Brian O'Meara and Barb Banbury
-}
 \references{
 O'Meara and Banbury, unpublished
 }
+\author{
+Brian O'Meara and Barb Banbury
+}
 \keyword{autoregressiveIntrinsicTimeSlices}
 \keyword{intrinsic}
-

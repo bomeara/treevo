@@ -24,17 +24,25 @@
 #' @author Barb Banbury and Brian O'Meara
 #' @references O'Meara and Banbury, unpublished
 #' @keywords plotPosteriors
+
 #' @examples
 #' 
-#' #data(Res)
-#' #plotPosteriors(particleDataFrame=res$particleDataFrame, PriorMatrix=res$priorMatrix, realParam=FALSE, realParamValues=NA)
+#' # data(Res)
+#' # plotPosteriors(particleDataFrame=res$particleDataFrame,
+#' #    PriorMatrix=res$priorMatrix, realParam=FALSE, realParamValues=NA)
 #' 
 plotPosteriors<-function(particleDataFrame, PriorMatrix, realParam=FALSE, realParamValues=NA) {
 # particleDataFrame can be single or a list of particleDataFrames (1:n)
-# priors can also be single matrix or a list of matrices (Note that priors have to be the same to make comparison across runs, therefore if a list of priors is given, this function will extract only the first matrix)
-#priors should be $PriorMatrix from TreEvo output
-#realParamValues should include a real value for every prior (fixed or not).
-#fix this function so it works when "fixed" params are not last (ie the second param)
+#
+# priors can also be single matrix or a list of matrices (Note that priors have to be the
+#     same to make comparison across runs, therefore if a list of priors is
+#     given, this function will extract only the first matrix)
+#
+# priors should be $PriorMatrix from TreEvo output
+#
+# realParamValues should include a real value for every prior (fixed or not).
+#
+# fix this function so it works when "fixed" params are not last (ie the second param)
 
 x<-particleDataFrame
 priors<-PriorMatrix

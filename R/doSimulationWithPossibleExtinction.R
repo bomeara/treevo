@@ -114,21 +114,21 @@ doSimulationWithPossibleExtinction<-function(taxon.df, intrinsicFn, extrinsicFn,
 			if(is.na(taxon.df$states[alive.rows[taxon.index]])) {
 				taxon.df$states[alive.rows[taxon.index]] <- taxon.df$states[which(taxon.df$id==taxon.df$ancestorId[alive.rows[taxon.index]])]
 			}
-			new.state <- taxon.df$states[alive.rows[taxon.index]] + intrinsicFn(params=intrinsicValues, states=current.states[taxon.index], timefrompresent =depthfrompresent)+extrinsicFn(params=extrinsicValues, selfstates=current.states[taxon.index], otherstates=curent.states[-taxon.index], timefrompresent =depthfrompresent)
+			new.state <- taxon.df$states[alive.rows[taxon.index]] + intrinsicFn(params=intrinsicValues, states=current.states[taxon.index], timefrompresent =depthfrompresent)+extrinsicFn(params=extrinsicValues, selfstates=current.states[taxon.index], otherstates=current.states[-taxon.index], timefrompresent =depthfrompresent)
 			if(is.na(new.state)) {
 				warning("got bad sim")
 				attempt.count=0
 				while(is.na(new.state) & attempt.count < 100) {
 					old = taxon.df$states[alive.rows[taxon.index]]
 					intrinsic.displacement = intrinsicFn(params=intrinsicValues, states=current.states[taxon.index], timefrompresent =depthfrompresent)
-					extrinsic.displacement = extrinsicFn(params=extrinsicValues, selfstates=current.states[taxon.index], otherstates=curent.states[-taxon.index], timefrompresent =depthfrompresent)
+					extrinsic.displacement = extrinsicFn(params=extrinsicValues, selfstates=current.states[taxon.index], otherstates=current.states[-taxon.index], timefrompresent =depthfrompresent)
 					new.state <- old + intrinsic.displacement + extrinsic.displacement
 					warning(paste("Attempt ", attempt.count, "led to using old value of", old, "intrinsicFn return of ",intrinsic.displacement, "and extrinsicFn return of ", extrinsic.displacement))
 					print("IntrinsicValues")
 					print(intrinsicValues)
 				}
 				if(is.na(new.state) & attempt.count==100) {
-					stop(paste("Simulating with these parameters resulted in problematic results; for one example, taxon.df$states[alive.rows[taxon.index]] was ", taxon.df$states[alive.rows[taxon.index]], "intrinsicFn returned ", intrinsicFn(params=intrinsicValues, states=current.states[taxon.index], timefrompresent =depthfrompresent), "and extrinsicFn returned", extrinsicFn(params=extrinsicValues, selfstates=current.states[taxon.index], otherstates=curent.states[-taxon.index], timefrompresent =depthfrompresent)))
+					stop(paste("Simulating with these parameters resulted in problematic results; for one example, taxon.df$states[alive.rows[taxon.index]] was ", taxon.df$states[alive.rows[taxon.index]], "intrinsicFn returned ", intrinsicFn(params=intrinsicValues, states=current.states[taxon.index], timefrompresent =depthfrompresent), "and extrinsicFn returned", extrinsicFn(params=extrinsicValues, selfstates=current.states[taxon.index], otherstates=current.states[-taxon.index], timefrompresent =depthfrompresent)))
 				}
 			}
 			taxon.df$states[alive.rows[taxon.index]] <- new.state
@@ -156,7 +156,7 @@ doSimulationWithPossibleExtinction<-function(taxon.df, intrinsicFn, extrinsicFn,
 	if(returnAll) {
 		return(taxon.df)
 	}
-	final.results <- subset(taxon.df, terminal==TRUE)
+	final.results <- subset(taxon.df, taxon.df$terminal==TRUE)
 	final.result.df <- data.frame(states=final.results$states)
 	rownames(final.result.df) <- final.results$name
 

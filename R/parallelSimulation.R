@@ -30,7 +30,12 @@
 #' under (as used by doSimulation)
 #' @param extrinsicFn Name of extrinsic function characters should be simulated
 #' under (as used by doSimulation)
-#' @param multicore Whether to use multicore, default is FALSE
+
+#' @param multicore Whether to use multicore, default is FALSE. If TRUE, one of
+#' two suggested packages must be installed, either 'doMC' (for UNIX systems) or
+#' 'doParallel' (for Windows), which are used to activate multithreading.
+#' If neither package is installed, this function will fail if multicore=TRUE.
+
 #' @param checkpointFile Optional file name for checkpointing simulations
 #' @param checkpointFreq Saving frequency for checkpointing
 #' @param niter.brown Number of random starts for BM model (min of 2)
@@ -42,20 +47,20 @@
 #' simulations
 #' @author Brian O'Meara and Barb Banbury
 #' @references O'Meara and Banbury, unpublished
+
 parallelSimulation<-function(nrepSim, coreLimit, taxon.df, phy, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn, multicore,checkpointFile=NULL,checkpointFreq=24, niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) {
 	#library(doMC, quietly=T)
 	#library(foreach, quietly=T)
 	cores=1
 	if (multicore) {
 		if (is.na(coreLimit)){
-			registerDoMC()
+			registerMulticoreEnv()
 			getDoParWorkers()->cores
-		}
-		else {
-			registerDoMC(coreLimit)
+		}else{
+			registerMulticoreEnv(coreLimit)
 			coreLimit->cores
+			}
 		}
-	}
 	cat(paste("Using", cores, "core(s) for simulations \n\n"))
 	if (nrepSim %%cores != 0) {
 		warning("The simulation is most efficient if the number of nrepSim is a multiple of the number of cores")

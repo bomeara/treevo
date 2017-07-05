@@ -82,7 +82,11 @@ next falls below the stopValue}
 \item{stopValue}{Threshold value for terminating an analysis prior to
 nStpesPRC}
 
-\item{multicore}{If TRUE, initial simulations will be split among coreLimit
+\item{multicore}{Whether to use multicore, default is FALSE. If TRUE, initial simulations
+will be split among \code{coreLimit} cores. Also, if TRUE, one of
+two suggested packages must be installed, either 'doMC' (for UNIX systems) or
+'doParallel' (for Windows), which are used to activate multithreading.
+If neither package is installed, this function will fail if multicore=TRUE.
 nodes}
 
 \item{coreLimit}{Number of cores for initial simulations}
@@ -136,7 +140,7 @@ parameters.
 }
 \examples{
 
-data(simData)
+data(simRun)
 
 #doRun_prc(
 #  phy = simPhy,
@@ -165,14 +169,13 @@ data(simData)
 
 
 }
-\author{
-Brian O'Meara and Barb Banbury
-}
 \references{
 O'Meara and Banbury, unpublished; Sisson et al. 2007, Wegmann et
 al. 2009
 }
+\author{
+Brian O'Meara and Barb Banbury
+}
 \keyword{abc}
 \keyword{doRun}
 \keyword{doRun_prc}
-

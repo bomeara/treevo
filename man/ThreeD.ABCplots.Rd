@@ -37,15 +37,15 @@ values (if known).
 }
 \examples{
 
-#data(simRun)
-#ThreeD.ABCplots(particleDataFrame=results$particleDataFrame, parameter=7, show.particles="none", plot.parent=FALSE, realParam=FALSE, realParamValues=NA) 
+# data(simRun)
+# ThreeD.ABCplots(particleDataFrame=results$particleDataFrame, parameter=7,
+#     show.particles="none", plot.parent=FALSE, realParam=FALSE, realParamValues=NA) 
 
-}
-\author{
-Barb Banbury
 }
 \references{
 O'Meara and Banbury, unpublished
 }
+\author{
+Barb Banbury
+}
 \keyword{ThreeD.ABCplots}
-

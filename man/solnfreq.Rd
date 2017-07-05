@@ -17,4 +17,3 @@ The frequency with which the best solution was found
 \description{
 This function is taken from an internal Geiger function
 }
-

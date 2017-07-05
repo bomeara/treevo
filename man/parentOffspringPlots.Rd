@@ -31,11 +31,10 @@ Grayed out stars represent rejected particles.
 #parentOffspringPlots(res$particleDataFrame)
 
 }
-\author{
-Brian O'Meara and Barb Banbury
-}
 \references{
 O'Meara and Banbury, unpublished
 }
+\author{
+Brian O'Meara and Barb Banbury
+}
 \keyword{parentOffspringPlots}
-

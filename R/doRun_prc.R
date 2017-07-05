@@ -71,7 +71,13 @@
 #' next falls below the stopValue
 #' @param stopValue Threshold value for terminating an analysis prior to
 #' nStpesPRC
-#' @param multicore If TRUE, initial simulations will be split among coreLimit
+
+#' @param multicore Whether to use multicore, default is FALSE. If TRUE, initial simulations
+#' will be split among \code{coreLimit} cores. Also, if TRUE, one of
+#' two suggested packages must be installed, either 'doMC' (for UNIX systems) or
+#' 'doParallel' (for Windows), which are used to activate multithreading.
+#' If neither package is installed, this function will fail if multicore=TRUE.
+
 #' nodes
 #' @param coreLimit Number of cores for initial simulations
 #' @param validation Cross Validation procedure for abc
@@ -97,7 +103,7 @@
 #' @keywords doRun doRun_prc abc
 #' @examples
 #'
-#' data(simData)
+#' data(simRun)
 #'
 #' #doRun_prc(
 #' #  phy = simPhy,
@@ -625,7 +631,7 @@ summaryValuesMatrix<-trueFreeValuesANDSummaryValues[,-1:-numberParametersFree]
 
 				names(particleDataFrame)<-nameVector
 				if(plot) {
-					quartz()
+					dev.new()
 					plot(x=c(min(intrinsicPriorsValues), max(intrinsicPriorsValues)), y=c(0, 1), type="n")
 					for (i in 1:(length(toleranceVector)-1)) {
 						graycolor<-gray(0.5*(length(toleranceVector)-i)/length(toleranceVector))
@@ -656,10 +662,17 @@ summaryValuesMatrix<-trueFreeValuesANDSummaryValues[,-1:-numberParametersFree]
 		prcResults$CredInt <-CredInt(particleDataFrame)
 		prcResults$HPD <-HPD(particleDataFrame)
 
-
-	registerDoMC(1) #set number of cores back to 1
+	if(multicore){
+		registerMulticoreEnv(nCore=1)
+		}
+		
 	print(prcResults)
 
 }
 
 	#------------------ ABC-PRC (end) ------------------
+
+
+	
+	
+	

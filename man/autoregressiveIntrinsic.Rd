@@ -24,12 +24,11 @@ This function describes a model of intrinsic character evolution. New
 character values are generated after one time step via a discrete-time OU
 process.
 }
-\author{
-Brian O'Meara and Barb Banbury
-}
 \references{
 O'Meara and Banbury, unpublished
 }
+\author{
+Brian O'Meara and Barb Banbury
+}
 \keyword{autoregressiveIntrinsic}
 \keyword{intrinsic}
-

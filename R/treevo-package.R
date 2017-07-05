@@ -4,16 +4,15 @@
 #'
 #' Simulated 30-taxon coalescent tree and simulated character data from BM
 #' intrinsic model. Character data was generated using doSimulation.
+#' Also includes results from an example analysis.
 #'
 #'
-#' @name simData
-#' @aliases simData simPhy simChar
+#' @name simRun
+#' @aliases simRun simPhy simChar results
 #' @docType data
-#' @format simPhy in phylo format and simChar in single column matrix
+#' @format simPhy in phylo format and simChar in single column matrix and results
 #' @keywords datasets
 NULL
-
-
 
 
 
@@ -45,5 +44,83 @@ NULL
 #' 	intrinsicValues=c(.01),
 #' 	extrinsicValues=c(0),
 #' 	timeStep=0.001)
+#' 
+
+# NAMESPACE IMPORTING
+
+#' @import ape
+#' @import stats
+#' @import geiger
+#' @import phytools
+
+#' @importFrom pls plsr scores 
+#' @importFrom corpcor pseudoinverse 
+#' @importFrom coda effectiveSize HPDinterval as.mcmc 
+#' @importFrom foreach foreach getDoParWorkers '%dopar%' 
+#' @importFrom rgl plot3d title3d rgl.viewpoint open3d rgl.material triangles3d lines3d spheres3d triangulate 
+#' @importFrom partitions blockparts 
+#' @importFrom car powerTransform 
+#' @importFrom mvtnorm dmvnorm 
+#' @importFrom graphics curve layout layout.show legend lines plot plot.new points polygon rect segments symbols text title 
+#' @importFrom grDevices dev.new dev.off gray pdf rgb 
+#' @importFrom methods as 
+
+# exporting, but would be better to do this in each functions ro2 there, not here...
+
+#' @export nullIntrinsic
+#' @export brownianIntrinsic
+#' @export boundaryIntrinsic
+#' @export boundaryMinIntrinsic
+#' @export autoregressiveIntrinsic
+#' @export MinBoundaryAutoregressiveIntrinsic
+#' @export autoregressiveIntrinsicTimeSlices
+#' @export autoregressiveIntrinsicTimeSlicesConstantMean
+#' @export autoregressiveIntrinsicTimeSlicesConstantSigma
+#' @export nullExtrinsic
+#' @export nearestNeighborDisplacementExtrinsic
+#' @export ExponentiallyDecayingPush
+#' @export everyoneDisplacementExtrinsic
+#' @export abcDistance
+#' @export abctaxon
+#' @export abcparticle
+#' @export BCP
+#' @export boxcoxEstimation
+#' @export boxcoxTransformation
+#' @export compareListIPD
+#' @export convertTaxonFrameToGeigerData
+#' @export CredInt
+#' @export doRun_prc
+#' @export doRun_rej
+#' @export doSimulation
+#' @export doSimulationForPlotting
+#' @export fitContinuous.hacked
+#' @export getSimulationSplits
+#' @export HPD
+#' @export interparticleDistance
+#' @export mutateState
+#' @export pairings
+#' @export PairwiseESS
+#' @export PairwiseKS
+#' @export parallelSimulation
+#' @export parentOffspringPlots
+#' @export plotPosteriors
+#' @export plotPrior
+#' @export pullFromPrior
+#' @export simulateData
+#' @export summarizeTaxonStates
+#' @export summaryStatsLong
+#' @export ThreeD.ABCplots
+#' @export sumStatNames
+#' @export getUnivariatePriorCurve
+#' @export getUnivariatePosteriorCurve
+#' @export plotUnivariatePosteriorVsPrior
+#' @export PLSRejection
+#' @export returnPLSModel
+#' @export PLSTransform
+#' @export GetBMRatePrior
+#' @export doSimulationWithPossibleExtinction
+#' @export getTaxonDFWithPossibleExtinction
+#' @export createAbcTaxonFromHeightsRow
+
 #'
 NULL

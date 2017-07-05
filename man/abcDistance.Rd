@@ -31,11 +31,10 @@ better results, without one parameter dominating the combined variance.
 #abcDistance(summaryValuesMatrix, originalSummaryValues, pls.model.list)
 
 }
-\author{
-Brian O'Meara and Barb Banbury
-}
 \references{
 O'Meara and Banbury, unpublished
 }
+\author{
+Brian O'Meara and Barb Banbury
+}
 \keyword{abcDistance}
-

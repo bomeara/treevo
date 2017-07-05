@@ -26,12 +26,11 @@ This function describes a model of extrinsic character evolution.  Character
 values of a focal taxon pushes away harder from other taxa with like values;
 "push" exponentially decays as the values become less similar
 }
-\author{
-Brian O'Meara and Barb Banbury
-}
 \references{
 O'Meara and Banbury, unpublished
 }
+\author{
+Brian O'Meara and Barb Banbury
+}
 \keyword{ExponentiallyDecayingPush}
 \keyword{extrinsic}
-

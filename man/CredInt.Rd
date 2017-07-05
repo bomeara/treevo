@@ -18,10 +18,9 @@ intervals for each free parameter
 \description{
 This function calculates credible interval for each free parameter
 }
-\author{
-Brian O'Meara and Barb Banbury
-}
 \references{
 O'Meara and Banbury, unpublished
 }
-
+\author{
+Brian O'Meara and Barb Banbury
+}

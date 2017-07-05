@@ -18,10 +18,9 @@ Returns mean
 \description{
 This function retreives random value from variable prior functions
 }
-\author{
-Brian O'Meara and Barb Banbury
-}
 \references{
 O'Meara and Banbury, unpublished
 }
-
+\author{
+Brian O'Meara and Barb Banbury
+}

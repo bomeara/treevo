@@ -119,7 +119,7 @@ parameters.
 }
 \examples{
 
-data(simData)
+data(simRun)
 
 #c<-doRun_rej( #make sure priors are uniform with this one!
 #	phy=simPhy,
@@ -142,14 +142,13 @@ data(simData)
 
 
 }
-\author{
-Brian O'Meara and Barb Banbury
-}
 \references{
 O'Meara and Banbury, unpublished; Sisson et al. 2007, Wegmann et
 al. 2009
 }
+\author{
+Brian O'Meara and Barb Banbury
+}
 \keyword{abc}
 \keyword{doRun}
 \keyword{doRun_rej}
-

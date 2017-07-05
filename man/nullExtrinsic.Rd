@@ -23,12 +23,11 @@ time step in the tree.
 \description{
 This function describes a model of no extrinsic character evolution
 }
-\author{
-Brian O'Meara and Barb Banbury
-}
 \references{
 O'Meara and Banbury, unpublished
 }
+\author{
+Brian O'Meara and Barb Banbury
+}
 \keyword{extrinsic}
 \keyword{nullExtrinsic}
-
