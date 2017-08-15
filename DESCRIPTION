@@ -1,8 +1,8 @@
 Package: TreEvo
 Type: Package
-Title: Using ABC to understand trait evolution
-Version: 0.4.1
-Date: 2017-07-04
+Title: Using ABC to Understand Trait Evolution
+Version: 0.4.2
+Date: 2017-08-15
 Authors@R: c(person("Brian", "O'Meara", role=c("aut", "cre"), email="omeara.brian@gmail.com"),
   person("Barb", "Banbury", role=c("aut")))
 Author: Brian O'Meara, Barb L. Banbury
@@ -17,7 +17,6 @@ Imports:
     corpcor,
     coda,
     foreach,
-    rgl,
     partitions,
     car,
     mvtnorm,
@@ -26,10 +25,11 @@ Imports:
     graphics,
     phytools
 Suggests:
-    testthat,
     covr,
     doMC,
-	doParallel
+	doParallel,
+	rgl,
+    testthat
 LazyData: yes
 Description: Various functions for estimating parameters of trait evolution
     using Approximate Bayesian Computation.
