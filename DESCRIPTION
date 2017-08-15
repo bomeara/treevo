@@ -23,12 +23,12 @@ Imports:
     methods,
     grDevices,
     graphics,
+	rgl,	
     phytools
 Suggests:
     covr,
     doMC,
 	doParallel,
-	rgl,
     testthat
 LazyData: yes
 Description: Various functions for estimating parameters of trait evolution

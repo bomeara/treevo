@@ -67,14 +67,6 @@ NULL
 
 # exporting, but would be better to do this in each functions ro2 there, not here...
 
-#' @export nullIntrinsic
-#' @export brownianIntrinsic
-#' @export boundaryIntrinsic
-#' @export boundaryMinIntrinsic
-#' @export autoregressiveIntrinsic
-#' @export autoregressiveIntrinsicTimeSlices
-#' @export autoregressiveIntrinsicTimeSlicesConstantMean
-#' @export autoregressiveIntrinsicTimeSlicesConstantSigma
 #' @export nullExtrinsic
 #' @export nearestNeighborDisplacementExtrinsic
 #' @export ExponentiallyDecayingPush
