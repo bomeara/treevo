@@ -72,7 +72,6 @@ NULL
 #' @export boundaryIntrinsic
 #' @export boundaryMinIntrinsic
 #' @export autoregressiveIntrinsic
-#' @export MinBoundaryAutoregressiveIntrinsic
 #' @export autoregressiveIntrinsicTimeSlices
 #' @export autoregressiveIntrinsicTimeSlicesConstantMean
 #' @export autoregressiveIntrinsicTimeSlicesConstantSigma
