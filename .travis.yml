@@ -4,6 +4,7 @@ warnings_are_errors: false
 
 before_install:
   - sudo apt-get install libgmp3-dev
+  - export RGL_USE_NULL=TRUE
 
 after_success:
   - Rscript -e 'covr::codecov()'
