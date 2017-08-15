@@ -175,7 +175,6 @@ minBoundaryAutoregressiveIntrinsic<-function(params,states, timefrompresent) {
 			}
 	}
 	return(newdisplacement)
-
 }
 
 #' @rdname intrinsicModels
