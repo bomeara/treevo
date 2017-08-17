@@ -26,11 +26,6 @@ statistics.
 #PLSTransform(summaryValuesMatrix, pls.model)
 
 }
-\references{
-O'Meara and Banbury, unpublished
-}
 \author{
 Brian O'Meara and Barb Banbury
 }
-\keyword{PLS}
-\keyword{PLSTransform}

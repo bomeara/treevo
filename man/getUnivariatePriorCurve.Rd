@@ -31,10 +31,6 @@ upper HPD
 \description{
 This function pulls random values from the prior
 }
-\references{
-O'Meara and Banbury, unpublished
-}
 \author{
 Barb Banbury and Brian O'Meara
 }
-\keyword{getUnivariatePriorCurve}

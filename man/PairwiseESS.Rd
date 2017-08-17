@@ -17,9 +17,6 @@ Returns a matrix with ESS values of all pairwise runs
 This function calculates ESS on results.  Performs the best when results are
 from multiple runs.
 }
-\references{
-O'Meara and Banbury, unpublished
-}
 \author{
 Brian O'Meara and Barb Banbury
 }

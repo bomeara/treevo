@@ -20,9 +20,6 @@ characters with doSimulation and doSimulationsForPlotting TreEvo functions
 Used by TreEvo doSimulation and doSimulationForPlotting functions to
 summarize a list of objects into a data frame of taxon values
 }
-\references{
-O'Meara and Banbury, unpublished
-}
 \author{
 Brian O'Meara and Barb Banbury
 }

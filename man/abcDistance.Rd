@@ -9,7 +9,7 @@ abcDistance(summaryValuesMatrix, originalSummaryValues, pls.model.list)
 \arguments{
 \item{summaryValuesMatrix}{Matrix of summary statistics from simulations}
 
-\item{originalSummaryValues}{Original summary stats}
+\item{originalSummaryValues}{Summary statistics for original data.}
 
 \item{pls.model.list}{indexing of a list of pls models for different params}
 }
@@ -18,11 +18,11 @@ Returns euclidean distance of each simulation's summary values to
 the original summary stats.
 }
 \description{
-This function uses results from pls model to calculate the distance from
+This function uses results from a PLS model to calculate the distance from
 each sim to the original data.
 }
 \details{
-This function runs a PLS regression on each free param in the model, unlike
+This function runs a PLS regression on each free parameter in the model, unlike
 a true multivariate PLS regression.  For ABC, this seems to result in much
 better results, without one parameter dominating the combined variance.
 }
@@ -31,10 +31,6 @@ better results, without one parameter dominating the combined variance.
 #abcDistance(summaryValuesMatrix, originalSummaryValues, pls.model.list)
 
 }
-\references{
-O'Meara and Banbury, unpublished
-}
 \author{
 Brian O'Meara and Barb Banbury
 }
-\keyword{abcDistance}

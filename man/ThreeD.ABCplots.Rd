@@ -42,10 +42,6 @@ values (if known).
 #     show.particles="none", plot.parent=FALSE, realParam=FALSE, realParamValues=NA) 
 
 }
-\references{
-O'Meara and Banbury, unpublished
-}
 \author{
 Barb Banbury
 }
-\keyword{ThreeD.ABCplots}

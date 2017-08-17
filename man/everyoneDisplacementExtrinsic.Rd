@@ -26,11 +26,6 @@ time step in the tree.
 This function describes a model of extrinsic character evolution.  Character
 values of a focal taxon depend on values of all relatives on the tree
 }
-\references{
-O'Meara and Banbury, unpublished
-}
 \author{
 Brian O'Meara and Barb Banbury
 }
-\keyword{everyoneDisplacementExtrinsic}
-\keyword{extrinsic}

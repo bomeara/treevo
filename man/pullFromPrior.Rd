@@ -18,9 +18,6 @@ Returns mean
 \description{
 This function retreives random value from variable prior functions
 }
-\references{
-O'Meara and Banbury, unpublished
-}
 \author{
 Brian O'Meara and Barb Banbury
 }

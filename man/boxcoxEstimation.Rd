@@ -23,11 +23,6 @@ This function Box-Cox transforms summary values
 #boxcoxEstimation(summaryValuesMatrix)
 
 }
-\references{
-O'Meara and Banbury, unpublished; Bates et al. 2009
-}
 \author{
 Brian O'Meara and Barb Banbury
 }
-\keyword{Box-Cox}
-\keyword{boxcoxEstimation}

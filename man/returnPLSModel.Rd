@@ -35,12 +35,6 @@ better results, without one parameter dominating the combined variance.
 #   validation="CV", scale=scale, variance.cutoff=variance.cutoff)
 
 }
-\references{
-O'Meara and Banbury, unpublished
-}
 \author{
 Brian O'Meara and Barb Banbury
 }
-\keyword{PLS}
-\keyword{PLSTransform}
-\keyword{returnPLSModel}

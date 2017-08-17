@@ -23,9 +23,6 @@ This function calculates coverage probability for a list of HPDs
 \details{
 Only for use with simulated data to test models
 }
-\references{
-O'Meara and Banbury, unpublished
-}
 \author{
 Brian O'Meara and Barb Banbury
 }

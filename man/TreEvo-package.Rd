@@ -6,8 +6,7 @@
 \alias{treevo}
 \title{TreEvo--abc for comparative methods}
 \description{
-A package for using approximate Bayesian computation for comparative methods
-in trait evolution
+A package for applying Approximate Bayesian Computation to estimating parameters of trait evolution in comparative analyses.
 }
 \details{
 \tabular{ll}{ Package: \tab TreEvo\cr Type: \tab Package\cr Version: \tab
@@ -16,7 +15,6 @@ in trait evolution
 \examples{
 
 #Continuous character simulation under Brownian motion
-library(ape)
 phy<-rcoal(20)
 char<-doSimulationWithPossibleExtinction(
 	taxon.df=getTaxonDFWithPossibleExtinction(phy),
@@ -25,13 +23,12 @@ char<-doSimulationWithPossibleExtinction(
 	startingValues=c(30),
 	intrinsicValues=c(.01),
 	extrinsicValues=c(0),
-	timeStep=0.001)
+	timeStep=0.001
+)
 
 }
 \author{
-Brian O'Meara, Barb L. Banbury
+Brian O'Meara, Barb L. Banbury, David W. Bapst
 
-Maintainer: Barb Banbury <darwinthesun@gmail.com>
+Maintainer: David Bapst <dwbapst@gmail.com>
 }
-\keyword{abc}
-\keyword{treevo}

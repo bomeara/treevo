@@ -30,9 +30,6 @@ abctaxon(id = 0, name = "taxon0", timeSinceSpeciation = 0, states = NA,
 \description{
 Internal TreEvo function to create a list of objects
 }
-\references{
-O'Meara and Banbury, unpublished
-}
 \author{
 Brian O'Meara and Barb Banbury
 }

@@ -13,4 +13,3 @@ Simulated 30-taxon coalescent tree and simulated character data from BM
 intrinsic model. Character data was generated using doSimulation.
 Also includes results from an example analysis.
 }
-\keyword{datasets}

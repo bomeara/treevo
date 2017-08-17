@@ -40,11 +40,6 @@ analyses.
 	plotPrior("gamma", c(2, .2), plotQuants=FALSE, plotLegend=FALSE)
 
 }
-\references{
-O'Meara and Banbury, unpublished
-}
 \author{
 Brian O'Meara and Barb Banbury
 }
-\keyword{plotPrior}
-\keyword{prior}

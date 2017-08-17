@@ -20,9 +20,6 @@ each free parameter
 \description{
 This function calculates HPD for each free parameter
 }
-\references{
-O'Meara and Banbury, unpublished
-}
 \author{
 Brian O'Meara and Barb Banbury
 }

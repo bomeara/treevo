@@ -24,10 +24,6 @@ Returns a plot
 \description{
 This function plots density distributions from the prior and posterior
 }
-\references{
-O'Meara and Banbury, unpublished
-}
 \author{
 Barb Banbury and Brian O'Meara
 }
-\keyword{plotUnivariatePosteriorVsPrior}

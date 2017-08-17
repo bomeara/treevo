@@ -23,9 +23,6 @@ This function calculates interparticle distance between two vectors
 IPD is used by several internal TreEvo function to compare two
 distributions.
 }
-\references{
-O'Meara and Banbury, unpublished
-}
 \author{
 Brian O'Meara and Barb Banbury
 }

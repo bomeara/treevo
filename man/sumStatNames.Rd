@@ -12,9 +12,6 @@ sumStatNames(phy)
 \description{
 This function creates a vector of summary stat names
 }
-\references{
-O'Meara and Banbury, unpublished
-}
 \author{
 Brian O'Meara and Barb Banbury
 }

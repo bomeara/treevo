@@ -44,10 +44,6 @@ the true values are known.
 #    PriorMatrix=res$priorMatrix, realParam=FALSE, realParamValues=NA)
 
 }
-\references{
-O'Meara and Banbury, unpublished
-}
 \author{
 Barb Banbury and Brian O'Meara
 }
-\keyword{plotPosteriors}

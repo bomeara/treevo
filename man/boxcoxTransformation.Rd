@@ -20,11 +20,6 @@ single observation.
 \description{
 This function Box-Cox transforms summary values from a single simulation
 }
-\references{
-O'Meara and Banbury, unpublished; Bates et al. 2009
-}
 \author{
 Brian O'Meara and Barb Banbury
 }
-\keyword{Box-Cox}
-\keyword{boxcoxTransformation}

@@ -18,9 +18,6 @@ This function finds all possible pairwise combinations for multiple runs.
 \details{
 Used in several internal functions for analysis of results
 }
-\references{
-O'Meara and Banbury, unpublished
-}
 \author{
 Brian O'Meara and Barb Banbury
 }

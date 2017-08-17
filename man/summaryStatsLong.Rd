@@ -45,10 +45,6 @@ state reconstruction confidence interval.
 #summaryStatsLong(phy, char)
 
 }
-\references{
-O'Meara and Banbury, unpublished
-}
 \author{
 Brian O'Meara and Barb Banbury
 }
-\keyword{summaryStatsLong}

@@ -15,9 +15,6 @@ Returns a matrix with KS values of all pairwise runs
 \description{
 This function calculates KS on results.
 }
-\references{
-O'Meara and Banbury, unpublished
-}
 \author{
 Brian O'Meara and Barb Banbury
 }

@@ -122,11 +122,6 @@ attractor-2 (character mean-2), attraction-2 (alpha-2), time threshold-2
 # this needs examples
 
 }
-\references{
-O'Meara and Banbury, unpublished
-}
 \author{
 Brian O'Meara and Barb Banbury
 }
-\keyword{intrinsic}
-\keyword{nullIntrinsic}

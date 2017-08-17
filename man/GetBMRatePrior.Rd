@@ -30,10 +30,6 @@ Builds on functions in geiger to estimate distribution.
 
 
 }
-\references{
-O'Meara and Banbury, unpublished
-}
 \author{
 Brian O'Meara and Barb Banbury
 }
-\keyword{GetBMRatePrior}

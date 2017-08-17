@@ -19,9 +19,6 @@ from a tree
 \details{
 This function is used by other TreEvo functions for internal calculations.
 }
-\references{
-O'Meara and Banbury, unpublished
-}
 \author{
 Brian O'Meara and Barb Banbury
 }

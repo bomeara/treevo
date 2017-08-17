@@ -44,13 +44,6 @@ data (within the tolerance). Distances are calculated using abcDistance.
 #PLSRejection(summaryValuesMatrix, trueFreeValuesMatrix, phy, traits, abcTolerance)
 
 }
-\references{
-O'Meara and Banbury, unpublished
-}
 \author{
 Brian O'Meara and Barb Banbury
 }
-\keyword{PLSRejection}
-\keyword{abc}
-\keyword{doRun}
-\keyword{doRun_rej}

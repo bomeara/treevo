@@ -169,13 +169,7 @@ data(simRun)
 
 
 }
-\references{
-O'Meara and Banbury, unpublished; Sisson et al. 2007, Wegmann et
-al. 2009
-}
 \author{
 Brian O'Meara and Barb Banbury
+al. 2009
 }
-\keyword{abc}
-\keyword{doRun}
-\keyword{doRun_prc}
