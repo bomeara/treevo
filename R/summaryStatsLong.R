@@ -1,10 +1,10 @@
-#' Calculate frequency of finding best solution in Geiger
-#'
-#' This function is taken from an internal Geiger function
-#'
-#' @param x A returned object from fitContinuous()
-#' @param tol Tolerance for equality of solutions
-#' @return The frequency with which the best solution was found
+#  Calculate frequency of finding best solution in Geiger
+#  
+#  This function is taken from an internal Geiger function
+#  
+#  @param x A returned object from fitContinuous()
+#  @param tol Tolerance for equality of solutions
+#  @return The frequency with which the best solution was found
 solnfreq <- function(x, tol = .Machine$double.eps^0.5){
 			ll=logLik(x)
 			aa=abs(x$res[,"lnL"]-ll)<=tol
@@ -14,34 +14,34 @@ solnfreq <- function(x, tol = .Machine$double.eps^0.5){
 
 
 
-#' Calculate summary statistics
-#'
-#' This function creates a vector of summary statistics for TreEvo analysis
-#'
-#' Calculates 17 summary statistics from the fitContinuous.hacked function
-#' (brown.lnl, brown.beta, brown.aic, lambda.lnl, lambda.beta, lambda.lambda,
-#' lambda.aic, delta.lnl, delta.beta, delta.delta, delta.aic, ou.lnl, ou.beta,
-#' ou.alpha, ou.aic, white.lnl, white.aic), plus raw.mean, raw.max, raw.min,
-#' raw.var, raw.median, and all tip character values, phylogenetic independent
-#' contrasts, ancestral state reconstruction values, and the range of ancestral
-#' state reconstruction confidence interval.
-#'
-#' @param phy Tree (Phylogenetic tree in phylo format)
-#' @param traits data matrix with rownames equal to phy
-#' @param niter.brown Number of random starts for BM model (min of 2)
-#' @param niter.lambda Number of random starts for lambda model (min of 2)
-#' @param niter.delta Number of random starts for delta model (min of 2)
-#' @param niter.OU Number of random starts for OU model (min of 2)
-#' @param niter.white Number of random starts for white model (min of 2)
-#' @param do.CI Use confidence interval? By default, only for ultrametric trees
-#' @return Returns a vector of summary statistics
-#' @author Brian O'Meara and Barb Banbury
+#  Calculate summary statistics
+#  
+#  This function creates a vector of summary statistics for TreEvo analysis
+#  
+#  Calculates 17 summary statistics from the fitContinuous.hacked function
+#  (brown.lnl, brown.beta, brown.aic, lambda.lnl, lambda.beta, lambda.lambda,
+#  lambda.aic, delta.lnl, delta.beta, delta.delta, delta.aic, ou.lnl, ou.beta,
+#  ou.alpha, ou.aic, white.lnl, white.aic), plus raw.mean, raw.max, raw.min,
+#  raw.var, raw.median, and all tip character values, phylogenetic independent
+#  contrasts, ancestral state reconstruction values, and the range of ancestral
+#  state reconstruction confidence interval.
+#  
+#  @param phy Tree (Phylogenetic tree in phylo format)
+#  @param traits data matrix with rownames equal to phy
+#  @param niter.brown Number of random starts for BM model (min of 2)
+#  @param niter.lambda Number of random starts for lambda model (min of 2)
+#  @param niter.delta Number of random starts for delta model (min of 2)
+#  @param niter.OU Number of random starts for OU model (min of 2)
+#  @param niter.white Number of random starts for white model (min of 2)
+#  @param do.CI Use confidence interval? By default, only for ultrametric trees
+#  @return Returns a vector of summary statistics
+#  @author Brian O'Meara and Barb Banbury
 # @references O'Meara and Banbury, unpublished
 # @keywords summaryStatsLong
-#' @examples
-#'
-#' #summaryStatsLong(phy, char)
-#'
+#  @examples
+#  
+#  #summaryStatsLong(phy, char)
+#  
 summaryStatsLong<-function(phy, traits, niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25, do.CI=is.ultrametric(phy)) {
 	if (any(phy$edge.length==0)){
 		if(!any(phy$edge[which(phy$edge.length==0),2] %in% phy$edge[,1])){

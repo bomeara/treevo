@@ -3,36 +3,36 @@
 
 
 
-#' Hacked version of Geiger's fitContinuous
-#' 
-#' This is TreEvo's version of fitContinuous. This version differs from Geigers
-#' in using a different optimization routine, lack of bounds, use of
-#' pseudoinverse for matrix inversion, and multiple start values.
-#' 
-#' See Geiger's fitContinuous for details.
-#' 
-#' @param phy Phylogenetic tree in phylo format
-#' @param data data matrix with rownames equal to phy
-#' @param data.names Tip names that match phy
-#' @param model Choice of models include "BM", "OU", "lambda", "kappa",
-#' "delta", "EB", "white", "trend"
-#' @param bounds NULL for fitContinuous.hacked
-#' @param meserr Measurement error, if any
-#' @param userstart Optional user start input
-#' @param badLnL Return value for bad likelihood calculations
-#' @return Returns a matrix of parameter estimates, along with approximate
-#' standard errors and 95% confidence intervals.  Also returns the
-#' log-likelihood of the model (lnl).
-#' @author Luke J. Harmon and Wendell Challenger, Brian O'Meara and Barb
-#' Banbury
+#   Hacked version of Geiger's fitContinuous
+#   
+#   This is TreEvo's version of fitContinuous. This version differs from Geigers
+#   in using a different optimization routine, lack of bounds, use of
+#   pseudoinverse for matrix inversion, and multiple start values.
+#   
+#   See Geiger's fitContinuous for details.
+#   
+#   @param phy Phylogenetic tree in phylo format
+#   @param data data matrix with rownames equal to phy
+#   @param data.names Tip names that match phy
+#   @param model Choice of models include "BM", "OU", "lambda", "kappa",
+#   "delta", "EB", "white", "trend"
+#   @param bounds NULL for fitContinuous.hacked
+#   @param meserr Measurement error, if any
+#   @param userstart Optional user start input
+#   @param badLnL Return value for bad likelihood calculations
+#   @return Returns a matrix of parameter estimates, along with approximate
+#   standard errors and 95% confidence intervals.  Also returns the
+#   log-likelihood of the model (lnl).
+#   @author Luke J. Harmon and Wendell Challenger, Brian O'Meara and Barb
+#   Banbury
 # @references O'Meara and Banbury, unpublished; Harmon et al. 2007
 # @keywords fitContinuous.hacked
-#' @examples
-#' 
-#' 
-#' data(simRun)
-#' fitContinuous.hacked(simPhy, simChar, model="lambda")
-#' 
+#   @examples
+#   
+#   
+#   data(simRun)
+#   fitContinuous.hacked(simPhy, simChar, model="lambda")
+#   
 `fitContinuous.hacked` <-
 function(phy, data, data.names=NULL, model=c("BM", "OU", "lambda", "kappa", "delta", "EB", "white", "trend"), bounds=NULL,  meserr=NULL, userstart=NULL, badLnL=10000)
 {

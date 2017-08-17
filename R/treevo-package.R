@@ -78,6 +78,16 @@ NULL
 # @export abcparticle
 
 
+# @export abctaxon
+# @export fitContinuous.hacked
+# @export interparticleDistance
+# @export pairings
+# @export pullFromPrior
+# @export summarizeTaxonStates
+
+# @export summaryStatsLong
+
+
 
 # exporting, but would be better to do this in each functions ro2 there, not here...
 
@@ -89,7 +99,6 @@ NULL
 #' @export ExponentiallyDecayingPush
 #' @export everyoneDisplacementExtrinsic
 #' @export abcDistance
-#' @export abctaxon
 #' @export BCP
 #' @export boxcoxEstimation
 #' @export boxcoxTransformation
@@ -100,22 +109,16 @@ NULL
 #' @export doRun_rej
 #' @export doSimulation
 #' @export doSimulationForPlotting
-#' @export fitContinuous.hacked
 #' @export getSimulationSplits
 #' @export HPD
-#' @export interparticleDistance
 #' @export mutateState
-#' @export pairings
 #' @export PairwiseESS
 #' @export PairwiseKS
 #' @export parallelSimulation
 #' @export parentOffspringPlots
 #' @export plotPosteriors
 #' @export plotPrior
-#' @export pullFromPrior
 #' @export simulateData
-#' @export summarizeTaxonStates
-#' @export summaryStatsLong
 #' @export ThreeD.ABCplots
 #' @export sumStatNames
 #' @export getUnivariatePriorCurve
