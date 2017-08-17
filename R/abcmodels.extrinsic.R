@@ -43,10 +43,10 @@ nullExtrinsic<-function(params,selfstates,otherstates, timefrompresent) {
 
 
 
-#' Extrinsic Character Evolution Models
-#' 
-#' This function describes a model of extrinsic character evolution.  Character
+#' \code{nearestNeighborDisplacementExtrinsic} describes a model of extrinsic character evolution.  Character
 #' values of a focal taxon depend on values of closest relatives on the tree
+
+
 #' 
 #' 
 #' @param params describes input paramaters for the model.
@@ -84,7 +84,7 @@ nearestNeighborDisplacementExtrinsic<-function(params,selfstates,otherstates, ti
 
 #' Extrinsic Character Evolution Models
 #' 
-#' This function describes a model of extrinsic character evolution.  Character
+#' \code{ExponentiallyDecayingPush} describes a model of extrinsic character evolution.  Character
 #' values of a focal taxon pushes away harder from other taxa with like values;
 #' "push" exponentially decays as the values become less similar
 #' 
@@ -100,6 +100,9 @@ nearestNeighborDisplacementExtrinsic<-function(params,selfstates,otherstates, ti
 #' @author Brian O'Meara and Barb Banbury
 # @references O'Meara and Banbury, unpublished
 # @keywords ExponentiallyDecayingPush extrinsic
+
+#' @rdname extrinsicModels
+#' @export
 ExponentiallyDecayingPush<-function(params,selfstates,otherstates, timefrompresent) { 
 	#params[1] is sd, params[2] is maxForce when character difference = 0, params[3] is half distance (the phenotypic distance at which repulsion is half maxForce)
 	repulsorTaxon<-which.min(abs(otherstates-selfstates))
@@ -118,10 +121,9 @@ ExponentiallyDecayingPush<-function(params,selfstates,otherstates, timefromprese
 
 
 
-#' Extrinsic Character Evolution Models
-#' 
-#' This function describes a model of extrinsic character evolution.  Character
+#' \code{nearestNeighborDisplacementExtrinsic} describes a model of extrinsic character evolution.  Character
 #' values of a focal taxon depend on values of all relatives on the tree
+
 #' 
 #' 
 #' @param params describes input paramaters for the model.
@@ -136,6 +138,9 @@ ExponentiallyDecayingPush<-function(params,selfstates,otherstates, timefromprese
 #' @author Brian O'Meara and Barb Banbury
 # @references O'Meara and Banbury, unpublished
 # @keywords everyoneDisplacementExtrinsic extrinsic
+
+#' @rdname extrinsicModels
+#' @export
 everyoneDisplacementExtrinsic<-function(params,selfstates,otherstates, timefrompresent) { #this is set up for one character only right now
 	#params[1] is sd, params[2] is springK, params[3] is maxforce
 	sd<-params[1]
