@@ -16,7 +16,7 @@
 #' @param terminal If TRUE, is a terminal taxon
 #' @param ancestorId ID of the ancestor of this node.
 #' @author Brian O'Meara and Barb Banbury
-#' @references O'Meara and Banbury, unpublished
+# @references O'Meara and Banbury, unpublished
 abctaxon <- function(id=0, name="taxon0", timeSinceSpeciation=0, states=NA, nextstates=NA, startTime=0, endTime=Inf, terminal=TRUE, ancestorId=NA) {
 	taxon <- list(id=id, name=name, timeSinceSpeciation=timeSinceSpeciation, states=states,
 		nextstates=nextstates, startTime=startTime, endTime=endTime, terminal=terminal, ancestorId=ancestorId)

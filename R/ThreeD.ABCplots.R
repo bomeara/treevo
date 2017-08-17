@@ -28,9 +28,9 @@
 
 #' @author Barb Banbury
 
-#' @references O'Meara and Banbury, unpublished
+# @references O'Meara and Banbury, unpublished
 
-#' @keywords ThreeD.ABCplots
+# @keywords ThreeD.ABCplots
 
 #' @examples
 #' 

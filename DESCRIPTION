@@ -4,8 +4,8 @@ Title: Using ABC to Understand Trait Evolution
 Version: 0.4.2
 Date: 2017-08-15
 Authors@R: c(person("Brian", "O'Meara", role=c("aut", "cre"), email="omeara.brian@gmail.com"),
-  person("Barb", "Banbury", role=c("aut")))
-Author: Brian O'Meara, Barb L. Banbury
+  person("Barb", "Banbury", role=c("aut")),person("David","Bapst, role=c("aut")))
+Author: Brian O'Meara, Barb L. Banbury, David W. Bapst
 Maintainer: Brian O'Meara <omeara.brian@gmail.com>
 Depends:
     R (>= 2.13.0),
@@ -31,7 +31,7 @@ Suggests:
 	doParallel,
     testthat
 LazyData: yes
-Description: Various functions for estimating parameters of trait evolution
+Description: Various functions for estimating parameters of trait evolution in comparative analyses
     using Approximate Bayesian Computation.
 License: GPL
 URL: https://github.com/bomeara/treevo

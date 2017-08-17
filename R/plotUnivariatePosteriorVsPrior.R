@@ -16,8 +16,8 @@
 #' @return Returns a list of x and y density coordinates, mean, and lower and
 #' upper HPD
 #' @author Barb Banbury and Brian O'Meara
-#' @references O'Meara and Banbury, unpublished
-#' @keywords getUnivariatePriorCurve
+# @references O'Meara and Banbury, unpublished
+# @keywords getUnivariatePriorCurve
 getUnivariatePriorCurve<-function(priorValues, priorFn, nPoints=100000, from=NULL, to=NULL, prob=0.95) {
 	samples<-replicate(nPoints,pullFromPrior(priorValues, priorFn))
 	if (is.null(from)) {
@@ -48,8 +48,8 @@ getUnivariatePriorCurve<-function(priorValues, priorFn, nPoints=100000, from=NUL
 #' @return Returns a list of x and y density coordinates, mean, and lower and
 #' upper HPD
 #' @author Barb Banbury and Brian O'Meara
-#' @references O'Meara and Banbury, unpublished
-#' @keywords getUnivariatePosteriorCurve
+# @references O'Meara and Banbury, unpublished
+# @keywords getUnivariatePosteriorCurve
 getUnivariatePosteriorCurve<-function(acceptedValues, from=NULL, to=NULL, prob=0.95) {
 	if (is.null(from)) {
 		from<-min(acceptedValues)
@@ -76,8 +76,8 @@ getUnivariatePosteriorCurve<-function(acceptedValues, from=NULL, to=NULL, prob=0
 #' @param prob Probability content of HPD
 #' @return Returns a plot
 #' @author Barb Banbury and Brian O'Meara
-#' @references O'Meara and Banbury, unpublished
-#' @keywords plotUnivariatePosteriorVsPrior
+# @references O'Meara and Banbury, unpublished
+# @keywords plotUnivariatePosteriorVsPrior
 plotUnivariatePosteriorVsPrior<-function(posteriorCurve, priorCurve, label="parameter", trueValue=NULL, prob=0.95) {
 	plot(x=range(c(posteriorCurve$x, priorCurve$x)), y=range(c(posteriorCurve$y, priorCurve$y)), type="n", xlab=label, ylab="", bty="n", yaxt="n")
 	polygon(x=c(priorCurve$x, max(priorCurve$x), priorCurve$x[1]), y=c(priorCurve$y, 0, 0), col=rgb(0,0,0,0.3),border=rgb(0,0,0,0.3))

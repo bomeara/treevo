@@ -15,7 +15,7 @@
 #' @param intrinsicValues Vector of parameter estimates for intrinsicValues
 #' @param extrinsicValues Vector of parameter estimates for extrinsicValues
 #' @author Brian O'Meara and Barb Banbury
-#' @references O'Meara and Banbury, unpublished
+# @references O'Meara and Banbury, unpublished
 abcparticle <- function( id=NA, generation=NA, weight=NA, distance=NA, startingValues=NA, intrinsicValues=NA, extrinsicValues=NA ) {
 	particle <- list(id=id, generation=generation, weight=weight, distance=distance,
 		startingValues=startingValues, intrinsicValues=intrinsicValues,

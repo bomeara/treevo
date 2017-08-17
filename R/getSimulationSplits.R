@@ -8,7 +8,7 @@
 #' @param phy Tree (ape phylo format)
 #' @return A data frame of branching times, ancestor and descendant vectors
 #' @author Brian O'Meara and Barb Banbury
-#' @references O'Meara and Banbury, unpublished
+# @references O'Meara and Banbury, unpublished
 getSimulationSplits<-function(phy) {
 	phy$node.label<-NULL
 	branchingTimes<-sort(branching.times(phy), decreasing=TRUE)

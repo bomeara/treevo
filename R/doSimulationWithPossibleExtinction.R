@@ -28,8 +28,8 @@
 #' @param reject.NaN Stop run if any simulated value is NaN
 #' @return A data frame of species character (tip) values in the tree (unless returnAll==TRUE, in which case it returns the raw df from the sim).
 #' @author Brian O'Meara and Barb Banbury
-#' @references O'Meara and Banbury, unpublished
-#' @keywords doSimulation
+# @references O'Meara and Banbury, unpublished
+# @keywords doSimulation
 #' @examples
 #'
 #'

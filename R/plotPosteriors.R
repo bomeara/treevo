@@ -22,8 +22,8 @@
 #' parameter (inlcuding fixed values)
 #' @return Returns a plot for each free parameter.
 #' @author Barb Banbury and Brian O'Meara
-#' @references O'Meara and Banbury, unpublished
-#' @keywords plotPosteriors
+# @references O'Meara and Banbury, unpublished
+# @keywords plotPosteriors
 
 #' @examples
 #' 

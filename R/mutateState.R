@@ -9,7 +9,7 @@
 #' @param priorValues Vector of priorValues
 #' @param priorFn Prior shape
 #' @author Brian O'Meara and Barb Banbury
-#' @references O'Meara and Banbury, unpublished
+# @references O'Meara and Banbury, unpublished
 mutateState<-function(startingState, standardDevFactor, priorValues, priorFn) {
 	newState<-NA
 	minBound=-Inf

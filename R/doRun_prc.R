@@ -98,9 +98,9 @@
 #' parameter of the final generation} \item{HPD}{Highest Posterior Density
 #' calculation each free parameter of the final generation}
 #' @author Brian O'Meara and Barb Banbury
-#' @references O'Meara and Banbury, unpublished; Sisson et al. 2007, Wegmann et
+# @references O'Meara and Banbury, unpublished; Sisson et al. 2007, Wegmann et
 #' al. 2009
-#' @keywords doRun doRun_prc abc
+# @keywords doRun doRun_prc abc
 #' @examples
 #'
 #' data(simRun)

@@ -18,8 +18,8 @@
 #' @param variance.cutoff variance cutoff for pls.model.list
 #' @return Returns a list of the particle data frame and abc distances.
 #' @author Brian O'Meara and Barb Banbury
-#' @references O'Meara and Banbury, unpublished
-#' @keywords PLSRejection doRun doRun_rej abc
+# @references O'Meara and Banbury, unpublished
+# @keywords PLSRejection doRun doRun_rej abc
 #' @examples
 #' 
 #' #PLSRejection(summaryValuesMatrix, trueFreeValuesMatrix, phy, traits, abcTolerance)

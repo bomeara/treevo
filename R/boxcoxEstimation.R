@@ -7,8 +7,8 @@
 #' @return Returns a matrix of Box-Cox transformed summary statistics with the
 #' same dimensions as summaryValuesMatrix.
 #' @author Brian O'Meara and Barb Banbury
-#' @references O'Meara and Banbury, unpublished; Bates et al. 2009
-#' @keywords boxcoxEstimation Box-Cox
+# @references O'Meara and Banbury, unpublished; Bates et al. 2009
+# @keywords boxcoxEstimation Box-Cox
 #' @examples
 #' 
 #' #data(res)

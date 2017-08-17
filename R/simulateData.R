@@ -40,7 +40,7 @@
 #' @return Returns matrix of trueFreeValues and summary statistics for
 #' simulations
 #' @author Brian O'Meara and Barb Banbury
-#' @references O'Meara and Banbury, unpublished
+# @references O'Meara and Banbury, unpublished
 simulateData<-function(taxon.df, phy, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn,giveUpAttempts=10, niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25, verbose=FALSE) {
 	simTrueAndStats<-rep(NA,10) #no particular reason for it to be 10 wide
 	n.attempts<-0

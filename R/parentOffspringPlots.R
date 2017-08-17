@@ -14,8 +14,8 @@
 #' @param particleDataFrame particleDataFrame from TreEvo results
 #' @return Returns a layout of parent-offspring plots
 #' @author Brian O'Meara and Barb Banbury
-#' @references O'Meara and Banbury, unpublished
-#' @keywords parentOffspringPlots
+# @references O'Meara and Banbury, unpublished
+# @keywords parentOffspringPlots
 #' @examples
 #' 
 #' #data(res)

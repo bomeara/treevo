@@ -87,8 +87,8 @@
 #' @return A matrix of values representing character displacement from a single
 #' time step in the tree.
 #' @author Brian O'Meara and Barb Banbury
-#' @references O'Meara and Banbury, unpublished
-#' @keywords nullIntrinsic intrinsic
+# @references O'Meara and Banbury, unpublished
+# @keywords nullIntrinsic intrinsic
 #' @examples
 #' # this needs examples
 #'

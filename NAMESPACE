@@ -90,6 +90,7 @@ importFrom(mvtnorm,dmvnorm)
 importFrom(partitions,blockparts)
 importFrom(pls,plsr)
 importFrom(pls,scores)
+
 importFrom(rgl,lines3d)
 importFrom(rgl,open3d)
 importFrom(rgl,plot3d)

@@ -9,7 +9,7 @@
 #' @param taxa a list of objects
 #' @return Returns a data frame of taxon values
 #' @author Brian O'Meara and Barb Banbury
-#' @references O'Meara and Banbury, unpublished
+# @references O'Meara and Banbury, unpublished
 summarizeTaxonStates<-function(taxa) {
 #print("in summarizeTaxonStates")
 	statesvector<-c()

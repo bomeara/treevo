@@ -25,8 +25,8 @@
 #' log-likelihood of the model (lnl).
 #' @author Luke J. Harmon and Wendell Challenger, Brian O'Meara and Barb
 #' Banbury
-#' @references O'Meara and Banbury, unpublished; Harmon et al. 2007
-#' @keywords fitContinuous.hacked
+# @references O'Meara and Banbury, unpublished; Harmon et al. 2007
+# @keywords fitContinuous.hacked
 #' @examples
 #' 
 #' 

@@ -11,30 +11,38 @@
 #' @aliases simRun simPhy simChar results
 #' @docType data
 #' @format simPhy in phylo format and simChar in single column matrix and results
-#' @keywords datasets
+# @keywords datasets
 NULL
 
 
 
 #' TreEvo--abc for comparative methods
 #'
-#' A package for using approximate Bayesian computation for comparative methods
-#' in trait evolution
+#' A package for applying Approximate Bayesian Computation to estimating parameters of trait evolution in comparative analyses.
 #'
 #' \tabular{ll}{ Package: \tab TreEvo\cr Type: \tab Package\cr Version: \tab
 #' 0.3.3\cr Date: \tab 2012-07-02\cr License: \tab GPL\cr }
 #'
+
 #' @name TreEvo-package
+
 #' @aliases TreEvo-package treevo
+
 #' @docType package
-#' @author Brian O'Meara, Barb L. Banbury
+
+#' @author Brian O'Meara, Barb L. Banbury, David W. Bapst
 #'
-#' Maintainer: Barb Banbury <darwinthesun@@gmail.com>
-#' @keywords treevo abc
+
+#' Maintainer: David Bapst <dwbapst@gmail.com>
+
+# @keywords treevo abc
+
+# ideally, the example below should be an example analysis
+
 #' @examples
 #'
 #' #Continuous character simulation under Brownian motion
-#' library(ape)
+# library(ape)
 #' phy<-rcoal(20)
 #' char<-doSimulationWithPossibleExtinction(
 #' 	taxon.df=getTaxonDFWithPossibleExtinction(phy),
@@ -43,7 +51,8 @@ NULL
 #' 	startingValues=c(30),
 #' 	intrinsicValues=c(.01),
 #' 	extrinsicValues=c(0),
-#' 	timeStep=0.001)
+#' 	timeStep=0.001
+#'	)
 #' 
 
 # NAMESPACE IMPORTING
@@ -65,7 +74,15 @@ NULL
 #' @importFrom grDevices dev.new dev.off gray pdf rgb 
 #' @importFrom methods as 
 
+# interval functions - DO NOT EXPORT
+# @export abcparticle
+
+
+
 # exporting, but would be better to do this in each functions ro2 there, not here...
+
+
+
 
 #' @export nullExtrinsic
 #' @export nearestNeighborDisplacementExtrinsic
@@ -73,7 +90,6 @@ NULL
 #' @export everyoneDisplacementExtrinsic
 #' @export abcDistance
 #' @export abctaxon
-#' @export abcparticle
 #' @export BCP
 #' @export boxcoxEstimation
 #' @export boxcoxTransformation

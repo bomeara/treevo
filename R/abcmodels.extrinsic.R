@@ -7,6 +7,16 @@
 
 #' Extrinsic Character Evolution Models
 #' 
+#' Functions describing various models of 'extrinsive' evolution (i.e. evolutionary processes
+#' dependent on factors extrinsic to the evolving lineage, such as environmental change, or
+#' other evolving lineages that interact with the lineage in question (competitors, predators, etc).
+#'
+#' The following extrinsic models are:
+#'
+
+
+
+#' 
 #' This function describes a model of no extrinsic character evolution
 #' 
 #' 
@@ -18,8 +28,13 @@
 #' @return A matrix of values representing character displacement from a single
 #' time step in the tree.
 #' @author Brian O'Meara and Barb Banbury
-#' @references O'Meara and Banbury, unpublished
-#' @keywords nullExtrinsic extrinsic
+# @references O'Meara and Banbury, unpublished
+# @keywords nullExtrinsic extrinsic
+
+
+#' @name extrinsicModels
+#' @rdname extrinsicModels
+#' @export
 nullExtrinsic<-function(params,selfstates,otherstates, timefrompresent) {
 	newdisplacement<-0*selfstates
 	return(newdisplacement)
@@ -44,8 +59,11 @@ nullExtrinsic<-function(params,selfstates,otherstates, timefrompresent) {
 #' @return A matrix of values representing character displacement from a single
 #' time step in the tree.
 #' @author Brian O'Meara and Barb Banbury
-#' @references O'Meara and Banbury, unpublished
-#' @keywords nearestNeighborDisplacementExtrinsic extrinsic
+# @references O'Meara and Banbury, unpublished
+# @keywords nearestNeighborDisplacementExtrinsic extrinsic
+
+#' @rdname extrinsicModels
+#' @export
 nearestNeighborDisplacementExtrinsic<-function(params,selfstates,otherstates, timefrompresent) { 
 	#params[1] is sd, params[2] is springK, params[3] is maxforce
 	repulsorTaxon<-which.min(abs(otherstates-selfstates))
@@ -80,8 +98,8 @@ nearestNeighborDisplacementExtrinsic<-function(params,selfstates,otherstates, ti
 #' @return A matrix of values representing character displacement from a single
 #' time step in the tree.
 #' @author Brian O'Meara and Barb Banbury
-#' @references O'Meara and Banbury, unpublished
-#' @keywords ExponentiallyDecayingPush extrinsic
+# @references O'Meara and Banbury, unpublished
+# @keywords ExponentiallyDecayingPush extrinsic
 ExponentiallyDecayingPush<-function(params,selfstates,otherstates, timefrompresent) { 
 	#params[1] is sd, params[2] is maxForce when character difference = 0, params[3] is half distance (the phenotypic distance at which repulsion is half maxForce)
 	repulsorTaxon<-which.min(abs(otherstates-selfstates))
@@ -116,8 +134,8 @@ ExponentiallyDecayingPush<-function(params,selfstates,otherstates, timefromprese
 #' @return A matrix of values representing character displacement from a single
 #' time step in the tree.
 #' @author Brian O'Meara and Barb Banbury
-#' @references O'Meara and Banbury, unpublished
-#' @keywords everyoneDisplacementExtrinsic extrinsic
+# @references O'Meara and Banbury, unpublished
+# @keywords everyoneDisplacementExtrinsic extrinsic
 everyoneDisplacementExtrinsic<-function(params,selfstates,otherstates, timefrompresent) { #this is set up for one character only right now
 	#params[1] is sd, params[2] is springK, params[3] is maxforce
 	sd<-params[1]

@@ -21,9 +21,9 @@
 
 #' @author Brian O'Meara and Barb Banbury
 
-#' @references O'Meara and Banbury, unpublished
+# @references O'Meara and Banbury, unpublished
 
-#' @keywords returnPLSModel PLSTransform PLS
+# @keywords returnPLSModel PLSTransform PLS
 
 #' @examples
 #' 

@@ -8,7 +8,7 @@
 #' @return Returns a matrix with weighted mean, sd, upper and lower credible
 #' intervals for each free parameter
 #' @author Brian O'Meara and Barb Banbury
-#' @references O'Meara and Banbury, unpublished
+# @references O'Meara and Banbury, unpublished
 CredInt<-function(particleDataFrame, percent=0.95) { 
 	generation<-NULL #to appease R CMD CHECK with subset
 	PercentTail<-(1-percent)/2

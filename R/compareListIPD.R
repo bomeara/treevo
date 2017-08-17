@@ -11,7 +11,7 @@
 #' @param verbose Commented screen output
 #' @return Returns a plot with IPD between runs per generation
 #' @author Brian O'Meara and Barb Banbury
-#' @references O'Meara and Banbury, unpublished
+# @references O'Meara and Banbury, unpublished
 compareListIPD<-function(particleDataFrame, verbose=F){  #list of particleDataFrames
 	params<-dim(particleDataFrame[[1]][7:dim(particleDataFrame[[1]])[2]])[2]
 	plot.new()

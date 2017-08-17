@@ -6,7 +6,7 @@
 #' @param particleDataFrame List of particleDataFrames from separate runs
 #' @return Returns a matrix with KS values of all pairwise runs
 #' @author Brian O'Meara and Barb Banbury
-#' @references O'Meara and Banbury, unpublished
+# @references O'Meara and Banbury, unpublished
 PairwiseKS<-function(particleDataFrame) {
 #Combine doRun$particleDataFrame results and performs Kolmogorov-Smirnov tests
 # particleDataFrame should be a list of particleDataFrames (1:n)

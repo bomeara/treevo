@@ -16,7 +16,7 @@
 #' @return Returns a value for each free parameter that describes the
 #' percentage the real value falls within the HPD
 #' @author Brian O'Meara and Barb Banbury
-#' @references O'Meara and Banbury, unpublished
+# @references O'Meara and Banbury, unpublished
 BCP<-function(RealParam, HPD, verbose=F){  
 	if(class(RealParam)=="numeric"){
 		rps<-vector("list", length=length(HPD))

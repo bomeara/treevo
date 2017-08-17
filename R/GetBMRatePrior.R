@@ -11,8 +11,8 @@
 #' @param timeStep time in a single iteration of the discrete-time simulation
 #' @return Returns a matrix of prior values
 #' @author Brian O'Meara and Barb Banbury
-#' @references O'Meara and Banbury, unpublished
-#' @keywords GetBMRatePrior
+# @references O'Meara and Banbury, unpublished
+# @keywords GetBMRatePrior
 #' @examples
 #' 
 #' #GetBMRatePrior(phy, traits, timeStep)

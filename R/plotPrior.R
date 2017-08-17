@@ -22,8 +22,8 @@
 #' @param plotLegend If TRUE, plots legend box with quantile values
 #' @return Returns a distribution plot
 #' @author Brian O'Meara and Barb Banbury
-#' @references O'Meara and Banbury, unpublished
-#' @keywords plotPrior prior
+# @references O'Meara and Banbury, unpublished
+# @keywords plotPrior prior
 #' @examples
 #' 
 #' 	plotPrior(priorFn="exponential", priorVariables=c(10))

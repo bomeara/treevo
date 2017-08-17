@@ -36,8 +36,8 @@ solnfreq <- function(x, tol = .Machine$double.eps^0.5){
 #' @param do.CI Use confidence interval? By default, only for ultrametric trees
 #' @return Returns a vector of summary statistics
 #' @author Brian O'Meara and Barb Banbury
-#' @references O'Meara and Banbury, unpublished
-#' @keywords summaryStatsLong
+# @references O'Meara and Banbury, unpublished
+# @keywords summaryStatsLong
 #' @examples
 #'
 #' #summaryStatsLong(phy, char)

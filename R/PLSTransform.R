@@ -9,8 +9,8 @@
 #' @param pls.model results from returnPLSModel
 #' @return Returns transformed summary statistics
 #' @author Brian O'Meara and Barb Banbury
-#' @references O'Meara and Banbury, unpublished
-#' @keywords PLSTransform PLS
+# @references O'Meara and Banbury, unpublished
+# @keywords PLSTransform PLS
 #' @examples
 #' 
 #' #PLSTransform(summaryValuesMatrix, pls.model)

@@ -8,7 +8,7 @@
 #' @param priorFn Prior shape
 #' @return Returns mean
 #' @author Brian O'Meara and Barb Banbury
-#' @references O'Meara and Banbury, unpublished
+# @references O'Meara and Banbury, unpublished
 pullFromPrior<-function(priorValues, priorFn) {
 	#fixed, uniform, normal, lognormal, gamma, exponential
 	x<-NA

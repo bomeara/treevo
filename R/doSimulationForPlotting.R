@@ -28,8 +28,8 @@
 #' @param jobName Optional name for the job
 #' @return A data frame of species character (tip) values in the tree.
 #' @author Brian O'Meara and Barb Banbury
-#' @references O'Meara and Banbury, unpublished
-#' @keywords doSimulation doSimulationForPlotting
+# @references O'Meara and Banbury, unpublished
+# @keywords doSimulation doSimulationForPlotting
 #' @examples
 #' 
 #' 
