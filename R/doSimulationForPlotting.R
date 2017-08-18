@@ -52,7 +52,7 @@
 #' char<-doSimulationForPlotting(
 #' 	splits=getSimulationSplits(phy), 
 #' 	intrinsicFn=boundaryMinIntrinsic,
-#' 	extrinsicFn=ExponentiallyDecayingPush,
+#' 	extrinsicFn=ExponentiallyDecayingPushExtrinsic,
 #' 	startingValues=c(10), #root state
 #' 	intrinsicValues=c(0.05, 10, 0.01),
 #' 	extrinsicValues=c(0, .1, .25),

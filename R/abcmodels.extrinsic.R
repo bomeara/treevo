@@ -29,7 +29,7 @@
 #' exponentially decays as lineages diverge and their character values become less similar.
 #' 
 #' The input parameters for this model are:
-#' \code{ExponentiallyDecayingPush} params = sd, maximum force, half distance
+#' \code{ExponentiallyDecayingPushExtrinsic} params = sd, maximum force, half distance
 #' 
 #' 
 #' \code{nearestNeighborDisplacementExtrinsic} describes a model of extrinsic trait evolution where the character
