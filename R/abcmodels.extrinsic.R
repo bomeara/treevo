@@ -3,8 +3,6 @@
 #otherstates has one row per taxon, one column per state
 #states is a vector for each taxon, with length=nchar
 
-
-
 #' Extrinsic Character Evolution Models
 #' 
 #' Functions describing various models of 'extrinsive' evolution (i.e. evolutionary processes
@@ -13,24 +11,47 @@
 #'
 #' The following extrinsic models are:
 #'
-
-
-
 #' 
-#' This function describes a model of no extrinsic character evolution
+#' \code{nullExtrinsic} describes a model of no extrinsic character change.
+#'
+#' It has no parameters, really.
 #' 
 #' 
+#' \code{nearestNeighborDisplacementExtrinsic} describes a model of extrinsic trait evolution where character
+#' values of a focal taxon depend on the values of closest relatives on the tree (e.g. competitive exclusion).
+#' 
+#' The input parameters for this model are:
+#' \code{nearestNeighborDisplacementExtrinsic} params = sd, springK, maximum force
+#' 
+#' 
+#' \code{ExponentiallyDecayingPushExtrinsic} describes a model of extrinsic trait evolution where the haracter
+#' values of a focal taxon is 'pushed' away from other taxa with similar values, but the force of that 'push' 
+#' exponentially decays as lineages diverge and their character values become less similar.
+#' 
+#' The input parameters for this model are:
+#' \code{ExponentiallyDecayingPush} params = sd, maximum force, half distance
+#' 
+#' 
+#' \code{nearestNeighborDisplacementExtrinsic} describes a model of extrinsic trait evolution where the character
+#' values of a focal taxon depend on the values of all co-extant relatives on the simulated tree.
+#' 
+#' The input parameters for this model are:
+#' \code{nearestNeighborDisplacementExtrinsic} params = sd, springK, maximum force
+#' 
+
 #' @param params describes input paramaters for the model
+
 #' @param selfstates vector of states for each taxon
+
 #' @param otherstates matrix of character states, one row per taxon and once
 #' column per state
+
 #' @param timefrompresent which time slice in the tree
+
 #' @return A matrix of values representing character displacement from a single
 #' time step in the tree.
-#' @author Brian O'Meara and Barb Banbury
-# @references O'Meara and Banbury, unpublished
-# @keywords nullExtrinsic extrinsic
 
+#' @author Brian O'Meara and Barb Banbury
 
 #' @name extrinsicModels
 #' @rdname extrinsicModels
@@ -39,28 +60,6 @@ nullExtrinsic<-function(params,selfstates,otherstates, timefrompresent) {
 	newdisplacement<-0*selfstates
 	return(newdisplacement)
 }
-
-
-
-
-#' \code{nearestNeighborDisplacementExtrinsic} describes a model of extrinsic character evolution.  Character
-#' values of a focal taxon depend on values of closest relatives on the tree
-
-
-#' 
-#' 
-#' @param params describes input paramaters for the model.
-#' \code{nearestNeighborDisplacementExtrinsic} params = sd, springK, maximum
-#' force
-#' @param selfstates vector of states for each taxon
-#' @param otherstates matrix of character states, one row per taxon and once
-#' column per state
-#' @param timefrompresent which time slice in the tree
-#' @return A matrix of values representing character displacement from a single
-#' time step in the tree.
-#' @author Brian O'Meara and Barb Banbury
-# @references O'Meara and Banbury, unpublished
-# @keywords nearestNeighborDisplacementExtrinsic extrinsic
 
 #' @rdname extrinsicModels
 #' @export
@@ -80,31 +79,11 @@ nearestNeighborDisplacementExtrinsic<-function(params,selfstates,otherstates, ti
 	return(newdisplacement)
 }
 
-
-
-#' Extrinsic Character Evolution Models
-#' 
-#' \code{ExponentiallyDecayingPush} describes a model of extrinsic character evolution.  Character
-#' values of a focal taxon pushes away harder from other taxa with like values;
-#' "push" exponentially decays as the values become less similar
-#' 
-#' 
-#' @param params describes input paramaters for the model.
-#' \code{ExponentiallyDecayingPush} params = sd, maximum force, half distance
-#' @param selfstates vector of states for each taxon
-#' @param otherstates matrix of character states, one row per taxon and once
-#' column per state
-#' @param timefrompresent which time slice in the tree
-#' @return A matrix of values representing character displacement from a single
-#' time step in the tree.
-#' @author Brian O'Meara and Barb Banbury
-# @references O'Meara and Banbury, unpublished
-# @keywords ExponentiallyDecayingPush extrinsic
-
 #' @rdname extrinsicModels
 #' @export
-ExponentiallyDecayingPush<-function(params,selfstates,otherstates, timefrompresent) { 
-	#params[1] is sd, params[2] is maxForce when character difference = 0, params[3] is half distance (the phenotypic distance at which repulsion is half maxForce)
+ExponentiallyDecayingPushExtrinsic<-function(params,selfstates,otherstates, timefrompresent) { 
+	#params[1] is sd, params[2] is maxForce when character difference = 0, params[3] is half
+		# distance (the phenotypic distance at which repulsion is half maxForce)
 	repulsorTaxon<-which.min(abs(otherstates-selfstates))
 	repulsorValue<-otherstates[repulsorTaxon]
 	sd<-params[1]
@@ -119,29 +98,10 @@ ExponentiallyDecayingPush<-function(params,selfstates,otherstates, timefromprese
 	return(newdisplacement)
 }
 
-
-
-#' \code{nearestNeighborDisplacementExtrinsic} describes a model of extrinsic character evolution.  Character
-#' values of a focal taxon depend on values of all relatives on the tree
-
-#' 
-#' 
-#' @param params describes input paramaters for the model.
-#' \code{nearestNeighborDisplacementExtrinsic} params = sd, springK, maximum
-#' force
-#' @param selfstates vector of states for each taxon
-#' @param otherstates matrix of character states, one row per taxon and once
-#' column per state
-#' @param timefrompresent which time slice in the tree
-#' @return A matrix of values representing character displacement from a single
-#' time step in the tree.
-#' @author Brian O'Meara and Barb Banbury
-# @references O'Meara and Banbury, unpublished
-# @keywords everyoneDisplacementExtrinsic extrinsic
-
 #' @rdname extrinsicModels
 #' @export
-everyoneDisplacementExtrinsic<-function(params,selfstates,otherstates, timefrompresent) { #this is set up for one character only right now
+everyoneDisplacementExtrinsic<-function(params,selfstates,otherstates, timefrompresent) { 
+	#this is set up for one character only right now
 	#params[1] is sd, params[2] is springK, params[3] is maxforce
 	sd<-params[1]
 	springK <-params[2]

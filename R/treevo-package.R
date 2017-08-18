@@ -76,28 +76,16 @@ NULL
 
 # interval functions - DO NOT EXPORT
 # @export abcparticle
-
-
 # @export abctaxon
 # @export fitContinuous.hacked
 # @export interparticleDistance
 # @export pairings
 # @export pullFromPrior
 # @export summarizeTaxonStates
-
 # @export summaryStatsLong
-
-
 
 # exporting, but would be better to do this in each functions ro2 there, not here...
 
-
-
-
-#' @export nullExtrinsic
-#' @export nearestNeighborDisplacementExtrinsic
-#' @export ExponentiallyDecayingPush
-#' @export everyoneDisplacementExtrinsic
 #' @export abcDistance
 #' @export BCP
 #' @export boxcoxEstimation
