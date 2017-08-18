@@ -4,7 +4,7 @@
 \alias{extrinsicModels}
 \alias{nullExtrinsic}
 \alias{nearestNeighborDisplacementExtrinsic}
-\alias{ExponentiallyDecayingPush}
+\alias{ExponentiallyDecayingPushExtrinsic}
 \alias{everyoneDisplacementExtrinsic}
 \title{Extrinsic Character Evolution Models}
 \usage{
@@ -13,7 +13,8 @@ nullExtrinsic(params, selfstates, otherstates, timefrompresent)
 nearestNeighborDisplacementExtrinsic(params, selfstates, otherstates,
   timefrompresent)
 
-ExponentiallyDecayingPush(params, selfstates, otherstates, timefrompresent)
+ExponentiallyDecayingPushExtrinsic(params, selfstates, otherstates,
+  timefrompresent)
 
 everyoneDisplacementExtrinsic(params, selfstates, otherstates, timefrompresent)
 }
@@ -26,49 +27,8 @@ everyoneDisplacementExtrinsic(params, selfstates, otherstates, timefrompresent)
 column per state}
 
 \item{timefrompresent}{which time slice in the tree}
-
-\item{params}{describes input paramaters for the model.
-\code{nearestNeighborDisplacementExtrinsic} params = sd, springK, maximum
-force}
-
-\item{selfstates}{vector of states for each taxon}
-
-\item{otherstates}{matrix of character states, one row per taxon and once
-column per state}
-
-\item{timefrompresent}{which time slice in the tree}
-
-\item{params}{describes input paramaters for the model.
-\code{ExponentiallyDecayingPush} params = sd, maximum force, half distance}
-
-\item{selfstates}{vector of states for each taxon}
-
-\item{otherstates}{matrix of character states, one row per taxon and once
-column per state}
-
-\item{timefrompresent}{which time slice in the tree}
-
-\item{params}{describes input paramaters for the model.
-\code{nearestNeighborDisplacementExtrinsic} params = sd, springK, maximum
-force}
-
-\item{selfstates}{vector of states for each taxon}
-
-\item{otherstates}{matrix of character states, one row per taxon and once
-column per state}
-
-\item{timefrompresent}{which time slice in the tree}
 }
 \value{
-A matrix of values representing character displacement from a single
-time step in the tree.
-
-A matrix of values representing character displacement from a single
-time step in the tree.
-
-A matrix of values representing character displacement from a single
-time step in the tree.
-
 A matrix of values representing character displacement from a single
 time step in the tree.
 }
@@ -76,28 +36,33 @@ time step in the tree.
 Functions describing various models of 'extrinsive' evolution (i.e. evolutionary processes
 dependent on factors extrinsic to the evolving lineage, such as environmental change, or
 other evolving lineages that interact with the lineage in question (competitors, predators, etc).
-
-\code{nearestNeighborDisplacementExtrinsic} describes a model of extrinsic character evolution.  Character
-values of a focal taxon depend on values of closest relatives on the tree
-
-\code{ExponentiallyDecayingPush} describes a model of extrinsic character evolution.  Character
-values of a focal taxon pushes away harder from other taxa with like values;
-"push" exponentially decays as the values become less similar
-
-\code{nearestNeighborDisplacementExtrinsic} describes a model of extrinsic character evolution.  Character
-values of a focal taxon depend on values of all relatives on the tree
 }
 \details{
 The following extrinsic models are:
 
-This function describes a model of no extrinsic character evolution
+\code{nullExtrinsic} describes a model of no extrinsic character change.
+
+It has no parameters, really.
+
+\code{nearestNeighborDisplacementExtrinsic} describes a model of extrinsic trait evolution where character
+values of a focal taxon depend on the values of closest relatives on the tree (e.g. competitive exclusion).
+
+The input parameters for this model are:
+\code{nearestNeighborDisplacementExtrinsic} params = sd, springK, maximum force
+
+\code{ExponentiallyDecayingPushExtrinsic} describes a model of extrinsic trait evolution where the haracter
+values of a focal taxon is 'pushed' away from other taxa with similar values, but the force of that 'push' 
+exponentially decays as lineages diverge and their character values become less similar.
+
+The input parameters for this model are:
+\code{ExponentiallyDecayingPush} params = sd, maximum force, half distance
+
+\code{nearestNeighborDisplacementExtrinsic} describes a model of extrinsic trait evolution where the character
+values of a focal taxon depend on the values of all co-extant relatives on the simulated tree.
+
+The input parameters for this model are:
+\code{nearestNeighborDisplacementExtrinsic} params = sd, springK, maximum force
 }
 \author{
-Brian O'Meara and Barb Banbury
-
-Brian O'Meara and Barb Banbury
-
-Brian O'Meara and Barb Banbury
-
 Brian O'Meara and Barb Banbury
 }

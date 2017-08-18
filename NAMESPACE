@@ -2,7 +2,7 @@
 
 export(BCP)
 export(CredInt)
-export(ExponentiallyDecayingPush)
+export(ExponentiallyDecayingPushExtrinsic)
 export(GetBMRatePrior)
 export(HPD)
 export(PLSRejection)
