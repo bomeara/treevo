@@ -86,8 +86,6 @@ NULL
 
 # exporting, but would be better to do this in each functions ro2 there, not here...
 
-#' @export abcDistance
-#' @export BCP
 #' @export boxcoxEstimation
 #' @export boxcoxTransformation
 #' @export compareListIPD

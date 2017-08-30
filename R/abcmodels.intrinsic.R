@@ -81,14 +81,22 @@
 #' attractor-1 (character mean-1), attraction-1 (alpha-1), time threshold-1,
 #' attractor-2 (character mean-2), attraction-2 (alpha-2), time threshold-2
 #'
-#' @param params describes input paramaters for the model (see description)
+
+#' @param params describes input paramaters for the model (see Description)
+
 #' @param states vector of states for each taxon
+
 #' @param timefrompresent which time slice in the tree
+
 #' @return A matrix of values representing character displacement from a single
 #' time step in the tree.
+
 #' @author Brian O'Meara and Barb Banbury
+
 # @references O'Meara and Banbury, unpublished
+
 # @keywords nullIntrinsic intrinsic
+
 #' @examples
 #' # this needs examples
 #'

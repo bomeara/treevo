@@ -39,7 +39,7 @@
 #' \code{nearestNeighborDisplacementExtrinsic} params = sd, springK, maximum force
 #' 
 
-#' @param params describes input paramaters for the model
+#' @param params describes input paramaters for the model (see Description)
 
 #' @param selfstates vector of states for each taxon
 
@@ -52,6 +52,10 @@
 #' time step in the tree.
 
 #' @author Brian O'Meara and Barb Banbury
+
+#' @examples
+#' # this needs examples
+#'
 
 #' @name extrinsicModels
 #' @rdname extrinsicModels

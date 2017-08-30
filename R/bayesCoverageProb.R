@@ -1,4 +1,4 @@
-#BCP = Bayesian Coverage Probability
+#used to be BCP = Bayesian Coverage Probability, now bayesCoverageProb (08-29-17)
 #RealParam can be "RealParams$vector" from doSimulation c(x1, x2, ...) or a list
 #HPD should be a list of HPD output from different runs
 #Calculates what percent of the time the real parameter falls into the HPD
@@ -8,16 +8,28 @@
 #' 
 #' This function calculates coverage probability for a list of HPDs
 #' 
-#' Only for use with simulated data to test models
+#' Only for use with simulated data to test models.
 #' 
+
 #' @param RealParam Real parameter values
+
 #' @param HPD List of HPD from doRun_rej or doRun_prc results
+
 #' @param verbose Commented screen output
+
 #' @return Returns a value for each free parameter that describes the
+
 #' percentage the real value falls within the HPD
+
 #' @author Brian O'Meara and Barb Banbury
+
 # @references O'Meara and Banbury, unpublished
-BCP<-function(RealParam, HPD, verbose=F){  
+
+
+#' @name bayesCoverageProb
+#' @rdname bayesCoverageProb
+#' @export
+bayesCoverageProb<-function(RealParam, HPD, verbose=F){  
 	if(class(RealParam)=="numeric"){
 		rps<-vector("list", length=length(HPD))
 		for (i in 1: length(HPD)){
