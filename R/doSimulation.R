@@ -55,6 +55,10 @@
 #' 	timeStep=0.001,
 #' 	saveHistory=FALSE)
 #'
+
+#' @name intrinsicModels
+#' @rdname intrinsicModels
+#' @export
 doSimulation<-function(splits, intrinsicFn, extrinsicFn, startingValues, intrinsicValues, extrinsicValues, timeStep, saveHistory=FALSE, saveRealParams=FALSE, jobName="") {
 	if (saveRealParams){
 		RealParams<-vector("list", 2)

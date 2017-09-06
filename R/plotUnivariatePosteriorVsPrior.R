@@ -16,8 +16,13 @@
 #' @return Returns a list of x and y density coordinates, mean, and lower and
 #' upper HPD
 #' @author Barb Banbury and Brian O'Meara
+
 # @references O'Meara and Banbury, unpublished
 # @keywords getUnivariatePriorCurve
+
+#' @name intrinsicModels
+#' @rdname intrinsicModels
+#' @export
 getUnivariatePriorCurve<-function(priorValues, priorFn, nPoints=100000, from=NULL, to=NULL, prob=0.95) {
 	samples<-replicate(nPoints,pullFromPrior(priorValues, priorFn))
 	if (is.null(from)) {
@@ -50,6 +55,10 @@ getUnivariatePriorCurve<-function(priorValues, priorFn, nPoints=100000, from=NUL
 #' @author Barb Banbury and Brian O'Meara
 # @references O'Meara and Banbury, unpublished
 # @keywords getUnivariatePosteriorCurve
+
+#' @name intrinsicModels
+#' @rdname intrinsicModels
+#' @export
 getUnivariatePosteriorCurve<-function(acceptedValues, from=NULL, to=NULL, prob=0.95) {
 	if (is.null(from)) {
 		from<-min(acceptedValues)

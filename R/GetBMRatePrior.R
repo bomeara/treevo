@@ -18,6 +18,10 @@
 #' #GetBMRatePrior(phy, traits, timeStep)
 #' 
 #' 
+
+#' @name intrinsicModels
+#' @rdname intrinsicModels
+#' @export
 GetBMRatePrior<-function(phy, traits, timeStep) {
   print("BM rate prior is an exponential distribution with a mean value approximately equal to the likelihood estimation")
   GetBrownianSDRate<-function(phy, traits, timeStep) { #conversion from continuous rate to discrete

@@ -60,6 +60,10 @@
 #' 	plot=TRUE,
 #' 	saveHistory=FALSE)
 #' 
+
+#' @name intrinsicModels
+#' @rdname intrinsicModels
+#' @export
 doSimulationForPlotting<-function(splits, intrinsicFn, extrinsicFn, startingValues, intrinsicValues, extrinsicValues, timeStep, plot=FALSE, savePlot=FALSE, saveHistory=FALSE, saveRealParams=FALSE, jobName="") {
 if (saveRealParams){
 	RealParams<-vector("list", 2)

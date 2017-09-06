@@ -4,30 +4,44 @@
 #' and checkpointing
 #'
 #'
+
 #' @param nrepSim Number of simulations
+
 #' @param coreLimit Number of cores to be used
+
 #' @param taxon.df object from getTaxonDFWithPossibleExtinction
+
 #' @param phy Tree (Phylogenetic tree in phylo format)
+
 #' @param startingPriorsValues Matrix with ncol=number of states (characters)
 #' at root and nrow=2 (two parameters to pass to prior distribution)
+
 #' @param intrinsicPriorsValues Matrix with ncol=number of states (characters)
 #' at root and nrow=2 (two parameters to pass to prior distribution)
+
 #' @param extrinsicPriorsValues Matrix with ncol=number of states (characters)
 #' at root and nrow=2 (two parameters to pass to prior distribution)
+
 #' @param startingPriorsFns Vector containing names of prior distributions to
 #' use for root states: can be one of fixed, uniform, normal, lognormal, gamma,
 #' exponential
+
 #' @param intrinsicPriorsFns Vector containing names of prior distributions to
 #' use for root states: can be one of fixed, uniform, normal, lognormal, gamma,
 #' exponential
+
 #' @param extrinsicPriorsFns Vector containing names of prior distributions to
 #' use for root states: can be one of fixed, uniform, normal, lognormal, gamma,
 #' exponential
+
 #' @param freevector A vector (length=number of parameters) of free (T) and
 #' fixed (F) parameters
+
 #' @param timeStep This value corresponds to the number of discrete time steps
+
 #' @param intrinsicFn Name of intrinsic function characters should be simulated
 #' under (as used by doSimulation)
+
 #' @param extrinsicFn Name of extrinsic function characters should be simulated
 #' under (as used by doSimulation)
 
@@ -37,17 +51,29 @@
 #' If neither package is installed, this function will fail if multicore=TRUE.
 
 #' @param checkpointFile Optional file name for checkpointing simulations
+
 #' @param checkpointFreq Saving frequency for checkpointing
+
 #' @param niter.brown Number of random starts for BM model (min of 2)
+
 #' @param niter.lambda Number of random starts for lambda model (min of 2)
+
 #' @param niter.delta Number of random starts for delta model (min of 2)
+
 #' @param niter.OU Number of random starts for OU model (min of 2)
+
 #' @param niter.white Number of random starts for white model (min of 2)
+
 #' @return Returns matrix of trueFreeValues and summary statistics for
 #' simulations
+
 #' @author Brian O'Meara and Barb Banbury
+
 # @references O'Meara and Banbury, unpublished
 
+#' @name intrinsicModels
+#' @rdname intrinsicModels
+#' @export
 parallelSimulation<-function(nrepSim, coreLimit, taxon.df, phy, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn, multicore,checkpointFile=NULL,checkpointFreq=24, niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) {
 	#library(doMC, quietly=T)
 	#library(foreach, quietly=T)

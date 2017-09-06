@@ -9,6 +9,11 @@
 #' intervals for each free parameter
 #' @author Brian O'Meara and Barb Banbury
 # @references O'Meara and Banbury, unpublished
+
+
+#' @name intrinsicModels
+#' @rdname intrinsicModels
+#' @export
 CredInt<-function(particleDataFrame, percent=0.95) { 
 	generation<-NULL #to appease R CMD CHECK with subset
 	PercentTail<-(1-percent)/2

@@ -1,8 +1,3 @@
-
-
-
-
-
 #' TreEvo--abc for comparative methods
 #'
 #' A package for applying Approximate Bayesian Computation to estimating parameters of trait evolution in comparative analyses.
@@ -24,23 +19,9 @@
 
 # @keywords treevo abc
 
-# ideally, the example below should be an example analysis
-
 #' @examples
 #'
-#' #Continuous character simulation under Brownian motion
-# library(ape)
-#' phy<-rcoal(20)
-#' char<-doSimulationWithPossibleExtinction(
-#' 	taxon.df=getTaxonDFWithPossibleExtinction(phy),
-#' 	intrinsicFn=brownianIntrinsic,
-#' 	extrinsicFn=nullExtrinsic,
-#' 	startingValues=c(30),
-#' 	intrinsicValues=c(.01),
-#' 	extrinsicValues=c(0),
-#' 	timeStep=0.001
-#'	)
-#' 
+#' ideally, the example below should be an example analysis
 
 # NAMESPACE IMPORTING
 
@@ -72,38 +53,37 @@
 # @export summaryStatsLong
 
 # exporting, but would be better to do this in each functions ro2 there, not here...
+# the following should all be exported without these statements now (09-06-17)
 
-#' @export boxcoxEstimation
-#' @export boxcoxTransformation
-#' @export compareListIPD
-#' @export convertTaxonFrameToGeigerData
-#' @export CredInt
-#' @export doRun_prc
-#' @export doRun_rej
-#' @export doSimulation
-#' @export doSimulationForPlotting
-#' @export getSimulationSplits
-#' @export HPD
-#' @export mutateState
-#' @export PairwiseESS
-#' @export PairwiseKS
-#' @export parallelSimulation
-#' @export parentOffspringPlots
-#' @export plotPosteriors
-#' @export plotPrior
-#' @export simulateData
-#' @export ThreeD.ABCplots
-#' @export sumStatNames
-#' @export getUnivariatePriorCurve
-#' @export getUnivariatePosteriorCurve
-#' @export plotUnivariatePosteriorVsPrior
-#' @export PLSRejection
-#' @export returnPLSModel
-#' @export PLSTransform
-#' @export GetBMRatePrior
-#' @export doSimulationWithPossibleExtinction
-#' @export getTaxonDFWithPossibleExtinction
-#' @export createAbcTaxonFromHeightsRow
+#  @export compareListIPD
+#  @export convertTaxonFrameToGeigerData
+#  @export CredInt
+#  @export doRun_prc
+#  @export doRun_rej
+#  @export doSimulation
+#  @export doSimulationForPlotting
+#  @export getSimulationSplits
+#  @export HPD
+#  @export mutateState
+#  @export PairwiseESS
+#  @export PairwiseKS
+#  @export parallelSimulation
+#  @export parentOffspringPlots
+#  @export plotPosteriors
+#  @export plotPrior
+#  @export simulateData
+#  @export ThreeD.ABCplots
+#  @export sumStatNames
+#  @export getUnivariatePriorCurve
+#  @export getUnivariatePosteriorCurve
+#  @export plotUnivariatePosteriorVsPrior
+#  @export PLSRejection
+#  @export returnPLSModel
+#  @export PLSTransform
+#  @export GetBMRatePrior
+#  @export doSimulationWithPossibleExtinction
+#  @export getTaxonDFWithPossibleExtinction
+#  @export createAbcTaxonFromHeightsRow
 
 #'
 NULL

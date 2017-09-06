@@ -10,6 +10,10 @@
 #' each free parameter
 #' @author Brian O'Meara and Barb Banbury
 # @references O'Meara and Banbury, unpublished
+
+#' @name intrinsicModels
+#' @rdname intrinsicModels
+#' @export
 HPD<-function(particleDataFrame, percent=0.95, returnData=F){
   generation<-NULL #to appease R CMD CHECK
 #	library(coda, quietly=T)

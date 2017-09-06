@@ -32,6 +32,10 @@
 #' 	
 #' 	plotPrior("gamma", c(2, .2), plotQuants=FALSE, plotLegend=FALSE)
 #' 
+
+#' @name intrinsicModels
+#' @rdname intrinsicModels
+#' @export
 plotPrior<-function(priorFn=match.arg(arg=priorFn,choices=c("fixed", "uniform", "normal", "lognormal", "gamma", "exponential"),several.ok=FALSE), priorVariables, plotQuants=TRUE, plotLegend=TRUE){
 	#plot.new()
 	x<-NA

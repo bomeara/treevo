@@ -5,6 +5,10 @@
 #  @param x A returned object from fitContinuous()
 #  @param tol Tolerance for equality of solutions
 #  @return The frequency with which the best solution was found
+
+#' @name intrinsicModels
+#' @rdname intrinsicModels
+#' @export
 solnfreq <- function(x, tol = .Machine$double.eps^0.5){
 			ll=logLik(x)
 			aa=abs(x$res[,"lnL"]-ll)<=tol
@@ -42,6 +46,10 @@ solnfreq <- function(x, tol = .Machine$double.eps^0.5){
 #  
 #  #summaryStatsLong(phy, char)
 #  
+
+#' @name intrinsicModels
+#' @rdname intrinsicModels
+#' @export
 summaryStatsLong<-function(phy, traits, niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25, do.CI=is.ultrametric(phy)) {
 	if (any(phy$edge.length==0)){
 		if(!any(phy$edge[which(phy$edge.length==0),2] %in% phy$edge[,1])){

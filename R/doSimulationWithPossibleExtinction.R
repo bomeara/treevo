@@ -58,6 +58,11 @@
 #' 	timeStep=0.001,
 #' 	saveHistory=FALSE)
 #'
+
+
+#' @name intrinsicModels
+#' @rdname intrinsicModels
+#' @export
 doSimulationWithPossibleExtinction<-function(taxon.df, intrinsicFn, extrinsicFn, startingValues, intrinsicValues, extrinsicValues, timeStep, saveHistory=FALSE, saveRealParams=FALSE, jobName="", returnAll = FALSE, verbose=FALSE, reject.NaN=TRUE) {
 	if (saveRealParams){
 		RealParams<-vector("list", 2)

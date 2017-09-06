@@ -9,6 +9,10 @@
 #' @return A list of abctaxon objects
 #' @author Brian O'Meara
 # @references O'Meara and Banbury, unpublished
+
+#' @name intrinsicModels
+#' @rdname intrinsicModels
+#' @export
 getTaxonDFWithPossibleExtinction<-function(phy) {
 	heights <- data.frame(cbind(phy$edge, phy$edge.length, phytools::nodeHeights(phy)))
 	colnames(heights) <- c("rootward.id", "tipward.id", "edge.length", "rootward.height", "tipward.height")

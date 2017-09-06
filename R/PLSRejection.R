@@ -1,29 +1,47 @@
-#' PLS Rejection
+#' Partial Least Squares Rejection
 #' 
-#' This function automatically calculates prior distributions for BM model of
-#' evolution
+#' This function automatically calculates prior distributions for the Brownian Motion model of
+#' evolution.
 #' 
-#' This function performs the abc-rejection analysis using an input simulation
+#' This function performs the ABC-rejection analysis using an input simulation
 #' data. Particles are accepted is they fall sufficiently close to the target
-#' data (within the tolerance). Distances are calculated using abcDistance.
+#' data (within the tolerance). Distances are calculated using \code{abcDistance}.
 #' 
+
 #' @param summaryValuesMatrix Matrix of summary statistics from simulations
+
 #' @param trueFreeValuesMatrix Matrix of true free values from simulations
+
 #' @param phy Tree (Phylogenetic tree in phylo format)
+
 #' @param traits data matrix with rownames equal to phy
+
 #' @param abcTolerance Proportion of accepted simulations
+
 #' @param verbose option to print progress to screen
+
 #' @param validation Cross Validation procedure for abc
+
 #' @param scale scale for pls.model.list
+
 #' @param variance.cutoff variance cutoff for pls.model.list
+
 #' @return Returns a list of the particle data frame and abc distances.
+
 #' @author Brian O'Meara and Barb Banbury
+
 # @references O'Meara and Banbury, unpublished
 # @keywords PLSRejection doRun doRun_rej abc
+
 #' @examples
 #' 
 #' #PLSRejection(summaryValuesMatrix, trueFreeValuesMatrix, phy, traits, abcTolerance)
 #' 
+
+
+#' @name intrinsicModels
+#' @rdname intrinsicModels
+#' @export
 PLSRejection<-function(summaryValuesMatrix, trueFreeValuesMatrix, phy, traits, abcTolerance, verbose=TRUE, validation="CV", scale=TRUE, variance.cutoff=95) {
   originalSummaryValues<-summaryStatsLong(phy=phy, traits=traits)
   if (verbose) {

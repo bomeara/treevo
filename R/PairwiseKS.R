@@ -1,12 +1,21 @@
 #' Pairwise Kolmogorov-Smirnov test
 #' 
-#' This function calculates KS on results.
+#' This function calculates Kolmogorov-Smirnov on results.
 #' 
 #' 
+
 #' @param particleDataFrame List of particleDataFrames from separate runs
-#' @return Returns a matrix with KS values of all pairwise runs
+
+#' @return Returns a matrix with Kolmogorov-Smirnov values of all pairwise runs
+
 #' @author Brian O'Meara and Barb Banbury
+
 # @references O'Meara and Banbury, unpublished
+
+
+#' @name intrinsicModels
+#' @rdname intrinsicModels
+#' @export
 PairwiseKS<-function(particleDataFrame) {
 #Combine doRun$particleDataFrame results and performs Kolmogorov-Smirnov tests
 # particleDataFrame should be a list of particleDataFrames (1:n)

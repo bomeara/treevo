@@ -11,22 +11,34 @@
 #   
 #   See Geiger's fitContinuous for details.
 #   
+
 #   @param phy Phylogenetic tree in phylo format
+
 #   @param data data matrix with rownames equal to phy
+
 #   @param data.names Tip names that match phy
+
 #   @param model Choice of models include "BM", "OU", "lambda", "kappa",
 #   "delta", "EB", "white", "trend"
+
 #   @param bounds NULL for fitContinuous.hacked
+
 #   @param meserr Measurement error, if any
+
 #   @param userstart Optional user start input
+
 #   @param badLnL Return value for bad likelihood calculations
+
 #   @return Returns a matrix of parameter estimates, along with approximate
 #   standard errors and 95% confidence intervals.  Also returns the
 #   log-likelihood of the model (lnl).
+
 #   @author Luke J. Harmon and Wendell Challenger, Brian O'Meara and Barb
 #   Banbury
+
 # @references O'Meara and Banbury, unpublished; Harmon et al. 2007
 # @keywords fitContinuous.hacked
+
 #   @examples
 #   
 #   

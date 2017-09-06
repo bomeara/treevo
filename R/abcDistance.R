@@ -32,7 +32,10 @@
 #' @rdname abcDistance
 #' @export
 abcDistance<-function(summaryValuesMatrix, originalSummaryValues, pls.model.list) {
-  abcDistancesRaw<-sapply(sequence(length(pls.model.list)), SingleParameterPLSDistanceSquaredFixedPLS, pls.model.list=pls.model.list, summaryValuesMatrix=summaryValuesMatrix, originalSummaryValues=originalSummaryValues, scale=scale)
+  abcDistancesRaw<-sapply(sequence(length(pls.model.list)), 
+	SingleParameterPLSDistanceSquaredFixedPLS, 
+		pls.model.list=pls.model.list, summaryValuesMatrix=summaryValuesMatrix, 
+		originalSummaryValues=originalSummaryValues, scale=scale)
   if (class(abcDistancesRaw)!="matrix") { #it must be a vector, but apply likes matrices
   	abcDistancesRaw<-matrix(abcDistancesRaw, nrow=1)
   }

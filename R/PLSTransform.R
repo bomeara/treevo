@@ -15,6 +15,10 @@
 #' 
 #' #PLSTransform(summaryValuesMatrix, pls.model)
 #' 
+
+#' @name intrinsicModels
+#' @rdname intrinsicModels
+#' @export
 PLSTransform<-function(summaryValuesMatrix, pls.model) {
   if (class(summaryValuesMatrix)!="matrix") {
     summaryValuesMatrix<-matrix(summaryValuesMatrix,ncol=max(c(1,length(summaryValuesMatrix)),na.rm=TRUE)) 

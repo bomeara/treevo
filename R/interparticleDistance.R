@@ -11,6 +11,10 @@
 #   @return Returns a matrix of distances between pairwise points in the vectors
 #   @author Brian O'Meara and Barb Banbury
 # @references O'Meara and Banbury, unpublished
+
+#' @name intrinsicModels
+#' @rdname intrinsicModels
+#' @export
 interparticleDistance<-function(x,y,abs=TRUE) {
    distances<-matrix(nrow=length(x),ncol=length(y))
    for (i in sequence(length(x))) {

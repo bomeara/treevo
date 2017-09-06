@@ -1,8 +1,3 @@
-##TreeYears = 1000 if tree is in thousands of years
-
-
-
-
 #' Approximate Bayesian computation for comparative methods-Rejection
 #'
 #' Starts the abc-rejection run
@@ -19,49 +14,78 @@
 #' kept as accepted particles. These describe the posterior distributions of
 #' parameters.
 #'
+
 #' @param phy Tree (Phylogenetic tree in phylo format)
+
 #' @param traits data matrix with rownames equal to phy
+
 #' @param intrinsicFn Name of (previously-defined) function that governs how
 #' traits evolve within a lineage, regardless of the states of other taxa
+
 #' @param extrinsicFn Name of (previously-defined) function that governs how
 #' traits evolve within a lineage, based on the internal state and the states
 #' of other taxa
+
 #' @param startingPriorsValues Matrix with ncol=number of states (characters)
 #' at root and nrow=2 (two parameters to pass to prior distribution)
+
 #' @param startingPriorsFns Vector containing names of prior distributions to
 #' use for root states: can be one of fixed, uniform, normal, lognormal, gamma,
 #' exponential
+
 #' @param intrinsicPriorsValues Matrix with ncol=number of parameters to pass
 #' to the intrinsic function and nrow=2 (two parameters to pass to prior
 #' distribution)
+
 #' @param intrinsicPriorsFns Vector containing names of prior distributions to
 #' use for intrinsic function parameters: can be one of fixed, uniform, normal,
 #' lognormal, gamma, exponential
+
 #' @param extrinsicPriorsValues Matrix with ncol=number of parameters to pass
 #' to the extrinsic function and nrow=2 (two parameters to pass to prior
 #' distribution)
+
 #' @param extrinsicPriorsFns Vector containing names of prior distributions to
 #' use for extrinsic function parameters: can be one of fixed, uniform, normal,
 #' lognormal, gamma, exponential
+
 #' @param startingValuesGuess Optional guess of starting values
+
 #' @param intrinsicStatesGuess Optional guess of intrinsic values
+
 #' @param extrinsicStatesGuess Optional guess of extrinsic values
+
 #' @param TreeYears Unit length of phy
+
 #' @param standardDevFactor Standard deviation for mutating states
+
 #' @param StartSims Number of simulations
+
 #' @param jobName Optional job name
+
 #' @param abcTolerance Proportion of accepted simulations
+
 #' @param multicore If TRUE, initial simulations will be split among coreLimit
 #' nodes
+
 #' @param coreLimit Number of cores for initial simulations
+
 #' @param checkpointFile Optional file name for checkpointing simulations
+
 #' @param checkpointFreq Saving frequency for checkpointing
+
 #' @param validation Cross Validation procedure for abc
+
 #' @param scale scale for pls.model.list
+
 #' @param variance.cutoff variance cutoff for pls.model.list
+
 #' @param savesims option to save individual simulations
+
 #' @param niter.goal Adjust number of starting points for Geiger to return the best parameter estimates this number of times on average
+
 #' @param generation.time The number of years per generation. This sets the coarseness of the simulation; if it's set to 1000, for example, the population moves every 1000 years.
+
 #' @return \item{input.data}{Input variables: jobName, number of taxa, nrepSim,
 #' treeYears, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles,
 #' standardDevFactor} \item{PriorMatrix}{Matrix of prior distributions}
@@ -75,35 +99,53 @@
 #' and parameter states} \item{CredInt}{Credible Interval calculation for each
 #' free parameter of the final generation} \item{HPD}{Highest Posterior Density
 #' calculation each free parameter of the final generation}
+
 #' @author Brian O'Meara and Barb Banbury
+
 # @references O'Meara and Banbury, unpublished; Sisson et al. 2007, Wegmann et
 #' al. 2009
+
 # @keywords doRun doRun_rej abc
+
 #' @examples
 #'
 #' data(simRun)
 #'
-#' #c<-doRun_rej( #make sure priors are uniform with this one!
-#' #	phy=simPhy,
-#' #	traits=simChar,
-#' #	intrinsicFn=brownianIntrinsic,
-#' #	extrinsicFn=nullExtrinsic,
-#' #	startingPriorsFns="normal",
-#' #	startingPriorsValues=matrix(c(mean(char[,1]), sd(char[,1]))),
-#' #	intrinsicPriorsFns=c("exponential"),
-#' #	intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE), #grep for normal in pkg
-#' #	extrinsicPriorsFns=c("fixed"),
-#' #	extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
-#' #	StartSims=1000,
-#' #	jobName="run_c",
-#' #	abcTolerance=0.05,
-#' #	multicore=F,
-#' #	coreLimit=1
-#' #)
+#' c<-doRun_rej( #make sure priors are uniform with this one!
+#' 	phy=simPhy,
+#' 	traits=simChar,
+#' 	intrinsicFn=brownianIntrinsic,
+#' 	extrinsicFn=nullExtrinsic,
+#' 	startingPriorsFns="normal",
+#' 	startingPriorsValues=matrix(c(mean(char[,1]), sd(char[,1]))),
+#' 	intrinsicPriorsFns=c("exponential"),
+#' 	intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE), #grep for normal in pkg
+#' 	extrinsicPriorsFns=c("fixed"),
+#' 	extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
+#' 	StartSims=1000,
+#' 	jobName="run_c",
+#' 	abcTolerance=0.05,
+#' 	multicore=F,
+#' 	coreLimit=1
+#' )
 #'
 #'
 #'
-doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, startingValuesGuess=c(), intrinsicStatesGuess=c(), extrinsicStatesGuess=c(), TreeYears=1e+04, standardDevFactor=0.20, StartSims=NA, jobName=NA, abcTolerance=0.1, multicore=FALSE, coreLimit=NA, checkpointFile=NULL, checkpointFreq=24, validation="CV", scale=TRUE, variance.cutoff=95, savesims=FALSE, niter.goal=5, generation.time=1) {
+
+
+##TreeYears = 1000 if tree is in thousands of years
+
+
+#' @name doRun_rej
+#' @rdname doRun_rej
+#' @export
+doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues, startingPriorsFns, 
+	intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, 
+	startingValuesGuess=c(), intrinsicStatesGuess=c(), extrinsicStatesGuess=c(), TreeYears=1e+04, 
+	standardDevFactor=0.20, StartSims=NA, jobName=NA, abcTolerance=0.1, multicore=FALSE, coreLimit=NA, 
+	checkpointFile=NULL, checkpointFreq=24, validation="CV", scale=TRUE, variance.cutoff=95, 
+	savesims=FALSE, niter.goal=5, generation.time=1) {
+	
 	#library(geiger)
 	#library(pls)
 	if (!is.binary.tree(phy)) {

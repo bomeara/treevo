@@ -9,6 +9,10 @@
 #   @return Returns mean
 #   @author Brian O'Meara and Barb Banbury
 # @references O'Meara and Banbury, unpublished
+
+#' @name intrinsicModels
+#' @rdname intrinsicModels
+#' @export
 pullFromPrior<-function(priorValues, priorFn) {
 	#fixed, uniform, normal, lognormal, gamma, exponential
 	x<-NA

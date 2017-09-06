@@ -9,6 +9,10 @@
 #' @return A data frame of branching times, ancestor and descendant vectors
 #' @author Brian O'Meara and Barb Banbury
 # @references O'Meara and Banbury, unpublished
+
+#' @name intrinsicModels
+#' @rdname intrinsicModels
+#' @export
 getSimulationSplits<-function(phy) {
 	phy$node.label<-NULL
 	branchingTimes<-sort(branching.times(phy), decreasing=TRUE)

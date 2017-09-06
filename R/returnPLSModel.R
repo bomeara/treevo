@@ -30,6 +30,10 @@
 #' # returnPLSModel(trueFreeValuesMatrix,summaryValuesMatrix,
 #' #   validation="CV", scale=scale, variance.cutoff=variance.cutoff)
 #' 
+
+#' @name intrinsicModels
+#' @rdname intrinsicModels
+#' @export
 returnPLSModel<-function(trueFreeValuesMatrix, summaryValuesMatrix, validation="CV", scale=TRUE, variance.cutoff=95) {
   #note that this assumes that trueFreeValues is for a single param at a time, which works MUCH better
   trueFreeValuesMatrix<-trueFreeValuesMatrix
