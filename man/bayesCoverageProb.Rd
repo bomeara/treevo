@@ -7,18 +7,18 @@
 bayesCoverageProb(RealParam, HPD, verbose = F)
 }
 \arguments{
-\item{RealParam}{Real parameter values}
+\item{RealParam}{Real parameter values.}
 
-\item{HPD}{List of HPD from doRun_rej or doRun_prc results}
+\item{HPD}{List of highest posterior density from \code{doRun_rej} or \code{doRun_prc} results}
 
-\item{verbose}{Commented screen output}
+\item{verbose}{If \code{TRUE}, commented screen output is produced.}
 }
 \value{
 Returns a value for each free parameter that describes the
-percentage the real value falls within the HPD
+percentage that the real value falls within the HPD.
 }
 \description{
-This function calculates coverage probability for a list of HPDs
+This function calculates coverage probability for a list of highest posterior densities (HPDs) for a set of parameters.
 }
 \details{
 Only for use with simulated data to test models.

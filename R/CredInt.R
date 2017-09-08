@@ -4,7 +4,7 @@
 #' 
 #' 
 #' @param particleDataFrame particleDataFrame output from doRun
-#' @param percent Probability content of HPD
+#' @param percent Probability content of the highest probability density
 #' @return Returns a matrix with weighted mean, sd, upper and lower credible
 #' intervals for each free parameter
 #' @author Brian O'Meara and Barb Banbury

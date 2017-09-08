@@ -1,9 +1,6 @@
 # internal function for figuring out which multicore approach to use, depending on what the user has installed among suggested packages
 
 
-#' @name intrinsicModels
-#' @rdname intrinsicModels
-#' @export
 registerMulticoreEnv<-function(nCore){	
     hasDoParallel<-requireNamespace("doParallel", quietly = TRUE)
     hasDoMC<-requireNamespace("doMC", quietly = TRUE)			 

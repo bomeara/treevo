@@ -1,30 +1,28 @@
-#used to be BCP = Bayesian Coverage Probability, now bayesCoverageProb (08-29-17)
-#RealParam can be "RealParams$vector" from doSimulation c(x1, x2, ...) or a list
-#HPD should be a list of HPD output from different runs
-#Calculates what percent of the time the real parameter falls into the HPD
-
-
 #' Bayesian Coverage Probability
 #' 
-#' This function calculates coverage probability for a list of HPDs
+#' This function calculates coverage probability for a list of highest posterior densities (HPDs) for a set of parameters.
 #' 
 #' Only for use with simulated data to test models.
 #' 
 
-#' @param RealParam Real parameter values
+#' @param RealParam Real parameter values.
 
-#' @param HPD List of HPD from doRun_rej or doRun_prc results
+#' @param HPD List of highest posterior density from \code{doRun_rej} or \code{doRun_prc} results
 
-#' @param verbose Commented screen output
+#' @param verbose If \code{TRUE}, commented screen output is produced.
 
 #' @return Returns a value for each free parameter that describes the
-
-#' percentage the real value falls within the HPD
+#' percentage that the real value falls within the HPD.
 
 #' @author Brian O'Meara and Barb Banbury
 
 # @references O'Meara and Banbury, unpublished
 
+
+#used to be BCP = Bayesian Coverage Probability, now bayesCoverageProb (08-29-17)
+#RealParam can be "RealParams$vector" from doSimulation c(x1, x2, ...) or a list
+#HPD should be a list of HPD output from different runs
+#Calculates what percent of the time the real parameter falls into the HPD
 
 #' @name bayesCoverageProb
 #' @rdname bayesCoverageProb
