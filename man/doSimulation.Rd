@@ -9,7 +9,7 @@ doSimulation(phy, intrinsicFn, extrinsicFn, startingValues, intrinsicValues,
   extrinsicValues, timeStep, saveHistory = FALSE, saveRealParams = FALSE,
   jobName = "")
 
-doSimulationForPlotting(splits, intrinsicFn, extrinsicFn, startingValues,
+doSimulationForPlotting(phy, intrinsicFn, extrinsicFn, startingValues,
   intrinsicValues, extrinsicValues, timeStep, plot = FALSE,
   savePlot = FALSE, saveHistory = FALSE, saveRealParams = FALSE,
   jobName = "")

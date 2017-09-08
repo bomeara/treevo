@@ -102,7 +102,7 @@ free parameter of the final generation} \item{HPD}{Highest Posterior Density
 calculation each free parameter of the final generation}
 }
 \description{
-Starts the abc-rejection run
+Starts the ABC-rejection run.
 }
 \details{
 This function performs an abc-rejection analysis using an input phylogeny
@@ -121,7 +121,8 @@ parameters.
 
 data(simRun)
 
-c<-doRun_rej( #make sure priors are uniform with this one!
+#make sure priors are uniform with this one!
+result<-doRun_rej( 
 	phy=simPhy,
 	traits=simChar,
 	intrinsicFn=brownianIntrinsic,
@@ -137,7 +138,7 @@ c<-doRun_rej( #make sure priors are uniform with this one!
 	abcTolerance=0.05,
 	multicore=F,
 	coreLimit=1
-)
+	)
 
 
 

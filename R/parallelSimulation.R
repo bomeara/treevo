@@ -74,7 +74,10 @@
 #' @name parallelSimulation
 #' @rdname parallelSimulation
 #' @export
-parallelSimulation<-function(nrepSim, coreLimit, phy, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn, multicore,checkpointFile=NULL,checkpointFreq=24, niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) {
+parallelSimulation<-function(nrepSim, coreLimit, phy, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, 
+	startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn, 
+	multicore, checkpointFile=NULL, checkpointFreq=24, niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) {
+	
 	#library(doMC, quietly=T)
 	#library(foreach, quietly=T)
 
@@ -97,7 +100,9 @@ parallelSimulation<-function(nrepSim, coreLimit, phy, startingPriorsValues, intr
 
 	cat("Doing simulations: ")
 	if (is.null(checkpointFile)) {
-		trueFreeValuesANDSummaryValues<-foreach(1:nrepSim, .combine=rbind) %dopar% simulateData(taxon.df, phy, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn)
+		trueFreeValuesANDSummaryValues<-foreach(1:nrepSim, .combine=rbind) %dopar% simulateData(taxon.df, phy, 
+			startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, 
+			intrinsicPriorsFns, extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn)
 	}
 	else {
 		checkpointFileName<-paste(checkpointFile,".trueFreeValuesANDSummaryValues.Rsave",sep="")
@@ -111,11 +116,17 @@ parallelSimulation<-function(nrepSim, coreLimit, phy, startingPriorsValues, intr
 			warning(paste("Checkpoint frequency adjusted from",checkpointFreq,"to",checkpointFreqAdjusted,"to reduce the wasted time on unused cores"))
 		}
 		for (rep in sequence(numberLoops)) {
-			trueFreeValuesANDSummaryValues<-rbind(trueFreeValuesANDSummaryValues, foreach(1:numberSimsPerLoop, .combine=rbind) %dopar% simulateData(taxon.df, phy, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn))
+			trueFreeValuesANDSummaryValues<-rbind(trueFreeValuesANDSummaryValues, 
+				foreach(1:numberSimsPerLoop, .combine=rbind) %dopar% simulateData(taxon.df, phy, 
+					startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, 
+					intrinsicPriorsFns, extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn))
 			save(trueFreeValuesANDSummaryValues,file=checkpointFileName)
 			print(paste("Just finished",dim(trueFreeValuesANDSummaryValues)[1],"of",nrepSim,"simulations; progress so far saved in",checkpointFileName))
 		}
-		trueFreeValuesANDSummaryValues<-rbind(trueFreeValuesANDSummaryValues, foreach(1:numberSimsAfterLastCheckpoint, .combine=rbind) %dopar% simulateData(taxon.df, phy, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn))
+		trueFreeValuesANDSummaryValues<-rbind(trueFreeValuesANDSummaryValues, 
+			foreach(1:numberSimsAfterLastCheckpoint, .combine=rbind) %dopar% simulateData(taxon.df, phy, startingPriorsValues, 
+			intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, freevector, 
+			timeStep, intrinsicFn, extrinsicFn))
 	}
 	return(trueFreeValuesANDSummaryValues)
 }

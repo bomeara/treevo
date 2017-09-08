@@ -671,7 +671,7 @@ doRun_prc<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
 			prcResults$simTime<-simTime
 			prcResults$time.per.gen<-genTimes
 			prcResults$CredInt <-CredInt(particleDataFrame)
-			prcResults$HPD <-HPD(particleDataFrame)
+			prcResults$HPD <-highestPostDens(particleDataFrame)
 
 		if(multicore){
 			registerMulticoreEnv(nCore=1)

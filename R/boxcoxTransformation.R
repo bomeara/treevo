@@ -34,7 +34,8 @@
 #' @name boxcoxTransformation
 #' @rdname boxcoxTransformation
 #' @export
-boxcoxTransformation<-function(summaryValues, boxcoxAddition, boxcoxLambda) { #yes, a row of summary values
+boxcoxTransformation<-function(summaryValuesVector, boxcoxAddition, boxcoxLambda) { 
+	#yes, a row of summary values
 	for (summaryValueIndex in 1:length(summaryValues)) {
         summaryValues[summaryValueIndex] <- (summaryValues[summaryValueIndex] + 
             boxcoxAddition[summaryValueIndex])^boxcoxLambda[summaryValueIndex]

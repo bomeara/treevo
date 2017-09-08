@@ -11,11 +11,14 @@
 #' @param timeStep time in a single iteration of the discrete-time simulation
 #' @return Returns a matrix of prior values
 #' @author Brian O'Meara and Barb Banbury
+
 # @references O'Meara and Banbury, unpublished
 # @keywords GetBMRatePrior
+
 #' @examples
 #' 
-#' #GetBMRatePrior(phy, traits, timeStep)
+#' example(simRun)
+#' GetBMRatePrior(phy, traits, timeStep)
 #' 
 #' 
 
@@ -35,7 +38,8 @@ GetBMRatePrior<-function(phy, traits, timeStep) {
   }
   LikelihoodRateEst<-GetBrownianSDRate(phy, traits, timeStep)
   intrinsicPriorsValues<-LikelihoodRateEst^-1
-  print(paste("LikelihoodRateEst =", LikelihoodRateEst, "; Mean of exp distribution for prior is ~", mean(rexp(10000, LikelihoodRateEst^-1)), "; exp rate =",  LikelihoodRateEst^-1))
+  print(paste("LikelihoodRateEst =", LikelihoodRateEst, "; Mean of exp distribution for prior is ~", 
+	mean(rexp(10000, LikelihoodRateEst^-1)), "; exp rate =",  LikelihoodRateEst^-1))
   #set prior distribution mean to BM estimate
   return(c(intrinsicPriorsValues))
 }

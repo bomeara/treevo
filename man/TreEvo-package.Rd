@@ -14,7 +14,7 @@ A package for applying Approximate Bayesian Computation to estimating parameters
 }
 \examples{
 
-ideally, the example below should be an example analysis
+# Needs an example analysis here!
 }
 \author{
 Brian O'Meara, Barb L. Banbury, David W. Bapst

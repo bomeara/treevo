@@ -1,7 +1,7 @@
 test_that("simulation ran", {
 	data(simRun)
 	 char<-doSimulationWithPossibleExtinction(
- 	taxon.df=getTaxonDFWithPossibleExtinction(simPhy),
+ 	phy=simPhy,
  	intrinsicFn=brownianIntrinsic,
  	extrinsicFn=nullExtrinsic,
  	startingValues=c(10), #root state

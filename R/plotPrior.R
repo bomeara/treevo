@@ -1,10 +1,3 @@
-#priorVariables depend on priorFn.  uniform=c(min, max); normal=c(mean, stdev); lognormal=c(mean, stdev), gamma=c(shape, scale), exponential=c(rate)
-#plotPrior("normal", c(1,2), plotQuants=TRUE)
-#plotPrior("exponential", c(1), plotQuants=FALSE)
-
-
-
-
 #' Plot prior distribution
 #' 
 #' This function plots the distribution of priors
@@ -41,6 +34,10 @@
 #' 	
 #' 	plotPrior("gamma", c(2, .2), plotQuants=FALSE, plotLegend=FALSE)
 #' 
+
+#priorVariables depend on priorFn.  uniform=c(min, max); normal=c(mean, stdev); lognormal=c(mean, stdev), gamma=c(shape, scale), exponential=c(rate)
+#plotPrior("normal", c(1,2), plotQuants=TRUE)
+#plotPrior("exponential", c(1), plotQuants=FALSE)
 
 #' @name plotPrior
 #' @rdname plotPrior

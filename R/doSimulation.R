@@ -221,7 +221,8 @@ doSimulation<-function(phy, intrinsicFn, extrinsicFn, startingValues, intrinsicV
 
 #' @rdname doSimulation
 #' @export
-doSimulationForPlotting<-function(splits, intrinsicFn, extrinsicFn, startingValues, intrinsicValues, extrinsicValues, timeStep, plot=FALSE, savePlot=FALSE, saveHistory=FALSE, saveRealParams=FALSE, jobName="") {
+doSimulationForPlotting<-function(phy, intrinsicFn, extrinsicFn, startingValues, intrinsicValues, 
+	extrinsicValues, timeStep, plot=FALSE, savePlot=FALSE, saveHistory=FALSE, saveRealParams=FALSE, jobName="") {
 
 	splits=getSimulationSplits(phy)
 

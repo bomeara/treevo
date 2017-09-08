@@ -87,7 +87,7 @@
 #' @export
 simulateData<-function(taxon.df, phy, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn,giveUpAttempts=10, niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25, verbose=FALSE) {
 
-	taxon.df <- getTaxonDFWithPossibleExtinction(phy)
+	#taxon.df <- getTaxonDFWithPossibleExtinction(phy)
 
 	simTrueAndStats<-rep(NA,10) #no particular reason for it to be 10 wide
 	n.attempts<-0
@@ -112,7 +112,8 @@ simulateData<-function(taxon.df, phy, startingPriorsValues, intrinsicPriorsValue
 		trueFreeValues<-trueInitial[freevector]
 
 		cat(".")
-		simTraits<-doSimulationWithPossibleExtinction(taxon.df=taxon.df, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, startingValues=trueStarting, intrinsicValues=trueIntrinsic, extrinsicValues=trueExtrinsic, timeStep=timeStep, verbose=verbose)
+		simTraits<-doSimulationWithPossibleExtinction(phy=phy, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, 
+			startingValues=trueStarting, intrinsicValues=trueIntrinsic, extrinsicValues=trueExtrinsic, timeStep=timeStep, verbose=verbose)
 		simSumStats<-summaryStatsLong(phy, simTraits, niter.brown, niter.lambda, niter.delta, niter.OU, niter.white)
 		simTrueAndStats <-c(trueFreeValues, simSumStats)
 	}

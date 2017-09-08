@@ -5,18 +5,18 @@
 \alias{boxcoxTransformationMatrix}
 \title{Box-Cox Transformation for Simulations}
 \usage{
-boxcoxTransformation(summaryValues, boxcoxAddition, boxcoxLambda)
+boxcoxTransformation(summaryValuesVector, boxcoxAddition, boxcoxLambda)
 
 boxcoxTransformationMatrix(summaryValuesMatrix)
 }
 \arguments{
+\item{summaryValuesVector}{Vector of summary statistics from a single simulation}
+
 \item{boxcoxAddition}{Vector of boxcox additions from boxcoxEstimation}
 
 \item{boxcoxLambda}{Vector of boxcox lambda values from boxcoxEstimation}
 
 \item{summaryValuesMatrix}{Matrix of summary statistics from simulations}
-
-\item{summaryValuesVector}{Vector of summary statistics from a single simulation}
 }
 \value{
 \code{boxcoxTransformation} returns a vector of Box-Cox transformed summary statistics from a

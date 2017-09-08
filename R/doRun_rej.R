@@ -1,6 +1,6 @@
 #' Approximate Bayesian computation for comparative methods-Rejection
 #'
-#' Starts the abc-rejection run
+#' Starts the ABC-rejection run.
 #'
 #' This function performs an abc-rejection analysis using an input phylogeny
 #' (phy), character data set (traits), models (intrinsicFn, extrinsicFn), and
@@ -111,7 +111,8 @@
 #'
 #' data(simRun)
 #'
-#' c<-doRun_rej( #make sure priors are uniform with this one!
+#' #make sure priors are uniform with this one!
+#' result<-doRun_rej( 
 #' 	phy=simPhy,
 #' 	traits=simChar,
 #' 	intrinsicFn=brownianIntrinsic,
@@ -127,7 +128,7 @@
 #' 	abcTolerance=0.05,
 #' 	multicore=F,
 #' 	coreLimit=1
-#' )
+#' 	)
 #'
 #'
 #'
@@ -253,8 +254,6 @@ doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
 		save(list=ls(),file=paste(checkpointFile,".intialsettings.Rsave",sep=""))
 	}
 
-
-
 	#Figure out how many iterations to use for optimization in Geiger.
 	brown<-fitContinuous(phy=phy, dat=traits, model="BM", ncores=1, control=list(niter=100)) #it actually runs faster without checking for cores. And we parallelize elsewhere
 	lambda<-fitContinuous(phy=phy, dat=traits, model="lambda", ncores=1, control=list(niter=100))
@@ -274,7 +273,12 @@ doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
 	niter.white.g <- round(max(10, min(niter.goal/solnfreq(white),100)))
 	cat(paste("\n",niter.white.g, "for white noise"))
 
-	trueFreeValuesANDSummaryValues<-parallelSimulation(nrepSim, coreLimit, taxon.df, phy, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn, multicore, checkpointFile, checkpointFreq, niter.brown=niter.brown.g, niter.lambda=niter.lambda.g, niter.delta=niter.delta.g, niter.OU=niter.OU.g, niter.white=niter.white.g)
+	trueFreeValuesANDSummaryValues<-parallelSimulation(nrepSim=nrepSim, coreLimit=coreLimit, phy=phy, 
+		startingPriorsValues=startingPriorsValues, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues, 
+		startingPriorsFns=startingPriorsFns, intrinsicPriorsFns=intrinsicPriorsFns, extrinsicPriorsFns=extrinsicPriorsFns, 
+		freevector=freevector, timeStep=timeStep, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, 
+		multicore=multicore, checkpointFile=checkpointFile, checkpointFreq=checkpointFreq, 
+		niter.brown=niter.brown.g, niter.lambda=niter.lambda.g, niter.delta=niter.delta.g, niter.OU=niter.OU.g, niter.white=niter.white.g)
 
 	cat("\n\n")
 	simTime<-proc.time()[[3]]-startTime
@@ -291,20 +295,20 @@ doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
 	input.data<-rbind(jobName, length(phy[[3]]), timeStep, StartSims, standardDevFactor, abcTolerance)
   print(res)
 	rejectionResults<-vector("list")
+	
 	#names(rejectionResults)<-c("input.data", "PriorMatrix", "phy", "traits")
-#save(trueFreeValuesMatrix,res, file="BarbsTestofDistanceCalc2.Rdata")
+	#save(trueFreeValuesMatrix,res, file="BarbsTestofDistanceCalc2.Rdata")
+
 	rejectionResults$input.data<-input.data
 	rejectionResults$PriorMatrix<-PriorMatrix
 	rejectionResults$phy<-phy
 	rejectionResults$traits<-traits
 	rejectionResults$trueFreeValuesANDSummaryValues<-trueFreeValuesANDSummaryValues
-  rejectionResults$SimTime<-simTime
-  rejectionResults$abcDistances<-res$abcDistances
+	rejectionResults$SimTime<-simTime
+	rejectionResults$abcDistances<-res$abcDistances
 	rejectionResults$particleDataFrame<-res$particleDataFrame
-  rejectionResults$CredInt<-CredInt(res$particleDataFrame)
-	rejectionResults$HPD<-highestProbDens(res$particleDataFrame)
-
-
+	rejectionResults$CredInt<-CredInt(res$particleDataFrame)
+	rejectionResults$HPD<-highestPostDens(res$particleDataFrame)
 
 	return(rejectionResults)
 }
