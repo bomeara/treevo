@@ -2,23 +2,39 @@
 % Please edit documentation in R/boxcoxTransformation.R
 \name{boxcoxTransformation}
 \alias{boxcoxTransformation}
-\title{Box-Cox Transformation}
+\alias{boxcoxTransformationMatrix}
+\title{Box-Cox Transformation for Simulations}
 \usage{
 boxcoxTransformation(summaryValues, boxcoxAddition, boxcoxLambda)
+
+boxcoxTransformationMatrix(summaryValuesMatrix)
 }
 \arguments{
-\item{summaryValues}{Vector of summary statistics}
-
 \item{boxcoxAddition}{Vector of boxcox additions from boxcoxEstimation}
 
 \item{boxcoxLambda}{Vector of boxcox lambda values from boxcoxEstimation}
+
+\item{summaryValuesMatrix}{Matrix of summary statistics from simulations}
+
+\item{summaryValuesVector}{Vector of summary statistics from a single simulation}
 }
 \value{
-Returns a vector of Box-Cox transformed summary statistics from a
-single observation.
+\code{boxcoxTransformation} returns a vector of Box-Cox transformed summary statistics from a
+single observation. \code{boxcoxTransformationMatrix} returns a matrix of Box-Cox transformed summary statistics with the
+same dimensions as \code{summaryValuesMatrix}.
 }
 \description{
-This function Box-Cox transforms summary values from a single simulation
+\code{boxcoxTransformation} Box-Cox transforms summary values from a single simulation, while
+\code{boxcoxTransformationMatrix} Box-Cox transforms summary values from multiple simulations.
+}
+\examples{
+
+data(simRun)
+
+boxcoxTransformation(summaryValuesMatrix)
+
+# boxcoxTransformationMatrix needs examples
+
 }
 \author{
 Brian O'Meara and Barb Banbury

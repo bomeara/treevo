@@ -73,6 +73,21 @@ continuous characters
 Used by TreEvo doRun function to calculate simulations for doRun_prc and
 doRun_rej.
 }
+\examples{
+
+#Continuous character simulation under Brownian motion
+phy<-rcoal(20)
+char<-doSimulationWithPossibleExtinction(
+	taxon.df=getTaxonDFWithPossibleExtinction(phy),
+	intrinsicFn=brownianIntrinsic,
+	extrinsicFn=nullExtrinsic,
+	startingValues=c(30),
+	intrinsicValues=c(.01),
+	extrinsicValues=c(0),
+	timeStep=0.001
+)
+
+}
 \author{
 Brian O'Meara and Barb Banbury
 }

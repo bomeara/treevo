@@ -121,23 +121,23 @@ parameters.
 
 data(simRun)
 
-#c<-doRun_rej( #make sure priors are uniform with this one!
-#	phy=simPhy,
-#	traits=simChar,
-#	intrinsicFn=brownianIntrinsic,
-#	extrinsicFn=nullExtrinsic,
-#	startingPriorsFns="normal",
-#	startingPriorsValues=matrix(c(mean(char[,1]), sd(char[,1]))),
-#	intrinsicPriorsFns=c("exponential"),
-#	intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE), #grep for normal in pkg
-#	extrinsicPriorsFns=c("fixed"),
-#	extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
-#	StartSims=1000,
-#	jobName="run_c",
-#	abcTolerance=0.05,
-#	multicore=F,
-#	coreLimit=1
-#)
+c<-doRun_rej( #make sure priors are uniform with this one!
+	phy=simPhy,
+	traits=simChar,
+	intrinsicFn=brownianIntrinsic,
+	extrinsicFn=nullExtrinsic,
+	startingPriorsFns="normal",
+	startingPriorsValues=matrix(c(mean(char[,1]), sd(char[,1]))),
+	intrinsicPriorsFns=c("exponential"),
+	intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE), #grep for normal in pkg
+	extrinsicPriorsFns=c("fixed"),
+	extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
+	StartSims=1000,
+	jobName="run_c",
+	abcTolerance=0.05,
+	multicore=F,
+	coreLimit=1
+)
 
 
 

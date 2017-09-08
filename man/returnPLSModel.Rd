@@ -2,7 +2,7 @@
 % Please edit documentation in R/returnPLSModel.R
 \name{returnPLSModel}
 \alias{returnPLSModel}
-\title{Return PLS Model}
+\title{Return Partial Least Squares Model}
 \usage{
 returnPLSModel(trueFreeValuesMatrix, summaryValuesMatrix, validation = "CV",
   scale = TRUE, variance.cutoff = 95)
@@ -14,25 +14,24 @@ returnPLSModel(trueFreeValuesMatrix, summaryValuesMatrix, validation = "CV",
 
 \item{validation}{Cross Validation procedure for abc}
 
-\item{scale}{scale for pls.model.list}
+\item{scale}{scale for \code{pls.model.list}}
 
-\item{variance.cutoff}{variance cutoff for pls.model.list}
+\item{variance.cutoff}{variance cutoff for \code{pls.model.list}}
 }
 \value{
-Returns a pls model
+Returns a PLS model.
 }
 \description{
-Returns a PLS Model
-}
-\details{
-This function runs a PLS regression on each free param in the model, unlike
+This function fits a PLS regression individually to each freely varying parameter of a model, unlike
 a true multivariate PLS regression.  For ABC, this seems to result in much
 better results, without one parameter dominating the combined variance.
 }
 \examples{
 
-# returnPLSModel(trueFreeValuesMatrix,summaryValuesMatrix,
-#   validation="CV", scale=scale, variance.cutoff=variance.cutoff)
+data(simRun)
+
+ returnPLSModel(trueFreeValuesMatrix,summaryValuesMatrix,
+   validation="CV", scale=scale, variance.cutoff=variance.cutoff)
 
 }
 \author{

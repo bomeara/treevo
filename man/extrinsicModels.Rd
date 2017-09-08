@@ -19,7 +19,7 @@ ExponentiallyDecayingPushExtrinsic(params, selfstates, otherstates,
 everyoneDisplacementExtrinsic(params, selfstates, otherstates, timefrompresent)
 }
 \arguments{
-\item{params}{describes input paramaters for the model}
+\item{params}{describes input paramaters for the model (see Description)}
 
 \item{selfstates}{vector of states for each taxon}
 
@@ -62,6 +62,10 @@ values of a focal taxon depend on the values of all co-extant relatives on the s
 
 The input parameters for this model are:
 \code{nearestNeighborDisplacementExtrinsic} params = sd, springK, maximum force
+}
+\examples{
+# this needs examples
+
 }
 \author{
 Brian O'Meara and Barb Banbury

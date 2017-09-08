@@ -2,7 +2,7 @@
 % Please edit documentation in R/compareListIPD.R
 \name{compareListIPD}
 \alias{compareListIPD}
-\title{Plot interparticle distance between runs}
+\title{Plot Interparticle Distance between Runs}
 \usage{
 compareListIPD(particleDataFrame, verbose = F)
 }
@@ -16,7 +16,7 @@ Returns a plot with IPD between runs per generation
 }
 \description{
 This function plots interparticle distance between runs for each free
-parameter
+parameter.
 }
 \author{
 Brian O'Meara and Barb Banbury

@@ -51,6 +51,7 @@
 # @export pullFromPrior
 # @export summarizeTaxonStates
 # @export summaryStatsLong
+#  @export sumStatNames
 
 # exporting, but would be better to do this in each functions ro2 there, not here...
 # the following should all be exported without these statements now (09-06-17)
@@ -73,7 +74,7 @@
 #  @export plotPrior
 #  @export simulateData
 #  @export ThreeD.ABCplots
-#  @export sumStatNames
+
 #  @export getUnivariatePriorCurve
 #  @export getUnivariatePosteriorCurve
 #  @export plotUnivariatePosteriorVsPrior

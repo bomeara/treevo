@@ -14,18 +14,7 @@ A package for applying Approximate Bayesian Computation to estimating parameters
 }
 \examples{
 
-#Continuous character simulation under Brownian motion
-phy<-rcoal(20)
-char<-doSimulationWithPossibleExtinction(
-	taxon.df=getTaxonDFWithPossibleExtinction(phy),
-	intrinsicFn=brownianIntrinsic,
-	extrinsicFn=nullExtrinsic,
-	startingValues=c(30),
-	intrinsicValues=c(.01),
-	extrinsicValues=c(0),
-	timeStep=0.001
-)
-
+ideally, the example below should be an example analysis
 }
 \author{
 Brian O'Meara, Barb L. Banbury, David W. Bapst
