@@ -52,6 +52,8 @@
 # @export summarizeTaxonStates
 # @export summaryStatsLong
 #  @export sumStatNames
+#  @export getSimulationSplits
+#  @export getTaxonDFWithPossibleExtinction
 
 # exporting, but would be better to do this in each functions ro2 there, not here...
 # the following should all be exported without these statements now (09-06-17)
@@ -63,8 +65,6 @@
 #  @export doRun_rej
 #  @export doSimulation
 #  @export doSimulationForPlotting
-#  @export getSimulationSplits
-#  @export HPD
 #  @export mutateState
 #  @export PairwiseESS
 #  @export PairwiseKS
@@ -74,7 +74,6 @@
 #  @export plotPrior
 #  @export simulateData
 #  @export ThreeD.ABCplots
-
 #  @export getUnivariatePriorCurve
 #  @export getUnivariatePosteriorCurve
 #  @export plotUnivariatePosteriorVsPrior
@@ -83,7 +82,6 @@
 #  @export PLSTransform
 #  @export GetBMRatePrior
 #  @export doSimulationWithPossibleExtinction
-#  @export getTaxonDFWithPossibleExtinction
 #  @export createAbcTaxonFromHeightsRow
 
 #'

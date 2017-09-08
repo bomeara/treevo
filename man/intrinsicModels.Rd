@@ -2,8 +2,7 @@
 % Please edit documentation in R/CredInt.R, R/GetBMRatePrior.R,
 %   R/PLSRejection.R, R/PLSTransform.R, R/PairwiseESS.R,
 %   R/PairwiseKS.R, R/abcmodels.intrinsic.R, R/doSimulation.R,
-%   R/doSimulationWithPossibleExtinction.R, R/getSimulationSplits.R,
-%   R/getTaxonDFWithPossibleExtinction.R, R/mutateState.R,
+%   R/doSimulationWithPossibleExtinction.R, R/mutateState.R,
 %   R/parallelSimulation.R, R/parentOffspringPlots.R, R/plotPosteriors.R,
 %   R/plotPrior.R, R/plotUnivariatePosteriorVsPrior.R
 \name{intrinsicModels}
@@ -33,10 +32,6 @@
 \alias{doSimulation}
 \alias{intrinsicModels}
 \alias{doSimulationWithPossibleExtinction}
-\alias{intrinsicModels}
-\alias{getSimulationSplits}
-\alias{intrinsicModels}
-\alias{getTaxonDFWithPossibleExtinction}
 \alias{intrinsicModels}
 \alias{mutateState}
 \alias{intrinsicModels}
@@ -85,22 +80,18 @@ autoregressiveIntrinsicTimeSlicesConstantMean(params, states, timefrompresent)
 
 autoregressiveIntrinsicTimeSlicesConstantSigma(params, states, timefrompresent)
 
-doSimulation(splits, intrinsicFn, extrinsicFn, startingValues, intrinsicValues,
+doSimulation(phy, intrinsicFn, extrinsicFn, startingValues, intrinsicValues,
   extrinsicValues, timeStep, saveHistory = FALSE, saveRealParams = FALSE,
   jobName = "")
 
-doSimulationWithPossibleExtinction(taxon.df, intrinsicFn, extrinsicFn,
+doSimulationWithPossibleExtinction(phy, intrinsicFn, extrinsicFn,
   startingValues, intrinsicValues, extrinsicValues, timeStep,
   saveHistory = FALSE, saveRealParams = FALSE, jobName = "",
   returnAll = FALSE, verbose = FALSE, reject.NaN = TRUE)
 
-getSimulationSplits(phy)
-
-getTaxonDFWithPossibleExtinction(phy)
-
 mutateState(startingState, standardDevFactor, priorValues, priorFn)
 
-parallelSimulation(nrepSim, coreLimit, taxon.df, phy, startingPriorsValues,
+parallelSimulation(nrepSim, coreLimit, phy, startingPriorsValues,
   intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns,
   intrinsicPriorsFns, extrinsicPriorsFns, freevector, timeStep, intrinsicFn,
   extrinsicFn, multicore, checkpointFile = NULL, checkpointFreq = 24,
@@ -155,9 +146,6 @@ getUnivariatePosteriorCurve(acceptedValues, from = NULL, to = NULL,
 
 \item{timefrompresent}{which time slice in the tree}
 
-\item{splits}{Output from the function getSimulationSplits; is a data frame
-of branching times, ancestor and descendant vectors}
-
 \item{intrinsicFn}{Name of intrinsic function characters should be simulated
 under}
 
@@ -178,9 +166,6 @@ extrinsic model}
 matrix and a vector}
 
 \item{jobName}{Optional name for the job}
-
-\item{taxon.df}{Output from the function getTaxonDFWithPossibleExtinction; is a data frame
-with info on all the taxa (including internal ones)}
 
 \item{returnAll}{If true, returns the values at each node}
 
@@ -279,8 +264,12 @@ list of data frames}
 
 \item{particleDataFrame}{List of particleDataFrames from separate runs}
 
+\item{phy}{A phylogenetic tree, in package \code{ape}'s \code{phylo} format.}
+
 \item{timeStep}{This value corresponds to the number of discrete time steps
 on the shortest branch}
+
+\item{phy}{A phylogenetic tree, in package \code{ape}'s \code{phylo} format.}
 
 \item{intrinsicFn}{Name of intrinsic function characters should be simulated
 under}
@@ -308,13 +297,7 @@ matrix and a vector}
 
 \item{verbose}{If TRUE, chat about how the sim is going}
 
-\item{phy}{Tree (ape phylo format)}
-
-\item{phy}{Tree (ape phylo format)}
-
-\item{taxon.df}{object from getTaxonDFWithPossibleExtinction}
-
-\item{phy}{Tree (Phylogenetic tree in phylo format)}
+\item{phy}{A phylogenetic tree, in package \code{ape}'s \code{phylo} format.}
 
 \item{timeStep}{This value corresponds to the number of discrete time steps}
 
@@ -367,10 +350,6 @@ A data frame of species character (tip) values in the tree.
 
 A data frame of species character (tip) values in the tree (unless returnAll==TRUE, in which case it returns the raw df from the sim).
 
-A data frame of branching times, ancestor and descendant vectors
-
-A list of abctaxon objects
-
 Returns matrix of trueFreeValues and summary statistics for
 simulations
 
@@ -408,12 +387,6 @@ lineage, independent of other evolving lineages (competitors, predators, etc).
 This function evolves continuous characters in a discrete time process.
 
 This function evolves continuous characters in a discrete time process.
-
-This function retrieves branch lengths and ancestor-decendant relationships
-from a tree
-
-This function retrieves branch lengths and ancestor-decendant relationships
-from a tree
 
 This function mutates the character state of a given taxon by one discrete
 time step
@@ -523,10 +496,6 @@ When saveHistory is TRUE, processor time will increase quite a bit.
 SaveRealParams is useful for tracking the "real" true values if simulating
 data for abc runs.  It is not useful for empirical abc runs.
 
-This function is used by other TreEvo functions for internal calculations.
-
-This function is used by other TreEvo functions for internal calculations.
-
 Each parameter is plotted twice for parent-offspring relationships through
 the generations.  In the top row, particles are plotted as a measure of
 distance to the observed data; the farther away the particle the bigger the
@@ -563,11 +532,11 @@ analyses.
 
 
 
-phy<-rcoal(30)
+tree<-rcoal(30)
 
 #Simple Brownian motion
 char<-doSimulation(
-	splits=getSimulationSplits(phy),
+	phy=tree,
 	intrinsicFn=brownianIntrinsic,
 	extrinsicFn=nullExtrinsic,
 	startingValues=c(10), #root state
@@ -579,7 +548,7 @@ char<-doSimulation(
 
 #Character displacement model with minimum bound
 char<-doSimulation(
-	splits=getSimulationSplits(phy),
+	phy=tree,
 	intrinsicFn=boundaryMinIntrinsic,
 	extrinsicFn=ExponentiallyDecayingPushExtrinsic,
 	startingValues=c(10), #root state
@@ -590,11 +559,11 @@ char<-doSimulation(
 
 
 
-phy<-rcoal(30)
+tree<-rcoal(30)
 
 #Simple Brownian motion
 char<-doSimulation(
-	splits=getSimulationSplits(phy),
+	phy=tree,
 	intrinsicFn=brownianIntrinsic,
 	extrinsicFn=nullExtrinsic,
 	startingValues=c(10), #root state
@@ -606,7 +575,7 @@ char<-doSimulation(
 
 #Character displacement model with minimum bound
 char<-doSimulation(
-	splits=getSimulationSplits(phy),
+	phy=tree,
 	intrinsicFn=boundaryMinIntrinsic,
 	extrinsicFn=ExponentiallyDecayingPushExtrinsic,
 	startingValues=c(10), #root state
@@ -650,10 +619,6 @@ Brian O'Meara and Barb Banbury
 Brian O'Meara and Barb Banbury
 
 Brian O'Meara and Barb Banbury
-
-Brian O'Meara and Barb Banbury
-
-Brian O'Meara
 
 Brian O'Meara and Barb Banbury
 

@@ -7,9 +7,11 @@
 #' doRun_rej.
 #'
 
-#' @param taxon.df starting object from getTaxonDFWithPossibleExtinction
+# @param taxon.df starting object from getTaxonDFWithPossibleExtinction
 
-#' @param phy Tree (Phylogenetic tree in phylo format)
+# @param phy Tree (Phylogenetic tree in phylo format)
+
+#' @param phy A phylogenetic tree, in package \code{ape}'s \code{phylo} format.
 
 #' @param startingPriorsValues Matrix with ncol=number of states (characters)
 #' at root and nrow=2 (two parameters to pass to prior distribution)
@@ -84,6 +86,9 @@
 #' @rdname simulateData
 #' @export
 simulateData<-function(taxon.df, phy, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn,giveUpAttempts=10, niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25, verbose=FALSE) {
+
+	taxon.df <- getTaxonDFWithPossibleExtinction(phy)
+
 	simTrueAndStats<-rep(NA,10) #no particular reason for it to be 10 wide
 	n.attempts<-0
 	while (length(which(is.na(simTrueAndStats)))>0) {

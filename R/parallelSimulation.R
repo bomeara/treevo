@@ -9,9 +9,9 @@
 
 #' @param coreLimit Number of cores to be used
 
-#' @param taxon.df object from getTaxonDFWithPossibleExtinction
+# @param taxon.df object from getTaxonDFWithPossibleExtinction
 
-#' @param phy Tree (Phylogenetic tree in phylo format)
+#' @param phy A phylogenetic tree, in package \code{ape}'s \code{phylo} format.
 
 #' @param startingPriorsValues Matrix with ncol=number of states (characters)
 #' at root and nrow=2 (two parameters to pass to prior distribution)
@@ -74,9 +74,12 @@
 #' @name intrinsicModels
 #' @rdname intrinsicModels
 #' @export
-parallelSimulation<-function(nrepSim, coreLimit, taxon.df, phy, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn, multicore,checkpointFile=NULL,checkpointFreq=24, niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) {
+parallelSimulation<-function(nrepSim, coreLimit, phy, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn, multicore,checkpointFile=NULL,checkpointFreq=24, niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) {
 	#library(doMC, quietly=T)
 	#library(foreach, quietly=T)
+
+	taxon.df <- getTaxonDFWithPossibleExtinction(phy)
+
 	cores=1
 	if (multicore) {
 		if (is.na(coreLimit)){

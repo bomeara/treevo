@@ -5,3 +5,10 @@ VERSION - 0.4.1 - 07-04-17
 - NAMESPACE file converted over to now be automatically handled by roxygen2
 - Added NEWS file for tracking changes to TreEvo
 -Removed an apparent duplicate data file (simData), leaving simRun; modified references to simData accordingly
+
+VERSION - 0.4.2 - 
+- Internalized many functions with unclear need-to-use for typical users, and that were not necessary as input creators for other exported functions
+- Internalized functions getSimulationSplits and getTaxonDFWithPossibleExtinction, and modified doSimulation functions to simply accept phylogenies as input rather than these secondary products
+- Merged functions with shared design (particularly shared parameter sets) into the same help files to reduce redundancy
+-
+

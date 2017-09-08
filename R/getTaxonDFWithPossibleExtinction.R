@@ -1,17 +1,21 @@
 #' Get data.frame of taxa
 #'
 #' This function retrieves branch lengths and ancestor-decendant relationships
-#' from a tree
+#' from a tree.
 #'
 #' This function is used by other TreEvo functions for internal calculations.
 #'
-#' @param phy Tree (ape phylo format)
+
+#' @param phy A phylogenetic tree, in package \code{ape}'s \code{phylo} format.
+
 #' @return A list of abctaxon objects
+
 #' @author Brian O'Meara
+
 # @references O'Meara and Banbury, unpublished
 
-#' @name intrinsicModels
-#' @rdname intrinsicModels
+#' @name getTaxonDFWithPossibleExtinction
+#' @rdname getTaxonDFWithPossibleExtinction
 #' @export
 getTaxonDFWithPossibleExtinction<-function(phy) {
 	heights <- data.frame(cbind(phy$edge, phy$edge.length, phytools::nodeHeights(phy)))
@@ -28,14 +32,15 @@ getTaxonDFWithPossibleExtinction<-function(phy) {
 }
 
 
-#' Create abctaxon object
-#'
-#' This creates an abctaxon object from a row in the heights df
-#' created within getAbcTaxonListWithPossibleExtinction
-#'
-#' @param x A row of the heights df
-#' @return An abctaxon object
-#' @author Brian O'Meara
+# Create abctaxon object
+#
+# This creates an abctaxon object from a row in the heights df
+# created within getAbcTaxonListWithPossibleExtinction
+#
+# @param x A row of the heights df
+# @return An abctaxon object
+# @author Brian O'Meara
 createAbcTaxonFromHeightsRow <- function(x) {
-	return(abctaxon(id=x$tipward.id, name=x$name, timeSinceSpeciation=0, states=NA, nextstates=NA, startTime=x$rootward.height, endTime=x$tipward.height, terminal=!grepl("internal.", x$name), ancestorId=x$rootward.id))
+	return(abctaxon(id=x$tipward.id, name=x$name, timeSinceSpeciation=0, states=NA, nextstates=NA, 
+	startTime=x$rootward.height, endTime=x$tipward.height, terminal=!grepl("internal.", x$name), ancestorId=x$rootward.id))
 }

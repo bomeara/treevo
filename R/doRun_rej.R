@@ -302,7 +302,7 @@ doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
   rejectionResults$abcDistances<-res$abcDistances
 	rejectionResults$particleDataFrame<-res$particleDataFrame
   rejectionResults$CredInt<-CredInt(res$particleDataFrame)
-	rejectionResults$HPD<-HPD(res$particleDataFrame)
+	rejectionResults$HPD<-highestProbDens(res$particleDataFrame)
 
 
 

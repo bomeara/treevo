@@ -6,38 +6,57 @@
 #' SaveRealParams is useful for tracking the "real" true values if simulating
 #' data for abc runs.  It is not useful for empirical abc runs.
 #'
-#' @param taxon.df Output from the function getTaxonDFWithPossibleExtinction; is a data frame
-#' with info on all the taxa (including internal ones)
+
+# @param taxon.df Output from the function getTaxonDFWithPossibleExtinction; is a data frame
+# with info on all the taxa (including internal ones)
+
+#' @param phy A phylogenetic tree, in package \code{ape}'s \code{phylo} format.
+
 #' @param intrinsicFn Name of intrinsic function characters should be simulated
 #' under
+
 #' @param extrinsicFn Name of extrinsic function characters should be simulated
 #' under
+
 #' @param startingValues State at the root
+
 #' @param intrinsicValues Vector of values corresponding to the params of the
 #' intrinsic model
+
 #' @param extrinsicValues Vector of values corresponding to the params of the
 #' extrinsic model
+
 #' @param timeStep This value corresponds to the number of discrete time steps
 #' on the shortest branch
+
 #' @param saveHistory Saves the character history throughout the simulation
+
 #' @param saveRealParams Saves intrinsicValues and extrinsicValues as both a
 #' matrix and a vector
+
 #' @param jobName Optional name for the job
+
 #' @param returnAll If true, returns the values at each node
+
 #' @param verbose If TRUE, chat about how the sim is going
+
 #' @param reject.NaN Stop run if any simulated value is NaN
+
 #' @return A data frame of species character (tip) values in the tree (unless returnAll==TRUE, in which case it returns the raw df from the sim).
+
 #' @author Brian O'Meara and Barb Banbury
+
 # @references O'Meara and Banbury, unpublished
 # @keywords doSimulation
+
 #' @examples
 #'
 #'
-#' phy<-rcoal(30)
+#' tree<-rcoal(30)
 #'
 #' #Simple Brownian motion
 #' char<-doSimulation(
-#' 	splits=getSimulationSplits(phy),
+#' 	phy=tree,
 #' 	intrinsicFn=brownianIntrinsic,
 #' 	extrinsicFn=nullExtrinsic,
 #' 	startingValues=c(10), #root state
@@ -49,7 +68,7 @@
 #'
 #' #Character displacement model with minimum bound
 #' char<-doSimulation(
-#' 	splits=getSimulationSplits(phy),
+#' 	phy=tree,
 #' 	intrinsicFn=boundaryMinIntrinsic,
 #' 	extrinsicFn=ExponentiallyDecayingPushExtrinsic,
 #' 	startingValues=c(10), #root state
@@ -59,11 +78,13 @@
 #' 	saveHistory=FALSE)
 #'
 
-
 #' @name intrinsicModels
 #' @rdname intrinsicModels
 #' @export
-doSimulationWithPossibleExtinction<-function(taxon.df, intrinsicFn, extrinsicFn, startingValues, intrinsicValues, extrinsicValues, timeStep, saveHistory=FALSE, saveRealParams=FALSE, jobName="", returnAll = FALSE, verbose=FALSE, reject.NaN=TRUE) {
+doSimulationWithPossibleExtinction<-function(phy, intrinsicFn, extrinsicFn, startingValues, intrinsicValues, extrinsicValues, timeStep, saveHistory=FALSE, saveRealParams=FALSE, jobName="", returnAll = FALSE, verbose=FALSE, reject.NaN=TRUE) {
+	
+	taxon.df <- getTaxonDFWithPossibleExtinction(phy)
+	
 	if (saveRealParams){
 		RealParams<-vector("list", 2)
 		names(RealParams)<-c("matrix", "vector")

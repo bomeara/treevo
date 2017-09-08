@@ -11,9 +11,7 @@ simulateData(taxon.df, phy, startingPriorsValues, intrinsicPriorsValues,
   niter.delta = 25, niter.OU = 25, niter.white = 25, verbose = FALSE)
 }
 \arguments{
-\item{taxon.df}{starting object from getTaxonDFWithPossibleExtinction}
-
-\item{phy}{Tree (Phylogenetic tree in phylo format)}
+\item{phy}{A phylogenetic tree, in package \code{ape}'s \code{phylo} format.}
 
 \item{startingPriorsValues}{Matrix with ncol=number of states (characters)
 at root and nrow=2 (two parameters to pass to prior distribution)}

@@ -10,9 +10,6 @@ doSimulationForPlotting(splits, intrinsicFn, extrinsicFn, startingValues,
   jobName = "")
 }
 \arguments{
-\item{splits}{Output from the function getSimulationSplits; is a data frame
-of branching times, ancestor and descendant vectors}
-
 \item{intrinsicFn}{Name of intrinsic function characters should be simulated
 under}
 
@@ -41,6 +38,8 @@ throughout the history of the tree}
 matrix and a vector}
 
 \item{jobName}{Optional name for the job}
+
+\item{phy}{A phylogenetic tree, in package \code{ape}'s \code{phylo} format.}
 }
 \value{
 A data frame of species character (tip) values in the tree.
@@ -56,11 +55,11 @@ data for abc runs.  It is not useful for empirical abc runs.
 \examples{
 
 
-phy<-rcoal(30)
+tree<-rcoal(30)
 
 #Simple Brownian motion
 char<-doSimulationForPlotting(
-	splits=getSimulationSplits(phy), 
+	phy=tree,
 	intrinsicFn=brownianIntrinsic,
 	extrinsicFn=nullExtrinsic,
 	startingValues=c(10), #root state
@@ -73,7 +72,7 @@ char<-doSimulationForPlotting(
 
 #Character displacement model with minimum bound
 char<-doSimulationForPlotting(
-	splits=getSimulationSplits(phy), 
+	phy=tree,
 	intrinsicFn=boundaryMinIntrinsic,
 	extrinsicFn=ExponentiallyDecayingPushExtrinsic,
 	startingValues=c(10), #root state
