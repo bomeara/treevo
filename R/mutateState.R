@@ -17,8 +17,8 @@
 
 # @references O'Meara and Banbury, unpublished
 
-#' @name intrinsicModels
-#' @rdname intrinsicModels
+#' @name mutateState
+#' @rdname mutateState
 #' @export
 mutateState<-function(startingState, standardDevFactor, priorValues, priorFn) {
 	newState<-NA

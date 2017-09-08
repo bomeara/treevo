@@ -13,8 +13,8 @@
 # @references O'Meara and Banbury, unpublished
 
 
-#' @name intrinsicModels
-#' @rdname intrinsicModels
+#' @name PairwiseKS
+#' @rdname PairwiseKS
 #' @export
 PairwiseKS<-function(particleDataFrame) {
 #Combine doRun$particleDataFrame results and performs Kolmogorov-Smirnov tests

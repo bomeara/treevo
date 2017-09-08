@@ -1,22 +1,22 @@
-#' Get data.frame of taxa
-#'
-#' This function retrieves branch lengths and ancestor-decendant relationships
-#' from a tree.
-#'
-#' This function is used by other TreEvo functions for internal calculations.
-#'
+# Get data.frame of taxa
+#
+# This function retrieves branch lengths and ancestor-decendant relationships
+# from a tree.
+#
+# This function is used by other TreEvo functions for internal calculations.
+#
 
-#' @param phy A phylogenetic tree, in package \code{ape}'s \code{phylo} format.
+# @param phy A phylogenetic tree, in package \code{ape}'s \code{phylo} format.
 
-#' @return A list of abctaxon objects
+# @return A list of abctaxon objects
 
-#' @author Brian O'Meara
+# @author Brian O'Meara
 
 # @references O'Meara and Banbury, unpublished
 
-#' @name getTaxonDFWithPossibleExtinction
-#' @rdname getTaxonDFWithPossibleExtinction
-#' @export
+# @name getTaxonDFWithPossibleExtinction
+# @rdname getTaxonDFWithPossibleExtinction
+# @export
 getTaxonDFWithPossibleExtinction<-function(phy) {
 	heights <- data.frame(cbind(phy$edge, phy$edge.length, phytools::nodeHeights(phy)))
 	colnames(heights) <- c("rootward.id", "tipward.id", "edge.length", "rootward.height", "tipward.height")

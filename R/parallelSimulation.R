@@ -71,8 +71,8 @@
 
 # @references O'Meara and Banbury, unpublished
 
-#' @name intrinsicModels
-#' @rdname intrinsicModels
+#' @name parallelSimulation
+#' @rdname parallelSimulation
 #' @export
 parallelSimulation<-function(nrepSim, coreLimit, phy, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn, multicore,checkpointFile=NULL,checkpointFreq=24, niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) {
 	#library(doMC, quietly=T)

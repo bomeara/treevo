@@ -78,8 +78,8 @@
 #' 	saveHistory=FALSE)
 #'
 
-#' @name intrinsicModels
-#' @rdname intrinsicModels
+#' @name doSimulationWithPossibleExtinction
+#' @rdname doSimulationWithPossibleExtinction
 #' @export
 doSimulationWithPossibleExtinction<-function(phy, intrinsicFn, extrinsicFn, startingValues, intrinsicValues, extrinsicValues, timeStep, saveHistory=FALSE, saveRealParams=FALSE, jobName="", returnAll = FALSE, verbose=FALSE, reject.NaN=TRUE) {
 	

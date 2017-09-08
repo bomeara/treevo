@@ -1,17 +1,21 @@
 #' Pairwise Effective Sample Size
 #'
-#' This function calculates ESS on results.  Performs the best when results are
+#' This function calculates Effective Sample Size (ESS) on results.  Performs the best when results are
 #' from multiple runs.
 #'
 #'
+
 #' @param particleDataFrame particleDataFrame can be a single data frame or a
 #' list of data frames
+
 #' @return Returns a matrix with ESS values of all pairwise runs
+
 #' @author Brian O'Meara and Barb Banbury
+
 # @references O'Meara and Banbury, unpublished
 
-#' @name intrinsicModels
-#' @rdname intrinsicModels
+#' @name PairwiseESS
+#' @rdname PairwiseESS
 #' @export
 PairwiseESS<-function(particleDataFrame) {
 #Combine doRun$particleDataFrame results and test effective sample size

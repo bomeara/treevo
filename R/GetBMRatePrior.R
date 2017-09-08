@@ -19,8 +19,8 @@
 #' 
 #' 
 
-#' @name intrinsicModels
-#' @rdname intrinsicModels
+#' @name GetBMRatePrior
+#' @rdname GetBMRatePrior
 #' @export
 GetBMRatePrior<-function(phy, traits, timeStep) {
   print("BM rate prior is an exponential distribution with a mean value approximately equal to the likelihood estimation")

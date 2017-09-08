@@ -11,8 +11,8 @@
 # @references O'Meara and Banbury, unpublished
 
 
-#' @name intrinsicModels
-#' @rdname intrinsicModels
+#' @name CredInt
+#' @rdname CredInt
 #' @export
 CredInt<-function(particleDataFrame, percent=0.95) { 
 	generation<-NULL #to appease R CMD CHECK with subset

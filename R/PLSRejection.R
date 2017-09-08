@@ -39,8 +39,8 @@
 #' 
 
 
-#' @name intrinsicModels
-#' @rdname intrinsicModels
+#' @name PLSRejection
+#' @rdname PLSRejection
 #' @export
 PLSRejection<-function(summaryValuesMatrix, trueFreeValuesMatrix, phy, traits, abcTolerance, verbose=TRUE, validation="CV", scale=TRUE, variance.cutoff=95) {
   originalSummaryValues<-summaryStatsLong(phy=phy, traits=traits)

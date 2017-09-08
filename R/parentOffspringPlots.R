@@ -24,11 +24,11 @@
 #' @examples
 #' 
 #' data(simRun)
-#'#parentOffspringPlots(res$particleDataFrame)
+#' parentOffspringPlots(res$particleDataFrame)
 #' 
 
-#' @name intrinsicModels
-#' @rdname intrinsicModels
+#' @name parentOffspringPlots
+#' @rdname parentOffspringPlots
 #' @export
 parentOffspringPlots<-function(particleDataFrame){
 

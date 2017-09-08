@@ -1,4 +1,4 @@
-#' PLS Transform
+#' Partial Least Squares Transform
 #' 
 #' Uses results from the PLS model to transform summary values
 #' 
@@ -16,8 +16,8 @@
 #' #PLSTransform(summaryValuesMatrix, pls.model)
 #' 
 
-#' @name intrinsicModels
-#' @rdname intrinsicModels
+#' @name PLSTransform
+#' @rdname PLSTransform
 #' @export
 PLSTransform<-function(summaryValuesMatrix, pls.model) {
   if (class(summaryValuesMatrix)!="matrix") {

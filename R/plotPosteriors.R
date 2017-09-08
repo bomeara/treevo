@@ -34,13 +34,13 @@
 
 #' @examples
 #' 
-#' # data(Res)
-#' # plotPosteriors(particleDataFrame=res$particleDataFrame,
-#' #    PriorMatrix=res$priorMatrix, realParam=FALSE, realParamValues=NA)
+#' data(simRun)
+#' plotPosteriors(particleDataFrame=res$particleDataFrame,
+#'    PriorMatrix=res$priorMatrix, realParam=FALSE, realParamValues=NA)
 #' 
 
-#' @name intrinsicModels
-#' @rdname intrinsicModels
+#' @name plotPosteriors
+#' @rdname plotPosteriors
 #' @export
 plotPosteriors<-function(particleDataFrame, PriorMatrix, realParam=FALSE, realParamValues=NA) {
 	# particleDataFrame can be single or a list of particleDataFrames (1:n)

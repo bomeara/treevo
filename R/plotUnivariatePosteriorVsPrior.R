@@ -20,8 +20,8 @@
 # @references O'Meara and Banbury, unpublished
 # @keywords getUnivariatePriorCurve
 
-#' @name intrinsicModels
-#' @rdname intrinsicModels
+#' @name getUnivariatePriorCurve
+#' @rdname getUnivariatePriorCurve
 #' @export
 getUnivariatePriorCurve<-function(priorValues, priorFn, nPoints=100000, from=NULL, to=NULL, prob=0.95) {
 	samples<-replicate(nPoints,pullFromPrior(priorValues, priorFn))
