@@ -85,7 +85,7 @@
 #' @name simulateData
 #' @rdname simulateData
 #' @export
-simulateData<-function(taxon.df, phy, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn,giveUpAttempts=10, niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25, verbose=FALSE) {
+simulateData<-function(phy, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn,giveUpAttempts=10, niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25, verbose=FALSE) {
 
 	#taxon.df <- getTaxonDFWithPossibleExtinction(phy)
 

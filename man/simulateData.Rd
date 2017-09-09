@@ -4,7 +4,7 @@
 \alias{simulateData}
 \title{Simulate data for initial TreEvo analysis}
 \usage{
-simulateData(taxon.df, phy, startingPriorsValues, intrinsicPriorsValues,
+simulateData(phy, startingPriorsValues, intrinsicPriorsValues,
   extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns,
   extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn,
   giveUpAttempts = 10, niter.brown = 25, niter.lambda = 25,

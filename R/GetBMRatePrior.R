@@ -6,10 +6,15 @@
 #' Returns a matrix of prior values that can be used in the doRun functions.
 #' Builds on functions in geiger to estimate distribution.
 #' 
-#' @param phy Tree (Phylogenetic tree in phylo format)
-#' @param traits data matrix with rownames equal to phy
+
+#' @param phy Phylogenetic tree in package \code{ape}'s \code{phylo} format
+
+#' @param traits A data matrix with rownames equal to phy
+
 #' @param timeStep time in a single iteration of the discrete-time simulation
+
 #' @return Returns a matrix of prior values
+
 #' @author Brian O'Meara and Barb Banbury
 
 # @references O'Meara and Banbury, unpublished
@@ -17,8 +22,9 @@
 
 #' @examples
 #' 
-#' example(simRun)
-#' GetBMRatePrior(phy, traits, timeStep)
+#' data(simRun)
+#' 
+#' GetBMRatePrior(phy=simPhy, traits=simChar, timeStep=1)
 #' 
 #' 
 
@@ -28,8 +34,9 @@
 GetBMRatePrior<-function(phy, traits, timeStep) {
   print("BM rate prior is an exponential distribution with a mean value approximately equal to the likelihood estimation")
   GetBrownianSDRate<-function(phy, traits, timeStep) { #conversion from continuous rate to discrete
-    if(is.null(names(traits)))
-      names(traits) <- colnames(traits)
+    if(is.null(names(traits))){
+		names(traits) <- colnames(traits)
+		}
 	continuous.time.sigma.squared <- fitContinuous(phy, traits)$opt$sigsq
     numSteps <- getSimulationSplits(phy)[1, 1] / timeStep
     discrete.time.sigma.squared<-continuous.time.sigma.squared * max(branching.times(phy)) / numSteps

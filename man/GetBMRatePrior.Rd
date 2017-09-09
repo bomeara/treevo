@@ -7,9 +7,9 @@
 GetBMRatePrior(phy, traits, timeStep)
 }
 \arguments{
-\item{phy}{Tree (Phylogenetic tree in phylo format)}
+\item{phy}{Phylogenetic tree in package \code{ape}'s \code{phylo} format}
 
-\item{traits}{data matrix with rownames equal to phy}
+\item{traits}{A data matrix with rownames equal to phy}
 
 \item{timeStep}{time in a single iteration of the discrete-time simulation}
 }
@@ -26,8 +26,9 @@ Builds on functions in geiger to estimate distribution.
 }
 \examples{
 
-example(simRun)
-GetBMRatePrior(phy, traits, timeStep)
+data(simRun)
+
+GetBMRatePrior(phy=simPhy, traits=simChar, timeStep=1)
 
 
 }
