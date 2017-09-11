@@ -34,17 +34,18 @@
 #' @importFrom corpcor pseudoinverse 
 #' @importFrom coda effectiveSize HPDinterval as.mcmc 
 #' @importFrom foreach foreach getDoParWorkers '%dopar%' 
-#' @importFrom rgl plot3d title3d rgl.viewpoint open3d rgl.material triangles3d lines3d spheres3d triangulate 
+#' @importFrom rgl plot3d title3d rgl.viewpoint open3d rgl.material triangles3d lines3d spheres3d 
 #' @importFrom partitions blockparts 
 #' @importFrom car powerTransform 
 #' @importFrom mvtnorm dmvnorm 
 #' @importFrom graphics curve layout layout.show legend lines plot plot.new points polygon rect segments symbols text title 
 #' @importFrom grDevices dev.new dev.off gray pdf rgb 
-#' @importFrom methods as 
+#' @importFrom methods as setAs
 
 # need to import class gpc.poly from gpclib, and setAs from methods
-#' @importFrom methods setAs
 #' @importClassesFrom rgeos gpc.poly
+# and triangulate
+#' @importFrom rgeos triangulate 
 
 # interval functions - DO NOT EXPORT
 # @export abcparticle
