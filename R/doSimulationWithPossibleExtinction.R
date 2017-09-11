@@ -140,7 +140,8 @@ doSimulationWithPossibleExtinction<-function(phy, intrinsicFn, extrinsicFn, star
 			if(is.na(taxon.df$states[alive.rows[taxon.index]])) {
 				taxon.df$states[alive.rows[taxon.index]] <- taxon.df$states[which(taxon.df$id==taxon.df$ancestorId[alive.rows[taxon.index]])]
 			}
-			new.state <- taxon.df$states[alive.rows[taxon.index]] + intrinsicFn(params=intrinsicValues, states=current.states[taxon.index], timefrompresent =depthfrompresent)+extrinsicFn(params=extrinsicValues, selfstates=current.states[taxon.index], otherstates=current.states[-taxon.index], timefrompresent =depthfrompresent)
+			new.state <- taxon.df$states[alive.rows[taxon.index]] + intrinsicFn(params=intrinsicValues, states=current.states[taxon.index],
+				timefrompresent =depthfrompresent)+extrinsicFn(params=extrinsicValues, selfstates=current.states[taxon.index], otherstates=current.states[-taxon.index], timefrompresent =depthfrompresent)
 			if(is.na(new.state)) {
 				warning("got bad sim")
 				attempt.count=0
@@ -154,7 +155,12 @@ doSimulationWithPossibleExtinction<-function(phy, intrinsicFn, extrinsicFn, star
 					print(intrinsicValues)
 				}
 				if(is.na(new.state) & attempt.count==100) {
-					stop(paste("Simulating with these parameters resulted in problematic results; for one example, taxon.df$states[alive.rows[taxon.index]] was ", taxon.df$states[alive.rows[taxon.index]], "intrinsicFn returned ", intrinsicFn(params=intrinsicValues, states=current.states[taxon.index], timefrompresent =depthfrompresent), "and extrinsicFn returned", extrinsicFn(params=extrinsicValues, selfstates=current.states[taxon.index], otherstates=current.states[-taxon.index], timefrompresent =depthfrompresent)))
+					stop(paste(
+						"Simulating with these parameters resulted in problematic results; for one example, taxon.df$states[alive.rows[taxon.index]] was ",
+						taxon.df$states[alive.rows[taxon.index]], "intrinsicFn returned ",
+						intrinsicFn(params=intrinsicValues, states=current.states[taxon.index],
+						timefrompresent =depthfrompresent), "and extrinsicFn returned", extrinsicFn(params=extrinsicValues,
+						selfstates=current.states[taxon.index], otherstates=current.states[-taxon.index], timefrompresent =depthfrompresent)))
 				}
 			}
 			taxon.df$states[alive.rows[taxon.index]] <- new.state

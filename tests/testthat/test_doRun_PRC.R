@@ -1,17 +1,18 @@
 test_that("simulation ran", {
 	data(simRun)
-	 char<-doSimulationWithPossibleExtinction(
- 	phy=simPhy,
- 	intrinsicFn=brownianIntrinsic,
- 	extrinsicFn=nullExtrinsic,
- 	startingValues=c(10), #root state
- 	intrinsicValues=c(0.01),
- 	extrinsicValues=c(0),
- 	timeStep=0.0001,
- 	saveHistory=FALSE)
+	char<-doSimulationWithPossibleExtinction(
+		phy=simPhy,
+		intrinsicFn=brownianIntrinsic,
+		extrinsicFn=nullExtrinsic,
+		startingValues=c(10), #root state
+		intrinsicValues=c(0.01),
+		extrinsicValues=c(0),
+		timeStep=0.0001,
+		saveHistory=FALSE)
 	expect_equal(class(char[,1]), "numeric")
 	expect_equal(dim(char)[1], 30)
-})
+	}
+)
 
 
 test_that("doPRC runs correctly", {
