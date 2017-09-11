@@ -44,7 +44,7 @@
 
 # need to import class gpc.poly from gpclib, and setAs from methods
 #' @importFrom methods setAs
-#' @importClassesFrom gpclib gpc.poly
+#' @importClassesFrom rgeos gpc.poly
 
 # interval functions - DO NOT EXPORT
 # @export abcparticle

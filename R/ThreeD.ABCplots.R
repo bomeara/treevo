@@ -59,47 +59,50 @@ ThreeD.ABCplots<-function(particleDataFrame, parameter, show.particles="none",
 		r<-vector() #vector of y vals
 		s<-vector() #generation each x-y coord is found
 
-		if (max(subset(particleDataFrame[which(particleDataFrame$weight>0),])[,param.position])-min(subset(particleDataFrame[which(particleDataFrame$weight>0),])[,param.position])!=0) {
-		v<-vector("list", max(particleDataFrame$generation))
-			for (i in 1:max(particleDataFrame$generation)){
-				which.gen<-(i+1)-1
-				v[[i]]<-density(subset(particleDataFrame[which(particleDataFrame$weight>0),], generation==i)[,param.position], weights=nParticles*subset(particleDataFrame[which(particleDataFrame$weight>0),], generation==i)[,6]/sum(nParticles*subset(particleDataFrame[which(particleDataFrame$weight>0),], generation==i)[,6]))
-				q<-c(q, v[[i]]$x)
-				r<-c(r, v[[i]]$y)
-				#s<-c(s, v[[i]]$x)	# return a$generation which v[[i]]
-					for (i in 1:length(v[[i]]$x)){
-						s<-c(s,which.gen)
+		if (max(subset(particleDataFrame[which(particleDataFrame$weight>0),])[,param.position])-min(
+			subset(particleDataFrame[which(particleDataFrame$weight>0),])[,param.position])!=0) {
+				v<-vector("list", max(particleDataFrame$generation))
+				for (i in 1:max(particleDataFrame$generation)){
+					which.gen<-(i+1)-1
+					v[[i]]<-density(subset(particleDataFrame[which(particleDataFrame$weight>0),], generation==i)[,param.position],
+						weights=nParticles*subset(particleDataFrame[which(particleDataFrame$weight>0),],
+						generation==i)[,6]/sum(nParticles*subset(particleDataFrame[which(particleDataFrame$weight>0),], generation==i)[,6]))
+					q<-c(q, v[[i]]$x)
+					r<-c(r, v[[i]]$y)
+					#s<-c(s, v[[i]]$x)	# return a$generation which v[[i]]
+						for (i in 1:length(v[[i]]$x)){
+							s<-c(s,which.gen)
+						}
+					T<-as.matrix(cbind(q, r, s))
 					}
-				T<-as.matrix(cbind(q, r, s))
-			}
-					
-			x<-T[,1]
-			y<-T[,2]
-			z<-T[,3]
-			open3d()  #make bigger window
-			#bg3d("color)  #gives background color for plot
+						
+				x<-T[,1]
+				y<-T[,2]
+				z<-T[,3]
+				open3d()  #make bigger window
+				#bg3d("color)  #gives background color for plot
 
-			plot3d(x, y, z, col="black", box=FALSE, type="n", xlab="", ylab="", zlab="", zlim=c(0, max(particleDataFrame$generation)), ylim=c(0, max(y)))
-	#print(paste("HERE"))
-			rgl.viewpoint(35, 1, 90)  #sets viewpoint for initial plot
-			title3d(colnames(x)[param.position], col='red', pos=c(NA, -2, max(z))) 
-			#text3d(x=min(x), y=mean(y), z=max(z), text="Density" col='blue') 
-			#title3d("Starting States", col='purple', pos=c(NA, 0, max(which.gen))) 
-			for (i in 1:max(s)){
-				ngen<-(i+1)-1
-				triangles<-triangulate(as(cbind(x[which(z==i)],y[which(z==i)]), "gpc.poly"))
-				zfit<-predict(lm(z[which(z==i)] ~ x[which(z==i)] + y[which(z==i)]), newdata=data.frame(x=triangles[,1], y=triangles[,2]))
-				opacity<-0.8*(ngen/length(v))
-				rgl.material(color="black", alpha=opacity, lit=FALSE)
-				#return(dim(triangles))
-				#return(dim(zfit))
-				triangles3d(cbind(triangles, zfit), col="red")
-				#readline(prompt="hit enter ")
-				if (realParam) {
-					rgl.material(color="blue", lwd=2)
-					lines3d(x=c(realParamValues[1], realParamValues[1]), y=c(0, 0), z=c(min(s), max(s)))	
+				plot3d(x, y, z, col="black", box=FALSE, type="n", xlab="", ylab="", zlab="", zlim=c(0, max(particleDataFrame$generation)), ylim=c(0, max(y)))
+					#print(paste("HERE"))
+				rgl.viewpoint(35, 1, 90)  #sets viewpoint for initial plot
+				title3d(colnames(x)[param.position], col='red', pos=c(NA, -2, max(z))) 
+				#text3d(x=min(x), y=mean(y), z=max(z), text="Density" col='blue') 
+				#title3d("Starting States", col='purple', pos=c(NA, 0, max(which.gen))) 
+				for (i in 1:max(s)){
+					ngen<-(i+1)-1
+					triangles<-triangulate(as(cbind(x[which(z==i)],y[which(z==i)]), "gpc.poly"))
+					zfit<-predict(lm(z[which(z==i)] ~ x[which(z==i)] + y[which(z==i)]), newdata=data.frame(x=triangles[,1], y=triangles[,2]))
+					opacity<-0.8*(ngen/length(v))
+					rgl.material(color="black", alpha=opacity, lit=FALSE)
+					#return(dim(triangles))
+					#return(dim(zfit))
+					triangles3d(cbind(triangles, zfit), col="red")
+					#readline(prompt="hit enter ")
+					if (realParam) {
+						rgl.material(color="blue", lwd=2)
+						lines3d(x=c(realParamValues[1], realParamValues[1]), y=c(0, 0), z=c(min(s), max(s)))	
+					}
 				}
-			}
 		}		
 			
 		else {
@@ -107,10 +110,10 @@ ThreeD.ABCplots<-function(particleDataFrame, parameter, show.particles="none",
 			}
 			
 			
-	show.particles<-match.arg(arg=show.particles, choices=c("none", "weights", "distance"),several.ok=FALSE)
-	kept<-subset(particleDataFrame[which(particleDataFrame$id>0),])[,]	
-	reject<-subset(particleDataFrame[which(particleDataFrame$id<0),])[,]
-	short.kept<-subset(kept[which(kept$generation>1),])[,]
+		show.particles<-match.arg(arg=show.particles, choices=c("none", "weights", "distance"),several.ok=FALSE)
+		kept<-subset(particleDataFrame[which(particleDataFrame$id>0),])[,]	
+		reject<-subset(particleDataFrame[which(particleDataFrame$id<0),])[,]
+		short.kept<-subset(kept[which(kept$generation>1),])[,]
 
 		if (show.particles=="none"){
 			cat("currently not plotting particles.  To plot particles modify the show.particles= argument.")
