@@ -29,6 +29,7 @@ Suggests:
     covr,
     doMC,
 	doParallel,
+	gpclib,
     testthat
 LazyData: yes
 Description: Various functions for estimating parameters of trait evolution in comparative analyses

@@ -6,7 +6,7 @@
 
 # @param taxonframe Data frame with species values
 
-# @InheritParams doSimulation
+# @inheritParams doSimulation
 
 # @return Returns a data frame in geiger format
 

@@ -6,7 +6,7 @@
 # This function is used by other TreEvo functions for internal calculations.
 # 
 
-# @InheritParams doSimulation
+# @inheritParams doSimulation
 
 # @return A data frame of branching times, ancestor and descendant vectors
 

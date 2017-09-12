@@ -15,7 +15,8 @@
 #' parameters.
 #'
 
-#' @InheritParams doSimulation doRun_prc
+#' @inheritParams doSimulation
+#' @inheritParams doRun_prc
 
 #' @param intrinsicFn Name of (previously-defined) function that governs how
 #' traits evolve within a lineage, regardless of the states of other taxa

@@ -9,9 +9,7 @@
 
 # @param taxon.df starting object from getTaxonDFWithPossibleExtinction
 
-# @param phy Tree (Phylogenetic tree in phylo format)
-
-#' @param phy A phylogenetic tree, in package \code{ape}'s \code{phylo} format.
+#' @inheritParams doSimulation
 
 #' @param startingPriorsValues Matrix with ncol=number of states (characters)
 #' at root and nrow=2 (two parameters to pass to prior distribution)

@@ -7,15 +7,15 @@
 compareListIPD(particleDataFrame, verbose = F)
 }
 \arguments{
-\item{particleDataFrame}{particleDataFrame output from doRun}
+\item{particleDataFrame}{A \code{particleDataFrame} object output from \code{doRun}}
 
-\item{verbose}{Commented screen output}
+\item{verbose}{Commented screen output.}
 }
 \value{
-Returns a plot with IPD between runs per generation
+Produces a plot with IPD between runs per generation.
 }
 \description{
-This function plots interparticle distance between runs for each free
+This function plots interparticle distance (IPD) between runs for each free
 parameter.
 }
 \author{

@@ -2,14 +2,14 @@
 % Please edit documentation in R/GetBMRatePrior.R
 \name{GetBMRatePrior}
 \alias{GetBMRatePrior}
-\title{Get BM Rate Prior}
+\title{Get Brownian Motion Rate Prior}
 \usage{
 GetBMRatePrior(phy, traits, timeStep)
 }
 \arguments{
-\item{phy}{Phylogenetic tree in package \code{ape}'s \code{phylo} format}
+\item{phy}{A phylogenetic tree, in package \code{ape}'s \code{phylo} format.}
 
-\item{traits}{A data matrix with rownames equal to phy}
+\item{traits}{data matrix with rownames identical to \code{phy@tip.label}}
 
 \item{timeStep}{time in a single iteration of the discrete-time simulation}
 }
@@ -17,12 +17,12 @@ GetBMRatePrior(phy, traits, timeStep)
 Returns a matrix of prior values
 }
 \description{
-This function automatically calculates prior distributions for BM model of
-evolution
+This function automatically calculates prior distributions for
+the rate of trait evolution under the Brownian Motion (BM) model.
 }
 \details{
-Returns a matrix of prior values that can be used in the doRun functions.
-Builds on functions in geiger to estimate distribution.
+Returns a matrix of prior values that can be used in the \code{doRun} functions.
+Builds on functions in \code{geiger} to estimate distribution.
 }
 \examples{
 

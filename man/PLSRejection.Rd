@@ -9,39 +9,37 @@ PLSRejection(summaryValuesMatrix, trueFreeValuesMatrix, phy, traits,
   variance.cutoff = 95)
 }
 \arguments{
-\item{summaryValuesMatrix}{Matrix of summary statistics from simulations}
+\item{summaryValuesMatrix}{Matrix of summary statistics from simulations.}
 
-\item{trueFreeValuesMatrix}{Matrix of true free values from simulations}
+\item{trueFreeValuesMatrix}{Matrix of true free values from simulations.}
 
-\item{phy}{Tree (Phylogenetic tree in phylo format)}
+\item{phy}{A phylogenetic tree, in package \code{ape}'s \code{phylo} format.}
 
-\item{traits}{data matrix with rownames equal to phy}
+\item{traits}{data matrix with rownames identical to \code{phy@tip.label}}
 
-\item{abcTolerance}{Proportion of accepted simulations}
+\item{abcTolerance}{Proportion of accepted simulations.}
 
-\item{verbose}{option to print progress to screen}
+\item{verbose}{option to print progress to screen.}
 
-\item{validation}{Cross Validation procedure for abc}
+\item{validation}{Cross Validation procedure for ABC.}
 
-\item{scale}{scale for pls.model.list}
+\item{scale}{Scale for \code{pls.model.list}.}
 
-\item{variance.cutoff}{variance cutoff for pls.model.list}
+\item{variance.cutoff}{Variance cutoff for \code{pls.model.list}.}
 }
 \value{
-Returns a list of the particle data frame and abc distances.
+Returns a list of the particle data frame and ABC distances.
 }
 \description{
-This function automatically calculates prior distributions for the Brownian Motion model of
-evolution.
-}
-\details{
 This function performs the ABC-rejection analysis using an input simulation
 data. Particles are accepted is they fall sufficiently close to the target
 data (within the tolerance). Distances are calculated using \code{abcDistance}.
 }
 \examples{
 
-#PLSRejection(summaryValuesMatrix, trueFreeValuesMatrix, phy, traits, abcTolerance)
+data(simRun)
+PLSRejection(summaryValuesMatrix=results$summaryValuesMatrix, trueFreeValuesMatrix=results$trueFreeValuesMatrix,
+	 phy=simPhy, traits, abcTolerance=results$abcTolerance)
 
 }
 \author{

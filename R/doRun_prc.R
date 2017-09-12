@@ -23,7 +23,7 @@
 #' parameters.
 #'
 
-#' @InheritParams doSimulation
+#' @inheritParams doSimulation
 
 #' @param traits data matrix with rownames identical to \code{phy@tip.label}
 

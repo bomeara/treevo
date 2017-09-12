@@ -15,10 +15,6 @@ doRun_rej(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
   generation.time = 1)
 }
 \arguments{
-\item{phy}{Tree (Phylogenetic tree in phylo format)}
-
-\item{traits}{data matrix with rownames equal to phy}
-
 \item{intrinsicFn}{Name of (previously-defined) function that governs how
 traits evolve within a lineage, regardless of the states of other taxa}
 
@@ -97,7 +93,7 @@ from all sims} \item{simTime}{Processor time for simulations}
 \item{abcDistancesRaw}{Euclidean distances for each simulation and free
 parameter} \item{particleDataFrame}{DataFrame with information from each
 simulation, including generation, attempt, id, parentid, distance, weight,
-and parameter states} \item{CredInt}{Credible Interval calculation for each
+and parameter states} \item{credibleInt}{Credible Interval calculation for each
 free parameter of the final generation} \item{HPD}{Highest Posterior Density
 calculation each free parameter of the final generation}
 }

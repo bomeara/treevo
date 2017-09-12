@@ -5,23 +5,24 @@
 #' data (within the tolerance). Distances are calculated using \code{abcDistance}.
 #' 
 
-#' @param summaryValuesMatrix Matrix of summary statistics from simulations
+#' @param summaryValuesMatrix Matrix of summary statistics from simulations.
 
-#' @param trueFreeValuesMatrix Matrix of true free values from simulations
+#' @param trueFreeValuesMatrix Matrix of true free values from simulations.
 
-#' @InheritParams doSimulation doRun_prc
+#' @inheritParams doSimulation
+#' @inheritParams doRun_prc
 
-#' @param abcTolerance Proportion of accepted simulations
+#' @param abcTolerance Proportion of accepted simulations.
 
-#' @param verbose option to print progress to screen
+#' @param verbose option to print progress to screen.
 
-#' @param validation Cross Validation procedure for abc
+#' @param validation Cross Validation procedure for ABC.
 
-#' @param scale scale for pls.model.list
+#' @param scale Scale for \code{pls.model.list}.
 
-#' @param variance.cutoff variance cutoff for pls.model.list
+#' @param variance.cutoff Variance cutoff for \code{pls.model.list}.
 
-#' @return Returns a list of the particle data frame and abc distances.
+#' @return Returns a list of the particle data frame and ABC distances.
 
 #' @author Brian O'Meara and Barb Banbury
 
@@ -30,7 +31,9 @@
 
 #' @examples
 #' 
-#' #PLSRejection(summaryValuesMatrix, trueFreeValuesMatrix, phy, traits, abcTolerance)
+#' data(simRun)
+#' PLSRejection(summaryValuesMatrix=results$summaryValuesMatrix, trueFreeValuesMatrix=results$trueFreeValuesMatrix,
+#' 	 phy=simPhy, traits, abcTolerance=results$abcTolerance)
 #' 
 
 

@@ -17,9 +17,9 @@ doRun_prc(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
   generation.time = 1)
 }
 \arguments{
-\item{phy}{Tree (Phylogenetic tree in phylo format)}
+\item{phy}{A phylogenetic tree, in package \code{ape}'s \code{phylo} format.}
 
-\item{traits}{data matrix with rownames equal to phy}
+\item{traits}{data matrix with rownames identical to \code{phy@tip.label}}
 
 \item{intrinsicFn}{Name of (previously-defined) function that governs how
 traits evolve within a lineage, regardless of the states of other taxa}
@@ -99,7 +99,8 @@ nodes}
 
 \item{niter.goal}{Adjust number of starting points for Geiger to return the best parameter estimates this number of times on average}
 
-\item{generation.time}{The number of years per generation. This sets the coarseness of the simulation; if it's set to 1000, for example, the population moves every 1000 years.}
+\item{generation.time}{The number of years per generation. This sets the coarseness of the simulation; if it's set to 1000, 
+for example, the population moves every 1000 years.}
 }
 \value{
 \item{input.data}{Input variables: jobName, number of taxa, nrepSim,
@@ -111,7 +112,7 @@ states} \item{toleranceVector}{Final tolerance vector} \item{phy}{Input
 phylogeny} \item{traits}{Input traits} \item{simTime}{Processor time for
 initial simulations} \item{time.per.gen}{Processor time for subsequent
 generations} \item{whichVip}{Matrix of vip summary statistics for each free
-parameter} \item{CredInt}{Credible Interval calculation for each free
+parameter} \item{credibleInt}{Credible Interval calculation for each free
 parameter of the final generation} \item{HPD}{Highest Posterior Density
 calculation each free parameter of the final generation}
 }
@@ -142,34 +143,37 @@ parameters.
 
 data(simRun)
 
-#doRun_prc(
-#  phy = simPhy,
-#  traits = simChar,
-#  intrinsicFn=brownianIntrinsic,
-#  extrinsicFn=nullExtrinsic,
-#  startingPriorsFns="normal",
-#  startingPriorsValues=matrix(c(mean(simChar[,1]), sd(simChar[,1]))),
-#  intrinsicPriorsFns=c("exponential"),
-#  intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
-#  extrinsicPriorsFns=c("fixed"),
-#  extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
-#  TreeYears=1000,
-#  standardDevFactor=0.2,
-#  plot=FALSE,
-#  StartSims=300,
-#  epsilonProportion=0.7,
-#  epsilonMultiplier=0.7,
-#  nStepsPRC=5,
-#  numParticles=100,
-#  jobName="exampleRun",
-#  stopRule=FALSE,
-#  multicore=FALSE,
-#  coreLimit=1
-#)
+doRun_prc(
+  phy = simPhy,
+  traits = simChar,
+  intrinsicFn=brownianIntrinsic,
+  extrinsicFn=nullExtrinsic,
+  startingPriorsFns="normal",
+  startingPriorsValues=matrix(c(mean(simChar[,1]), sd(simChar[,1]))),
+  intrinsicPriorsFns=c("exponential"),
+  intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
+  extrinsicPriorsFns=c("fixed"),
+  extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
+  TreeYears=1000,
+  standardDevFactor=0.2,
+  plot=FALSE,
+  StartSims=300,
+  epsilonProportion=0.7,
+  epsilonMultiplier=0.7,
+  nStepsPRC=5,
+  numParticles=100,
+  jobName="exampleRun",
+  stopRule=FALSE,
+  multicore=FALSE,
+  coreLimit=1
+)
 
 
 }
+\references{
+Sisson et al. 2007, Wegmann et
+al. 2009
+}
 \author{
 Brian O'Meara and Barb Banbury
-al. 2009
 }

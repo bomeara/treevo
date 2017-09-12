@@ -7,7 +7,8 @@
 #' Builds on functions in \code{geiger} to estimate distribution.
 #' 
 
-#' @InheritParams doSimulation doRun_prc
+#' @inheritParams doSimulation
+#' @inheritParams doRun_prc
 
 #' @param timeStep time in a single iteration of the discrete-time simulation
 

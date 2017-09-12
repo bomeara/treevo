@@ -1,22 +1,23 @@
-#will compare IPD from a list of particleDataFrames.  Calculates the ratio of IPD
-
-
 #' Plot Interparticle Distance between Runs
 #' 
-#' This function plots interparticle distance between runs for each free
+#' This function plots interparticle distance (IPD) between runs for each free
 #' parameter.
 #' 
 #' 
 
-#' @param particleDataFrame particleDataFrame output from doRun
+#' @inheritParams credibleInt
 
-#' @param verbose Commented screen output
+#' @param verbose Commented screen output.
 
-#' @return Returns a plot with IPD between runs per generation
+#' @return Produces a plot with IPD between runs per generation.
 
 #' @author Brian O'Meara and Barb Banbury
 
 # @references O'Meara and Banbury, unpublished
+
+
+#will compare IPD from a list of particleDataFrames.  Calculates the ratio of IPD
+
 
 #' @name compareListIPD
 #' @rdname compareListIPD
@@ -39,8 +40,12 @@ compareListIPD<-function(particleDataFrame, verbose=F){  #list of particleDataFr
 			IPDmatrix<-matrix(nrow=length(data1), ncol=length(data1))
 			for (row in 1: dim(IPDmatrix)[1]){
 				for (col in 1: dim(IPDmatrix)[2]){
-					IPDmatrix[row, col]<-(median(interparticleDistance(data1[[row]][which(data1[[row]]$generation==gen),6+param], data1[[col]][which(data1[[col]]$generation==gen),6+param]))^2)  / median(interparticleDistance(data1[[row]][which(data1[[row]]$generation==gen),6+param], data1[[col]][which(data1[[col]]$generation==gen),6+param]))*2
-					if (is.na(IPDmatrix[row, col])){  #protect against NAs, since we are dividing above (if sd(A and or B[param] = 0 then it will NA))
+					IPDmatrix[row, col]<-(median(interparticleDistance(data1[[row]][which(data1[[row]]$generation==gen),6+param],
+						data1[[col]][which(data1[[col]]$generation==gen),6+param]))^2)  / median(
+						interparticleDistance(data1[[row]][which(data1[[row]]$generation==gen),6+param],
+						data1[[col]][which(data1[[col]]$generation==gen),6+param]))*2
+					#protect against NAs, since we are dividing above (if sd(A and or B[param] = 0 then it will NA))
+					if (is.na(IPDmatrix[row, col])){  
 						IPDmatrix[row, col]<-0
 					}
 				}

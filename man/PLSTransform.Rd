@@ -9,17 +9,13 @@ PLSTransform(summaryValuesMatrix, pls.model)
 \arguments{
 \item{summaryValuesMatrix}{Matrix of summary statistics from simulations}
 
-\item{pls.model}{results from returnPLSModel}
+\item{pls.model}{Results output by from \code{\link{returnPLSModel}}}
 }
 \value{
 Returns transformed summary statistics
 }
 \description{
-Uses results from the PLS model to transform summary values
-}
-\details{
-This function uses the scores from the pls model to transform the summary
-statistics.
+This function uses results from a Partial Least Squares (PLS) model to transform summary values.
 }
 \examples{
 

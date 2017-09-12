@@ -10,7 +10,7 @@
 # @param taxon.df Output from the function getTaxonDFWithPossibleExtinction; is a data frame
 # with info on all the taxa (including internal ones)
 
-#' @param phy A phylogenetic tree, in package \code{ape}'s \code{phylo} format.
+#' @inheritParams doSimulation
 
 #' @param intrinsicFn Name of intrinsic function characters should be simulated
 #' under

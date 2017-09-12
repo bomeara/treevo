@@ -1,7 +1,7 @@
 #' Simulate data for initial TreEvo analysis
 #'
-#' This is a wrapper function for simulateData that allows for multithreading
-#' and checkpointing
+#' This is a wrapper function for \code{simulateData} that allows for multithreading
+#' and checkpointing.
 #'
 #'
 
@@ -11,7 +11,7 @@
 
 # @param taxon.df object from getTaxonDFWithPossibleExtinction
 
-#' @param phy A phylogenetic tree, in package \code{ape}'s \code{phylo} format.
+#' @inheritParams doSimulation
 
 #' @param startingPriorsValues Matrix with ncol=number of states (characters)
 #' at root and nrow=2 (two parameters to pass to prior distribution)
@@ -100,9 +100,10 @@ parallelSimulation<-function(nrepSim, coreLimit, phy, startingPriorsValues, intr
 
 	cat("Doing simulations: ")
 	if (is.null(checkpointFile)) {
-		trueFreeValuesANDSummaryValues<-foreach(1:nrepSim, .combine=rbind) %dopar% simulateData(taxon.df, phy, 
-			startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, 
-			intrinsicPriorsFns, extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn)
+		trueFreeValuesANDSummaryValues<-foreach(1:nrepSim, .combine=rbind) %dopar% simulateData(phy=phy, 
+			startingPriorsValues=startingPriorsValues, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues,
+			startingPriorsFns=startingPriorsFns, intrinsicPriorsFns=intrinsicPriorsFns, extrinsicPriorsFns=extrinsicPriorsFns, 
+			freevector=freevector, timeStep=timeStep, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn)
 	}
 	else {
 		checkpointFileName<-paste(checkpointFile,".trueFreeValuesANDSummaryValues.Rsave",sep="")
@@ -117,16 +118,18 @@ parallelSimulation<-function(nrepSim, coreLimit, phy, startingPriorsValues, intr
 		}
 		for (rep in sequence(numberLoops)) {
 			trueFreeValuesANDSummaryValues<-rbind(trueFreeValuesANDSummaryValues, 
-				foreach(1:numberSimsPerLoop, .combine=rbind) %dopar% simulateData(taxon.df, phy, 
-					startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, 
-					intrinsicPriorsFns, extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn))
+				foreach(1:numberSimsPerLoop, .combine=rbind) %dopar% simulateData(phy=phy, 
+					startingPriorsValues=startingPriorsValues, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues,
+					startingPriorsFns=startingPriorsFns, intrinsicPriorsFns=intrinsicPriorsFns, extrinsicPriorsFns=extrinsicPriorsFns, 
+					freevector=freevector, timeStep=timeStep, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn))
 			save(trueFreeValuesANDSummaryValues,file=checkpointFileName)
 			print(paste("Just finished",dim(trueFreeValuesANDSummaryValues)[1],"of",nrepSim,"simulations; progress so far saved in",checkpointFileName))
 		}
 		trueFreeValuesANDSummaryValues<-rbind(trueFreeValuesANDSummaryValues, 
-			foreach(1:numberSimsAfterLastCheckpoint, .combine=rbind) %dopar% simulateData(taxon.df, phy, startingPriorsValues, 
-			intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, freevector, 
-			timeStep, intrinsicFn, extrinsicFn))
+			foreach(1:numberSimsAfterLastCheckpoint, .combine=rbind) %dopar% simulateData(phy=phy, 
+				startingPriorsValues=startingPriorsValues, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues,
+				startingPriorsFns=startingPriorsFns, intrinsicPriorsFns=intrinsicPriorsFns, extrinsicPriorsFns=extrinsicPriorsFns, 
+				freevector=freevector, timeStep=timeStep, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn))
 	}
 	return(trueFreeValuesANDSummaryValues)
 }

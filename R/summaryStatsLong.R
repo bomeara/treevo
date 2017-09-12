@@ -33,7 +33,8 @@ solnfreq <- function(fitContResult, tol = .Machine$double.eps^0.5){
 #  state reconstruction confidence interval.
 #  
 
-# @InheritParams doSimulation doRun_prc
+# @inheritParams doSimulation
+# @inheritParams doRun_prc
 
 #  @param niter.brown Number of random starts for BM model (min of 2)
 

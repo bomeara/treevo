@@ -12,7 +12,7 @@
 #   See Geiger's fitContinuous for details.
 #   
 
-# @InheritParams doSimulation
+# @inheritParams doSimulation
 
 #   @param data data matrix with rownames equal to phy
 

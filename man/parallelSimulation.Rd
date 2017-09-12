@@ -74,8 +74,8 @@ Returns matrix of trueFreeValues and summary statistics for
 simulations
 }
 \description{
-This is a wrapper function for simulateData that allows for multithreading
-and checkpointing
+This is a wrapper function for \code{simulateData} that allows for multithreading
+and checkpointing.
 }
 \author{
 Brian O'Meara and Barb Banbury
