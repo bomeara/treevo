@@ -38,8 +38,9 @@ data (within the tolerance). Distances are calculated using \code{abcDistance}.
 \examples{
 
 data(simRun)
-PLSRejection(summaryValuesMatrix=results$summaryValuesMatrix, trueFreeValuesMatrix=results$trueFreeValuesMatrix,
-	 phy=simPhy, traits, abcTolerance=results$abcTolerance)
+PLSRejection(summaryValuesMatrix=results$summaryValuesMatrix,
+  trueFreeValuesMatrix=results$trueFreeValuesMatrix,
+	 phy=simPhy, traits=simChar, abcTolerance=results$abcTolerance)
 
 }
 \author{
