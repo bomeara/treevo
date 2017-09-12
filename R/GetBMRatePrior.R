@@ -1,15 +1,13 @@
-#' Get BM Rate Prior
+#' Get Brownian Motion Rate Prior
 #' 
-#' This function automatically calculates prior distributions for BM model of
-#' evolution
+#' This function automatically calculates prior distributions for
+#' the rate of trait evolution under the Brownian Motion (BM) model.
 #' 
-#' Returns a matrix of prior values that can be used in the doRun functions.
-#' Builds on functions in geiger to estimate distribution.
+#' Returns a matrix of prior values that can be used in the \code{doRun} functions.
+#' Builds on functions in \code{geiger} to estimate distribution.
 #' 
 
-#' @param phy Phylogenetic tree in package \code{ape}'s \code{phylo} format
-
-#' @param traits A data matrix with rownames equal to phy
+#' @InheritParams doSimulation doRun_prc
 
 #' @param timeStep time in a single iteration of the discrete-time simulation
 

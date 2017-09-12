@@ -6,7 +6,7 @@
 # This function is used by other TreEvo functions for internal calculations.
 # 
 
-# @param phy A phylogenetic tree, in package \code{ape}'s \code{phylo} format.
+# @InheritParams doSimulation
 
 # @return A data frame of branching times, ancestor and descendant vectors
 

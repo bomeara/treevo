@@ -24,7 +24,6 @@ Imports:
     grDevices,
     graphics,
 	rgl,	
-	rgeos,
     phytools
 Suggests:
     covr,

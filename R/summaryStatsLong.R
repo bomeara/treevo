@@ -2,16 +2,18 @@
 #  
 #  This function is taken from an internal Geiger function
 #  
-#  @param x A returned object from fitContinuous()
+#  @param fitContResult An object returned by fitContinuous()
+
 #  @param tol Tolerance for equality of solutions
+
 #  @return The frequency with which the best solution was found
 
 # @name solnfreq
 # @rdname solnfreq
 # @export
-solnfreq <- function(x, tol = .Machine$double.eps^0.5){
-			ll=logLik(x)
-			aa=abs(x$res[,"lnL"]-ll)<=tol
+solnfreq <- function(fitContResult, tol = .Machine$double.eps^0.5){
+			ll=logLik(fitContResult)
+			aa=abs(fitContResult$res[,"lnL"]-ll)<=tol
 			max(1,sum(aa[!is.na(aa)]))/length(aa)
 }
 
@@ -30,9 +32,8 @@ solnfreq <- function(x, tol = .Machine$double.eps^0.5){
 #  contrasts, ancestral state reconstruction values, and the range of ancestral
 #  state reconstruction confidence interval.
 #  
-#  @param phy Tree (Phylogenetic tree in phylo format)
 
-#  @param traits data matrix with rownames equal to phy
+# @InheritParams doSimulation doRun_prc
 
 #  @param niter.brown Number of random starts for BM model (min of 2)
 

@@ -15,9 +15,7 @@
 #' parameters.
 #'
 
-#' @param phy Tree (Phylogenetic tree in phylo format)
-
-#' @param traits data matrix with rownames equal to phy
+#' @InheritParams doSimulation doRun_prc
 
 #' @param intrinsicFn Name of (previously-defined) function that governs how
 #' traits evolve within a lineage, regardless of the states of other taxa
@@ -96,7 +94,7 @@
 #' \item{abcDistancesRaw}{Euclidean distances for each simulation and free
 #' parameter} \item{particleDataFrame}{DataFrame with information from each
 #' simulation, including generation, attempt, id, parentid, distance, weight,
-#' and parameter states} \item{CredInt}{Credible Interval calculation for each
+#' and parameter states} \item{credibleInt}{Credible Interval calculation for each
 #' free parameter of the final generation} \item{HPD}{Highest Posterior Density
 #' calculation each free parameter of the final generation}
 
@@ -155,7 +153,7 @@ doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
 	startTime<-proc.time()[[3]]
 	timeStep<-generation.time/TreeYears
 	#splits<-getSimulationSplits(phy) #initialize this info
-	taxon.df <- getTaxonDFWithPossibleExtinction(phy)
+	taxon.df <- getTaxonDFWithPossibleExtinction(phy=phy)
 
 
 	#figure out number of free params
@@ -248,14 +246,17 @@ doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
 		StartSims<-1000*numberParametersFree
 	}
 
-	nrepSim<-StartSims #Used to be multiple tries where nrepSim = StartSims*((2^try)/2).  If initial simulations are not enough, and we need to try again then new analysis will double number of initial simulations
+	#Used to be multiple tries where nrepSim = StartSims*((2^try)/2).  
+		#If initial simulations are not enough, and we need to try again then new analysis will double number of initial simulations
+	nrepSim<-StartSims 
 	cat(paste("Number of simulations set to", nrepSim, "\n"))
 	if(!is.null(checkpointFile)) {
 		save(list=ls(),file=paste(checkpointFile,".intialsettings.Rsave",sep=""))
 	}
 
 	#Figure out how many iterations to use for optimization in Geiger.
-	brown<-fitContinuous(phy=phy, dat=traits, model="BM", ncores=1, control=list(niter=100)) #it actually runs faster without checking for cores. And we parallelize elsewhere
+	#it actually runs faster without checking for cores. And we parallelize elsewhere
+	brown<-fitContinuous(phy=phy, dat=traits, model="BM", ncores=1, control=list(niter=100)) 
 	lambda<-fitContinuous(phy=phy, dat=traits, model="lambda", ncores=1, control=list(niter=100))
 	delta<-fitContinuous(phy=phy, dat=traits, model="delta", ncores=1, control=list(niter=100))
 	ou<-fitContinuous(phy=phy, dat=traits, model="OU", ncores=1, control=list(niter=100))
@@ -290,7 +291,8 @@ doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
 	if (savesims){
 		save(trueFreeValuesMatrix, summaryValuesMatrix, simTime, file=paste("sims", jobName, ".Rdata", sep=""))
 	}
-	res<-PLSRejection(summaryValuesMatrix, trueFreeValuesMatrix, phy, traits, abcTolerance)
+	res<-PLSRejection(summaryValuesMatrix=summaryValuesMatrix, trueFreeValuesMatrix=trueFreeValuesMatrix,
+		phy=phy, traits=traits, abcTolerance=abcTolerance)
 	#save(abcDistancesRaw, abcDistancesRawTotal, abcDistances, abcResults, particleDataFrame, file="")
 	input.data<-rbind(jobName, length(phy[[3]]), timeStep, StartSims, standardDevFactor, abcTolerance)
   print(res)
@@ -307,7 +309,7 @@ doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
 	rejectionResults$SimTime<-simTime
 	rejectionResults$abcDistances<-res$abcDistances
 	rejectionResults$particleDataFrame<-res$particleDataFrame
-	rejectionResults$CredInt<-CredInt(res$particleDataFrame)
+	rejectionResults$credibleInt<-credibleInt(res$particleDataFrame)
 	rejectionResults$HPD<-highestPostDens(res$particleDataFrame)
 
 	return(rejectionResults)

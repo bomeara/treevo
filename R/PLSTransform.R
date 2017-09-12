@@ -1,16 +1,19 @@
 #' Partial Least Squares Transform
 #' 
-#' Uses results from the PLS model to transform summary values
+#' This function uses results from a Partial Least Squares (PLS) model to transform summary values.
 #' 
-#' This function uses the scores from the pls model to transform the summary
-#' statistics.
-#' 
+
 #' @param summaryValuesMatrix Matrix of summary statistics from simulations
-#' @param pls.model results from returnPLSModel
+
+#' @param pls.model Results output by from \code{\link{returnPLSModel}}
+
 #' @return Returns transformed summary statistics
+
 #' @author Brian O'Meara and Barb Banbury
+
 # @references O'Meara and Banbury, unpublished
 # @keywords PLSTransform PLS
+
 #' @examples
 #' 
 #' #PLSTransform(summaryValuesMatrix, pls.model)

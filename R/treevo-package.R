@@ -65,7 +65,7 @@
 
 #  @export compareListIPD
 #  @export convertTaxonFrameToGeigerData
-#  @export CredInt
+#  @export credibleInt
 #  @export doRun_prc
 #  @export doRun_rej
 #  @export doSimulation

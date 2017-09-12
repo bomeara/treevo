@@ -6,7 +6,7 @@
 
 # @param taxonframe Data frame with species values
 
-# @param phy Tree (ape phylo format)
+# @InheritParams doSimulation
 
 # @return Returns a data frame in geiger format
 

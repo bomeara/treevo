@@ -1,8 +1,5 @@
 #' Partial Least Squares Rejection
 #' 
-#' This function automatically calculates prior distributions for the Brownian Motion model of
-#' evolution.
-#' 
 #' This function performs the ABC-rejection analysis using an input simulation
 #' data. Particles are accepted is they fall sufficiently close to the target
 #' data (within the tolerance). Distances are calculated using \code{abcDistance}.
@@ -12,9 +9,7 @@
 
 #' @param trueFreeValuesMatrix Matrix of true free values from simulations
 
-#' @param phy Tree (Phylogenetic tree in phylo format)
-
-#' @param traits data matrix with rownames equal to phy
+#' @InheritParams doSimulation doRun_prc
 
 #' @param abcTolerance Proportion of accepted simulations
 

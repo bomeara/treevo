@@ -12,7 +12,7 @@
 #   See Geiger's fitContinuous for details.
 #   
 
-#   @param phy Phylogenetic tree in phylo format
+# @InheritParams doSimulation
 
 #   @param data data matrix with rownames equal to phy
 

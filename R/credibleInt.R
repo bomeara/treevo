@@ -1,21 +1,33 @@
 #' Bayesian Credible Interval
 #' 
-#' This function calculates credible interval for each free parameter
+#' This function calculates credible interval for each free parameter.
 #' 
 #' 
-#' @param particleDataFrame particleDataFrame output from doRun
+
+#' @param particleDataFrame A \code{particleDataFrame} object output from \code{doRun}
+
 #' @param percent Probability content of the highest probability density
-#' @return Returns a matrix with weighted mean, sd, upper and lower credible
-#' intervals for each free parameter
+
+#' @return Returns a matrix with weighted mean, standard deviation, upper and lower credible
+#' intervals for each free parameter.
+
 #' @author Brian O'Meara and Barb Banbury
+
 # @references O'Meara and Banbury, unpublished
 
+#' @examples
+#' 
+#' data(simRun)
+#' credibleInt(results$particleDataFrame)
+#' 
 
-#' @name CredInt
-#' @rdname CredInt
+# was named CredInt originally
+
+#' @name credibleInt
+#' @rdname credibleInt
 #' @export
-CredInt<-function(particleDataFrame, percent=0.95) { 
-	generation<-NULL #to appease R CMD CHECK with subset
+credibleInt<-function(particleDataFrame, percent=0.95) { 
+	#generation<-NULL #to appease R CMD CHECK with subset
 	PercentTail<-(1-percent)/2
 	Ints<-matrix(nrow=(dim(particleDataFrame)[2]-6), ncol=4)
 	colnames(Ints)<-c("mean", "sd", "LowerCI", "UpperCI")
