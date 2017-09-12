@@ -43,9 +43,9 @@
 #' @importFrom methods as setAs
 
 # need to import class gpc.poly from gpclib, and setAs from methods
-#' @importClassesFrom gpclib gpc.poly
+# @importClassesFrom gpclib gpc.poly
 # and triangulate
-#' @importFrom gpclib triangulate 
+# @importFrom gpclib triangulate 
 
 # interval functions - DO NOT EXPORT
 # @export abcparticle
