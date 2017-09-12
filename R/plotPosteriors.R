@@ -60,7 +60,11 @@ plotPosteriors<-function(particleDataFrame, PriorMatrix, realParam=FALSE, realPa
 
 
 	if(class(x)=="data.frame"){
-		generation<-NULL #to satisfy CRAN check
+		 # ugh ugh
+		#generation<-NULL #to appease R CMD CHECK
+		# yes??? I think this is right, not sure
+		generation<-particleDataFrame$generation 
+	
 		data1<-subset(x[which(x$weight>0),], generation==max(x$generation)) #make generation and other names by column so it works for partial and complete 
 		run<-rep(1, dim(data1)[1])
 		all<-cbind(run, data1)

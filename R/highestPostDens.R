@@ -23,7 +23,11 @@
 #' @rdname highestPostDens
 #' @export
 highestPostDens<-function(particleDataFrame, percent=0.95, returnData=F){
-  generation<-NULL #to appease R CMD CHECK
+  	# ugh ugh
+	#generation<-NULL #to appease R CMD CHECK
+	# yes??? I think this is right, not sure
+	generation<-particleDataFrame$generation 
+	
 #	library(coda, quietly=T)
 	summary<-vector("list")
 	subpDF<-as.data.frame(subset(particleDataFrame[which(particleDataFrame$weight>0),], generation==max(particleDataFrame$generation))[7:dim(particleDataFrame)[2]])

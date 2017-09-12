@@ -62,11 +62,12 @@ ThreeD.ABCplots<-function(particleDataFrame, parameter, show.particles="none",
 		}
 	
 	#ugh
-	#generation<-NULL #to appease R CMD CHECK
 	#library(gpclib)
 	#library(rgl)
 	#library(geometry)
 	
+	# ugh ugh
+	#generation<-NULL #to appease R CMD CHECK
 	# yes??? I think this is right, not sure
 	generation<-particleDataFrame$generation 
 		
@@ -110,7 +111,7 @@ ThreeD.ABCplots<-function(particleDataFrame, parameter, show.particles="none",
 			#title3d("Starting States", col='purple', pos=c(NA, 0, max(which.gen))) 
 			for (i in 1:max(s)){
 				ngen<-(i+1)-1
-				triangles<-triangulate(as(cbind(x[which(z==i)],y[which(z==i)]), "gpc.poly"))
+				triangles<-gpclib::triangulate(as(cbind(x[which(z==i)],y[which(z==i)]), "gpc.poly"))
 				zfit<-predict(lm(z[which(z==i)] ~ x[which(z==i)] + y[which(z==i)]), newdata=data.frame(x=triangles[,1], y=triangles[,2]))
 				opacity<-0.8*(ngen/length(v))
 				rgl.material(color="black", alpha=opacity, lit=FALSE)
