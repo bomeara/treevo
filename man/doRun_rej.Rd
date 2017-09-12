@@ -15,6 +15,10 @@ doRun_rej(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
   generation.time = 1)
 }
 \arguments{
+\item{phy}{A phylogenetic tree, in package \code{ape}'s \code{phylo} format.}
+
+\item{traits}{data matrix with rownames identical to \code{phy@tip.label}}
+
 \item{intrinsicFn}{Name of (previously-defined) function that governs how
 traits evolve within a lineage, regardless of the states of other taxa}
 

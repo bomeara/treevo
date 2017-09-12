@@ -59,6 +59,7 @@ ThreeD.ABCplots<-function(particleDataFrame, parameter, show.particles="none",
 	has_gpclib<-requireNamespace("gpclib", quietly = TRUE)
 	if(!has_gpclib){stop(
 		"This function cannot be run without package gpclib available (Note: Windows binaries of gpclib were not unavailable as of 09-12-17).")
+		}
 	
 	#ugh
 	#generation<-NULL #to appease R CMD CHECK
