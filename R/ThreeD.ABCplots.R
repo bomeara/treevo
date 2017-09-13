@@ -42,11 +42,11 @@
 #' 
 
 #' 
-#' if(has_gpclib){
+# if(has_gpclib){
 #'  data(simRun)
 #'  ThreeD.ABCplots(particleDataFrame=results$particleDataFrame, parameter=7,
 #'      show.particles="none", plot.parent=FALSE, realParam=FALSE, realParamValues=NA) 
-#' 	}
+# 	}
 #' 
 
 #' @name ThreeD.ABCplots
