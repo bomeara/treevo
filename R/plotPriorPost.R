@@ -50,7 +50,7 @@
 
 #' @param label X label for plot.
 
-#' @param trueValue True parameter value, if any.
+#' @param trueValue True parameter value, if any such exists and is known (usually only true of simulations).
 
 #' @return 
 #' \code{plotPrior} and \code{plotUnivariatePosteriorVsPrior} produce plots of the respective distributions (see above).
@@ -58,6 +58,9 @@
 #' \code{getUnivariatePriorCurve} and \code{getUnivariatePosteriorCurve} returns a list of x and y density coordinates, mean, and lower and
 #' upper highest posterior density (HPD), for their respective distribution.
 #' 
+
+#' @seealso
+#' \code{\link{plotPosteriors}} Plots multiple posteriors against their priors and potential known values.
 
 #' @author Brian O'Meara and Barb Banbury
 

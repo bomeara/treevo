@@ -2,7 +2,6 @@
 
 export(ExponentiallyDecayingPushExtrinsic)
 export(GetBMRatePrior)
-export(PLSRejection)
 export(PLSTransform)
 export(PairwiseESS)
 export(PairwiseKS)

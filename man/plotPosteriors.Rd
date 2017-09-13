@@ -8,41 +8,47 @@ plotPosteriors(particleDataFrame, PriorMatrix, realParam = FALSE,
   realParamValues = NA)
 }
 \arguments{
-\item{particleDataFrame}{particleDataFrame from TreEvo results, can be a
-single data frame or a list of data frames}
+\item{particleDataFrame}{A \code{particleDataFrame} object returned by TreEvo ABC analyses, can be a
+single data frame or a list of data frames.}
 
-\item{PriorMatrix}{PriorMatrix from TreEvo results, can be a single matrix
-or a list of matrices}
+\item{PriorMatrix}{A \code{PriorMatrix} object returned by TreEvo ABC analyses, can be a single matrix
+or a list of matrices.}
 
-\item{realParam}{Plot line segments where real parameter values are known}
+\item{realParam}{If \code{TRUE}, this function will plot line segments where real parameter values are known. (Usually only true when simulated data is analyzed.)}
 
 \item{realParamValues}{Values for real paramters, include a value for each
-parameter (inlcuding fixed values)}
+parameter (inlcuding fixed values). Otherwise should be \code{NA}.}
 }
 \value{
 Returns a plot for each free parameter.
 }
 \description{
 This function plots posterior distributions from the last generation of each
-free parameter
+free parameter.
 }
 \details{
-If the particleDataFrame is a list of seperate TreEvo runs, posteriors will
-be layered over eachother to check for repeatability.  Grayscale of
-posteriors depends on total number of runs.
+If the \code{particleDataFrame} is a list of seperate TreEvo runs, posteriors will
+be layered over each other to check for repeatability.  The relative grayscale of
+posterior distributions in the plot depends on their total number of runs.
 
-If the PriorMatrix is a list of matrices, only the first matrix will be
-plotted.  In other words, prior matrices MUST be identical for all runs.
+If the \code{PriorMatrix} is a list of matrices, only the first matrix will be
+plotted and others will be ignores.  
+In other words, prior matrices MUST be identical for all runs.
 
-realParam and realParamValues should only be used with simulated data, where
+\code{realParam} and \code{realParamValues} should only be used with simulated data, where
 the true values are known.
 }
 \examples{
 
 data(simRun)
-plotPosteriors(particleDataFrame=res$particleDataFrame,
-   PriorMatrix=res$priorMatrix, realParam=FALSE, realParamValues=NA)
 
+plotPosteriors(particleDataFrame=results$particleDataFrame,
+   PriorMatrix=results$priorMatrix, realParam=FALSE, realParamValues=NA)
+
+}
+\seealso{
+\code{\link{plotPrior}} for a set of functions for visualizing and summarizing
+prior and posterior distributions, including a visual comparison for single parameters.
 }
 \author{
 Barb Banbury and Brian O'Meara

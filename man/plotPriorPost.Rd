@@ -45,7 +45,7 @@ distribution, dependent on \code{priorFn}:
 
 \item{label}{X label for plot.}
 
-\item{trueValue}{True parameter value, if any.}
+\item{trueValue}{True parameter value, if any such exists and is known (usually only true of simulations).}
 
 \item{prob}{Probability content of the highest posterior density (HPD).}
 
@@ -103,6 +103,9 @@ plotUnivariatePosteriorVsPrior(posteriorCurve=postKernal, priorCurve=priorKernal
 
 # cool!
 
+}
+\seealso{
+\code{\link{plotPosteriors}} Plots multiple posteriors against their priors and potential known values.
 }
 \author{
 Brian O'Meara and Barb Banbury
