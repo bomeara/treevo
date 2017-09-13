@@ -1,10 +1,15 @@
-#' Plot Prior Distribution
+#' Plotting, Sampling and Comparing the Prior and Posterior Distributions
 #' 
 #' Assorted functions for visualizing the prior and posterior probability distributions associated with ABC analyses.
 #' 
-#' This function visualizes the shape of various prior probability distributions available in TreEvo ABC analyses.
+#' Function \code{plotPrior} visualizes the shape of various prior probability distributions available in TreEvo ABC analyses.
 #' 
-
+#' Function \code{getUnivariatePriorCurve} pulls random values from a selected prior probability distribution.
+#' 
+#' Function \code{getUnivariatePosteriorCurve} pulls values from the posterior distribution.
+#' 
+#' Function \code{plotUnivariatePosteriorVsPrior} plots the univariate density distributions from the prior and posterior.
+#' 
 
 #' @param priorFn Prior Shape of the distribution; one of either "fixed", "uniform", "normal",
 #' "lognormal", "gamma", or "exponential".
@@ -18,25 +23,15 @@
 #' \item{priorFn = "exponential"}{priorVariables = c(rate)} 
 # \item{priorFn = "fixed"}{priorVariables = c(x)} 
 
+
+
+
+
+
 #' @param plotQuants If \code{TRUE}, plots line segments at the quantiles
 
 #' @param plotLegend If \code{TRUE}, plots legend box with quantile values
 
-#' @return Returns a distribution plot.
-
-#' @author Brian O'Meara and Barb Banbury
-
-# @references O'Meara and Banbury, unpublished
-
-# @keywords plotPrior prior
-
-
-
-#' getUnivariatePriorCurve
-#' 
-#' This function pulls random values from a selected prior probability distribution.
-#' 
-#' 
 
 #' @param nPoints Number of points to draw.
 
@@ -46,46 +41,40 @@
 
 #' @param prob Probability content of the highest posterior density (HPD).
 
-#' @return Returns a list of x and y density coordinates, mean, and lower and
-#' upper highest posterior density (HPD).
-
-#' @author Barb Banbury and Brian O'Meara
-
-# @references O'Meara and Banbury, unpublished
-# @keywords getUnivariatePriorCurve
-
-#' getUnivariatePosteriorCurve
-#' 
-#' This function pulls values from the posterior distribution
-#' 
-#' 
 #' @param acceptedValues Vector of accepted particle values
-#' @param from Lower bound, if any
-#' @param to Upper bound, if any
-#' @param prob Probability content of HPD
-#' @return Returns a list of x and y density coordinates, mean, and lower and
-#' upper HPD
-#' @author Barb Banbury and Brian O'Meara
-# @references O'Meara and Banbury, unpublished
-# @keywords getUnivariatePosteriorCurve
 
-#' plotUnivariatePosteriorVsPrior
-#' 
-#' This function plots density distributions from the prior and posterior
-#' 
-#' 
 #' @param posteriorCurve Kernal density estimates for the posterior
 #' @param priorCurve Kernal density estimates for the prior
 #' @param label X label for plot
 #' @param trueValue True parameter value, if any
 #' @param prob Probability content of HPD
-#' @return Returns a plot
-#' @author Barb Banbury and Brian O'Meara
+
+
+
+
+
+
+
+
+
+
+#' @return 
+#' \code{plotPrior} and \code{plotUnivariatePosteriorVsPrior} produce plots of the respective distributions.
+#'
+#' \code{getUnivariatePriorCurve} and \code{getUnivariatePosteriorCurve} returns a list of x and y density coordinates, mean, and lower and
+#' upper highest posterior density (HPD), for their respective distribution.
+#' 
+
+#' @author Brian O'Meara and Barb Banbury
 
 # @references O'Meara and Banbury, unpublished
+# @keywords getUnivariatePosteriorCurve
+# @references O'Meara and Banbury, unpublished
+# @keywords plotPrior prior
+# @references O'Meara and Banbury, unpublished
+# @keywords getUnivariatePriorCurve
+# @references O'Meara and Banbury, unpublished
 # @keywords plotUnivariatePosteriorVsPrior
-
-
 
 
 
