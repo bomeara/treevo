@@ -26,10 +26,9 @@
 #' 
 #' data(simRun)
 #' 
-#' boxcoxTransformation(summaryValuesMatrix)
+#' boxcoxTransformation(results$summaryValuesMatrix)
 #' 
-#' # boxcoxTransformationMatrix needs examples
-#'
+
 
 #' @name boxcoxTransformation
 #' @rdname boxcoxTransformation

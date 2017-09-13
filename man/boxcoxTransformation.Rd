@@ -31,9 +31,7 @@ same dimensions as \code{summaryValuesMatrix}.
 
 data(simRun)
 
-boxcoxTransformation(summaryValuesMatrix)
-
-# boxcoxTransformationMatrix needs examples
+boxcoxTransformation(results$summaryValuesMatrix)
 
 }
 \author{
