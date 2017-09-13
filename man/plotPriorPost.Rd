@@ -27,11 +27,13 @@ plotUnivariatePosteriorVsPrior(posteriorCurve, priorCurve,
 
 \item{priorVariables}{Variables needed to describe the shape of the
 distribution, dependent on \code{priorFn}: 
+\describe{
 \item{priorFn = "uniform"}{priorVariables = c(min, max)} 
 \item{priorFn = "normal"}{priorVariables = c(mean, standard deviation)}
 \item{priorFn = "lognormal"}{priorVariables = c(mean, standard deviation)}
 \item{priorFn = "gamma"}{priorVariables = c(shape, scale)}
-\item{priorFn = "exponential"}{priorVariables = c(rate)}}
+\item{priorFn = "exponential"}{priorVariables = c(rate)} 
+}}
 
 \item{plotQuants}{If \code{TRUE}, plots line segments at the quantiles}
 
