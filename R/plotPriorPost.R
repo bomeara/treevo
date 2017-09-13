@@ -1,14 +1,12 @@
-#' Plotting, Sampling and Comparing the Prior and Posterior Distributions
+#' Plotting, Summarizing and Comparing the Prior and Posterior Distributions
 #' 
-#' Assorted functions for visualizing the prior and posterior probability distributions associated with ABC analyses.
+#' Assorted functions for visualizing and summarizing the prior and posterior probability distributions associated with ABC analyses.
 #' 
-#' Function \code{plotPrior} visualizes the shape of various prior probability distributions available in TreEvo ABC analyses.
-#' 
-#' Function \code{getUnivariatePriorCurve} pulls random values from a selected prior probability distribution.
-#' 
-#' Function \code{getUnivariatePosteriorCurve} pulls values from the posterior distribution.
-#' 
-#' Function \code{plotUnivariatePosteriorVsPrior} plots the univariate density distributions from the prior and posterior.
+#' Function \code{plotPrior} visualizes the shape of various prior probability distributions available in TreEvo ABC analyses, while
+#' function \code{plotUnivariatePosteriorVsPrior} plots the univariate density distributions from the prior and posterior against each other for comparison.
+#' Function \code{getUnivariatePriorCurve} returns density coordinates and summary statistics from a selected prior probability distribution, while  
+#' function \code{getUnivariatePosteriorCurve} returns density coordinates and summary statistics from the posterior distribution of an ABC analysis.
+#' The summaries from \code{getUnivariatePriorCurve} and \code{getUnivariatePosteriorCurve} are used as the input for \code{plotUnivariatePosteriorVsPrior}.
 #' 
 
 #' @param priorFn Prior Shape of the distribution; one of either "fixed", "uniform", "normal",
@@ -16,22 +14,25 @@
 
 #' @param priorVariables Variables needed to describe the shape of the
 #' distribution, dependent on \code{priorFn}: 
+#' \describe{
+
 #' \item{priorFn = "uniform"}{priorVariables = c(min, max)} 
+
 #' \item{priorFn = "normal"}{priorVariables = c(mean, standard deviation)}
+
 #' \item{priorFn = "lognormal"}{priorVariables = c(mean, standard deviation)}
+
 #' \item{priorFn = "gamma"}{priorVariables = c(shape, scale)}
+
 #' \item{priorFn = "exponential"}{priorVariables = c(rate)} 
+
 # \item{priorFn = "fixed"}{priorVariables = c(x)} 
 
-
-
-
-
+#' }
 
 #' @param plotQuants If \code{TRUE}, plots line segments at the quantiles
 
 #' @param plotLegend If \code{TRUE}, plots legend box with quantile values
-
 
 #' @param nPoints Number of points to draw.
 
@@ -41,25 +42,18 @@
 
 #' @param prob Probability content of the highest posterior density (HPD).
 
-#' @param acceptedValues Vector of accepted particle values
+#' @param acceptedValues Vector of accepted particle values.
 
-#' @param posteriorCurve Kernal density estimates for the posterior
-#' @param priorCurve Kernal density estimates for the prior
-#' @param label X label for plot
-#' @param trueValue True parameter value, if any
-#' @param prob Probability content of HPD
+#' @param posteriorCurve Kernal density estimates for the posterior distribution from \code{getUnivariatePosteriorCurve}.
 
+#' @param priorCurve Kernal density estimates for the prior distribution from \code{getUnivariatePriorCurve}.
 
+#' @param label X label for plot.
 
-
-
-
-
-
-
+#' @param trueValue True parameter value, if any.
 
 #' @return 
-#' \code{plotPrior} and \code{plotUnivariatePosteriorVsPrior} produce plots of the respective distributions.
+#' \code{plotPrior} and \code{plotUnivariatePosteriorVsPrior} produce plots of the respective distributions (see above).
 #'
 #' \code{getUnivariatePriorCurve} and \code{getUnivariatePosteriorCurve} returns a list of x and y density coordinates, mean, and lower and
 #' upper highest posterior density (HPD), for their respective distribution.
@@ -80,11 +74,33 @@
 
 #' @examples
 #' 
+#' data(simRun)
+#' 
+#' # examples with plotPrior
+#' 
 #' 	plotPrior(priorFn="exponential", priorVariables=c(10))
 #' 	
 #' 	plotPrior(priorFn="normal", priorVariables=c(1,2))
 #' 	
 #' 	plotPrior(priorFn="gamma", priorVariables=c(2, .2), plotQuants=FALSE, plotLegend=FALSE)
+#' 
+#' # examples of getting density coordinates and summary statistics from distributions
+#' 
+#' priorKernal<-getUnivariatePriorCurve(priorFn="normal", priorValues=c(28,2),
+#' 	nPoints=100000, from=NULL, to=NULL, prob=0.95)
+#' 
+#' postKernal<-getUnivariatePosteriorCurve(acceptedValues=results$particleDataFrame$StartingStates1, 
+#' 	from=NULL, to=NULL, prob=0.95)
+#' 
+#' priorKernal
+#' postKernal
+#' 
+#' # let's compare this (supposed) prior against the posterior in a plot
+#' 
+#' plotUnivariatePosteriorVsPrior(posteriorCurve=postKernal, priorCurve=priorKernal, 
+#' 	label="parameter", trueValue=NULL, prob=0.95)
+#' 
+#' # cool!
 #' 
 
 #priorVariables depend on priorFn.  uniform=c(min, max); normal=c(mean, stdev); lognormal=c(mean, stdev), gamma=c(shape, scale), exponential=c(rate)
@@ -203,17 +219,33 @@ return(results)
 	
 }	
 
-
+#' @rdname plotPriorPost
+#' @export
+plotUnivariatePosteriorVsPrior<-function(posteriorCurve, priorCurve, label="parameter", trueValue=NULL, prob=0.95) {
+	plot(x=range(c(posteriorCurve$x, priorCurve$x)), y=range(c(posteriorCurve$y, priorCurve$y)), type="n", xlab=label, ylab="", bty="n", yaxt="n")
+	polygon(x=c(priorCurve$x, max(priorCurve$x), priorCurve$x[1]), y=c(priorCurve$y, 0, 0), col=rgb(0,0,0,0.3),border=rgb(0,0,0,0.3))
+	lines(x=rep(priorCurve$mean,2),y=c(0,max(c(priorCurve$y, posteriorCurve$y))),col="gray")
+	lines(x=rep(priorCurve$lower,2),y=c(0,max(c(priorCurve$y, posteriorCurve$y))),col="gray",lty="dotted")
+	lines(x=rep(priorCurve$upper,2),y=c(0,max(c(priorCurve$y, posteriorCurve$y))),col="gray",lty="dotted")
+	
+	polygon(x=c(posteriorCurve$x, max(posteriorCurve$x), posteriorCurve$x[1]), y=c(posteriorCurve$y,0, 0), col=rgb(1,0,0,0.3),border=rgb(1,0,0,0.3))
+	lines(x=rep(posteriorCurve$mean,2),y=c(0,max(c(priorCurve$y, posteriorCurve$y))),col="red")
+	lines(x=rep(posteriorCurve$lower,2),y=c(0,max(c(priorCurve$y, posteriorCurve$y))),col="red",lty="dotted")
+	lines(x=rep(posteriorCurve$upper,2),y=c(0,max(c(priorCurve$y, posteriorCurve$y))),col="red",lty="dotted")
+	if (!is.null(trueValue)) {
+		lines(x=rep(trueValue,2),y=c(0,max(c(priorCurve$y, posteriorCurve$y))),col="blue")
+	}	
+}
 
 
 
 
 #' @rdname plotPriorPost
 #' @export
-getUnivariatePriorCurve<-function(priorValues, priorFn, 
+getUnivariatePriorCurve<-function(priorFn, priorVariables,  
 		nPoints=100000, from=NULL, to=NULL, prob=0.95) {
 	#
-	samples<-replicate(nPoints,pullFromPrior(priorValues, priorFn))
+	samples<-replicate(nPoints,pullFromPrior(priorVariables, priorFn))
 	if (is.null(from)) {
 		from<-min(samples)
 	}
@@ -227,8 +259,6 @@ getUnivariatePriorCurve<-function(priorValues, priorFn,
   }
 	return(list(x=result$x,y=result$y, mean=mean(samples), lower=hpd.result[1,1], upper=hpd.result[1,2]))
 }
-
-
 
 
 
@@ -251,20 +281,4 @@ getUnivariatePosteriorCurve<-function(acceptedValues, from=NULL, to=NULL, prob=0
 
 
 
-#' @rdname plotPriorPost
-#' @export
-plotUnivariatePosteriorVsPrior<-function(posteriorCurve, priorCurve, label="parameter", trueValue=NULL, prob=0.95) {
-	plot(x=range(c(posteriorCurve$x, priorCurve$x)), y=range(c(posteriorCurve$y, priorCurve$y)), type="n", xlab=label, ylab="", bty="n", yaxt="n")
-	polygon(x=c(priorCurve$x, max(priorCurve$x), priorCurve$x[1]), y=c(priorCurve$y, 0, 0), col=rgb(0,0,0,0.3),border=rgb(0,0,0,0.3))
-	lines(x=rep(priorCurve$mean,2),y=c(0,max(c(priorCurve$y, posteriorCurve$y))),col="gray")
-	lines(x=rep(priorCurve$lower,2),y=c(0,max(c(priorCurve$y, posteriorCurve$y))),col="gray",lty="dotted")
-	lines(x=rep(priorCurve$upper,2),y=c(0,max(c(priorCurve$y, posteriorCurve$y))),col="gray",lty="dotted")
-	
-	polygon(x=c(posteriorCurve$x, max(posteriorCurve$x), posteriorCurve$x[1]), y=c(posteriorCurve$y,0, 0), col=rgb(1,0,0,0.3),border=rgb(1,0,0,0.3))
-	lines(x=rep(posteriorCurve$mean,2),y=c(0,max(c(priorCurve$y, posteriorCurve$y))),col="red")
-	lines(x=rep(posteriorCurve$lower,2),y=c(0,max(c(priorCurve$y, posteriorCurve$y))),col="red",lty="dotted")
-	lines(x=rep(posteriorCurve$upper,2),y=c(0,max(c(priorCurve$y, posteriorCurve$y))),col="red",lty="dotted")
-	if (!is.null(trueValue)) {
-		lines(x=rep(trueValue,2),y=c(0,max(c(priorCurve$y, posteriorCurve$y))),col="blue")
-	}	
-}
+

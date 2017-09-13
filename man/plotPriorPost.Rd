@@ -3,23 +3,23 @@
 \name{plotPriorPost}
 \alias{plotPriorPost}
 \alias{plotPrior}
+\alias{plotUnivariatePosteriorVsPrior}
 \alias{getUnivariatePriorCurve}
 \alias{getUnivariatePosteriorCurve}
-\alias{plotUnivariatePosteriorVsPrior}
-\title{Plotting, Sampling and Comparing the Prior and Posterior Distributions}
+\title{Plotting, Summarizing and Comparing the Prior and Posterior Distributions}
 \usage{
 plotPrior(priorFn = match.arg(arg = priorFn, choices = c("fixed", "uniform",
   "normal", "lognormal", "gamma", "exponential"), several.ok = FALSE),
   priorVariables, plotQuants = TRUE, plotLegend = TRUE)
 
-getUnivariatePriorCurve(priorValues, priorFn, nPoints = 1e+05, from = NULL,
-  to = NULL, prob = 0.95)
+plotUnivariatePosteriorVsPrior(posteriorCurve, priorCurve,
+  label = "parameter", trueValue = NULL, prob = 0.95)
+
+getUnivariatePriorCurve(priorFn, priorVariables, nPoints = 1e+05,
+  from = NULL, to = NULL, prob = 0.95)
 
 getUnivariatePosteriorCurve(acceptedValues, from = NULL, to = NULL,
   prob = 0.95)
-
-plotUnivariatePosteriorVsPrior(posteriorCurve, priorCurve,
-  label = "parameter", trueValue = NULL, prob = 0.95)
 }
 \arguments{
 \item{priorFn}{Prior Shape of the distribution; one of either "fixed", "uniform", "normal",
@@ -39,51 +39,69 @@ distribution, dependent on \code{priorFn}:
 
 \item{plotLegend}{If \code{TRUE}, plots legend box with quantile values}
 
+\item{posteriorCurve}{Kernal density estimates for the posterior distribution from \code{getUnivariatePosteriorCurve}.}
+
+\item{priorCurve}{Kernal density estimates for the prior distribution from \code{getUnivariatePriorCurve}.}
+
+\item{label}{X label for plot.}
+
+\item{trueValue}{True parameter value, if any.}
+
+\item{prob}{Probability content of the highest posterior density (HPD).}
+
 \item{nPoints}{Number of points to draw.}
 
 \item{from}{Lower bound, if any.}
 
 \item{to}{Upper bound, if any.}
 
-\item{prob}{Probability content of the highest posterior density (HPD).}
-
-\item{acceptedValues}{Vector of accepted particle values}
-
-\item{posteriorCurve}{Kernal density estimates for the posterior}
-
-\item{priorCurve}{Kernal density estimates for the prior}
-
-\item{label}{X label for plot}
-
-\item{trueValue}{True parameter value, if any}
-
-\item{prob}{Probability content of HPD}
+\item{acceptedValues}{Vector of accepted particle values.}
 }
 \value{
-\code{plotPrior} and \code{plotUnivariatePosteriorVsPrior} produce plots of the respective distributions.
+\code{plotPrior} and \code{plotUnivariatePosteriorVsPrior} produce plots of the respective distributions (see above).
 
 \code{getUnivariatePriorCurve} and \code{getUnivariatePosteriorCurve} returns a list of x and y density coordinates, mean, and lower and
 upper highest posterior density (HPD), for their respective distribution.
 }
 \description{
-Assorted functions for visualizing the prior and posterior probability distributions associated with ABC analyses.
+Assorted functions for visualizing and summarizing the prior and posterior probability distributions associated with ABC analyses.
 }
 \details{
-Function \code{plotPrior} visualizes the shape of various prior probability distributions available in TreEvo ABC analyses.
-
-Function \code{getUnivariatePriorCurve} pulls random values from a selected prior probability distribution.
-
-Function \code{getUnivariatePosteriorCurve} pulls values from the posterior distribution.
-
-Function \code{plotUnivariatePosteriorVsPrior} plots the univariate density distributions from the prior and posterior.
+Function \code{plotPrior} visualizes the shape of various prior probability distributions available in TreEvo ABC analyses, while
+function \code{plotUnivariatePosteriorVsPrior} plots the univariate density distributions from the prior and posterior against each other for comparison.
+Function \code{getUnivariatePriorCurve} returns density coordinates and summary statistics from a selected prior probability distribution, while  
+function \code{getUnivariatePosteriorCurve} returns density coordinates and summary statistics from the posterior distribution of an ABC analysis.
+The summaries from \code{getUnivariatePriorCurve} and \code{getUnivariatePosteriorCurve} are used as the input for \code{plotUnivariatePosteriorVsPrior}.
 }
 \examples{
+
+data(simRun)
+
+# examples with plotPrior
 
 	plotPrior(priorFn="exponential", priorVariables=c(10))
 	
 	plotPrior(priorFn="normal", priorVariables=c(1,2))
 	
 	plotPrior(priorFn="gamma", priorVariables=c(2, .2), plotQuants=FALSE, plotLegend=FALSE)
+
+# examples of getting density coordinates and summary statistics from distributions
+
+priorKernal<-getUnivariatePriorCurve(priorFn="normal", priorValues=c(28,2),
+	nPoints=100000, from=NULL, to=NULL, prob=0.95)
+
+postKernal<-getUnivariatePosteriorCurve(acceptedValues=results$particleDataFrame$StartingStates1, 
+	from=NULL, to=NULL, prob=0.95)
+
+priorKernal
+postKernal
+
+# let's compare this (supposed) prior against the posterior in a plot
+
+plotUnivariatePosteriorVsPrior(posteriorCurve=postKernal, priorCurve=priorKernal, 
+	label="parameter", trueValue=NULL, prob=0.95)
+
+# cool!
 
 }
 \author{
