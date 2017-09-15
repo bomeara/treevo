@@ -14,6 +14,10 @@
 
 # @references O'Meara and Banbury, unpublished
 
+#' @examples
+#'
+#' breakThisExample
+
 #' @name PairwiseESS
 #' @rdname PairwiseESS
 #' @export

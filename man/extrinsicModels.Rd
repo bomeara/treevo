@@ -64,8 +64,8 @@ The input parameters for this model are:
 \code{nearestNeighborDisplacementExtrinsic} params = sd, springK, maximum force
 }
 \examples{
-# this needs examples
 
+breakThisExample
 }
 \author{
 Brian O'Meara and Barb Banbury

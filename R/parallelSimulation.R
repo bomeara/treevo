@@ -71,6 +71,10 @@
 
 # @references O'Meara and Banbury, unpublished
 
+#' @examples
+#'
+#' breakThisExample
+
 #' @name parallelSimulation
 #' @rdname parallelSimulation
 #' @export

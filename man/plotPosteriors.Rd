@@ -14,7 +14,8 @@ single data frame or a list of data frames.}
 \item{PriorMatrix}{A \code{PriorMatrix} object returned by TreEvo ABC analyses, can be a single matrix
 or a list of matrices.}
 
-\item{realParam}{If \code{TRUE}, this function will plot line segments where real parameter values are known. (Usually only true when simulated data is analyzed.)}
+\item{realParam}{If \code{TRUE}, this function will plot line segments where real
+parameter values are known. (Usually only true when simulated data is analyzed.)}
 
 \item{realParamValues}{Values for real paramters, include a value for each
 parameter (inlcuding fixed values). Otherwise should be \code{NA}.}

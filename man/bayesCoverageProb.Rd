@@ -23,6 +23,10 @@ This function calculates coverage probability for a list of highest posterior de
 \details{
 Only for use with simulated data to test models.
 }
+\examples{
+
+breakThisExample
+}
 \author{
 Brian O'Meara and Barb Banbury
 }

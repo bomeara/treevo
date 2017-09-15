@@ -1,4 +1,4 @@
-#' Box-Cox Transformation for Simulations
+#' Box-Cox Transformation for Simulation Summary Values
 #' 
 #' \code{boxcoxTransformation} Box-Cox transforms summary values from a single simulation, while
 #' \code{boxcoxTransformationMatrix} Box-Cox transforms summary values from multiple simulations.
@@ -26,7 +26,9 @@
 #' 
 #' data(simRun)
 #' 
-#' boxcoxTransformation(results$summaryValuesMatrix)
+#' boxcoxTransformationMatrix(summaryValuesMatrix=results$summaryValuesMatrix)
+#' 
+#' boxcoxTransformation(summaryValuesVector=results$summaryValuesMatrix, boxcoxAddition, boxcoxLambda)
 #' 
 
 
@@ -35,11 +37,11 @@
 #' @export
 boxcoxTransformation<-function(summaryValuesVector, boxcoxAddition, boxcoxLambda) { 
 	#yes, a row of summary values
-	for (summaryValueIndex in 1:length(summaryValues)) {
-        summaryValues[summaryValueIndex] <- (summaryValues[summaryValueIndex] + 
+	for (summaryValueIndex in 1:length(summaryValuesVector)) {
+        summaryValuesVector[summaryValueIndex] <- (summaryValuesVector[summaryValueIndex] + 
             boxcoxAddition[summaryValueIndex])^boxcoxLambda[summaryValueIndex]
     }
-    return(summaryValues)
+    return(summaryValuesVector)
 }
 
 #' @rdname boxcoxTransformation

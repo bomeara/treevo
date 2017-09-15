@@ -97,9 +97,10 @@
 
 # @keywords nullIntrinsic intrinsic
 
+
 #' @examples
-#' # this needs examples
 #'
+#' breakThisExample
 
 
 #' @name intrinsicModels

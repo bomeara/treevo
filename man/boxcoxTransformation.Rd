@@ -3,7 +3,7 @@
 \name{boxcoxTransformation}
 \alias{boxcoxTransformation}
 \alias{boxcoxTransformationMatrix}
-\title{Box-Cox Transformation for Simulations}
+\title{Box-Cox Transformation for Simulation Summary Values}
 \usage{
 boxcoxTransformation(summaryValuesVector, boxcoxAddition, boxcoxLambda)
 
@@ -31,7 +31,9 @@ same dimensions as \code{summaryValuesMatrix}.
 
 data(simRun)
 
-boxcoxTransformation(results$summaryValuesMatrix)
+boxcoxTransformationMatrix(summaryValuesMatrix=results$summaryValuesMatrix)
+
+boxcoxTransformation(summaryValuesVector=results$summaryValuesMatrix, boxcoxAddition, boxcoxLambda)
 
 }
 \author{

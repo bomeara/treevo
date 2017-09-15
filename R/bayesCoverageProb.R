@@ -19,6 +19,11 @@
 # @references O'Meara and Banbury, unpublished
 
 
+#' @examples
+#'
+#' breakThisExample
+
+
 #used to be BCP = Bayesian Coverage Probability, now bayesCoverageProb (08-29-17)
 #RealParam can be "RealParams$vector" from doSimulation c(x1, x2, ...) or a list
 #HPD should be a list of HPD output from different runs

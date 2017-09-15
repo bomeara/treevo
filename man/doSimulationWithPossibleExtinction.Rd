@@ -46,11 +46,11 @@ matrix and a vector}
 A data frame of species character (tip) values in the tree (unless returnAll==TRUE, in which case it returns the raw df from the sim).
 }
 \description{
-This function evolves continuous characters in a discrete time process.
+This simulation function evolves continuous characters in a discrete time process.
 }
 \details{
-When saveHistory is TRUE, processor time will increase quite a bit.
-SaveRealParams is useful for tracking the "real" true values if simulating
+When \code{saveHistory} is TRUE, processor time will increase quite a bit.
+\code{SaveRealParams} is useful for tracking the "real" true values if simulating
 data for abc runs.  It is not useful for empirical abc runs.
 }
 \examples{

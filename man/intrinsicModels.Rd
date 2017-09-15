@@ -119,8 +119,8 @@ attractor-1 (character mean-1), attraction-1 (alpha-1), time threshold-1,
 attractor-2 (character mean-2), attraction-2 (alpha-2), time threshold-2
 }
 \examples{
-# this needs examples
 
+breakThisExample
 }
 \author{
 Brian O'Meara and Barb Banbury

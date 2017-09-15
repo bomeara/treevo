@@ -17,6 +17,11 @@
 
 # @references O'Meara and Banbury, unpublished
 
+
+#' @examples
+#'
+#' breakThisExample
+
 #' @name mutateState
 #' @rdname mutateState
 #' @export

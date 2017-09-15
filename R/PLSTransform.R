@@ -16,7 +16,9 @@
 
 #' @examples
 #' 
-#' #PLSTransform(summaryValuesMatrix, pls.model)
+#' data(simRun)
+#' 
+#' PLSTransform(summaryValuesMatrix, pls.model)
 #' 
 
 #' @name PLSTransform

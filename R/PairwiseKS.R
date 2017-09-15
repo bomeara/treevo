@@ -12,6 +12,12 @@
 
 # @references O'Meara and Banbury, unpublished
 
+#' @examples
+#'
+#' data(simRun)
+#'
+#' PairwiseKS(particleDataFrame)
+
 
 #' @name PairwiseKS
 #' @rdname PairwiseKS

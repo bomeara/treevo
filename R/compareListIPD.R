@@ -16,6 +16,11 @@
 # @references O'Meara and Banbury, unpublished
 
 
+#' @examples
+#'
+#' breakThisExample
+
+
 #will compare IPD from a list of particleDataFrames.  Calculates the ratio of IPD
 
 

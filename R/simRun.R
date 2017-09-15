@@ -13,6 +13,14 @@
 
 #' @format simPhy in phylo format and simChar in single column matrix and results
 
+
+#' @examples
+#'
+#' data(simRun)
+#'
+#' # ...things to do with this data?
+#' 
+
 # @keywords datasets
 NULL
 

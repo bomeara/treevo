@@ -77,6 +77,10 @@ simulations
 This is a wrapper function for \code{simulateData} that allows for multithreading
 and checkpointing.
 }
+\examples{
+
+breakThisExample
+}
 \author{
 Brian O'Meara and Barb Banbury
 }

@@ -20,6 +20,10 @@ each free parameter.
 \description{
 This function calculates the highest posterior density (HPD) for each freely varying parameter.
 }
+\examples{
+
+breakThisExample
+}
 \seealso{
 \code{\link{HPDinterval}} in package \code{coda}
 }

@@ -25,7 +25,9 @@
 
 #' @examples
 #' 
-#' #abcDistance(summaryValuesMatrix, originalSummaryValues, pls.model.list)
+#' data(simRun)
+#'
+#' abcDistance(summaryValuesMatrix, originalSummaryValues, pls.model.list)
 #' 
 
 #' @name abcDistance

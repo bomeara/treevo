@@ -15,6 +15,12 @@ Returns a matrix with Kolmogorov-Smirnov values of all pairwise runs
 \description{
 This function calculates Kolmogorov-Smirnov on results.
 }
+\examples{
+
+data(simRun)
+
+PairwiseKS(particleDataFrame)
+}
 \author{
 Brian O'Meara and Barb Banbury
 }

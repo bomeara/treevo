@@ -17,6 +17,10 @@ Returns a matrix with ESS values of all pairwise runs
 This function calculates Effective Sample Size (ESS) on results.  Performs the best when results are
 from multiple runs.
 }
+\examples{
+
+breakThisExample
+}
 \author{
 Brian O'Meara and Barb Banbury
 }

@@ -1,6 +1,6 @@
 test_that("simulation ran", {
 	data(simRun)
-	char<-doSimulationWithPossibleExtinction(
+	charDoSim<-doSimulationWithPossibleExtinction(
 		phy=simPhy,
 		intrinsicFn=brownianIntrinsic,
 		extrinsicFn=nullExtrinsic,
@@ -9,8 +9,8 @@ test_that("simulation ran", {
 		extrinsicValues=c(0),
 		timeStep=0.0001,
 		saveHistory=FALSE)
-	expect_equal(class(char[,1]), "numeric")
-	expect_equal(dim(char)[1], 30)
+	expect_equal(class(charDoSim[,1]), "numeric")
+	expect_equal(dim(charDoSim)[1], 30)
 	}
 )
 

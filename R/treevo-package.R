@@ -21,7 +21,7 @@
 
 #' @examples
 #'
-#' # Needs an example analysis here!
+#' breakThisExample
 
 # NAMESPACE IMPORTING
 

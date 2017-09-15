@@ -21,7 +21,8 @@
 #' @param PriorMatrix A \code{PriorMatrix} object returned by TreEvo ABC analyses, can be a single matrix
 #' or a list of matrices.
 
-#' @param realParam If \code{TRUE}, this function will plot line segments where real parameter values are known. (Usually only true when simulated data is analyzed.)
+#' @param realParam If \code{TRUE}, this function will plot line segments where real
+#' parameter values are known. (Usually only true when simulated data is analyzed.)
 
 #' @param realParamValues Values for real paramters, include a value for each
 #' parameter (inlcuding fixed values). Otherwise should be \code{NA}.

@@ -28,7 +28,9 @@ better results, without one parameter dominating the combined variance.
 }
 \examples{
 
-#abcDistance(summaryValuesMatrix, originalSummaryValues, pls.model.list)
+data(simRun)
+
+abcDistance(summaryValuesMatrix, originalSummaryValues, pls.model.list)
 
 }
 \author{

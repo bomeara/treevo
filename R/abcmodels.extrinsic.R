@@ -54,8 +54,8 @@
 #' @author Brian O'Meara and Barb Banbury
 
 #' @examples
-#' # this needs examples
 #'
+#' breakThisExample
 
 #' @name extrinsicModels
 #' @rdname extrinsicModels

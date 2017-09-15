@@ -19,7 +19,9 @@ This function uses results from a Partial Least Squares (PLS) model to transform
 }
 \examples{
 
-#PLSTransform(summaryValuesMatrix, pls.model)
+data(simRun)
+
+PLSTransform(summaryValuesMatrix, pls.model)
 
 }
 \author{
