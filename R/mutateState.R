@@ -1,36 +1,42 @@
-#' Mutate Character State
-#' 
-#' This function mutates the character state of a given taxon by one discrete
-#' time step
-#' 
-#' 
+#  Mutate Character State
+#  
+#  This function mutates the character state of a given taxon by one discrete
+#  time step.
+#  
+#  
 
-#' @param startingState Character state prior to mutating
+#  @param startingState Character state prior to mutating.
 
-#' @param standardDevFactor Standard deviation
+#  @param standardDevFactor Standard deviation.
 
-#' @param priorValues Vector of priorValues
+#  @param priorFn Shape of the prior distribution. Must be one of
+#  "fixed", "uniform", "normal", "lognormal", "gamma", or "exponential".
 
-#' @param priorFn Prior shape
+#  @param priorValues Vector of parameter Values for the prior function.
 
-#' @author Brian O'Meara and Barb Banbury
+
+#  @author Brian O'Meara and Barb Banbury
 
 # @references O'Meara and Banbury, unpublished
 
 
-#' @examples
-#'
-#' breakThisExample
+#  @examples
+#  
+#  data(simRun)
+#  
+#  mutateState(startingState, standardDevFactor, priorValues, priorFn)
+#  
 
-#' @name mutateState
-#' @rdname mutateState
-#' @export
-mutateState<-function(startingState, standardDevFactor, priorValues, priorFn) {
+#  @name mutateState
+#  @rdname mutateState
+#  @export
+mutateState<-function(startingState, standardDevFactor, priorFn, priorValues) {
 	newState<-NA
 	minBound=-Inf
 	maxBound=Inf
 	validNewState<-FALSE  #was lowercase, but not recognised 
-	priorFn<-match.arg(arg=priorFn,choices=c("fixed", "uniform", "normal", "lognormal", "gamma", "exponential"),several.ok=FALSE);
+	priorFn<-match.arg(arg=priorFn,
+		choices=c("fixed", "uniform", "normal", "lognormal", "gamma", "exponential"),several.ok=FALSE);
 	if (priorFn=="fixed" || priorFn=="uniform") {
 		minBound<-min(priorValues)
 		maxBound<-max(priorValues)
