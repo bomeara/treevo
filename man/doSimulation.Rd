@@ -3,6 +3,7 @@
 \name{doSimulation}
 \alias{doSimulation}
 \alias{doSimulationForPlotting}
+\alias{doSimulationWithPossibleExtinction}
 \title{Discrete Time Character Simulation}
 \usage{
 doSimulation(phy, intrinsicFn, extrinsicFn, startingValues, intrinsicValues,
@@ -13,6 +14,11 @@ doSimulationForPlotting(phy, intrinsicFn, extrinsicFn, startingValues,
   intrinsicValues, extrinsicValues, timeStep, plot = FALSE,
   savePlot = FALSE, saveHistory = FALSE, saveRealParams = FALSE,
   jobName = "")
+
+doSimulationWithPossibleExtinction(phy, intrinsicFn, extrinsicFn,
+  startingValues, intrinsicValues, extrinsicValues, timeStep,
+  saveHistory = FALSE, saveRealParams = FALSE, jobName = "",
+  returnAll = FALSE, verbose = FALSE, reject.NaN = TRUE)
 }
 \arguments{
 \item{phy}{A phylogenetic tree, in package \code{ape}'s \code{phylo} format.}
@@ -45,16 +51,48 @@ matrix and a vector}
 throughout the history of the tree}
 
 \item{savePlot}{Saves the character tree using jobName}
+
+\item{returnAll}{If true, returns the values at each node}
+
+\item{verbose}{If TRUE, chat about how the sim is going}
+
+\item{reject.NaN}{Stop run if any simulated value is NaN}
+
+\item{intrinsicFn}{Name of intrinsic function characters should be simulated
+under}
+
+\item{extrinsicFn}{Name of extrinsic function characters should be simulated
+under}
+
+\item{startingValues}{State at the root}
+
+\item{intrinsicValues}{Vector of values corresponding to the params of the
+intrinsic model}
+
+\item{extrinsicValues}{Vector of values corresponding to the params of the
+extrinsic model}
+
+\item{timeStep}{This value corresponds to the number of discrete time steps
+on the shortest branch}
+
+\item{saveHistory}{Saves the character history throughout the simulation}
+
+\item{saveRealParams}{Saves intrinsicValues and extrinsicValues as both a
+matrix and a vector}
+
+\item{jobName}{Optional name for the job}
 }
 \value{
+A data frame of species character (tip) values in the tree (unless returnAll==TRUE, in which case it returns the raw df from the sim).
+
 A data frame of species character (tip) values in the tree.
 }
 \description{
-This function evolves continuous characters in a discrete time process.
+These simulation function evolve continuous characters under a discrete time process.
 }
 \details{
-When saveHistory is TRUE, processor time will increase quite a bit.
-SaveRealParams is useful for tracking the "real" true values if simulating
+When \code{saveHistory} is \code{TRUE}, processor time will increase quite a bit.
+\code{SaveRealParams} is useful for tracking the "real" true values if simulating
 data for abc runs.  It is not useful for empirical abc runs.
 }
 \examples{
@@ -110,7 +148,23 @@ char<-doSimulationForPlotting(
 	plot=TRUE,
 	saveHistory=FALSE)
 
+
+tree<-rcoal(30)
+
+#Simple Brownian motion
+char<-doSimulationWithPossibleExtinction(
+	phy=tree,
+	intrinsicFn=brownianIntrinsic,
+	extrinsicFn=nullExtrinsic,
+	startingValues=c(10), #root state
+	intrinsicValues=c(0.01),
+	extrinsicValues=c(0),
+	timeStep=0.0001,
+	saveHistory=FALSE)
+
 }
 \author{
+Brian O'Meara and Barb Banbury
+
 Brian O'Meara and Barb Banbury
 }

@@ -8,15 +8,15 @@
 simulateData(phy, startingPriorsValues, intrinsicPriorsValues,
   extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns,
   extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn,
-  giveUpAttempts = 10, niter.brown = 25, niter.lambda = 25,
-  niter.delta = 25, niter.OU = 25, niter.white = 25, verbose = FALSE)
+  giveUpAttempts = 10, verbose = FALSE, checks = TRUE, niter.brown = 25,
+  niter.lambda = 25, niter.delta = 25, niter.OU = 25, niter.white = 25)
 
 parallelSimulation(nrepSim, coreLimit, phy, startingPriorsValues,
   intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns,
   intrinsicPriorsFns, extrinsicPriorsFns, freevector, timeStep, intrinsicFn,
   extrinsicFn, multicore, checkpointFile = NULL, checkpointFreq = 24,
-  niter.brown = 25, niter.lambda = 25, niter.delta = 25, niter.OU = 25,
-  niter.white = 25)
+  verbose = FALSE, niter.brown = 25, niter.lambda = 25,
+  niter.delta = 25, niter.OU = 25, niter.white = 25)
 }
 \arguments{
 \item{phy}{A phylogenetic tree, in package \code{ape}'s \code{phylo} format.}
@@ -55,17 +55,20 @@ under (as used by doSimulation)}
 
 \item{giveUpAttempts}{Value for when to stop the analysis if NAs are present}
 
-\item{niter.brown}{Number of random starts for BM model (min of 2)}
+\item{verbose}{If TRUE, chat about how the simulation is going}
 
-\item{niter.lambda}{Number of random starts for lambda model (min of 2)}
+\item{checks}{If \code{TRUE}, checks inputs for consistency. This activity is skipped (\code{checks = FALSE})
+when run in parallel by \code{parallelSimulation}, and instead is only checked once.}
 
-\item{niter.delta}{Number of random starts for delta model (min of 2)}
+\item{niter.brown}{Number of random starts for BM model (minimum of 2).}
 
-\item{niter.OU}{Number of random starts for OU model (min of 2)}
+\item{niter.lambda}{Number of random starts for lambda model (minimum of 2).}
 
-\item{niter.white}{Number of random starts for white model (min of 2)}
+\item{niter.delta}{Number of random starts for delta model (minimum of 2).}
 
-\item{verbose}{If TRUE, chat about how the sim is going}
+\item{niter.OU}{Number of random starts for OU model (minimum of 2).}
+
+\item{niter.white}{Number of random starts for white model (minimum of 2).}
 
 \item{nrepSim}{Number of simulations}
 
@@ -130,7 +133,27 @@ and checkpointing.
 }
 \examples{
 
-xx
+data(simRun)
+
+
+# example simulation
+
+	
+simData<-simulateData(phy=simPhy, 
+	startingPriorsValues, 
+	intrinsicPriorsValues, 
+	extrinsicPriorsValues, 
+	startingPriorsFns, 
+	intrinsicPriorsFns, 
+	extrinsicPriorsFns, 
+	freevector, 	
+	timeStep=0.0001,
+	intrinsicFn=brownianIntrinsic,
+	extrinsicFn=nullExtrinsic,
+	giveUpAttempts=10, 
+	verbose=TRUE,
+	niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25, 
+
 }
 \author{
 Brian O'Meara and Barb Banbury

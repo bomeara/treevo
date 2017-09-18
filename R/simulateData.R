@@ -142,30 +142,26 @@
 #' @examples
 #'
 #' data(simRun)
-#'
-# example simulation
-charDoSim<-doSimulationWithPossibleExtinction(
-	phy=simPhy,
-	intrinsicFn=brownianIntrinsic,
-	extrinsicFn=nullExtrinsic,
-	startingValues=c(10), #root state
-	intrinsicValues=c(0.01),
-	extrinsicValues=c(0),
-	timeStep=0.0001,
-	saveHistory=FALSE)
-	
-simulateData<-function(phy=simPhy, 
-	startingPriorsValues, 
-	intrinsicPriorsValues, 
-	extrinsicPriorsValues, 
-	startingPriorsFns, 
-	intrinsicPriorsFns, 
-	extrinsicPriorsFns, 
-	freevector, timeStep, 
-	intrinsicFn, extrinsicFn, 
-	giveUpAttempts=10, 
-	niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25, 
-	verbose=FALSE,checks=TRUE
+#' 
+#' 
+#' # example simulation
+#' 
+#' 	
+#' simData<-simulateData(phy=simPhy, 
+#' 	startingPriorsValues, 
+#' 	intrinsicPriorsValues, 
+#' 	extrinsicPriorsValues, 
+#' 	startingPriorsFns, 
+#' 	intrinsicPriorsFns, 
+#' 	extrinsicPriorsFns, 
+#' 	freevector, 	
+#' 	timeStep=0.0001,
+#' 	intrinsicFn=brownianIntrinsic,
+#' 	extrinsicFn=nullExtrinsic,
+#' 	giveUpAttempts=10, 
+#' 	verbose=TRUE,
+#' 	niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25, 
+#' 
 
 
 
@@ -176,15 +172,15 @@ simulateData<-function(phy=simPhy,
 #' @export
 simulateData<-function(phy, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, 
 	startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, 
-	freevector, timeStep, intrinsicFn, extrinsicFn, giveUpAttempts=10, 
-	niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25, 
-	verbose=FALSE,checks=TRUE) {
+	freevector, timeStep, intrinsicFn, extrinsicFn, 
+	giveUpAttempts=10, verbose=FALSE,checks=TRUE,
+	niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) {
 
 	#taxon.df <- getTaxonDFWithPossibleExtinction(phy)
 	
 	# checks
 	if(checks){
-		checkNiter<-function(niter.brown=niter.brown, niter.lambda=niter.lambda,
+		checkNiter(niter.brown=niter.brown, niter.lambda=niter.lambda,
 			niter.delta=niter.delta, niter.OU=niter.OU, niter.white=niter.white)
 		}
 			
@@ -213,7 +209,7 @@ simulateData<-function(phy, startingPriorsValues, intrinsicPriorsValues, extrins
 		cat(".")
 		simTraits<-doSimulationWithPossibleExtinction(phy=phy, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, 
 			startingValues=trueStarting, intrinsicValues=trueIntrinsic, extrinsicValues=trueExtrinsic, timeStep=timeStep, verbose=verbose)
-		simSumStats<-summaryStatsLong(phy, simTraits, 
+		simSumStats<-summaryStatsLong(phy=phy, simTraits=simTraits, 
 			niter.brown=niter.brown, niter.lambda=niter.lambda, niter.delta=niter.delta,
 			niter.OU=niter.OU, niter.white=niter.white)
 		simTrueAndStats <-c(trueFreeValues, simSumStats)
@@ -238,7 +234,7 @@ parallelSimulation<-function(nrepSim, coreLimit, phy,
 	#library(foreach, quietly=T)
 	
 	# checks
-	checkNiter<-function(niter.brown=niter.brown, niter.lambda=niter.lambda,
+	checkNiter(niter.brown=niter.brown, niter.lambda=niter.lambda,
 		niter.delta=niter.delta, niter.OU=niter.OU, niter.white=niter.white)
 
 	taxon.df <- getTaxonDFWithPossibleExtinction(phy)
