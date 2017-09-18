@@ -16,7 +16,7 @@
 #'
 #' data(simRun)
 #'
-#' PairwiseKS(particleDataFrame)
+#' PairwiseKS(results$particleDataFrame)
 
 
 #' @name PairwiseKS

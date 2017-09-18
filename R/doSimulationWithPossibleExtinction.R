@@ -2,7 +2,7 @@
 #'
 #' This simulation function evolves continuous characters in a discrete time process.
 #'
-#' When \code{saveHistory} is TRUE, processor time will increase quite a bit.
+#' When \code{saveHistory} is \code{TRUE}, processor time will increase quite a bit.
 #' \code{SaveRealParams} is useful for tracking the "real" true values if simulating
 #' data for abc runs.  It is not useful for empirical abc runs.
 #'
@@ -46,16 +46,12 @@
 
 #' @author Brian O'Meara and Barb Banbury
 
-# @references O'Meara and Banbury, unpublished
-# @keywords doSimulation
-
 #' @examples
-#'
 #'
 #' tree<-rcoal(30)
 #'
 #' #Simple Brownian motion
-#' char<-doSimulation(
+#' char<-doSimulationWithPossibleExtinction(
 #' 	phy=tree,
 #' 	intrinsicFn=brownianIntrinsic,
 #' 	extrinsicFn=nullExtrinsic,
@@ -65,23 +61,13 @@
 #' 	timeStep=0.0001,
 #' 	saveHistory=FALSE)
 #'
-#'
-#' #Character displacement model with minimum bound
-#' char<-doSimulation(
-#' 	phy=tree,
-#' 	intrinsicFn=boundaryMinIntrinsic,
-#' 	extrinsicFn=ExponentiallyDecayingPushExtrinsic,
-#' 	startingValues=c(10), #root state
-#' 	intrinsicValues=c(0.05, 10, 0.01),
-#' 	extrinsicValues=c(0, .1, .25),
-#' 	timeStep=0.001,
-#' 	saveHistory=FALSE)
-#'
+
 
 #' @name doSimulationWithPossibleExtinction
 #' @rdname doSimulationWithPossibleExtinction
 #' @export
-doSimulationWithPossibleExtinction<-function(phy, intrinsicFn, extrinsicFn, startingValues, intrinsicValues, extrinsicValues, timeStep, saveHistory=FALSE, saveRealParams=FALSE, jobName="", returnAll = FALSE, verbose=FALSE, reject.NaN=TRUE) {
+doSimulationWithPossibleExtinction<-function(phy, intrinsicFn, extrinsicFn, startingValues, intrinsicValues, extrinsicValues,
+	timeStep, saveHistory=FALSE, saveRealParams=FALSE, jobName="", returnAll = FALSE, verbose=FALSE, reject.NaN=TRUE) {
 	
 	taxon.df <- getTaxonDFWithPossibleExtinction(phy)
 	

@@ -19,7 +19,9 @@ from multiple runs.
 }
 \examples{
 
-breakThisExample
+data(simRun)
+
+PairwiseESS(results$particleDataFrame)
 }
 \author{
 Brian O'Meara and Barb Banbury

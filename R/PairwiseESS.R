@@ -16,7 +16,9 @@
 
 #' @examples
 #'
-#' breakThisExample
+#' data(simRun)
+#' 
+#' PairwiseESS(results$particleDataFrame)
 
 #' @name PairwiseESS
 #' @rdname PairwiseESS

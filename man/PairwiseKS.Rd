@@ -19,7 +19,7 @@ This function calculates Kolmogorov-Smirnov on results.
 
 data(simRun)
 
-PairwiseKS(particleDataFrame)
+PairwiseKS(results$particleDataFrame)
 }
 \author{
 Brian O'Meara and Barb Banbury

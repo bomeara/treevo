@@ -111,23 +111,10 @@ under (as used by doSimulation)}
 
 \item{extrinsicFn}{Name of extrinsic function characters should be simulated
 under (as used by doSimulation)}
-
-\item{niter.brown}{Number of random starts for BM model (min of 2)}
-
-\item{niter.lambda}{Number of random starts for lambda model (min of 2)}
-
-\item{niter.delta}{Number of random starts for delta model (min of 2)}
-
-\item{niter.OU}{Number of random starts for OU model (min of 2)}
-
-\item{niter.white}{Number of random starts for white model (min of 2)}
 }
 \value{
-Returns matrix of trueFreeValues and summary statistics for
-simulations
-
-Returns matrix of trueFreeValues and summary statistics for
-simulations
+Returns matrix of \code{trueFreeValues} and summary statistics for
+simulations.
 }
 \description{
 This function pulls parameters from prior distributions and simulates
@@ -135,19 +122,16 @@ continuous characters.
 }
 \details{
 Used by TreEvo functions \code{doRun_prc} and \code{doRun_rej} to calculate simulations.
+
+Simulate data for initial TreEvo analysis
+
+\code{parallelSimulation} is a wrapper function for \code{simulateData} that allows for multithreading
+and checkpointing.
 }
 \examples{
 
 xx
-Simulate data for initial TreEvo analysis
-
-This is a wrapper function for \\code{simulateData} that allows for multithreading
-and checkpointing.
-
-
 }
 \author{
-Brian O'Meara and Barb Banbury
-
 Brian O'Meara and Barb Banbury
 }
