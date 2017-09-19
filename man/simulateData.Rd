@@ -11,10 +11,10 @@ simulateData(phy, startingPriorsValues, intrinsicPriorsValues,
   giveUpAttempts = 10, verbose = FALSE, checks = TRUE, niter.brown = 25,
   niter.lambda = 25, niter.delta = 25, niter.OU = 25, niter.white = 25)
 
-parallelSimulation(nrepSim, coreLimit, phy, startingPriorsValues,
-  intrinsicPriorsValues, extrinsicPriorsValues, startingPriorsFns,
-  intrinsicPriorsFns, extrinsicPriorsFns, freevector, timeStep, intrinsicFn,
-  extrinsicFn, multicore, checkpointFile = NULL, checkpointFreq = 24,
+parallelSimulation(phy, startingPriorsValues, intrinsicPriorsValues,
+  extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns,
+  extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn, nrepSim,
+  coreLimit, multicore, checkpointFile = NULL, checkpointFreq = 24,
   verbose = FALSE, niter.brown = 25, niter.lambda = 25,
   niter.delta = 25, niter.OU = 25, niter.white = 25)
 }
@@ -68,9 +68,9 @@ when run in parallel by \code{parallelSimulation}, and instead is only checked o
 
 \item{niter.white}{Number of random starts for the white noise model (minimum of 2).}
 
-\item{nrepSim}{Number of simulations}
+\item{nrepSim}{Number of replicated simulations to run.}
 
-\item{coreLimit}{Number of cores to be used}
+\item{coreLimit}{Maximum number of cores to be used.}
 
 \item{multicore}{Whether to use multicore, default is \code{FALSE}. If \code{TRUE}, one of
 two suggested packages must be installed, either \code{doMC} (for UNIX systems) or
