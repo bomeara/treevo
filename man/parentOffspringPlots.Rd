@@ -28,7 +28,7 @@ Grayed out stars represent rejected particles.
 \examples{
 
 data(simRun)
-parentOffspringPlots(res$particleDataFrame)
+parentOffspringPlots(results$particleDataFrame)
 
 }
 \author{
