@@ -37,27 +37,16 @@
 #' @param freevector A logical vector (with length equal to the number of parameters), indicating free (\code{TRUE}) and
 #' fixed (\code{FALSE}) parameters.
 
-
-
 #' @param giveUpAttempts Value for when to stop the analysis if \code{NA} values are present.
 
+#' @param nrepSim Number of replicated simulations to run.
 
+#' @param coreLimit Maximum number of cores to be used.
 
-
-
-
-
-#' @param nrepSim Number of simulations
-
-#' @param coreLimit Number of cores to be used
-
-
-
-
-
-
-
-
+#' @param multicore Whether to use multicore, default is \code{FALSE}. If \code{TRUE}, one of
+#' two suggested packages must be installed, either \code{doMC} (for UNIX systems) or
+#' \code{doParallel} (for Windows), which are used to activate multithreading.
+#' If neither package is installed, this function will fail if \code{multicore=TRUE}.
 
 #' @param niter.brown Number of random starts for the Brownian Motion (BM) model (minimum of 2).
 
@@ -70,23 +59,12 @@
 #' @param niter.white Number of random starts for the white noise model (minimum of 2).
 
 
-
-
-
-
 #' @param checks If \code{TRUE}, checks inputs for consistency. This activity is skipped (\code{checks = FALSE})
 #' when run in parallel by \code{parallelSimulation}, and instead is only checked once.
-
-
-#' @param multicore Whether to use multicore, default is \code{FALSE}. If \code{TRUE}, one of
-#' two suggested packages must be installed, either \code{doMC} (for UNIX systems) or
-#' \code{doParallel} (for Windows), which are used to activate multithreading.
-#' If neither package is installed, this function will fail if \code{multicore=TRUE}.
 
 #' @param checkpointFile Optional file name for checkpointing simulations
 
 #' @param checkpointFreq Saving frequency for checkpointing
-
 
 
 #' @return Returns matrix of \code{trueFreeValues} and summary statistics for
@@ -134,8 +112,6 @@
 #' 	extrinsicFn=nullExtrinsic,
 #' 	niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) 
 #' 
-
-
 
 
 #' @name simulateData
@@ -194,11 +170,12 @@ simulateData<-function(phy, startingPriorsValues, intrinsicPriorsValues, extrins
 
 #' @rdname simulateData
 #' @export
-parallelSimulation<-function(nrepSim, coreLimit, phy, 
+parallelSimulation<-function(phy, 
 	startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, 
 	startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, 
 	freevector, timeStep, intrinsicFn, extrinsicFn, 
-	multicore, checkpointFile=NULL, checkpointFreq=24, verbose=FALSE,
+	nrepSim, coreLimit, multicore, 
+	checkpointFile=NULL, checkpointFreq=24, verbose=FALSE,
 	niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) {
 	
 	#library(doMC, quietly=T)

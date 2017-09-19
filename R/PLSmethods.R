@@ -53,10 +53,6 @@
 #' PLSTransform(summaryValuesMatrix=summaryValuesMatrix, pls.model=PLSmodel)
 #' 
 
-
-
-
-
 #' @name PLSmethods
 #' @rdname PLSmethods
 #' @export
