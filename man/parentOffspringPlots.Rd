@@ -7,13 +7,13 @@
 parentOffspringPlots(particleDataFrame)
 }
 \arguments{
-\item{particleDataFrame}{particleDataFrame from TreEvo results}
+\item{particleDataFrame}{\code{particleDataFrame} output by TreEvo ABC analyses.}
 }
 \value{
-Returns a layout of parent-offspring plots
+Creates a set of parent-offspring plots.
 }
 \description{
-This function uses the particleDataFrame from TreEvo results and plots
+This function uses the \code{particleDataFrame} output by TreEvo ABC analyses and plots
 parent-offspring particles from generation to generation.
 }
 \details{

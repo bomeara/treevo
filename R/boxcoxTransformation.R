@@ -1,7 +1,8 @@
 #' Box-Cox Transformation for Simulation Summary Values
 #' 
 #' \code{boxcoxTransformation} Box-Cox transforms summary values from a single simulation, while
-#' \code{boxcoxTransformationMatrix} Box-Cox transforms summary values from multiple simulations.
+#' \code{boxcoxTransformationMatrix} Box-Cox transforms summary values from multiple simulations. The
+#' output of \code{boxcoxTransformationMatrix} needs to be provided as input for \code{boxcoxTransformation}.
 #' 
 #' 
 
@@ -9,9 +10,9 @@
 
 #' @param summaryValuesVector Vector of summary statistics from a single simulation
 
-#' @param boxcoxAddition Vector of boxcox additions from boxcoxEstimation
+#' @param boxcoxAddition Vector of boxcox additions from \code{boxcoxTransformationMatrix}
 
-#' @param boxcoxLambda Vector of boxcox lambda values from boxcoxEstimation
+#' @param boxcoxLambda Vector of boxcox lambda values from \code{boxcoxTransformationMatrix}
 
 #' @return \code{boxcoxTransformation} returns a vector of Box-Cox transformed summary statistics from a
 #' single observation. \code{boxcoxTransformationMatrix} returns a matrix of Box-Cox transformed summary statistics with the
@@ -26,9 +27,11 @@
 #' 
 #' data(simRun)
 #' 
-#' boxcoxTransformationMatrix(summaryValuesMatrix=results$summaryValuesMatrix)
+#' boxTranMat<-boxcoxTransformationMatrix(summaryValuesMatrix=results$summaryValuesMatrix)
+#' boxTranMat
 #' 
-#' boxcoxTransformation(summaryValuesVector=results$summaryValuesMatrix, boxcoxAddition, boxcoxLambda)
+#' boxcoxTransformation(summaryValuesVector=results$summaryValuesMatrix,
+#'  boxTranMat$boxcoxAddition, boxTranMat$boxcoxLambda)
 #' 
 
 

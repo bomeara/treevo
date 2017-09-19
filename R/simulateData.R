@@ -1,12 +1,7 @@
 #' Simulate data for initial TreEvo analysis
 #'
-#' This function pulls parameters from prior distributions and simulates
-#' continuous characters.
-#'
-#' Used by TreEvo functions \code{doRun_prc} and \code{doRun_rej} to calculate simulations.
-#'
-
-#' Simulate data for initial TreEvo analysis
+#' The function \code{simulateData} pulls parameters from prior distributions and simulates
+#' continuous characters, and is uSsed by TreEvo functions \code{doRun_prc} and \code{doRun_rej} to calculate simulations.
 #'
 #' \code{parallelSimulation} is a wrapper function for \code{simulateData} that allows for multithreading
 #' and checkpointing.
@@ -15,41 +10,36 @@
 
 #' @inheritParams doSimulation
 
-# @param taxon.df starting object from getTaxonDFWithPossibleExtinction
 
-#' @param startingPriorsValues Matrix with ncol=number of states (characters)
-#' at root and nrow=2 (two parameters to pass to prior distribution)
 
-#' @param intrinsicPriorsValues Matrix with ncol=number of states (characters)
-#' at root and nrow=2 (two parameters to pass to prior distribution)
 
-#' @param extrinsicPriorsValues Matrix with ncol=number of states (characters)
-#' at root and nrow=2 (two parameters to pass to prior distribution)
+#' @param startingPriorsValues Matrix with number of columns equal to the number of states (characters)
+#' at root and number of rows equal to two (representing two parameters to pass to prior distribution).
+
+#' @param intrinsicPriorsValues Matrix with number of columns equal to the number of states (characters)
+#' at root and number of rows equal to two (representing two parameters to pass to prior distribution).
+
+#' @param extrinsicPriorsValues Matrix with number of columns equal to the number of states (characters)
+#' at root and number of rows equal to two (representing two parameters to pass to prior distribution).
 
 #' @param startingPriorsFns Vector containing names of prior distributions to
-#' use for root states: can be one of fixed, uniform, normal, lognormal, gamma,
-#' exponential
+#' use for root states: can be one of \code{"fixed"}, \code{"uniform"}, \code{"normal"},
+#" \code{"lognormal"}, \code{"gamma"}, \code{"exponential"}.
 
 #' @param intrinsicPriorsFns Vector containing names of prior distributions to
-#' use for root states: can be one of fixed, uniform, normal, lognormal, gamma,
-#' exponential
+#' use for root states: can be one of \code{"fixed"}, \code{"uniform"}, \code{"normal"},
+#" \code{"lognormal"}, \code{"gamma"}, \code{"exponential"}.
 
 #' @param extrinsicPriorsFns Vector containing names of prior distributions to
-#' use for root states: can be one of fixed, uniform, normal, lognormal, gamma,
-#' exponential
+#' use for root states: can be one of \code{"fixed"}, \code{"uniform"}, \code{"normal"},
+#" \code{"lognormal"}, \code{"gamma"}, \code{"exponential"}.
 
-#' @param freevector A vector (length=number of parameters) of free (T) and
-#' fixed (F) parameters
+#' @param freevector A logical vector (with length equal to the number of parameters), indicating free (\code{TRUE}) and
+#' fixed (\code{FALSE}) parameters.
 
-#' @param timeStep This value corresponds to the number of discrete time steps
 
-#' @param intrinsicFn Name of intrinsic function characters should be simulated
-#' under (as used by doSimulation)
 
-#' @param extrinsicFn Name of extrinsic function characters should be simulated
-#' under (as used by doSimulation)
-
-#' @param giveUpAttempts Value for when to stop the analysis if NAs are present
+#' @param giveUpAttempts Value for when to stop the analysis if \code{NA} values are present.
 
 
 
@@ -61,70 +51,37 @@
 
 #' @param coreLimit Number of cores to be used
 
-# @param taxon.df object from getTaxonDFWithPossibleExtinction
-
-#' @inheritParams doSimulation
-
-#' @param startingPriorsValues Matrix with ncol=number of states (characters)
-#' at root and nrow=2 (two parameters to pass to prior distribution)
-
-#' @param intrinsicPriorsValues Matrix with ncol=number of states (characters)
-#' at root and nrow=2 (two parameters to pass to prior distribution)
-
-#' @param extrinsicPriorsValues Matrix with ncol=number of states (characters)
-#' at root and nrow=2 (two parameters to pass to prior distribution)
-
-#' @param startingPriorsFns Vector containing names of prior distributions to
-#' use for root states: can be one of fixed, uniform, normal, lognormal, gamma,
-#' exponential
-
-#' @param intrinsicPriorsFns Vector containing names of prior distributions to
-#' use for root states: can be one of fixed, uniform, normal, lognormal, gamma,
-#' exponential
-
-#' @param extrinsicPriorsFns Vector containing names of prior distributions to
-#' use for root states: can be one of fixed, uniform, normal, lognormal, gamma,
-#' exponential
-
-#' @param freevector A vector (length=number of parameters) of free (T) and
-#' fixed (F) parameters
-
-#' @param timeStep This value corresponds to the number of discrete time steps
-
-#' @param intrinsicFn Name of intrinsic function characters should be simulated
-#' under (as used by doSimulation)
-
-#' @param extrinsicFn Name of extrinsic function characters should be simulated
-#' under (as used by doSimulation)
 
 
 
 
 
 
-#' @param niter.brown Number of random starts for BM model (minimum of 2).
-
-#' @param niter.lambda Number of random starts for lambda model (minimum of 2).
-
-#' @param niter.delta Number of random starts for delta model (minimum of 2).
-
-#' @param niter.OU Number of random starts for OU model (minimum of 2).
-
-#' @param niter.white Number of random starts for white model (minimum of 2).
 
 
+#' @param niter.brown Number of random starts for the Brownian Motion (BM) model (minimum of 2).
+
+#' @param niter.lambda Number of random starts for the lambda model (minimum of 2).
+
+#' @param niter.delta Number of random starts for the delta model (minimum of 2).
+
+#' @param niter.OU Number of random starts for the Ornstein-Uhlenbeck (OU) model (minimum of 2).
+
+#' @param niter.white Number of random starts for the white noise model (minimum of 2).
 
 
-#' @param verbose If TRUE, chat about how the simulation is going 
+
+
+
 
 #' @param checks If \code{TRUE}, checks inputs for consistency. This activity is skipped (\code{checks = FALSE})
 #' when run in parallel by \code{parallelSimulation}, and instead is only checked once.
 
 
-#' @param multicore Whether to use multicore, default is FALSE. If TRUE, one of
-#' two suggested packages must be installed, either 'doMC' (for UNIX systems) or
-#' 'doParallel' (for Windows), which are used to activate multithreading.
-#' If neither package is installed, this function will fail if multicore=TRUE.
+#' @param multicore Whether to use multicore, default is \code{FALSE}. If \code{TRUE}, one of
+#' two suggested packages must be installed, either \code{doMC} (for UNIX systems) or
+#' \code{doParallel} (for Windows), which are used to activate multithreading.
+#' If neither package is installed, this function will fail if \code{multicore=TRUE}.
 
 #' @param checkpointFile Optional file name for checkpointing simulations
 
@@ -160,9 +117,23 @@
 #' 	extrinsicFn=nullExtrinsic,
 #' 	giveUpAttempts=10, 
 #' 	verbose=TRUE,
-#' 	niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25, 
+#' 	niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) 
 #' 
-
+#' simDataParallel<-parallelSimulation(nrepSim=10, coreLimit=1, phy=simPhy, 
+#' 	startingPriorsValues, 
+#' 	intrinsicPriorsValues, 
+#' 	extrinsicPriorsValues, 
+#' 	startingPriorsFns, 
+#' 	intrinsicPriorsFns, 
+#' 	extrinsicPriorsFns, 
+#' 	freevector, 	 
+#'	multicore=FALSE, 
+#' 	checkpointFile=NULL, checkpointFreq=24, verbose=FALSE,
+#' 	timeStep=0.0001,
+#' 	intrinsicFn=brownianIntrinsic,
+#' 	extrinsicFn=nullExtrinsic,
+#' 	niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) 
+#' 
 
 
 
@@ -209,7 +180,7 @@ simulateData<-function(phy, startingPriorsValues, intrinsicPriorsValues, extrins
 		cat(".")
 		simTraits<-doSimulationWithPossibleExtinction(phy=phy, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, 
 			startingValues=trueStarting, intrinsicValues=trueIntrinsic, extrinsicValues=trueExtrinsic, timeStep=timeStep, verbose=verbose)
-		simSumStats<-summaryStatsLong(phy=phy, simTraits=simTraits, 
+		simSumStats<-summaryStatsLong(phy=phy, traits=simTraits, 
 			niter.brown=niter.brown, niter.lambda=niter.lambda, niter.delta=niter.delta,
 			niter.OU=niter.OU, niter.white=niter.white)
 		simTrueAndStats <-c(trueFreeValues, simSumStats)

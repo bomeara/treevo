@@ -12,9 +12,9 @@ boxcoxTransformationMatrix(summaryValuesMatrix)
 \arguments{
 \item{summaryValuesVector}{Vector of summary statistics from a single simulation}
 
-\item{boxcoxAddition}{Vector of boxcox additions from boxcoxEstimation}
+\item{boxcoxAddition}{Vector of boxcox additions from \code{boxcoxTransformationMatrix}}
 
-\item{boxcoxLambda}{Vector of boxcox lambda values from boxcoxEstimation}
+\item{boxcoxLambda}{Vector of boxcox lambda values from \code{boxcoxTransformationMatrix}}
 
 \item{summaryValuesMatrix}{Matrix of summary statistics from simulations}
 }
@@ -25,15 +25,18 @@ same dimensions as \code{summaryValuesMatrix}.
 }
 \description{
 \code{boxcoxTransformation} Box-Cox transforms summary values from a single simulation, while
-\code{boxcoxTransformationMatrix} Box-Cox transforms summary values from multiple simulations.
+\code{boxcoxTransformationMatrix} Box-Cox transforms summary values from multiple simulations. The
+output of \code{boxcoxTransformationMatrix} needs to be provided as input for \code{boxcoxTransformation}.
 }
 \examples{
 
 data(simRun)
 
-boxcoxTransformationMatrix(summaryValuesMatrix=results$summaryValuesMatrix)
+boxTranMat<-boxcoxTransformationMatrix(summaryValuesMatrix=results$summaryValuesMatrix)
+boxTranMat
 
-boxcoxTransformation(summaryValuesVector=results$summaryValuesMatrix, boxcoxAddition, boxcoxLambda)
+boxcoxTransformation(summaryValuesVector=results$summaryValuesMatrix,
+ boxTranMat$boxcoxAddition, boxTranMat$boxcoxLambda)
 
 }
 \author{

@@ -23,69 +23,44 @@ doSimulationWithPossibleExtinction(phy, intrinsicFn, extrinsicFn,
 \arguments{
 \item{phy}{A phylogenetic tree, in package \code{ape}'s \code{phylo} format.}
 
-\item{intrinsicFn}{Name of intrinsic function characters should be simulated
-under}
+\item{intrinsicFn}{Name of intrinsic function that traits should be simulated
+under.}
 
-\item{extrinsicFn}{Name of extrinsic function characters should be simulated
-under}
+\item{extrinsicFn}{Name of extrinsic function that traits should be simulated
+under.}
 
-\item{startingValues}{State at the root}
+\item{startingValues}{State at the root.}
 
-\item{intrinsicValues}{Vector of values corresponding to the params of the
-intrinsic model}
+\item{intrinsicValues}{Vector of values corresponding to the parameters of the
+intrinsic model.}
 
-\item{extrinsicValues}{Vector of values corresponding to the params of the
-extrinsic model}
+\item{extrinsicValues}{Vector of values corresponding to the parameters of the
+extrinsic model.}
 
 \item{timeStep}{This value corresponds to the number of discrete time steps
 on the shortest branch}
 
-\item{saveHistory}{Saves the character history throughout the simulation}
+\item{saveHistory}{If \code{TRUE}, saves the character history throughout the simulation}
 
-\item{saveRealParams}{Saves intrinsicValues and extrinsicValues as both a
-matrix and a vector}
+\item{saveRealParams}{Saves \code{intrinsicValues} and \code{extrinsicValues} as both a
+matrix and a vector to an external .Rdata file.}
 
-\item{jobName}{Optional name for the job}
+\item{jobName}{Optional name for the job.}
 
 \item{plot}{Will create a new interactive window that plots character values
-throughout the history of the tree}
+throughout the history of the tree.}
 
-\item{savePlot}{Saves the character tree using jobName}
+\item{savePlot}{Saves the character tree using \code{jobName}.}
 
-\item{returnAll}{If true, returns the values at each node}
+\item{returnAll}{If \code{TRUE}, the output returned is a \code{data.frame} containing the values at each node from the simulation.}
 
-\item{verbose}{If TRUE, chat about how the sim is going}
+\item{verbose}{If \code{TRUE}, gives messages about how the simulation is progessing via \code{print}.}
 
-\item{reject.NaN}{Stop run if any simulated value is NaN}
-
-\item{intrinsicFn}{Name of intrinsic function characters should be simulated
-under}
-
-\item{extrinsicFn}{Name of extrinsic function characters should be simulated
-under}
-
-\item{startingValues}{State at the root}
-
-\item{intrinsicValues}{Vector of values corresponding to the params of the
-intrinsic model}
-
-\item{extrinsicValues}{Vector of values corresponding to the params of the
-extrinsic model}
-
-\item{timeStep}{This value corresponds to the number of discrete time steps
-on the shortest branch}
-
-\item{saveHistory}{Saves the character history throughout the simulation}
-
-\item{saveRealParams}{Saves intrinsicValues and extrinsicValues as both a
-matrix and a vector}
-
-\item{jobName}{Optional name for the job}
+\item{reject.NaN}{If \code{TRUE}, stop run if any simulated value is NaN}
 }
 \value{
-A data frame of species character (tip) values in the tree (unless returnAll==TRUE, in which case it returns the raw df from the sim).
-
-A data frame of species character (tip) values in the tree.
+A data frame of species character (tip) values in the tree
+(unless \code{returnAll = TRUE}, in which case the raw \code{data.frame} from the simulation).
 }
 \description{
 These simulation function evolve continuous characters under a discrete time process.
@@ -96,7 +71,6 @@ When \code{saveHistory} is \code{TRUE}, processor time will increase quite a bit
 data for abc runs.  It is not useful for empirical abc runs.
 }
 \examples{
-
 
 tree<-rcoal(30)
 

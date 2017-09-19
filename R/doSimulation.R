@@ -7,84 +7,54 @@
 #' data for abc runs.  It is not useful for empirical abc runs.
 #'
 
-
-# @param splits Output from the function getSimulationSplits; is a data frame
-# of branching times, ancestor and descendant vectors
-
 #' @param phy A phylogenetic tree, in package \code{ape}'s \code{phylo} format.
 
-#' @param intrinsicFn Name of intrinsic function characters should be simulated
-#' under
 
-#' @param extrinsicFn Name of extrinsic function characters should be simulated
-#' under
+#' @param intrinsicFn Name of intrinsic function that traits should be simulated
+#' under.
 
-#' @param startingValues State at the root
+#' @param extrinsicFn Name of extrinsic function that traits should be simulated
+#' under.
 
-#' @param intrinsicValues Vector of values corresponding to the params of the
-#' intrinsic model
+#' @param startingValues State at the root.
 
-#' @param extrinsicValues Vector of values corresponding to the params of the
-#' extrinsic model
+#' @param intrinsicValues Vector of values corresponding to the parameters of the
+#' intrinsic model.
+
+#' @param extrinsicValues Vector of values corresponding to the parameters of the
+#' extrinsic model.
+
 
 #' @param timeStep This value corresponds to the number of discrete time steps
 #' on the shortest branch
 
-#' @param saveHistory Saves the character history throughout the simulation
+#' @param saveHistory If \code{TRUE}, saves the character history throughout the simulation
 
-#' @param saveRealParams Saves intrinsicValues and extrinsicValues as both a
-#' matrix and a vector
+#' @param saveRealParams Saves \code{intrinsicValues} and \code{extrinsicValues} as both a
+#' matrix and a vector to an external .Rdata file.
 
-#' @param jobName Optional name for the job
+#' @param jobName Optional name for the job.
+
+#' @param returnAll If \code{TRUE}, the output returned is a \code{data.frame} containing the values at each node from the simulation.
+
+#' @param verbose If \code{TRUE}, gives messages about how the simulation is progessing via \code{print}.
+
+#' @param reject.NaN If \code{TRUE}, stop run if any simulated value is NaN
+
+
 
 #' @param plot Will create a new interactive window that plots character values
-#' throughout the history of the tree
+#' throughout the history of the tree.
 
-#' @param savePlot Saves the character tree using jobName
+#' @param savePlot Saves the character tree using \code{jobName}.
 
 
 
-# @param taxon.df Output from the function getTaxonDFWithPossibleExtinction; is a data frame
-# with info on all the taxa (including internal ones)
-
-#' @inheritParams doSimulation
-
-#' @param intrinsicFn Name of intrinsic function characters should be simulated
-#' under
-
-#' @param extrinsicFn Name of extrinsic function characters should be simulated
-#' under
-
-#' @param startingValues State at the root
-
-#' @param intrinsicValues Vector of values corresponding to the params of the
-#' intrinsic model
-
-#' @param extrinsicValues Vector of values corresponding to the params of the
-#' extrinsic model
-
-#' @param timeStep This value corresponds to the number of discrete time steps
-#' on the shortest branch
-
-#' @param saveHistory Saves the character history throughout the simulation
-
-#' @param saveRealParams Saves intrinsicValues and extrinsicValues as both a
-#' matrix and a vector
-
-#' @param jobName Optional name for the job
-
-#' @param returnAll If true, returns the values at each node
-
-#' @param verbose If TRUE, chat about how the sim is going
-
-#' @param reject.NaN Stop run if any simulated value is NaN
-
-#' @return A data frame of species character (tip) values in the tree (unless returnAll==TRUE, in which case it returns the raw df from the sim).
+#' @return A data frame of species character (tip) values in the tree
+#' (unless \code{returnAll = TRUE}, in which case the raw \code{data.frame} from the simulation).
 
 #' @author Brian O'Meara and Barb Banbury
 
-
-#' @return A data frame of species character (tip) values in the tree.
 
 #' @author Brian O'Meara and Barb Banbury
 
@@ -92,7 +62,6 @@
 # @keywords doSimulation
 
 #' @examples
-#'
 #'
 #' tree<-rcoal(30)
 #'

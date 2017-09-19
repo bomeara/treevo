@@ -1,6 +1,6 @@
 #' Plotting Parent-Offspring Particles
 #' 
-#' This function uses the particleDataFrame from TreEvo results and plots
+#' This function uses the \code{particleDataFrame} output by TreEvo ABC analyses and plots
 #' parent-offspring particles from generation to generation.
 #' 
 #' Each parameter is plotted twice for parent-offspring relationships through
@@ -12,9 +12,9 @@
 #' Grayed out stars represent rejected particles.
 #' 
 
-#' @param particleDataFrame particleDataFrame from TreEvo results
+#' @param particleDataFrame \code{particleDataFrame} output by TreEvo ABC analyses.
 
-#' @return Returns a layout of parent-offspring plots
+#' @return Creates a set of parent-offspring plots.
 
 #' @author Brian O'Meara and Barb Banbury
 

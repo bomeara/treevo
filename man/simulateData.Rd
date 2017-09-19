@@ -21,113 +21,75 @@ parallelSimulation(nrepSim, coreLimit, phy, startingPriorsValues,
 \arguments{
 \item{phy}{A phylogenetic tree, in package \code{ape}'s \code{phylo} format.}
 
-\item{startingPriorsValues}{Matrix with ncol=number of states (characters)
-at root and nrow=2 (two parameters to pass to prior distribution)}
+\item{startingPriorsValues}{Matrix with number of columns equal to the number of states (characters)
+at root and number of rows equal to two (representing two parameters to pass to prior distribution).}
 
-\item{intrinsicPriorsValues}{Matrix with ncol=number of states (characters)
-at root and nrow=2 (two parameters to pass to prior distribution)}
+\item{intrinsicPriorsValues}{Matrix with number of columns equal to the number of states (characters)
+at root and number of rows equal to two (representing two parameters to pass to prior distribution).}
 
-\item{extrinsicPriorsValues}{Matrix with ncol=number of states (characters)
-at root and nrow=2 (two parameters to pass to prior distribution)}
+\item{extrinsicPriorsValues}{Matrix with number of columns equal to the number of states (characters)
+at root and number of rows equal to two (representing two parameters to pass to prior distribution).}
 
 \item{startingPriorsFns}{Vector containing names of prior distributions to
-use for root states: can be one of fixed, uniform, normal, lognormal, gamma,
-exponential}
+use for root states: can be one of \code{"fixed"}, \code{"uniform"}, \code{"normal"},}
 
 \item{intrinsicPriorsFns}{Vector containing names of prior distributions to
-use for root states: can be one of fixed, uniform, normal, lognormal, gamma,
-exponential}
+use for root states: can be one of \code{"fixed"}, \code{"uniform"}, \code{"normal"},}
 
 \item{extrinsicPriorsFns}{Vector containing names of prior distributions to
-use for root states: can be one of fixed, uniform, normal, lognormal, gamma,
-exponential}
+use for root states: can be one of \code{"fixed"}, \code{"uniform"}, \code{"normal"},}
 
-\item{freevector}{A vector (length=number of parameters) of free (T) and
-fixed (F) parameters}
+\item{freevector}{A logical vector (with length equal to the number of parameters), indicating free (\code{TRUE}) and
+fixed (\code{FALSE}) parameters.}
 
-\item{timeStep}{This value corresponds to the number of discrete time steps}
+\item{timeStep}{This value corresponds to the number of discrete time steps
+on the shortest branch}
 
-\item{intrinsicFn}{Name of intrinsic function characters should be simulated
-under (as used by doSimulation)}
+\item{intrinsicFn}{Name of intrinsic function that traits should be simulated
+under.}
 
-\item{extrinsicFn}{Name of extrinsic function characters should be simulated
-under (as used by doSimulation)}
+\item{extrinsicFn}{Name of extrinsic function that traits should be simulated
+under.}
 
-\item{giveUpAttempts}{Value for when to stop the analysis if NAs are present}
+\item{giveUpAttempts}{Value for when to stop the analysis if \code{NA} values are present.}
 
-\item{verbose}{If TRUE, chat about how the simulation is going}
+\item{verbose}{If \code{TRUE}, gives messages about how the simulation is progessing via \code{print}.}
 
 \item{checks}{If \code{TRUE}, checks inputs for consistency. This activity is skipped (\code{checks = FALSE})
 when run in parallel by \code{parallelSimulation}, and instead is only checked once.}
 
-\item{niter.brown}{Number of random starts for BM model (minimum of 2).}
+\item{niter.brown}{Number of random starts for the Brownian Motion (BM) model (minimum of 2).}
 
-\item{niter.lambda}{Number of random starts for lambda model (minimum of 2).}
+\item{niter.lambda}{Number of random starts for the lambda model (minimum of 2).}
 
-\item{niter.delta}{Number of random starts for delta model (minimum of 2).}
+\item{niter.delta}{Number of random starts for the delta model (minimum of 2).}
 
-\item{niter.OU}{Number of random starts for OU model (minimum of 2).}
+\item{niter.OU}{Number of random starts for the Ornstein-Uhlenbeck (OU) model (minimum of 2).}
 
-\item{niter.white}{Number of random starts for white model (minimum of 2).}
+\item{niter.white}{Number of random starts for the white noise model (minimum of 2).}
 
 \item{nrepSim}{Number of simulations}
 
 \item{coreLimit}{Number of cores to be used}
 
-\item{multicore}{Whether to use multicore, default is FALSE. If TRUE, one of
-two suggested packages must be installed, either 'doMC' (for UNIX systems) or
-'doParallel' (for Windows), which are used to activate multithreading.
-If neither package is installed, this function will fail if multicore=TRUE.}
+\item{multicore}{Whether to use multicore, default is \code{FALSE}. If \code{TRUE}, one of
+two suggested packages must be installed, either \code{doMC} (for UNIX systems) or
+\code{doParallel} (for Windows), which are used to activate multithreading.
+If neither package is installed, this function will fail if \code{multicore=TRUE}.}
 
 \item{checkpointFile}{Optional file name for checkpointing simulations}
 
 \item{checkpointFreq}{Saving frequency for checkpointing}
-
-\item{startingPriorsValues}{Matrix with ncol=number of states (characters)
-at root and nrow=2 (two parameters to pass to prior distribution)}
-
-\item{intrinsicPriorsValues}{Matrix with ncol=number of states (characters)
-at root and nrow=2 (two parameters to pass to prior distribution)}
-
-\item{extrinsicPriorsValues}{Matrix with ncol=number of states (characters)
-at root and nrow=2 (two parameters to pass to prior distribution)}
-
-\item{startingPriorsFns}{Vector containing names of prior distributions to
-use for root states: can be one of fixed, uniform, normal, lognormal, gamma,
-exponential}
-
-\item{intrinsicPriorsFns}{Vector containing names of prior distributions to
-use for root states: can be one of fixed, uniform, normal, lognormal, gamma,
-exponential}
-
-\item{extrinsicPriorsFns}{Vector containing names of prior distributions to
-use for root states: can be one of fixed, uniform, normal, lognormal, gamma,
-exponential}
-
-\item{freevector}{A vector (length=number of parameters) of free (T) and
-fixed (F) parameters}
-
-\item{timeStep}{This value corresponds to the number of discrete time steps}
-
-\item{intrinsicFn}{Name of intrinsic function characters should be simulated
-under (as used by doSimulation)}
-
-\item{extrinsicFn}{Name of extrinsic function characters should be simulated
-under (as used by doSimulation)}
 }
 \value{
 Returns matrix of \code{trueFreeValues} and summary statistics for
 simulations.
 }
 \description{
-This function pulls parameters from prior distributions and simulates
-continuous characters.
+The function \code{simulateData} pulls parameters from prior distributions and simulates
+continuous characters, and is uSsed by TreEvo functions \code{doRun_prc} and \code{doRun_rej} to calculate simulations.
 }
 \details{
-Used by TreEvo functions \code{doRun_prc} and \code{doRun_rej} to calculate simulations.
-
-Simulate data for initial TreEvo analysis
-
 \code{parallelSimulation} is a wrapper function for \code{simulateData} that allows for multithreading
 and checkpointing.
 }
@@ -152,7 +114,22 @@ simData<-simulateData(phy=simPhy,
 	extrinsicFn=nullExtrinsic,
 	giveUpAttempts=10, 
 	verbose=TRUE,
-	niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25, 
+	niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) 
+
+simDataParallel<-parallelSimulation(nrepSim=10, coreLimit=1, phy=simPhy, 
+	startingPriorsValues, 
+	intrinsicPriorsValues, 
+	extrinsicPriorsValues, 
+	startingPriorsFns, 
+	intrinsicPriorsFns, 
+	extrinsicPriorsFns, 
+	freevector, 	 
+multicore=FALSE, 
+	checkpointFile=NULL, checkpointFreq=24, verbose=FALSE,
+	timeStep=0.0001,
+	intrinsicFn=brownianIntrinsic,
+	extrinsicFn=nullExtrinsic,
+	niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) 
 
 }
 \author{
