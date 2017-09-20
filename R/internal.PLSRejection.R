@@ -10,7 +10,7 @@
 #  @param trueFreeValuesMatrix Matrix of true free values from simulations.
 
 #  @inheritParams doSimulation
-#  @inheritParams doRun_prc
+#  @inheritParams doRun
 
 #  @param abcTolerance Proportion of accepted simulations.
 

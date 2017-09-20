@@ -9,6 +9,8 @@ GetBMRatePrior(phy, traits, timeStep)
 \arguments{
 \item{phy}{A phylogenetic tree, in package \code{ape}'s \code{phylo} format.}
 
+\item{traits}{Data matrix with rownames identical to \code{phy@tip.label}.}
+
 \item{timeStep}{time in a single iteration of the discrete-time simulation}
 }
 \value{

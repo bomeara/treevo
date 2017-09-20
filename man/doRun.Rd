@@ -4,8 +4,7 @@
 \alias{doRun}
 \alias{doRun_prc}
 \alias{doRun_rej}
-\title{Approximate Bayesian computation for comparative methods-Partial Rejection
-Control}
+\title{Run Approximate Bayesian Computation for Phylogenetic Comparative Methods}
 \usage{
 doRun_prc(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
   startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns,
@@ -31,37 +30,32 @@ doRun_rej(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
 \arguments{
 \item{phy}{A phylogenetic tree, in package \code{ape}'s \code{phylo} format.}
 
-\item{traits}{data matrix with rownames identical to \code{phy@tip.label}}
+\item{traits}{Data matrix with rownames identical to \code{phy@tip.label}.}
 
 \item{intrinsicFn}{Name of (previously-defined) function that governs how
-traits evolve within a lineage, regardless of the states of other taxa}
+traits evolve within a lineage, regardless of the trait values of other taxa.}
 
 \item{extrinsicFn}{Name of (previously-defined) function that governs how
-traits evolve within a lineage, based on the internal state and the states
-of other taxa}
+traits evolve within a lineage, based on their own ('internal') trait vlaue and the trait values
+of other taxa.}
 
-\item{startingPriorsValues}{Matrix with ncol=number of states (characters)
-at root and nrow=2 (two parameters to pass to prior distribution)}
+\item{startingPriorsValues}{Matrix with number of columns equal to the number of states (characters)
+at root and number of rows equal to two (representing two parameters to pass to prior distribution).}
 
 \item{startingPriorsFns}{Vector containing names of prior distributions to
-use for root states: can be one of fixed, uniform, normal, lognormal, gamma,
-exponential}
+use for root states: can be one of \code{"fixed"}, \code{"uniform"}, \code{"normal"},}
 
-\item{intrinsicPriorsValues}{Matrix with ncol=number of parameters to pass
-to the intrinsic function and nrow=2 (two parameters to pass to prior
-distribution)}
+\item{intrinsicPriorsValues}{Matrix with number of columns equal to the number of parameters to pass
+to the intrinsic function and nrow=2 (two parameters to pass to prior distribution)}
 
 \item{intrinsicPriorsFns}{Vector containing names of prior distributions to
-use for intrinsic function parameters: can be one of fixed, uniform, normal,
-lognormal, gamma, exponential}
+use for intrinsic function parameters: can be one of \code{"fixed"}, \code{"uniform"}, \code{"normal"},}
 
-\item{extrinsicPriorsValues}{Matrix with ncol=number of parameters to pass
-to the extrinsic function and nrow=2 (two parameters to pass to prior
-distribution)}
+\item{extrinsicPriorsValues}{Matrix with number of columns equal to the number of parameters to pass
+to the extrinsic function and nrow=2 (two parameters to pass to prior distribution)}
 
 \item{extrinsicPriorsFns}{Vector containing names of prior distributions to
-use for extrinsic function parameters: can be one of fixed, uniform, normal,
-lognormal, gamma, exponential}
+use for extrinsic function parameters: can be one of \code{"fixed"}, \code{"uniform"}, \code{"normal"},}
 
 \item{startingValuesGuess}{Optional guess of starting values}
 
@@ -94,29 +88,30 @@ next falls below the stopValue}
 \item{stopValue}{Threshold value for terminating an analysis prior to
 nStpesPRC}
 
-\item{multicore}{Whether to use multicore, default is FALSE. If TRUE, initial simulations
-will be split among \code{coreLimit} cores. Also, if TRUE, one of
-two suggested packages must be installed, either 'doMC' (for UNIX systems) or
-'doParallel' (for Windows), which are used to activate multithreading.
-If neither package is installed, this function will fail if multicore=TRUE.
-nodes}
+\item{multicore}{Whether to use multicore, default is \code{FALSE}. If \code{TRUE}, one of
+two suggested packages must be installed, either \code{doMC} (for UNIX systems) or
+\code{doParallel} (for Windows), which are used to activate multithreading.
+If neither package is installed, this function will fail if \code{multicore=TRUE}.}
 
-\item{coreLimit}{Number of cores for initial simulations}
+\item{coreLimit}{Maximum number of cores to be used.}
 
-\item{validation}{Cross Validation procedure for abc}
+\item{validation}{Character argument controlling what validation procedure is used by \link{\code{plsr}}.
+Default is \code{"CV"} for cross-validation.}
 
-\item{scale}{scale for pls.model.list}
+\item{scale}{This argument is passed to \link{\code{plsr}}.  It may be a numeric vector, or logical. If numeric vector, 
+the input is scaled by dividing each variable with the corresponding element of scale. 
+If \code{scale = TRUE}, the inpus is scaled by dividing each variable by its sample standard deviation. 
+If cross-validation is selected (the default for \code{returnPLSModel}),
+scaling by the standard deviation is done for every segment.}
 
-\item{variance.cutoff}{variance cutoff for pls.model.list}
+\item{variance.cutoff}{Minimum threshold percentage of variance explained for the
+number of components included in the final PLS model fit. This value is a 
+percentage and must be between 0 and 100. Default is 95%.}
 
 \item{niter.goal}{Adjust number of starting points for Geiger to return the best parameter estimates this number of times on average}
 
 \item{generation.time}{The number of years per generation. This sets the coarseness of the simulation; if it's set to 1000, 
 for example, the population moves every 1000 years.}
-
-\item{intrinsicStatesGuess}{Optional guess of intrinsic values}
-
-\item{extrinsicStatesGuess}{Optional guess of extrinsic values}
 
 \item{abcTolerance}{Proportion of accepted simulations}
 
@@ -125,94 +120,44 @@ for example, the population moves every 1000 years.}
 \item{checkpointFreq}{Saving frequency for checkpointing}
 
 \item{savesims}{option to save individual simulations}
-
-\item{intrinsicFn}{Name of (previously-defined) function that governs how
-traits evolve within a lineage, regardless of the states of other taxa}
-
-\item{extrinsicFn}{Name of (previously-defined) function that governs how
-traits evolve within a lineage, based on the internal state and the states
-of other taxa}
-
-\item{startingPriorsValues}{Matrix with ncol=number of states (characters)
-at root and nrow=2 (two parameters to pass to prior distribution)}
-
-\item{startingPriorsFns}{Vector containing names of prior distributions to
-use for root states: can be one of fixed, uniform, normal, lognormal, gamma,
-exponential}
-
-\item{intrinsicPriorsValues}{Matrix with ncol=number of parameters to pass
-to the intrinsic function and nrow=2 (two parameters to pass to prior
-distribution)}
-
-\item{intrinsicPriorsFns}{Vector containing names of prior distributions to
-use for intrinsic function parameters: can be one of fixed, uniform, normal,
-lognormal, gamma, exponential}
-
-\item{extrinsicPriorsValues}{Matrix with ncol=number of parameters to pass
-to the extrinsic function and nrow=2 (two parameters to pass to prior
-distribution)}
-
-\item{extrinsicPriorsFns}{Vector containing names of prior distributions to
-use for extrinsic function parameters: can be one of fixed, uniform, normal,
-lognormal, gamma, exponential}
-
-\item{startingValuesGuess}{Optional guess of starting values}
-
-\item{TreeYears}{Unit length of phy}
-
-\item{standardDevFactor}{Standard deviation for mutating states}
-
-\item{StartSims}{Number of simulations}
-
-\item{jobName}{Optional job name}
-
-\item{multicore}{If TRUE, initial simulations will be split among coreLimit
-nodes}
-
-\item{coreLimit}{Number of cores for initial simulations}
-
-\item{validation}{Cross Validation procedure for abc}
-
-\item{scale}{scale for pls.model.list}
-
-\item{variance.cutoff}{variance cutoff for pls.model.list}
-
-\item{niter.goal}{Adjust number of starting points for Geiger to return the best parameter estimates this number of times on average}
-
-\item{generation.time}{The number of years per generation. This sets the coarseness of the simulation; if it's set to 1000, for example, the population moves every 1000 years.}
 }
 \value{
+The output of these two functions are lists, composed of multiple objects,
+which differ slightly in their content among the two functions. For \code{doRun_prc}, the output is:
 \item{input.data}{Input variables: jobName, number of taxa, nrepSim,
-treeYears, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles,
-standardDevFactor} \item{PriorMatrix}{Matrix of prior distributions}
+treeYears, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor} 
+\item{PriorMatrix}{Matrix of prior distributions}
 \item{particleDataFrame}{DataFrame with information from each simulation,
-including generation, attempt, id, parentid, distance, weight, and parameter
-states} \item{toleranceVector}{Final tolerance vector} \item{phy}{Input
-phylogeny} \item{traits}{Input traits} \item{simTime}{Processor time for
-initial simulations} \item{time.per.gen}{Processor time for subsequent
-generations} \item{whichVip}{Matrix of vip summary statistics for each free
-parameter} \item{credibleInt}{Credible Interval calculation for each free
-parameter of the final generation} \item{HPD}{Highest Posterior Density
-calculation each free parameter of the final generation}
-
+including generation, attempt, id, parentid, distance, weight, and parameter states}
+\item{toleranceVector}{Final tolerance vector} \item{phy}{Input phylogeny} 
+\item{traits}{Input traits} \item{simTime}{Processor time for initial simulations} 
+\item{time.per.gen}{Processor time for subsequent generations}
+\item{whichVip}{Matrix of vip summary statistics for each free parameter} 
+\item{credibleInt}{Credible Interval calculation for each free parameter of the final generation} 
+\item{HPD}{Highest Posterior Density calculation each free parameter of the final generation}
+For \code{doRun_rej}, the output is:
 \item{input.data}{Input variables: jobName, number of taxa, nrepSim,
-treeYears, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles,
-standardDevFactor} \item{PriorMatrix}{Matrix of prior distributions}
-\item{phy}{Input phylogeny} \item{traits}{Input traits}
-\item{trueFreeValuesANDSummaryValues}{Parameter estimates and summary stats
-from all sims} \item{simTime}{Processor time for simulations}
+treeYears, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor} 
+\item{PriorMatrix}{Matrix of prior distributions}
+\item{phy}{Input phylogeny} 
+\item{traits}{Input traits}
+\item{trueFreeValuesANDSummaryValues}{Parameter estimates and summary stats from all sims} 
+\item{simTime}{Processor time for simulations}
 \item{whichVip}{Matrix of vip summary statistics for each free parameter}
-\item{abcDistancesRaw}{Euclidean distances for each simulation and free
-parameter} \item{particleDataFrame}{DataFrame with information from each
-simulation, including generation, attempt, id, parentid, distance, weight,
-and parameter states} \item{credibleInt}{Credible Interval calculation for each
-free parameter of the final generation} \item{HPD}{Highest Posterior Density
-calculation each free parameter of the final generation}
+\item{abcDistancesRaw}{Euclidean distances for each simulation and free parameter} 
+\item{particleDataFrame}{DataFrame with information from each 
+simulation, including generation, attempt, id, parentid, distance, weight, and parameter states} 
+\item{credibleInt}{Credible Interval calculation for each free parameter of the final generation} 
+\item{HPD}{Highest Posterior Density calculation each free parameter of the final generation}
 }
 \description{
-Starts the abc-prc run
+Partial Rejection Control
 }
 \details{
+Rejection
+
+Starts the ABC-rejection run.
+
 This function performs an abc-prc analysis using an input phylogeny (phy),
 character data set (traits), models (intrinsicFn, extrinsicFn), and priors
 (startingPriorsValues, startingPriorsFns, intrinsicPriorsValues,
@@ -231,10 +176,6 @@ is complete when enough particles (numParticles) have been accepted. These
 particles make up the distribution for the next generation. The accepted
 particles from the final generation describe the posterior distributions of
 parameters.
-
-Approximate Bayesian computation for comparative methods-Rejection
-
-Starts the ABC-rejection run.
 
 This function performs an abc-rejection analysis using an input phylogeny
 (phy), character data set (traits), models (intrinsicFn, extrinsicFn), and

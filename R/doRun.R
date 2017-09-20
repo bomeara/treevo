@@ -1,7 +1,13 @@
-#' Approximate Bayesian computation for comparative methods-Partial Rejection
-#' Control
+#' Run Approximate Bayesian Computation for Phylogenetic Comparative Methods
+#' 
+#' 
+
+
+#' Partial Rejection Control
 #'
-#' Starts the abc-prc run
+#' Rejection
+#'
+#' Starts the ABC-rejection run.
 #'
 #' This function performs an abc-prc analysis using an input phylogeny (phy),
 #' character data set (traits), models (intrinsicFn, extrinsicFn), and priors
@@ -23,9 +29,7 @@
 #' parameters.
 #'
 
-#' Approximate Bayesian computation for comparative methods-Rejection
-#'
-#' Starts the ABC-rejection run.
+
 #'
 #' This function performs an abc-rejection analysis using an input phylogeny
 #' (phy), character data set (traits), models (intrinsicFn, extrinsicFn), and
@@ -44,7 +48,7 @@
 #' @inheritParams simulateData
 #' @inheritParams PLSmethods
 
-#' @param traits data matrix with rownames identical to \code{phy@tip.label}
+#' @param traits Data matrix with rownames identical to \code{phy@tip.label}.
 
 
 
@@ -61,6 +65,7 @@
 #' @param numParticles Number of accepted particles per generation
 
 #' @param standardDevFactor Standard deviation for mutating states
+
 
 
 
@@ -91,41 +96,11 @@
 
 
 
-
-
-
-
-
-
-
-
-#' @param startingValuesGuess Optional guess of starting values
-
-#' @param intrinsicStatesGuess Optional guess of intrinsic values
-
-#' @param extrinsicStatesGuess Optional guess of extrinsic values
-
-#' @param TreeYears Unit length of phy
-
-#' @param standardDevFactor Standard deviation for mutating states
-
-#' @param StartSims Number of simulations
-
-#' @param jobName Optional job name
-
 #' @param abcTolerance Proportion of accepted simulations
-
-
 
 #' @param checkpointFile Optional file name for checkpointing simulations
 
 #' @param checkpointFreq Saving frequency for checkpointing
-
-
-
-
-
-
 
 #' @param savesims option to save individual simulations
 
@@ -138,42 +113,56 @@
 
 
 
+#' @return 
+#' The output of these two functions are lists, composed of multiple objects,
+#' which differ slightly in their content among the two functions. For \code{doRun_prc}, the output is:
 
+#' \item{input.data}{Input variables: jobName, number of taxa, nrepSim,
+#' treeYears, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor} 
 
+#' \item{PriorMatrix}{Matrix of prior distributions}
 
-
-
-
-
-
-
-
-#' @return \item{input.data}{Input variables: jobName, number of taxa, nrepSim,
-#' treeYears, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles,
-#' standardDevFactor} \item{PriorMatrix}{Matrix of prior distributions}
 #' \item{particleDataFrame}{DataFrame with information from each simulation,
-#' including generation, attempt, id, parentid, distance, weight, and parameter
-#' states} \item{toleranceVector}{Final tolerance vector} \item{phy}{Input
-#' phylogeny} \item{traits}{Input traits} \item{simTime}{Processor time for
-#' initial simulations} \item{time.per.gen}{Processor time for subsequent
-#' generations} \item{whichVip}{Matrix of vip summary statistics for each free
-#' parameter} \item{credibleInt}{Credible Interval calculation for each free
-#' parameter of the final generation} \item{HPD}{Highest Posterior Density
-#' calculation each free parameter of the final generation}
+#' including generation, attempt, id, parentid, distance, weight, and parameter states}
 
-#' @return \item{input.data}{Input variables: jobName, number of taxa, nrepSim,
-#' treeYears, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles,
-#' standardDevFactor} \item{PriorMatrix}{Matrix of prior distributions}
-#' \item{phy}{Input phylogeny} \item{traits}{Input traits}
-#' \item{trueFreeValuesANDSummaryValues}{Parameter estimates and summary stats
-#' from all sims} \item{simTime}{Processor time for simulations}
+#' \item{toleranceVector}{Final tolerance vector} \item{phy}{Input phylogeny} 
+
+#' \item{traits}{Input traits} \item{simTime}{Processor time for initial simulations} 
+
+#' \item{time.per.gen}{Processor time for subsequent generations}
+
+#' \item{whichVip}{Matrix of vip summary statistics for each free parameter} 
+
+#' \item{credibleInt}{Credible Interval calculation for each free parameter of the final generation} 
+
+#' \item{HPD}{Highest Posterior Density calculation each free parameter of the final generation}
+
+#' For \code{doRun_rej}, the output is:
+
+#' \item{input.data}{Input variables: jobName, number of taxa, nrepSim,
+#' treeYears, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor} 
+
+#' \item{PriorMatrix}{Matrix of prior distributions}
+
+#' \item{phy}{Input phylogeny} 
+
+#' \item{traits}{Input traits}
+
+#' \item{trueFreeValuesANDSummaryValues}{Parameter estimates and summary stats from all sims} 
+
+#' \item{simTime}{Processor time for simulations}
+
 #' \item{whichVip}{Matrix of vip summary statistics for each free parameter}
-#' \item{abcDistancesRaw}{Euclidean distances for each simulation and free
-#' parameter} \item{particleDataFrame}{DataFrame with information from each
-#' simulation, including generation, attempt, id, parentid, distance, weight,
-#' and parameter states} \item{credibleInt}{Credible Interval calculation for each
-#' free parameter of the final generation} \item{HPD}{Highest Posterior Density
-#' calculation each free parameter of the final generation}
+
+#' \item{abcDistancesRaw}{Euclidean distances for each simulation and free parameter} 
+
+#' \item{particleDataFrame}{DataFrame with information from each 
+#' simulation, including generation, attempt, id, parentid, distance, weight, and parameter states} 
+
+#' \item{credibleInt}{Credible Interval calculation for each free parameter of the final generation} 
+
+#' \item{HPD}{Highest Posterior Density calculation each free parameter of the final generation}
+#' 
 
 #' @author Brian O'Meara and Barb Banbury
 
@@ -182,7 +171,6 @@
 
 # @references O'Meara and Banbury, unpublished; Sisson et al. 2007, Wegmann et
 # al. 2009
-# @keywords doRun doRun_prc abc
 
 #' @examples
 #'

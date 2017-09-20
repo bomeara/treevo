@@ -23,11 +23,12 @@ doSimulationWithPossibleExtinction(phy, intrinsicFn, extrinsicFn,
 \arguments{
 \item{phy}{A phylogenetic tree, in package \code{ape}'s \code{phylo} format.}
 
-\item{intrinsicFn}{Name of intrinsic function that traits should be simulated
-under.}
+\item{intrinsicFn}{Name of (previously-defined) function that governs how
+traits evolve within a lineage, regardless of the trait values of other taxa.}
 
-\item{extrinsicFn}{Name of extrinsic function that traits should be simulated
-under.}
+\item{extrinsicFn}{Name of (previously-defined) function that governs how
+traits evolve within a lineage, based on their own ('internal') trait vlaue and the trait values
+of other taxa.}
 
 \item{startingValues}{State at the root.}
 

@@ -30,7 +30,7 @@
 	# I HAVE NO IDEA WHAT THIS MEANS? WHAT IS pls.model.list???
 
 
-#' @param pls.model Results output by from \code{\link{returnPLSModel}}
+#' @param pls.model Output from \link{\code{returnPLSModel}}.
 
 #' @seealso
 #' Function \code{returnPLSModel} effectively wraps function \link{\code{plsr}} from package \code{mvr}.

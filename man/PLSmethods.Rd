@@ -29,7 +29,7 @@ scaling by the standard deviation is done for every segment.}
 number of components included in the final PLS model fit. This value is a 
 percentage and must be between 0 and 100. Default is 95%.}
 
-\item{pls.model}{Results output by from \code{\link{returnPLSModel}}}
+\item{pls.model}{Output from \link{\code{returnPLSModel}}.}
 }
 \value{
 Function \code{returnPLSModel} returns a PLS model, and function \code{PLSTransform} returns transformed summary statistics.

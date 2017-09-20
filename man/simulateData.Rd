@@ -24,20 +24,20 @@ parallelSimulation(phy, startingPriorsValues, intrinsicPriorsValues,
 \item{startingPriorsValues}{Matrix with number of columns equal to the number of states (characters)
 at root and number of rows equal to two (representing two parameters to pass to prior distribution).}
 
-\item{intrinsicPriorsValues}{Matrix with number of columns equal to the number of states (characters)
-at root and number of rows equal to two (representing two parameters to pass to prior distribution).}
+\item{intrinsicPriorsValues}{Matrix with number of columns equal to the number of parameters to pass
+to the intrinsic function and nrow=2 (two parameters to pass to prior distribution)}
 
-\item{extrinsicPriorsValues}{Matrix with number of columns equal to the number of states (characters)
-at root and number of rows equal to two (representing two parameters to pass to prior distribution).}
+\item{extrinsicPriorsValues}{Matrix with number of columns equal to the number of parameters to pass
+to the extrinsic function and nrow=2 (two parameters to pass to prior distribution)}
 
 \item{startingPriorsFns}{Vector containing names of prior distributions to
 use for root states: can be one of \code{"fixed"}, \code{"uniform"}, \code{"normal"},}
 
 \item{intrinsicPriorsFns}{Vector containing names of prior distributions to
-use for root states: can be one of \code{"fixed"}, \code{"uniform"}, \code{"normal"},}
+use for intrinsic function parameters: can be one of \code{"fixed"}, \code{"uniform"}, \code{"normal"},}
 
 \item{extrinsicPriorsFns}{Vector containing names of prior distributions to
-use for root states: can be one of \code{"fixed"}, \code{"uniform"}, \code{"normal"},}
+use for extrinsic function parameters: can be one of \code{"fixed"}, \code{"uniform"}, \code{"normal"},}
 
 \item{freevector}{A logical vector (with length equal to the number of parameters), indicating free (\code{TRUE}) and
 fixed (\code{FALSE}) parameters.}
@@ -45,11 +45,12 @@ fixed (\code{FALSE}) parameters.}
 \item{timeStep}{This value corresponds to the number of discrete time steps
 on the shortest branch}
 
-\item{intrinsicFn}{Name of intrinsic function that traits should be simulated
-under.}
+\item{intrinsicFn}{Name of (previously-defined) function that governs how
+traits evolve within a lineage, regardless of the trait values of other taxa.}
 
-\item{extrinsicFn}{Name of extrinsic function that traits should be simulated
-under.}
+\item{extrinsicFn}{Name of (previously-defined) function that governs how
+traits evolve within a lineage, based on their own ('internal') trait vlaue and the trait values
+of other taxa.}
 
 \item{giveUpAttempts}{Value for when to stop the analysis if \code{NA} values are present.}
 
@@ -87,7 +88,7 @@ simulations.
 }
 \description{
 The function \code{simulateData} pulls parameters from prior distributions and simulates
-continuous characters, and is uSsed by TreEvo functions \code{doRun_prc} and \code{doRun_rej} to calculate simulations.
+continuous characters, and is uSsed by TreEvo \link{\code{doRun}} functions to perform simulations.
 }
 \details{
 \code{parallelSimulation} is a wrapper function for \code{simulateData} that allows for multithreading

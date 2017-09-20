@@ -34,7 +34,7 @@ solnfreq <- function(fitContResult, tol = .Machine$double.eps^0.5){
 #  
 
 # @inheritParams doSimulation
-# @inheritParams doRun_prc
+# @inheritParams doRun
 
 #  @param niter.brown Number of random starts for BM model (min of 2)
 
