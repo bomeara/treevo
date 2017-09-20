@@ -124,6 +124,7 @@ for example, the population moves every 1000 years.}
 \value{
 The output of these two functions are lists, composed of multiple objects,
 which differ slightly in their content among the two functions. For \code{doRun_prc}, the output is:
+\describe{
 \item{input.data}{Input variables: jobName, number of taxa, nrepSim,
 treeYears, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor} 
 \item{PriorMatrix}{Matrix of prior distributions}
@@ -135,7 +136,9 @@ including generation, attempt, id, parentid, distance, weight, and parameter sta
 \item{whichVip}{Matrix of vip summary statistics for each free parameter} 
 \item{credibleInt}{Credible Interval calculation for each free parameter of the final generation} 
 \item{HPD}{Highest Posterior Density calculation each free parameter of the final generation}
+}
 For \code{doRun_rej}, the output is:
+\describe{
 \item{input.data}{Input variables: jobName, number of taxa, nrepSim,
 treeYears, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor} 
 \item{PriorMatrix}{Matrix of prior distributions}
@@ -149,6 +152,7 @@ treeYears, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standa
 simulation, including generation, attempt, id, parentid, distance, weight, and parameter states} 
 \item{credibleInt}{Credible Interval calculation for each free parameter of the final generation} 
 \item{HPD}{Highest Posterior Density calculation each free parameter of the final generation}
+}
 }
 \description{
 Partial Rejection Control

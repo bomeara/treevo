@@ -27,7 +27,7 @@
 #' 
 #' data(simRun)
 #' 
-#' boxTranMat<-boxcoxTransformationMatrix(summaryValuesMatrix=results$summaryValuesMatrix)
+#' boxTranMat<-boxcoxTransformationMatrix(summaryValuesMatrix = results$summaryValuesMatrix)
 #' boxTranMat
 #' 
 #' boxcoxTransformation(summaryValuesVector=results$summaryValuesMatrix,

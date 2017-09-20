@@ -117,6 +117,7 @@
 #' The output of these two functions are lists, composed of multiple objects,
 #' which differ slightly in their content among the two functions. For \code{doRun_prc}, the output is:
 
+#' \describe{
 #' \item{input.data}{Input variables: jobName, number of taxa, nrepSim,
 #' treeYears, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor} 
 
@@ -136,9 +137,11 @@
 #' \item{credibleInt}{Credible Interval calculation for each free parameter of the final generation} 
 
 #' \item{HPD}{Highest Posterior Density calculation each free parameter of the final generation}
+#' }
 
 #' For \code{doRun_rej}, the output is:
 
+#' \describe{
 #' \item{input.data}{Input variables: jobName, number of taxa, nrepSim,
 #' treeYears, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor} 
 
@@ -162,7 +165,9 @@
 #' \item{credibleInt}{Credible Interval calculation for each free parameter of the final generation} 
 
 #' \item{HPD}{Highest Posterior Density calculation each free parameter of the final generation}
+#' }
 #' 
+#'
 
 #' @author Brian O'Meara and Barb Banbury
 

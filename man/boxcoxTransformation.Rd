@@ -32,7 +32,7 @@ output of \code{boxcoxTransformationMatrix} needs to be provided as input for \c
 
 data(simRun)
 
-boxTranMat<-boxcoxTransformationMatrix(summaryValuesMatrix=results$summaryValuesMatrix)
+boxTranMat<-boxcoxTransformationMatrix(summaryValuesMatrix = results$summaryValuesMatrix)
 boxTranMat
 
 boxcoxTransformation(summaryValuesVector=results$summaryValuesMatrix,
