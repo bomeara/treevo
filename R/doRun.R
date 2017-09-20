@@ -126,7 +126,9 @@
 #' \item{particleDataFrame}{DataFrame with information from each simulation,
 #' including generation, attempt, id, parentid, distance, weight, and parameter states}
 
-#' \item{toleranceVector}{Final tolerance vector} \item{phy}{Input phylogeny} 
+#' \item{toleranceVector}{Final tolerance vector} 
+
+#' \item{phy}{Input phylogeny} 
 
 #' \item{traits}{Input traits} \item{simTime}{Processor time for initial simulations} 
 

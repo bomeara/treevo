@@ -27,7 +27,7 @@ scaling by the standard deviation is done for every segment.}
 
 \item{variance.cutoff}{Minimum threshold percentage of variance explained for the
 number of components included in the final PLS model fit. This value is a 
-percentage and must be between 0 and 100. Default is 95%.}
+percentage and must be between 0 and 100. Default is 95 percent.}
 
 \item{pls.model}{Output from \link{\code{returnPLSModel}}.}
 }

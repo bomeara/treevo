@@ -106,7 +106,7 @@ scaling by the standard deviation is done for every segment.}
 
 \item{variance.cutoff}{Minimum threshold percentage of variance explained for the
 number of components included in the final PLS model fit. This value is a 
-percentage and must be between 0 and 100. Default is 95%.}
+percentage and must be between 0 and 100. Default is 95 percent.}
 
 \item{niter.goal}{Adjust number of starting points for Geiger to return the best parameter estimates this number of times on average}
 
@@ -130,7 +130,8 @@ treeYears, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standa
 \item{PriorMatrix}{Matrix of prior distributions}
 \item{particleDataFrame}{DataFrame with information from each simulation,
 including generation, attempt, id, parentid, distance, weight, and parameter states}
-\item{toleranceVector}{Final tolerance vector} \item{phy}{Input phylogeny} 
+\item{toleranceVector}{Final tolerance vector} 
+\item{phy}{Input phylogeny} 
 \item{traits}{Input traits} \item{simTime}{Processor time for initial simulations} 
 \item{time.per.gen}{Processor time for subsequent generations}
 \item{whichVip}{Matrix of vip summary statistics for each free parameter} 

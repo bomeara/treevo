@@ -24,7 +24,7 @@
  
 #' @param variance.cutoff Minimum threshold percentage of variance explained for the
 #' number of components included in the final PLS model fit. This value is a 
-#' percentage and must be between 0 and 100. Default is 95%.
+#' percentage and must be between 0 and 100. Default is 95 percent.
 
 # for \code{pls.model.list} # Used in doc for both scale and variance.cutoff
 	# I HAVE NO IDEA WHAT THIS MEANS? WHAT IS pls.model.list???
