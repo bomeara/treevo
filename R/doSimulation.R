@@ -10,11 +10,13 @@
 #' @param phy A phylogenetic tree, in package \code{ape}'s \code{phylo} format.
 
 
-#' @param intrinsicFn Name of intrinsic function that traits should be simulated
-#' under.
 
-#' @param extrinsicFn Name of extrinsic function that traits should be simulated
-#' under.
+#' @param intrinsicFn Name of (previously-defined) function that governs how
+#' traits evolve within a lineage, regardless of the trait values of other taxa.
+
+#' @param extrinsicFn Name of (previously-defined) function that governs how
+#' traits evolve within a lineage, based on their own ('internal') trait vlaue and the trait values
+#' of other taxa.
 
 #' @param startingValues State at the root.
 

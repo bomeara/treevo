@@ -41,38 +41,14 @@
 #'
 
 #' @inheritParams doSimulation
+#' @inheritParams simulateData
+#' @inheritParams PLSmethods
 
 #' @param traits data matrix with rownames identical to \code{phy@tip.label}
 
-#' @param intrinsicFn Name of (previously-defined) function that governs how
-#' traits evolve within a lineage, regardless of the states of other taxa
 
-#' @param extrinsicFn Name of (previously-defined) function that governs how
-#' traits evolve within a lineage, based on the internal state and the states
-#' of other taxa
 
-#' @param startingPriorsValues Matrix with ncol=number of states (characters)
-#' at root and nrow=2 (two parameters to pass to prior distribution)
 
-#' @param startingPriorsFns Vector containing names of prior distributions to
-#' use for root states: can be one of fixed, uniform, normal, lognormal, gamma,
-#' exponential
-
-#' @param intrinsicPriorsValues Matrix with ncol=number of parameters to pass
-#' to the intrinsic function and nrow=2 (two parameters to pass to prior
-#' distribution)
-
-#' @param intrinsicPriorsFns Vector containing names of prior distributions to
-#' use for intrinsic function parameters: can be one of fixed, uniform, normal,
-#' lognormal, gamma, exponential
-
-#' @param extrinsicPriorsValues Matrix with ncol=number of parameters to pass
-#' to the extrinsic function and nrow=2 (two parameters to pass to prior
-#' distribution)
-
-#' @param extrinsicPriorsFns Vector containing names of prior distributions to
-#' use for extrinsic function parameters: can be one of fixed, uniform, normal,
-#' lognormal, gamma, exponential
 
 #' @param startingValuesGuess Optional guess of starting values
 
@@ -85,6 +61,12 @@
 #' @param numParticles Number of accepted particles per generation
 
 #' @param standardDevFactor Standard deviation for mutating states
+
+
+
+
+
+
 
 #' @param StartSims Number of initial simulations
 
@@ -105,63 +87,17 @@
 #' @param stopValue Threshold value for terminating an analysis prior to
 #' nStpesPRC
 
-#' @param multicore Whether to use multicore, default is FALSE. If TRUE, initial simulations
-#' will be split among \code{coreLimit} cores. Also, if TRUE, one of
-#' two suggested packages must be installed, either 'doMC' (for UNIX systems) or
-#' 'doParallel' (for Windows), which are used to activate multithreading.
-#' If neither package is installed, this function will fail if multicore=TRUE.
-#' nodes
-
-#' @param coreLimit Number of cores for initial simulations
-
-#' @param validation Cross Validation procedure for abc
-
-#' @param scale scale for pls.model.list
-
-#' @param variance.cutoff variance cutoff for pls.model.list
-
-#' @param niter.goal Adjust number of starting points for Geiger to return the best parameter estimates this number of times on average
-
-#' @param generation.time The number of years per generation. This sets the coarseness of the simulation; if it's set to 1000, 
-#' for example, the population moves every 1000 years.
 
 
 
 
 
 
-#' @inheritParams doSimulation
-#' @inheritParams doRun_prc
 
-#' @param intrinsicFn Name of (previously-defined) function that governs how
-#' traits evolve within a lineage, regardless of the states of other taxa
 
-#' @param extrinsicFn Name of (previously-defined) function that governs how
-#' traits evolve within a lineage, based on the internal state and the states
-#' of other taxa
 
-#' @param startingPriorsValues Matrix with ncol=number of states (characters)
-#' at root and nrow=2 (two parameters to pass to prior distribution)
 
-#' @param startingPriorsFns Vector containing names of prior distributions to
-#' use for root states: can be one of fixed, uniform, normal, lognormal, gamma,
-#' exponential
 
-#' @param intrinsicPriorsValues Matrix with ncol=number of parameters to pass
-#' to the intrinsic function and nrow=2 (two parameters to pass to prior
-#' distribution)
-
-#' @param intrinsicPriorsFns Vector containing names of prior distributions to
-#' use for intrinsic function parameters: can be one of fixed, uniform, normal,
-#' lognormal, gamma, exponential
-
-#' @param extrinsicPriorsValues Matrix with ncol=number of parameters to pass
-#' to the extrinsic function and nrow=2 (two parameters to pass to prior
-#' distribution)
-
-#' @param extrinsicPriorsFns Vector containing names of prior distributions to
-#' use for extrinsic function parameters: can be one of fixed, uniform, normal,
-#' lognormal, gamma, exponential
 
 #' @param startingValuesGuess Optional guess of starting values
 
@@ -179,26 +115,31 @@
 
 #' @param abcTolerance Proportion of accepted simulations
 
-#' @param multicore If TRUE, initial simulations will be split among coreLimit
-#' nodes
 
-#' @param coreLimit Number of cores for initial simulations
 
 #' @param checkpointFile Optional file name for checkpointing simulations
 
 #' @param checkpointFreq Saving frequency for checkpointing
 
-#' @param validation Cross Validation procedure for abc
 
-#' @param scale scale for pls.model.list
 
-#' @param variance.cutoff variance cutoff for pls.model.list
+
+
+
 
 #' @param savesims option to save individual simulations
 
 #' @param niter.goal Adjust number of starting points for Geiger to return the best parameter estimates this number of times on average
 
-#' @param generation.time The number of years per generation. This sets the coarseness of the simulation; if it's set to 1000, for example, the population moves every 1000 years.
+#' @param generation.time The number of years per generation. This sets the coarseness of the simulation; if it's set to 1000, 
+#' for example, the population moves every 1000 years.
+
+
+
+
+
+
+
 
 
 
@@ -236,12 +177,11 @@
 
 #' @author Brian O'Meara and Barb Banbury
 
-# @references O'Meara and Banbury, unpublished; Sisson et al. 2007, Wegmann et
-# al. 2009
-
 #' @references Sisson et al. 2007, Wegmann et
 #' al. 2009
 
+# @references O'Meara and Banbury, unpublished; Sisson et al. 2007, Wegmann et
+# al. 2009
 # @keywords doRun doRun_prc abc
 
 #' @examples
