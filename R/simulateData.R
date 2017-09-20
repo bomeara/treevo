@@ -1,7 +1,7 @@
 #' Simulate data for initial TreEvo analysis
 #'
 #' The function \code{simulateData} pulls parameters from prior distributions and simulates
-#' continuous characters, and is uSsed by TreEvo \link{\code{doRun}} functions to perform simulations.
+#' continuous characters, and is uSsed by TreEvo \code{\link{doRun}} functions to perform simulations.
 #'
 #' \code{parallelSimulation} is a wrapper function for \code{simulateData} that allows for multithreading
 #' and checkpointing.

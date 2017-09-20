@@ -1,6 +1,6 @@
 #' Fitting Univariate Partial Least Squares Models to Free Parameters in ABC
 #' 
-#' Function \code{returnPLSModel} fits a PLS regression (using \link{\code{plsr}}) individually to each freely varying parameter of a model, unlike
+#' Function \code{returnPLSModel} fits a PLS regression (using \code{\link{plsr}}) individually to each freely varying parameter of a model, unlike
 #' a true multivariate PLS regression. A secondary step than limits the number
 #' of components to those that explain some minimum cumulative percentage
 #' of variance (see argument \code{variance.cutoff}).  For ABC, this seems to result in much
@@ -13,10 +13,10 @@
 
 #' @param summaryValuesMatrix Matrix of summary statistics from simulations.
 
-#' @param validation Character argument controlling what validation procedure is used by \link{\code{plsr}}.
+#' @param validation Character argument controlling what validation procedure is used by \code{\link{plsr}}.
 #' Default is \code{"CV"} for cross-validation.
 
-#' @param scale This argument is passed to \link{\code{plsr}}.  It may be a numeric vector, or logical. If numeric vector, 
+#' @param scale This argument is passed to \code{\link{plsr}}.  It may be a numeric vector, or logical. If numeric vector, 
 #' the input is scaled by dividing each variable with the corresponding element of scale. 
 #' If \code{scale = TRUE}, the inpus is scaled by dividing each variable by its sample standard deviation. 
 #' If cross-validation is selected (the default for \code{returnPLSModel}),
@@ -30,10 +30,10 @@
 	# I HAVE NO IDEA WHAT THIS MEANS? WHAT IS pls.model.list???
 
 
-#' @param pls.model Output from \link{\code{returnPLSModel}}.
+#' @param pls.model Output from \code{\link{returnPLSModel}}.
 
 #' @seealso
-#' Function \code{returnPLSModel} effectively wraps function \link{\code{plsr}} from package \code{mvr}.
+#' Function \code{returnPLSModel} effectively wraps function \code{\link{plsr}} from package \code{mvr}.
 
 #' @return 
 #' Function \code{returnPLSModel} returns a PLS model, and function \code{PLSTransform} returns transformed summary statistics.

@@ -95,10 +95,10 @@ If neither package is installed, this function will fail if \code{multicore=TRUE
 
 \item{coreLimit}{Maximum number of cores to be used.}
 
-\item{validation}{Character argument controlling what validation procedure is used by \link{\code{plsr}}.
+\item{validation}{Character argument controlling what validation procedure is used by \code{\link{plsr}}.
 Default is \code{"CV"} for cross-validation.}
 
-\item{scale}{This argument is passed to \link{\code{plsr}}.  It may be a numeric vector, or logical. If numeric vector, 
+\item{scale}{This argument is passed to \code{\link{plsr}}.  It may be a numeric vector, or logical. If numeric vector, 
 the input is scaled by dividing each variable with the corresponding element of scale. 
 If \code{scale = TRUE}, the inpus is scaled by dividing each variable by its sample standard deviation. 
 If cross-validation is selected (the default for \code{returnPLSModel}),

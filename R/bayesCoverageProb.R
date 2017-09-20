@@ -7,7 +7,7 @@
 
 #' @param RealParam Real parameter values.
 
-#' @param HPD List of highest posterior density from \link{\code{doRun}} results
+#' @param HPD List of highest posterior density from \code{\link{doRun}} results
 
 #' @param verbose If \code{TRUE}, commented screen output is produced.
 

@@ -9,7 +9,7 @@ bayesCoverageProb(RealParam, HPD, verbose = F)
 \arguments{
 \item{RealParam}{Real parameter values.}
 
-\item{HPD}{List of highest posterior density from \link{\code{doRun}} results}
+\item{HPD}{List of highest posterior density from \code{\link{doRun}} results}
 
 \item{verbose}{If \code{TRUE}, commented screen output is produced.}
 }
