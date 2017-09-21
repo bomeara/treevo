@@ -6,17 +6,17 @@
 \alias{doSimulationWithPossibleExtinction}
 \title{Discrete Time Character Simulation}
 \usage{
-doSimulation(phy, intrinsicFn, extrinsicFn, startingValues, intrinsicValues,
-  extrinsicValues, timeStep, saveHistory = FALSE, saveRealParams = FALSE,
-  jobName = "")
-
-doSimulationForPlotting(phy, intrinsicFn, extrinsicFn, startingValues,
-  intrinsicValues, extrinsicValues, timeStep, plot = FALSE,
-  savePlot = FALSE, saveHistory = FALSE, saveRealParams = FALSE,
-  jobName = "")
-
-doSimulationWithPossibleExtinction(phy, intrinsicFn, extrinsicFn,
+doSimulation(phy = NULL, taxon.df = NULL, intrinsicFn, extrinsicFn,
   startingValues, intrinsicValues, extrinsicValues, timeStep,
+  saveHistory = FALSE, saveRealParams = FALSE, jobName = "")
+
+doSimulationForPlotting(phy = NULL, taxon.df = NULL, intrinsicFn,
+  extrinsicFn, startingValues, intrinsicValues, extrinsicValues, timeStep,
+  plot = FALSE, savePlot = FALSE, saveHistory = FALSE,
+  saveRealParams = FALSE, jobName = "")
+
+doSimulationWithPossibleExtinction(phy = NULL, taxon.df = NULL, intrinsicFn,
+  extrinsicFn, startingValues, intrinsicValues, extrinsicValues, timeStep,
   saveHistory = FALSE, saveRealParams = FALSE, jobName = "",
   returnAll = FALSE, verbose = FALSE, reject.NaN = TRUE)
 }

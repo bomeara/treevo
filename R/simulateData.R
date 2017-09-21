@@ -1,7 +1,7 @@
 #' Simulate data for initial TreEvo analysis
 #'
 #' The function \code{simulateData} pulls parameters from prior distributions and simulates
-#' continuous characters, and is uSsed by TreEvo \code{\link{doRun}} functions to perform simulations.
+#' continuous characters, and is used by TreEvo \code{\link{doRun}} functions to perform simulations.
 #'
 #' \code{parallelSimulation} is a wrapper function for \code{simulateData} that allows for multithreading
 #' and checkpointing.
@@ -84,33 +84,47 @@
 #' 
 #' 	
 #' simData<-simulateData(phy=simPhy, 
-#' 	startingPriorsValues, 
-#' 	intrinsicPriorsValues, 
-#' 	extrinsicPriorsValues, 
-#' 	startingPriorsFns, 
-#' 	intrinsicPriorsFns, 
-#' 	extrinsicPriorsFns, 
+#'   intrinsicFn=brownianIntrinsic,
+#'   extrinsicFn=nullExtrinsic,
+#'   startingPriorsFns="normal",
+#'   startingPriorsValues=matrix(c(mean(simChar[,1]), sd(simChar[,1]))),
+#'   intrinsicPriorsFns=c("exponential"),
+#'   intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
+#'   extrinsicPriorsFns=c("fixed"),
+#'   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
 #' 	freevector, 	
 #' 	timeStep=0.0001,
-#' 	intrinsicFn=brownianIntrinsic,
-#' 	extrinsicFn=nullExtrinsic,
 #' 	giveUpAttempts=10, 
 #' 	verbose=TRUE,
 #' 	niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) 
 #' 
+
+#'   TreeYears=1000,
+#'   standardDevFactor=0.2,
+#'   plot=FALSE,
+#'   StartSims=300,
+#'   epsilonProportion=0.7,
+#'   epsilonMultiplier=0.7,
+#'   nStepsPRC=5,
+#'   numParticles=100,
+#'   jobName="exampleRun",
+#'   stopRule=FALSE,
+#'   multicore=FALSE,
+#'   coreLimit=1
+
 #' simDataParallel<-parallelSimulation(nrepSim=10, coreLimit=1, phy=simPhy, 
-#' 	startingPriorsValues, 
-#' 	intrinsicPriorsValues, 
-#' 	extrinsicPriorsValues, 
-#' 	startingPriorsFns, 
-#' 	intrinsicPriorsFns, 
-#' 	extrinsicPriorsFns, 
+#'   intrinsicFn=brownianIntrinsic,
+#'   extrinsicFn=nullExtrinsic,
+#'   startingPriorsFns="normal",
+#'   startingPriorsValues=matrix(c(mean(simChar[,1]), sd(simChar[,1]))),
+#'   intrinsicPriorsFns=c("exponential"),
+#'   intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
+#'   extrinsicPriorsFns=c("fixed"),
+#'   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE), 
 #' 	freevector, 	 
 #'	multicore=FALSE, 
 #' 	checkpointFile=NULL, checkpointFreq=24, verbose=FALSE,
 #' 	timeStep=0.0001,
-#' 	intrinsicFn=brownianIntrinsic,
-#' 	extrinsicFn=nullExtrinsic,
 #' 	niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) 
 #' 
 
@@ -118,18 +132,27 @@
 #' @name simulateData
 #' @rdname simulateData
 #' @export
-simulateData<-function(phy, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, 
-	startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, 
-	freevector, timeStep, intrinsicFn, extrinsicFn, 
-	giveUpAttempts=10, verbose=FALSE,checks=TRUE,
+simulateData<-function(phy, intrinsicFn, extrinsicFn, startingPriorsFns, startingPriorsValues, 
+	intrinsicPriorsFns, intrinsicPriorsValues, extrinsicPriorsFns, extrinsicPriorsValues, 
+	taxon.df=NULL, freevector=NULL, timeStep, 
+	giveUpAttempts=10, verbose=FALSE, checks=TRUE,
 	niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) {
 
-	#taxon.df <- getTaxonDFWithPossibleExtinction(phy)
+	if(is.null(taxon.df)){
+		taxon.df <- getTaxonDFWithPossibleExtinction(phy)
+		}
+	
 	
 	# checks
 	if(checks){
 		checkNiter(niter.brown=niter.brown, niter.lambda=niter.lambda,
 			niter.delta=niter.delta, niter.OU=niter.OU, niter.white=niter.white)
+		}
+		
+	if(is.null(freevector)){
+		freevector<-getFreeVector(startingPriorsFns=startingPriorsFns, startingPriorsValues=startingPriorsValues, 
+					intrinsicPriorsFns=intrinsicPriorsFns, intrinsicPriorsValues=intrinsicPriorsValues,
+					extrinsicPriorsFns=extrinsicPriorsFns, extrinsicPriorsValues=extrinsicPriorsValues)
 		}
 			
 	simTrueAndStats<-rep(NA,10) #no particular reason for it to be 10 wide
@@ -155,7 +178,7 @@ simulateData<-function(phy, startingPriorsValues, intrinsicPriorsValues, extrins
 		trueFreeValues<-trueInitial[freevector]
 
 		cat(".")
-		simTraits<-doSimulationWithPossibleExtinction(phy=phy, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, 
+		simTraits<-doSimulationWithPossibleExtinction(phy=phy, taxon.df=taxon.df, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, 
 			startingValues=trueStarting, intrinsicValues=trueIntrinsic, extrinsicValues=trueExtrinsic, timeStep=timeStep, verbose=verbose)
 		simSumStats<-summaryStatsLong(phy=phy, traits=simTraits, 
 			niter.brown=niter.brown, niter.lambda=niter.lambda, niter.delta=niter.delta,
@@ -174,7 +197,7 @@ simulateData<-function(phy, startingPriorsValues, intrinsicPriorsValues, extrins
 parallelSimulation<-function(phy, 
 	startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, 
 	startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, 
-	freevector, timeStep, intrinsicFn, extrinsicFn, 
+	freevector=NULL, timeStep, intrinsicFn, extrinsicFn, 
 	nrepSim, coreLimit, multicore, 
 	checkpointFile=NULL, checkpointFreq=24, verbose=FALSE,
 	niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) {
@@ -186,7 +209,13 @@ parallelSimulation<-function(phy,
 	checkNiter(niter.brown=niter.brown, niter.lambda=niter.lambda,
 		niter.delta=niter.delta, niter.OU=niter.OU, niter.white=niter.white)
 
-	taxon.df <- getTaxonDFWithPossibleExtinction(phy)
+	if(is.null(freevector)){
+		freevector<-getFreeVector(startingPriorsFns=startingPriorsFns, startingPriorsValues=startingPriorsValues, 
+					intrinsicPriorsFns=intrinsicPriorsFns, intrinsicPriorsValues=intrinsicPriorsValues,
+					extrinsicPriorsFns=extrinsicPriorsFns, extrinsicPriorsValues=extrinsicPriorsValues)
+		}
+	
+	#taxon.df <- getTaxonDFWithPossibleExtinction(phy)
 
 	cores=1
 	if (multicore) {

@@ -5,45 +5,22 @@
 \alias{parallelSimulation}
 \title{Simulate data for initial TreEvo analysis}
 \usage{
-simulateData(phy, startingPriorsValues, intrinsicPriorsValues,
-  extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns,
-  extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn,
-  giveUpAttempts = 10, verbose = FALSE, checks = TRUE, niter.brown = 25,
-  niter.lambda = 25, niter.delta = 25, niter.OU = 25, niter.white = 25)
+simulateData(phy, intrinsicFn, extrinsicFn, startingPriorsFns,
+  startingPriorsValues, intrinsicPriorsFns, intrinsicPriorsValues,
+  extrinsicPriorsFns, extrinsicPriorsValues, taxon.df = NULL,
+  freevector = NULL, timeStep, giveUpAttempts = 10, verbose = FALSE,
+  checks = TRUE, niter.brown = 25, niter.lambda = 25, niter.delta = 25,
+  niter.OU = 25, niter.white = 25)
 
 parallelSimulation(phy, startingPriorsValues, intrinsicPriorsValues,
   extrinsicPriorsValues, startingPriorsFns, intrinsicPriorsFns,
-  extrinsicPriorsFns, freevector, timeStep, intrinsicFn, extrinsicFn, nrepSim,
-  coreLimit, multicore, checkpointFile = NULL, checkpointFreq = 24,
+  extrinsicPriorsFns, freevector = NULL, timeStep, intrinsicFn, extrinsicFn,
+  nrepSim, coreLimit, multicore, checkpointFile = NULL, checkpointFreq = 24,
   verbose = FALSE, niter.brown = 25, niter.lambda = 25,
   niter.delta = 25, niter.OU = 25, niter.white = 25)
 }
 \arguments{
 \item{phy}{A phylogenetic tree, in package \code{ape}'s \code{phylo} format.}
-
-\item{startingPriorsValues}{Matrix with number of columns equal to the number of states (characters)
-at root and number of rows equal to two (representing two parameters to pass to prior distribution).}
-
-\item{intrinsicPriorsValues}{Matrix with number of columns equal to the number of parameters to pass
-to the intrinsic function and nrow=2 (two parameters to pass to prior distribution)}
-
-\item{extrinsicPriorsValues}{Matrix with number of columns equal to the number of parameters to pass
-to the extrinsic function and nrow=2 (two parameters to pass to prior distribution)}
-
-\item{startingPriorsFns}{Vector containing names of prior distributions to
-use for root states: can be one of \code{"fixed"}, \code{"uniform"}, \code{"normal"},}
-
-\item{intrinsicPriorsFns}{Vector containing names of prior distributions to
-use for intrinsic function parameters: can be one of \code{"fixed"}, \code{"uniform"}, \code{"normal"},}
-
-\item{extrinsicPriorsFns}{Vector containing names of prior distributions to
-use for extrinsic function parameters: can be one of \code{"fixed"}, \code{"uniform"}, \code{"normal"},}
-
-\item{freevector}{A logical vector (with length equal to the number of parameters), indicating free (\code{TRUE}) and
-fixed (\code{FALSE}) parameters.}
-
-\item{timeStep}{This value corresponds to the number of discrete time steps
-on the shortest branch}
 
 \item{intrinsicFn}{Name of (previously-defined) function that governs how
 traits evolve within a lineage, regardless of the trait values of other taxa.}
@@ -51,6 +28,30 @@ traits evolve within a lineage, regardless of the trait values of other taxa.}
 \item{extrinsicFn}{Name of (previously-defined) function that governs how
 traits evolve within a lineage, based on their own ('internal') trait vlaue and the trait values
 of other taxa.}
+
+\item{startingPriorsFns}{Vector containing names of prior distributions to
+use for root states: can be one of \code{"fixed"}, \code{"uniform"}, \code{"normal"},}
+
+\item{startingPriorsValues}{Matrix with number of columns equal to the number of states (characters)
+at root and number of rows equal to two (representing two parameters to pass to prior distribution).}
+
+\item{intrinsicPriorsFns}{Vector containing names of prior distributions to
+use for intrinsic function parameters: can be one of \code{"fixed"}, \code{"uniform"}, \code{"normal"},}
+
+\item{intrinsicPriorsValues}{Matrix with number of columns equal to the number of parameters to pass
+to the intrinsic function and nrow=2 (two parameters to pass to prior distribution)}
+
+\item{extrinsicPriorsFns}{Vector containing names of prior distributions to
+use for extrinsic function parameters: can be one of \code{"fixed"}, \code{"uniform"}, \code{"normal"},}
+
+\item{extrinsicPriorsValues}{Matrix with number of columns equal to the number of parameters to pass
+to the extrinsic function and nrow=2 (two parameters to pass to prior distribution)}
+
+\item{freevector}{A logical vector (with length equal to the number of parameters), indicating free (\code{TRUE}) and
+fixed (\code{FALSE}) parameters.}
+
+\item{timeStep}{This value corresponds to the number of discrete time steps
+on the shortest branch}
 
 \item{giveUpAttempts}{Value for when to stop the analysis if \code{NA} values are present.}
 
@@ -88,7 +89,7 @@ simulations.
 }
 \description{
 The function \code{simulateData} pulls parameters from prior distributions and simulates
-continuous characters, and is uSsed by TreEvo \code{\link{doRun}} functions to perform simulations.
+continuous characters, and is used by TreEvo \code{\link{doRun}} functions to perform simulations.
 }
 \details{
 \code{parallelSimulation} is a wrapper function for \code{simulateData} that allows for multithreading
@@ -103,33 +104,45 @@ data(simRun)
 
 	
 simData<-simulateData(phy=simPhy, 
-	startingPriorsValues, 
-	intrinsicPriorsValues, 
-	extrinsicPriorsValues, 
-	startingPriorsFns, 
-	intrinsicPriorsFns, 
-	extrinsicPriorsFns, 
+  intrinsicFn=brownianIntrinsic,
+  extrinsicFn=nullExtrinsic,
+  startingPriorsFns="normal",
+  startingPriorsValues=matrix(c(mean(simChar[,1]), sd(simChar[,1]))),
+  intrinsicPriorsFns=c("exponential"),
+  intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
+  extrinsicPriorsFns=c("fixed"),
+  extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
 	freevector, 	
 	timeStep=0.0001,
-	intrinsicFn=brownianIntrinsic,
-	extrinsicFn=nullExtrinsic,
 	giveUpAttempts=10, 
 	verbose=TRUE,
 	niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) 
 
+  TreeYears=1000,
+  standardDevFactor=0.2,
+  plot=FALSE,
+  StartSims=300,
+  epsilonProportion=0.7,
+  epsilonMultiplier=0.7,
+  nStepsPRC=5,
+  numParticles=100,
+  jobName="exampleRun",
+  stopRule=FALSE,
+  multicore=FALSE,
+  coreLimit=1
 simDataParallel<-parallelSimulation(nrepSim=10, coreLimit=1, phy=simPhy, 
-	startingPriorsValues, 
-	intrinsicPriorsValues, 
-	extrinsicPriorsValues, 
-	startingPriorsFns, 
-	intrinsicPriorsFns, 
-	extrinsicPriorsFns, 
+  intrinsicFn=brownianIntrinsic,
+  extrinsicFn=nullExtrinsic,
+  startingPriorsFns="normal",
+  startingPriorsValues=matrix(c(mean(simChar[,1]), sd(simChar[,1]))),
+  intrinsicPriorsFns=c("exponential"),
+  intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
+  extrinsicPriorsFns=c("fixed"),
+  extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE), 
 	freevector, 	 
 multicore=FALSE, 
 	checkpointFile=NULL, checkpointFreq=24, verbose=FALSE,
 	timeStep=0.0001,
-	intrinsicFn=brownianIntrinsic,
-	extrinsicFn=nullExtrinsic,
 	niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) 
 
 }

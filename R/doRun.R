@@ -54,11 +54,11 @@
 
 
 
-#' @param startingValuesGuess Optional guess of starting values
+#' @param startingValuesGuess Optional guess of starting values.
 
-#' @param intrinsicValuesGuess Optional guess of intrinsic values
+#' @param intrinsicValuesGuess Optional guess of intrinsic values.
 
-#' @param extrinsicValuesGuess Optional guess of extrinsic values
+#' @param extrinsicValuesGuess Optional guess of extrinsic values.
 
 #' @param TreeYears Unit length of phy
 
@@ -290,47 +290,13 @@ doRun_prc<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
 	colnames(PriorMatrix)<-namesForPriorMatrix
 	rownames(PriorMatrix)<-c("shape", "value1", "value2")
 
-	#Calculate freevector
-	for (i in 1:dim(startingPriorsValues)[2]) {
-		priorFn<-match.arg(arg=startingPriorsFns[i],choices=c("fixed", "uniform", "normal", "lognormal", "gamma", "exponential"),several.ok=FALSE)
-		if (priorFn=="fixed") {
-			numberParametersFree<-numberParametersFree-1
-			freevector<-c(freevector, FALSE)
-		}
-		else {
-			numberParametersStarting<-numberParametersStarting+1
-			freevariables<-cbind(freevariables, startingPriorsValues[, i])
-			titlevector <-c(titlevector, paste("Starting", numberParametersStarting))
-			freevector<-c(freevector, TRUE)
-		}
-	}
-	for (i in 1:dim(intrinsicPriorsValues)[2]) {
-		priorFn<-match.arg(arg=intrinsicPriorsFns[i],choices=c("fixed", "uniform", "normal", "lognormal", "gamma", "exponential"),several.ok=FALSE)
-		if (priorFn=="fixed") {
-			numberParametersFree<-numberParametersFree-1
-			freevector<-c(freevector, FALSE)
-		}
-		else {
-			numberParametersIntrinsic<-numberParametersIntrinsic+1
-			freevariables<-cbind(freevariables, intrinsicPriorsValues[, i])
-			titlevector <-c(titlevector, paste("Intrinsic", numberParametersIntrinsic))
-			freevector<-c(freevector, TRUE)
-		}
-	}
-	for (i in 1:dim(extrinsicPriorsValues)[2]) {
-		priorFn<-match.arg(arg=extrinsicPriorsFns[i],choices=c("fixed", "uniform", "normal", "lognormal", "gamma", "exponential"),several.ok=FALSE)
-		if (priorFn=="fixed") {
-			numberParametersFree<-numberParametersFree-1
-			freevector<-c(freevector, FALSE)
-		}
-		else {
-			numberParametersExtrinsic<-numberParametersExtrinsic+1
-			freevariables<-cbind(freevariables, extrinsicPriorsValues[, i])
-			titlevector <-c(titlevector, paste("Extrinsic", numberParametersExtrinsic))
-			freevector<-c(freevector, TRUE)
-		}
-	}
-
+	
+	# get freevector
+	freevector<-getFreeVector(startingPriorsFns=startingPriorsFns, startingPriorsValues=startingPriorsValues, 
+						intrinsicPriorsFns=intrinsicPriorsFns, intrinsicPriorsValues=intrinsicPriorsValues,
+						extrinsicPriorsFns=extrinsicPriorsFns, extrinsicPriorsValues=extrinsicPriorsValues)
+	
+	
 	#initialize weighted mean sd matrices
 	weightedMeanParam<-matrix(nrow=nStepsPRC, ncol=numberParametersTotal)
 	colnames(weightedMeanParam)<-namesForPriorMatrix
@@ -874,7 +840,7 @@ doRun_prc<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
 #' @export
 doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues, startingPriorsFns, 
 	intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, 
-	startingValuesGuess=c(), intrinsicStatesGuess=c(), extrinsicStatesGuess=c(), TreeYears=1e+04, 
+	startingValuesGuess=c(), intrinsicValuesGuess=c(), extrinsicValuesGuess=c(), TreeYears=1e+04, 
 	standardDevFactor=0.20, StartSims=NA, jobName=NA, abcTolerance=0.1, multicore=FALSE, coreLimit=NA, 
 	checkpointFile=NULL, checkpointFreq=24, validation="CV", scale=TRUE, variance.cutoff=95, 
 	savesims=FALSE, niter.goal=5, generation.time=1) {
@@ -897,8 +863,8 @@ doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
 	numberParametersIntrinsic<-0
 	numberParametersExtrinsic<-0
 	freevariables<-matrix(data=NA, nrow=2, ncol=0)
-	titlevector<-c()
-	freevector<-c()
+	#titlevector<-c()
+	#freevector<-c()
 
 	namesForPriorMatrix<-c()
 	PriorMatrix<-matrix(c(startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns), nrow=1, ncol=numberParametersTotal)
@@ -915,46 +881,10 @@ doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
 	colnames(PriorMatrix)<-namesForPriorMatrix
 	rownames(PriorMatrix)<-c("shape", "value1", "value2")
 
-	for (i in 1:dim(startingPriorsValues)[2]) {
-		priorFn<-match.arg(arg=startingPriorsFns[i],choices=c("fixed", "uniform", "normal", "lognormal", "gamma", "exponential"),several.ok=FALSE)
-		if (priorFn=="fixed") {
-			numberParametersFree<-numberParametersFree-1
-			freevector<-c(freevector, FALSE)
-		}
-		else {
-			numberParametersStarting<-numberParametersStarting+1
-			freevariables<-cbind(freevariables, startingPriorsValues[, i])
-			titlevector <-c(titlevector, paste("Starting", numberParametersStarting))
-			freevector<-c(freevector, TRUE)
-		}
-	}
-	for (i in 1:dim(intrinsicPriorsValues)[2]) {
-		priorFn<-match.arg(arg=intrinsicPriorsFns[i],choices=c("fixed", "uniform", "normal", "lognormal", "gamma", "exponential"),several.ok=FALSE)
-		if (priorFn=="fixed") {
-			numberParametersFree<-numberParametersFree-1
-			freevector<-c(freevector, FALSE)
-		}
-		else {
-			numberParametersIntrinsic<-numberParametersIntrinsic+1
-			freevariables<-cbind(freevariables, intrinsicPriorsValues[, i])
-			titlevector <-c(titlevector, paste("Intrinsic", numberParametersIntrinsic))
-			freevector<-c(freevector, TRUE)
-		}
-	}
-
-	for (i in 1:dim(extrinsicPriorsValues)[2]) {
-		priorFn<-match.arg(arg=extrinsicPriorsFns[i],choices=c("fixed", "uniform", "normal", "lognormal", "gamma", "exponential"),several.ok=FALSE)
-		if (priorFn=="fixed") {
-			numberParametersFree<-numberParametersFree-1
-			freevector<-c(freevector, FALSE)
-		}
-		else {
-			numberParametersExtrinsic<-numberParametersExtrinsic+1
-			freevariables<-cbind(freevariables, extrinsicPriorsValues[, i])
-			titlevector <-c(titlevector, paste("Extrinsic", numberParametersExtrinsic))
-			freevector<-c(freevector, TRUE)
-		}
-	}
+	# get freevector
+	freevector<-getFreeVector(startingPriorsFns=startingPriorsFns, startingPriorsValues=startingPriorsValues, 
+						intrinsicPriorsFns=intrinsicPriorsFns, intrinsicPriorsValues=intrinsicPriorsValues,
+						extrinsicPriorsFns=extrinsicPriorsFns, extrinsicPriorsValues=extrinsicPriorsValues)
 
 	#initialize guesses, if needed
 	if (length(startingValuesGuess)==0) { #if no user guesses, try pulling a value from the prior

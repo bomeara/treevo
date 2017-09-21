@@ -137,9 +137,13 @@
 #' @name doSimulation
 #' @rdname doSimulation
 #' @export
-doSimulation<-function(phy, intrinsicFn, extrinsicFn, startingValues, intrinsicValues, extrinsicValues, timeStep, saveHistory=FALSE, saveRealParams=FALSE, jobName="") {
+doSimulation<-function(phy=NULL, taxon.df=NULL, intrinsicFn, extrinsicFn, 
+	startingValues, intrinsicValues, extrinsicValues, timeStep, saveHistory=FALSE, saveRealParams=FALSE, jobName="") {
 	
-	splits=getSimulationSplits(phy)
+	if(is.null(taxon.df)){
+		splits=getSimulationSplits(phy)
+		}
+		
 	#
 	if (saveRealParams){
 		RealParams<-vector("list", 2)
@@ -252,10 +256,12 @@ doSimulation<-function(phy, intrinsicFn, extrinsicFn, startingValues, intrinsicV
 
 #' @rdname doSimulation
 #' @export
-doSimulationForPlotting<-function(phy, intrinsicFn, extrinsicFn, startingValues, intrinsicValues, 
+doSimulationForPlotting<-function(phy=NULL, taxon.df=NULL, intrinsicFn, extrinsicFn, startingValues, intrinsicValues, 
 	extrinsicValues, timeStep, plot=FALSE, savePlot=FALSE, saveHistory=FALSE, saveRealParams=FALSE, jobName="") {
 
-	splits=getSimulationSplits(phy)
+	if(is.null(taxon.df)){
+		splits=getSimulationSplits(phy)
+		}
 
 	if (saveRealParams){
 		RealParams<-vector("list", 2)
@@ -379,10 +385,12 @@ doSimulationForPlotting<-function(phy, intrinsicFn, extrinsicFn, startingValues,
 
 #' @rdname doSimulation
 #' @export
-doSimulationWithPossibleExtinction<-function(phy, intrinsicFn, extrinsicFn, startingValues, intrinsicValues, extrinsicValues,
+doSimulationWithPossibleExtinction<-function(phy=NULL, taxon.df=NULL, intrinsicFn, extrinsicFn, startingValues, intrinsicValues, extrinsicValues,
 	timeStep, saveHistory=FALSE, saveRealParams=FALSE, jobName="", returnAll = FALSE, verbose=FALSE, reject.NaN=TRUE) {
 	
-	taxon.df <- getTaxonDFWithPossibleExtinction(phy)
+	if(is.null(taxon.df)){
+		taxon.df <- getTaxonDFWithPossibleExtinction(phy)
+		}
 	
 	if (saveRealParams){
 		RealParams<-vector("list", 2)

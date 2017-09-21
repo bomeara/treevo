@@ -20,7 +20,7 @@ doRun_prc(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
 doRun_rej(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
   startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns,
   extrinsicPriorsValues, extrinsicPriorsFns, startingValuesGuess = c(),
-  intrinsicStatesGuess = c(), extrinsicStatesGuess = c(),
+  intrinsicValuesGuess = c(), extrinsicValuesGuess = c(),
   TreeYears = 10000, standardDevFactor = 0.2, StartSims = NA,
   jobName = NA, abcTolerance = 0.1, multicore = FALSE, coreLimit = NA,
   checkpointFile = NULL, checkpointFreq = 24, validation = "CV",
@@ -57,11 +57,11 @@ to the extrinsic function and nrow=2 (two parameters to pass to prior distributi
 \item{extrinsicPriorsFns}{Vector containing names of prior distributions to
 use for extrinsic function parameters: can be one of \code{"fixed"}, \code{"uniform"}, \code{"normal"},}
 
-\item{startingValuesGuess}{Optional guess of starting values}
+\item{startingValuesGuess}{Optional guess of starting values.}
 
-\item{intrinsicValuesGuess}{Optional guess of intrinsic values}
+\item{intrinsicValuesGuess}{Optional guess of intrinsic values.}
 
-\item{extrinsicValuesGuess}{Optional guess of extrinsic values}
+\item{extrinsicValuesGuess}{Optional guess of extrinsic values.}
 
 \item{TreeYears}{Unit length of phy}
 
