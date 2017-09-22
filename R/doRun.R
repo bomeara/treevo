@@ -1,48 +1,38 @@
 #' Run Approximate Bayesian Computation for Phylogenetic Comparative Methods
 #' 
+#' The \code{doRun} functions are the main interface for \code{TreEvo} users to do Approximate Bayesian Computation (ABC) analysis,
+#' effectively wrapping the \code{\link{simulateWithPriors}} functions to perform simulations, which
+#' themselves are wrappers for the the \code{\link{doSimulation}} functions. The two current \code{doRun}
+#' functions are \code{doRun_prc} which applies a partial rejection control(PRC) ABC analysis over multiple generations of simulations,
+#' and \code{doRun_rej} which performs a full rejection ('rej') ABC analysis.
 #' 
-
-
-#' Partial Rejection Control
+#' Both \code{doRun} functions take an input phylogeny (\code{phy}),
+#' observed trait data set (\code{traits}), models (\code{intrinsicFn}, \code{extrinsicFn}), and priors
+#' (\code{startingPriorsValue}, \code{startingPriorsFns}, \code{intrinsicPriorsValues},
+#' \code{intrinsicPriorsFns}, \code{extrinsicPriorsValues}, \code{extrinsicPriorsFns}). Pulling from
+#' the priors, it simulates an initial set of simulations (\code{StartSims}). This set of simulations is
+#' boxcox transformed ,and a PLS regression (see \code{\link{PLSmethods}}) is performed for each free parameter
+#' to determine the most informative summary statistics (using \code{variance.cutoff}). The euclidean distance is calculated
+#' between each each initial simulation's most informative summary statistics and the input observed data.
+#' 
+#' Following that step, the approach of the two functions diverge drastically.
 #'
-#' Rejection
+#' For function \code{doRun_rej}, those simulations whose most informative summary statistics fall below
+#' \code{abcTolerance} are kept as accepted 'particles' (simulations runs), describing the
+#' posterior distribution of parameters. No additional generations of simulations are performed.
 #'
-#' Starts the ABC-rejection run.
-#'
-#' This function performs an abc-prc analysis using an input phylogeny (phy),
-#' character data set (traits), models (intrinsicFn, extrinsicFn), and priors
-#' (parallelSimulateWithPriors, startingPriorsFns, intrinsicPriorsValues,
-#' intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns). Pulling from
-#' the priors, it simulates an initial set of simulations (StartSims). The set
-#' of simulations are boxcox transformed and a pls regression is performed for
-#' each free parameter to determine the most informative summary statistics
-#' (vipthresh). The euclidean distance of each initial simulation's vip summary
-#' stats to the input data is calculated, and tolerance is set based on
-#' epsilonProportion and epsilonMultiplier.
-#'
-#' The prc analysis begins with generation 1 and continues through nStepsPRC.
-#' Single simulations (or particles) are accepted if the distance of vip
-#' summary stats to the original data is less than the tolerance. A generation
-#' is complete when enough particles (numParticles) have been accepted. These
+#' Coversely, function \code{doRun_prc} performs an ABC-PRC analysis,
+#' which follows a much more complicated algorithm with additional generations. In PRC, tolerance is set based on
+#' \code{epsilonProportion} and \code{epsilonMultiplier}, and the analysis
+#' begins with generation 1 and continues through a number of generations equal to \code{nStepsPRC}.
+#' Single simulation runs ('particles') are accepted if the distance of the
+#' most informative summary stats to the original data is less than this tolerance. A generation
+#' is complete when enough particles (\code{numParticles}) have been accepted. These
 #' particles make up the distribution for the next generation. The accepted
 #' particles from the final generation describe the posterior distributions of
 #' parameters.
 #'
 
-
-#'
-#' This function performs an abc-rejection analysis using an input phylogeny
-#' (phy), character data set (traits), models (intrinsicFn, extrinsicFn), and
-#' priors (parallelSimulateWithPriors, startingPriorsFns, intrinsicPriorsValues,
-#' intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns). Pulling from
-#' the priors, it performs StartSims simulations. This set of simulations are
-#' boxcox transformed and a pls regression is performed for each free parameter
-#' to determine the most informative summary statistics (vipthresh). The
-#' euclidean distance of each initial simulation's vip summary stats to the
-#' input data is calculated, and those that fall under the abcTolerance are
-#' kept as accepted particles. These describe the posterior distributions of
-#' parameters.
-#'
 
 #' @inheritParams doSimulation
 #' @inheritParams simulateWithPriors
@@ -50,68 +40,52 @@
 
 #' @param traits Data matrix with rownames identical to \code{phy@tip.label}.
 
-
-
-
-
 #' @param startingValuesGuess Optional guess of starting values.
 
 #' @param intrinsicValuesGuess Optional guess of intrinsic values.
 
 #' @param extrinsicValuesGuess Optional guess of extrinsic values.
 
-#' @param TreeYears Unit length of phy
+#' @param TreeYears Absolute scale of time-units for \code{phy}, from the root
+#' to the furthest tip (sometimes referred to as 'unit-length'). For ultrametric
+#' trees where all tips are at time zero (i.e., the modern day), this would be
+#' the root age of the tree. By default, this is set to 10000 time-units.
 
-#' @param numParticles Number of accepted particles per generation
+#' @param numParticles Number of accepted particles per generation.
 
-#' @param standardDevFactor Standard deviation for mutating states
+#' @param standardDevFactor Standard deviation for mutating states.
 
+#' @param StartSims Number of initial simulations.
 
+#' @param plot If \code{TRUE}, plots distance of each simulation.
 
+#' @param epsilonProportion Sets tolerance for initial simulations.
 
+#' @param epsilonMultiplier Sets tolerance on subsequent generations.
 
+#' @param nStepsPRC Number of generations to run.
 
+#' @param jobName Optional job name.
 
-
-#' @param StartSims Number of initial simulations
-
-#' @param plot If TRUE, plots distance of each simulation
-
-#' @param epsilonProportion Sets tolerance for initial simulations
-
-#' @param epsilonMultiplier Sets tolerance on subsequent generations
-
-#' @param nStepsPRC Number of generations
-
-#' @param jobName Optional job name
-
-#' @param stopRule If TRUE, an analysis will be terminated prior to set number
+#' @param stopRule If \code{TRUE}, an analysis will be terminated prior to set number
 #' of generations if the ratio of all parameters from one generation to the
-#' next falls below the stopValue
+#' next falls below the \code{stopValue}.
 
 #' @param stopValue Threshold value for terminating an analysis prior to
-#' nStpesPRC
+#' \code{nStepesPRC}.
 
+#' @param abcTolerance Proportion of accepted simulations.
 
+#' @param checkpointFile Optional file name for checkpointing simulations.
 
+#' @param checkpointFreq Saving frequency for checkpointing.
 
+#' @param savesims Option to save individual simulations.
 
-#' @param abcTolerance Proportion of accepted simulations
-
-#' @param checkpointFile Optional file name for checkpointing simulations
-
-#' @param checkpointFreq Saving frequency for checkpointing
-
-#' @param savesims option to save individual simulations
-
-#' @param niter.goal Adjust number of starting points for Geiger to return the best parameter estimates this number of times on average
+#' @param niter.goal Adjust number of starting points for package \code{geiger} to return the best parameter estimates this number of times on average.
 
 #' @param generation.time The number of years per generation. This sets the coarseness of the simulation; if it's set to 1000, 
 #' for example, the population moves every 1000 years.
-
-
-
-
 
 #' @return 
 #' The output of these two functions are lists, composed of multiple objects,
@@ -134,7 +108,7 @@
 
 #' \item{time.per.gen}{Processor time for subsequent generations}
 
-#' \item{whichVip}{Matrix of vip summary statistics for each free parameter} 
+# \item{whichVip}{Matrix of vip summary statistics for each free parameter} 
 
 #' \item{credibleInt}{Credible Interval calculation for each free parameter of the final generation} 
 
@@ -157,7 +131,7 @@
 
 #' \item{simTime}{Processor time for simulations}
 
-#' \item{whichVip}{Matrix of vip summary statistics for each free parameter}
+# \item{whichVip}{Matrix of vip summary statistics for each free parameter}
 
 #' \item{abcDistancesRaw}{Euclidean distances for each simulation and free parameter} 
 
@@ -189,7 +163,7 @@
 #'   intrinsicFn=brownianIntrinsic,
 #'   extrinsicFn=nullExtrinsic,
 #'   startingPriorsFns="normal",
-#'   parallelSimulateWithPriors=matrix(c(mean(simChar[,1]), sd(simChar[,1]))),
+#'   startingPriorsValue=matrix(c(mean(simChar[,1]), sd(simChar[,1]))),
 #'   intrinsicPriorsFns=c("exponential"),
 #'   intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
 #'   extrinsicPriorsFns=c("fixed"),
@@ -202,7 +176,7 @@
 #'   epsilonMultiplier=0.7,
 #'   nStepsPRC=5,
 #'   numParticles=100,
-#'   jobName="exampleRun",
+#'   jobName="examplerun_prc",
 #'   stopRule=FALSE,
 #'   multicore=FALSE,
 #'   coreLimit=1
@@ -210,19 +184,19 @@
 #'
 #'
 #' #make sure priors are uniform with this one!
-#' result<-doRun_rej( 
+#' doRun_rej( 
 #' 	phy=simPhy,
 #' 	traits=simChar,
 #' 	intrinsicFn=brownianIntrinsic,
 #' 	extrinsicFn=nullExtrinsic,
 #' 	startingPriorsFns="normal",
-#' 	parallelSimulateWithPriors=matrix(c(mean(char[,1]), sd(char[,1]))),
+#' 	startingPriorsValue=matrix(c(mean(char[,1]), sd(char[,1]))),
 #' 	intrinsicPriorsFns=c("exponential"),
 #' 	intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE), #grep for normal in pkg
 #' 	extrinsicPriorsFns=c("fixed"),
 #' 	extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
 #' 	StartSims=1000,
-#' 	jobName="run_c",
+#' 	jobName="examplerun_rej",
 #' 	abcTolerance=0.05,
 #' 	multicore=F,
 #' 	coreLimit=1
@@ -241,7 +215,7 @@
 #' @name doRun
 #' @rdname doRun
 #' @export
-doRun_prc<-function(phy, traits, intrinsicFn, extrinsicFn, parallelSimulateWithPriors, 
+doRun_prc<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValue, 
 	startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, 
 	extrinsicPriorsFns, startingValuesGuess=c(), intrinsicValuesGuess=c(), 
 	extrinsicValuesGuess=c(), TreeYears=1e+04, numParticles=300, standardDevFactor=0.20, 
@@ -264,7 +238,7 @@ doRun_prc<-function(phy, traits, intrinsicFn, extrinsicFn, parallelSimulateWithP
 	taxon.df <- getTaxonDFWithPossibleExtinction(phy)
 
 	#figure out number of free params
-	numberParametersTotal<-dim(parallelSimulateWithPriors)[2] +  dim(intrinsicPriorsValues)[2] + dim(extrinsicPriorsValues)[2]
+	numberParametersTotal<-dim(startingPriorsValue)[2] +  dim(intrinsicPriorsValues)[2] + dim(extrinsicPriorsValues)[2]
 	numberParametersFree<-numberParametersTotal
 	numberParametersStarting<-0
 	numberParametersIntrinsic<-0
@@ -276,7 +250,7 @@ doRun_prc<-function(phy, traits, intrinsicFn, extrinsicFn, parallelSimulateWithP
 	#create PriorMatrix
 	namesForPriorMatrix<-c()
 	PriorMatrix<-matrix(c(startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns), nrow=1, ncol=numberParametersTotal)
-	for (a in 1:dim(parallelSimulateWithPriors)[2]) {
+	for (a in 1:dim(startingPriorsValue)[2]) {
 		namesForPriorMatrix<-c(paste("StartingStates", a, sep=""))
 	}
 	for (b in 1:dim(intrinsicPriorsValues)[2]) {
@@ -286,13 +260,13 @@ doRun_prc<-function(phy, traits, intrinsicFn, extrinsicFn, parallelSimulateWithP
 	for (c in 1:dim(extrinsicPriorsValues)[2]) {
 		namesForPriorMatrix <-append(namesForPriorMatrix, paste("ExtrinsicValue", c, sep=""))
 	}
-	PriorMatrix<-rbind(PriorMatrix, cbind(parallelSimulateWithPriors, intrinsicPriorsValues, extrinsicPriorsValues))
+	PriorMatrix<-rbind(PriorMatrix, cbind(startingPriorsValue, intrinsicPriorsValues, extrinsicPriorsValues))
 	colnames(PriorMatrix)<-namesForPriorMatrix
 	rownames(PriorMatrix)<-c("shape", "value1", "value2")
 
 	
 	# get freevector
-	freevector<-getFreeVector(startingPriorsFns=startingPriorsFns, parallelSimulateWithPriors=parallelSimulateWithPriors, 
+	freevector<-getFreeVector(startingPriorsFns=startingPriorsFns, startingPriorsValue=startingPriorsValue, 
 						intrinsicPriorsFns=intrinsicPriorsFns, intrinsicPriorsValues=intrinsicPriorsValues,
 						extrinsicPriorsFns=extrinsicPriorsFns, extrinsicPriorsValues=extrinsicPriorsValues)
 	
@@ -309,7 +283,7 @@ doRun_prc<-function(phy, traits, intrinsicFn, extrinsicFn, parallelSimulateWithP
 	if (length(startingValuesGuess)==0) { #if no user guesses, try pulling a value from the prior
 		startingValuesGuess<-rep(NA,length(startingPriorsFns))
 		for (i in 1:length(startingPriorsFns)) {
-			startingValuesGuess[i]<-pullFromPrior(parallelSimulateWithPriors[,i],startingPriorsFns[i])
+			startingValuesGuess[i]<-pullFromPrior(startingPriorsValue[,i],startingPriorsFns[i])
 		}
 	}
 	if (length(intrinsicValuesGuess)==0) { #if no user guesses, try pulling a value from the prior
@@ -351,7 +325,6 @@ doRun_prc<-function(phy, traits, intrinsicFn, extrinsicFn, parallelSimulateWithP
 	cat(paste("\n",niter.white.g, "for white noise"))
 
 
-
 		#---------------------- Initial Simulations (Start) ------------------------------
 		# See Wegmann et al. Efficient Approximate Bayesian Computation Coupled With Markov Chain Monte Carlo Without Likelihood. 
 			# Genetics (2009) vol. 182 (4) pp. 1207-1218 for more on the method.
@@ -371,7 +344,7 @@ doRun_prc<-function(phy, traits, intrinsicFn, extrinsicFn, parallelSimulateWithP
 	summaryValues<-matrix(nrow=0, ncol=length(summaryStatsLong(phy=phy, traits=traits, 
 		niter.brown=200, niter.lambda=200, niter.delta=200, niter.OU=200, niter.white=200))) 
 	trueFreeValuesANDSummaryValues<-parallelSimulateWithPriors(nrepSim=nrepSim, coreLimit=coreLimit, phy=phy,  taxon.df=taxon.df,
-		parallelSimulateWithPriors=parallelSimulateWithPriors, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues, 
+		startingPriorsValue=startingPriorsValue, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues, 
 		startingPriorsFns=startingPriorsFns, intrinsicPriorsFns=intrinsicPriorsFns, extrinsicPriorsFns=extrinsicPriorsFns, 
 		freevector=freevector, timeStep=timeStep, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, multicore=multicore, 
 		niter.brown=niter.brown.g, niter.lambda=niter.lambda.g, niter.delta=niter.delta.g, niter.OU=niter.OU.g, niter.white=niter.white.g)
@@ -390,7 +363,7 @@ doRun_prc<-function(phy, traits, intrinsicFn, extrinsicFn, parallelSimulateWithP
 
 
 	  pls.model.list <- apply(trueFreeValuesMatrix, 2, returnPLSModel, summaryValuesMatrix=summaryValuesMatrix, validation=validation, 
-		scale=scale, variance.cutoff=variance.cutoff)
+		scale=scale, variance.cutoff = variance.cutoff)
 
 	  originalSummaryValues <- summaryStatsLong(phy, traits, niter.brown=200, niter.lambda=200, niter.delta=200, niter.OU=200, niter.white=200)
 
@@ -416,7 +389,7 @@ doRun_prc<-function(phy, traits, intrinsicFn, extrinsicFn, parallelSimulateWithP
 				if (plot) {
 					plot(x=c(min(intrinsicPriorsValues), max(intrinsicPriorsValues)), y=c(0, 5*max(toleranceVector)), type="n")
 				}
-				for (i in 1:dim(parallelSimulateWithPriors)[2]) {
+				for (i in 1:dim(startingPriorsValue)[2]) {
 					nameVector<-append(nameVector, paste("StartingStates", i, sep=""))
 				}
 				for (i in 1:dim(intrinsicPriorsValues)[2]) {
@@ -430,7 +403,7 @@ doRun_prc<-function(phy, traits, intrinsicFn, extrinsicFn, parallelSimulateWithP
 				particleWeights=rep(0, numParticles) 
 				#stores parameters in model for each particle
 				particleParameters<-matrix(nrow=numParticles, 
-					ncol=dim(parallelSimulateWithPriors)[2] +  dim(intrinsicPriorsValues)[2] + dim(extrinsicPriorsValues)[2]) 
+					ncol=dim(startingPriorsValue)[2] +  dim(intrinsicPriorsValues)[2] + dim(extrinsicPriorsValues)[2]) 
 				particleDistance=rep(NA, numParticles)
 				particle<-1
 				attempts<-0
@@ -444,7 +417,7 @@ doRun_prc<-function(phy, traits, intrinsicFn, extrinsicFn, parallelSimulateWithP
 
 					newparticleList<-list(abcparticle(id=particle, generation=1, weight=0))
 					newparticleList[[1]]<-initializeStatesFromMatrices(newparticleList[[1]], 
-						parallelSimulateWithPriors=parallelSimulateWithPriors, startingPriorsFns=startingPriorsFns, intrinsicPriorsValues=intrinsicPriorsValues, 
+						startingPriorsValue=startingPriorsValue, startingPriorsFns=startingPriorsFns, intrinsicPriorsValues=intrinsicPriorsValues, 
 						intrinsicPriorsFns=intrinsicPriorsFns, extrinsicPriorsValues=extrinsicPriorsValues, extrinsicPriorsFns=extrinsicPriorsFns)
 
 					newparticleList[[1]]$distance<-abcDistance(summaryStatsLong
@@ -542,7 +515,7 @@ doRun_prc<-function(phy, traits, intrinsicFn, extrinsicFn, parallelSimulateWithP
 							particleWeights=rep(0, numParticles) 
 							#stores parameters in model for each particle
 							particleParameters<-matrix(nrow=numParticles,
-								ncol=dim(parallelSimulateWithPriors)[2] +  dim(intrinsicPriorsValues)[2] + dim(extrinsicPriorsValues)[2]) 
+								ncol=dim(startingPriorsValue)[2] +  dim(intrinsicPriorsValues)[2] + dim(extrinsicPriorsValues)[2]) 
 							particleDistance=rep(NA, numParticles)
 							particle<-1
 							attempts<-0
@@ -565,7 +538,7 @@ doRun_prc<-function(phy, traits, intrinsicFn, extrinsicFn, parallelSimulateWithP
 								#cat("mutateStates\n")
 
 								newparticleList[[1]]<-mutateStates(newparticleList[[1]], 
-									parallelSimulateWithPriors=parallelSimulateWithPriors, startingPriorsFns=startingPriorsFns, 
+									startingPriorsValue=startingPriorsValue, startingPriorsFns=startingPriorsFns, 
 									intrinsicPriorsValues=intrinsicPriorsValues, intrinsicPriorsFns=intrinsicPriorsFns, 
 									extrinsicPriorsValues=extrinsicPriorsValues, extrinsicPriorsFns=extrinsicPriorsFns, 
 									standardDevFactor=standardDevFactor)
@@ -615,25 +588,25 @@ doRun_prc<-function(phy, traits, intrinsicFn, extrinsicFn, parallelSimulateWithP
 											newvalue<-newparticleList[[1]]$startingValues[j]
 											meantouse= oldParticleList[[i]]$startingValues[j]
 												if (startingPriorsFns[j]=="uniform") {
-													sdtouse<-standardDevFactor*((max(parallelSimulateWithPriors[,j])-min(parallelSimulateWithPriors[,j]))/sqrt(12))
+													sdtouse<-standardDevFactor*((max(startingPriorsValue[,j])-min(startingPriorsValue[,j]))/sqrt(12))
 													#print(paste("startingPriorFn is uniform and sdtouse =", sdtouse))
 												}
 												else if (startingPriorsFns[j]=="exponential") {
-													sdtouse<-standardDevFactor*(1/parallelSimulateWithPriors[,j])
+													sdtouse<-standardDevFactor*(1/startingPriorsValue[,j])
 													#print(paste("startingPriorFn is exponential and sdtouse =", sdtouse))
 												}
 												else {
-													sdtouse<-standardDevFactor*(parallelSimulateWithPriors[2,j])
+													sdtouse<-standardDevFactor*(startingPriorsValue[2,j])
 												}
 
 											lnlocalTransitionProb=dnorm(newvalue, mean=meantouse, sd=sdtouse,log=TRUE
-												) - ((log(1)/pnorm(min(parallelSimulateWithPriors[, j]), mean=meantouse, sd=sdtouse, lower.tail=T, log.p=T))
-													* pnorm(max(parallelSimulateWithPriors[,j]), mean=meantouse , sd=sdtouse, lower.tail=F, log.p=T))
+												) - ((log(1)/pnorm(min(startingPriorsValue[, j]), mean=meantouse, sd=sdtouse, lower.tail=T, log.p=T))
+													* pnorm(max(startingPriorsValue[,j]), mean=meantouse , sd=sdtouse, lower.tail=F, log.p=T))
 
 											if (lnlocalTransitionProb == "NaN") {  #to prevent lnlocalTransitionProb from being NaN (if pnorm=0)
 												lnlocalTransitionProb<-.Machine$double.xmin
 											}
-											if (min(parallelSimulateWithPriors[, j])==max(parallelSimulateWithPriors[, j])) {
+											if (min(startingPriorsValue[, j])==max(startingPriorsValue[, j])) {
 												lnlocalTransitionProb=log(1)
 											}
 											lnTransitionProb<-lnTransitionProb+lnlocalTransitionProb
@@ -838,7 +811,7 @@ doRun_prc<-function(phy, traits, intrinsicFn, extrinsicFn, parallelSimulateWithP
 
 #' @rdname doRun
 #' @export
-doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, parallelSimulateWithPriors, startingPriorsFns, 
+doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValue, startingPriorsFns, 
 	intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, 
 	startingValuesGuess=c(), intrinsicValuesGuess=c(), extrinsicValuesGuess=c(), TreeYears=1e+04, 
 	standardDevFactor=0.20, StartSims=NA, jobName=NA, abcTolerance=0.1, multicore=FALSE, coreLimit=NA, 
@@ -857,7 +830,7 @@ doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, parallelSimulateWithP
 
 
 	#figure out number of free params
-	numberParametersTotal<-dim(parallelSimulateWithPriors)[2] +  dim(intrinsicPriorsValues)[2] + dim(extrinsicPriorsValues)[2]
+	numberParametersTotal<-dim(startingPriorsValue)[2] +  dim(intrinsicPriorsValues)[2] + dim(extrinsicPriorsValues)[2]
 	numberParametersFree<-numberParametersTotal
 	numberParametersStarting<-0
 	numberParametersIntrinsic<-0
@@ -868,7 +841,7 @@ doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, parallelSimulateWithP
 
 	namesForPriorMatrix<-c()
 	PriorMatrix<-matrix(c(startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns), nrow=1, ncol=numberParametersTotal)
-	for (a in 1:dim(parallelSimulateWithPriors)[2]) {
+	for (a in 1:dim(startingPriorsValue)[2]) {
 		namesForPriorMatrix<-c(paste("StartingStates", a, sep=""))
 	}
 	for (b in 1:dim(intrinsicPriorsValues)[2]) {
@@ -877,12 +850,12 @@ doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, parallelSimulateWithP
 	for (c in 1:dim(extrinsicPriorsValues)[2]) {
 		namesForPriorMatrix <-append(namesForPriorMatrix, paste("ExtrinsicValue", c, sep=""))
 	}
-	PriorMatrix<-rbind(PriorMatrix, cbind(parallelSimulateWithPriors, intrinsicPriorsValues, extrinsicPriorsValues))
+	PriorMatrix<-rbind(PriorMatrix, cbind(startingPriorsValue, intrinsicPriorsValues, extrinsicPriorsValues))
 	colnames(PriorMatrix)<-namesForPriorMatrix
 	rownames(PriorMatrix)<-c("shape", "value1", "value2")
 
 	# get freevector
-	freevector<-getFreeVector(startingPriorsFns=startingPriorsFns, parallelSimulateWithPriors=parallelSimulateWithPriors, 
+	freevector<-getFreeVector(startingPriorsFns=startingPriorsFns, startingPriorsValue=startingPriorsValue, 
 						intrinsicPriorsFns=intrinsicPriorsFns, intrinsicPriorsValues=intrinsicPriorsValues,
 						extrinsicPriorsFns=extrinsicPriorsFns, extrinsicPriorsValues=extrinsicPriorsValues)
 
@@ -890,7 +863,7 @@ doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, parallelSimulateWithP
 	if (length(startingValuesGuess)==0) { #if no user guesses, try pulling a value from the prior
 		startingValuesGuess<-rep(NA,length(startingPriorsFns))
 		for (i in 1:length(startingPriorsFns)) {
-			startingValuesGuess[i]<-pullFromPrior(parallelSimulateWithPriors[,i],startingPriorsFns[i])
+			startingValuesGuess[i]<-pullFromPrior(startingPriorsValue[,i],startingPriorsFns[i])
 		}
 	}
 	if (length(intrinsicStatesGuess)==0) { #if no user guesses, try pulling a value from the prior
@@ -939,7 +912,7 @@ doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, parallelSimulateWithP
 	cat(paste("\n",niter.white.g, "for white noise"))
 
 	trueFreeValuesANDSummaryValues<-parallelSimulateWithPriors(nrepSim=nrepSim, coreLimit=coreLimit, phy=phy,  taxon.df=taxon.df,
-		parallelSimulateWithPriors=parallelSimulateWithPriors, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues, 
+		startingPriorsValue=startingPriorsValue, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues, 
 		startingPriorsFns=startingPriorsFns, intrinsicPriorsFns=intrinsicPriorsFns, extrinsicPriorsFns=extrinsicPriorsFns, 
 		freevector=freevector, timeStep=timeStep, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, 
 		multicore=multicore, checkpointFile=checkpointFile, checkpointFreq=checkpointFreq, 

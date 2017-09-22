@@ -3,7 +3,7 @@
 #' The function \code{simulateWithPriors} pulls parameters from prior distributions and simulates
 #' continuous characters, and is used by TreEvo \code{\link{doRun}} functions to perform simulations.
 #'
-#' \code{parallelSimulateWithPriors} is a wrapper function for \code{simulateWithPriors} that allows for multithreading
+#' \code{startingPriorsValue} is a wrapper function for \code{simulateWithPriors} that allows for multithreading
 #' and checkpointing.
 #'
 #'
@@ -13,7 +13,7 @@
 
 
 
-#' @param parallelSimulateWithPriors Matrix with number of columns equal to the number of states (characters)
+#' @param startingPriorsValue Matrix with number of columns equal to the number of states (characters)
 #' at root and number of rows equal to two (representing two parameters to pass to prior distribution).
 
 #' @param intrinsicPriorsValues Matrix with number of columns equal to the number of parameters to pass
@@ -61,7 +61,7 @@
 
 
 #' @param checks If \code{TRUE}, checks inputs for consistency. This activity is skipped (\code{checks = FALSE})
-#' when run in parallel by \code{parallelSimulateWithPriors}, and instead is only checked once.
+#' when run in parallel by \code{startingPriorsValue}, and instead is only checked once.
 
 #' @param checkpointFile Optional file name for checkpointing simulations
 
@@ -87,7 +87,7 @@
 #'   intrinsicFn=brownianIntrinsic,
 #'   extrinsicFn=nullExtrinsic,
 #'   startingPriorsFns="normal",
-#'   parallelSimulateWithPriors=matrix(c(mean(simChar[,1]), sd(simChar[,1]))),
+#'   startingPriorsValue=matrix(c(mean(simChar[,1]), sd(simChar[,1]))),
 #'   intrinsicPriorsFns=c("exponential"),
 #'   intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
 #'   extrinsicPriorsFns=c("fixed"),
@@ -98,11 +98,11 @@
 #' 	 verbose=TRUE,
 #' 	 niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) 
 #' 
-#' simDataParallel<-parallelSimulateWithPriors(phy=simPhy, 
+#' simDataParallel<-startingPriorsValue(phy=simPhy, 
 #'   intrinsicFn=brownianIntrinsic,
 #'   extrinsicFn=nullExtrinsic,
 #'   startingPriorsFns="normal",
-#'   parallelSimulateWithPriors=matrix(c(mean(simChar[,1]), sd(simChar[,1]))),
+#'   startingPriorsValue=matrix(c(mean(simChar[,1]), sd(simChar[,1]))),
 #'   intrinsicPriorsFns=c("exponential"),
 #'   intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
 #'   extrinsicPriorsFns=c("fixed"),
@@ -120,7 +120,7 @@
 #' @name simulateWithPriors
 #' @rdname simulateWithPriors
 #' @export
-simulateWithPriors<-function(phy=NULL, intrinsicFn, extrinsicFn, startingPriorsFns, parallelSimulateWithPriors, 
+simulateWithPriors<-function(phy=NULL, intrinsicFn, extrinsicFn, startingPriorsFns, startingPriorsValue, 
 	intrinsicPriorsFns, intrinsicPriorsValues, extrinsicPriorsFns, extrinsicPriorsValues, timeStep,
 	giveUpAttempts=10, verbose=FALSE, checks=TRUE, taxon.df=NULL, freevector=NULL, 
 	niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) {
@@ -137,7 +137,7 @@ simulateWithPriors<-function(phy=NULL, intrinsicFn, extrinsicFn, startingPriorsF
 		}
 		
 	if(is.null(freevector)){
-		freevector<-getFreeVector(startingPriorsFns=startingPriorsFns, parallelSimulateWithPriors=parallelSimulateWithPriors, 
+		freevector<-getFreeVector(startingPriorsFns=startingPriorsFns, startingPriorsValue=startingPriorsValue, 
 					intrinsicPriorsFns=intrinsicPriorsFns, intrinsicPriorsValues=intrinsicPriorsValues,
 					extrinsicPriorsFns=extrinsicPriorsFns, extrinsicPriorsValues=extrinsicPriorsValues)
 		}
@@ -149,11 +149,11 @@ simulateWithPriors<-function(phy=NULL, intrinsicFn, extrinsicFn, startingPriorsF
 	    if (n.attempts>giveUpAttempts) {
 	    	stop("Error: keep getting NA in the output of simulateWithPriors")
 	    }
-		trueStarting<-rep(NaN, dim(parallelSimulateWithPriors)[2])
+		trueStarting<-rep(NaN, dim(startingPriorsValue)[2])
 		trueIntrinsic<-rep(NaN, dim(intrinsicPriorsValues)[2])
 		trueExtrinsic<-rep(NaN, dim(extrinsicPriorsValues)[2])
-		for (j in 1:dim(parallelSimulateWithPriors)[2]) {
-			trueStarting[j]=pullFromPrior(parallelSimulateWithPriors[,j],startingPriorsFns[j])
+		for (j in 1:dim(startingPriorsValue)[2]) {
+			trueStarting[j]=pullFromPrior(startingPriorsValue[,j],startingPriorsFns[j])
 		}
 		for (j in 1:dim(intrinsicPriorsValues)[2]) {
 			trueIntrinsic[j]=pullFromPrior(intrinsicPriorsValues[,j],intrinsicPriorsFns[j])
@@ -183,8 +183,8 @@ simulateWithPriors<-function(phy=NULL, intrinsicFn, extrinsicFn, startingPriorsF
 
 #' @rdname simulateWithPriors
 #' @export
-parallelSimulateWithPriors<-function(phy, 
-	intrinsicFn, extrinsicFn, startingPriorsFns, parallelSimulateWithPriors, 
+startingPriorsValue<-function(phy, 
+	intrinsicFn, extrinsicFn, startingPriorsFns, startingPriorsValue, 
 	intrinsicPriorsFns, intrinsicPriorsValues, extrinsicPriorsFns, extrinsicPriorsValues, timeStep,
 	nrepSim, coreLimit, multicore, 
 	checkpointFile=NULL, checkpointFreq=24, verbose=FALSE, freevector=NULL, taxon.df=NULL, 
@@ -198,7 +198,7 @@ parallelSimulateWithPriors<-function(phy,
 		niter.delta=niter.delta, niter.OU=niter.OU, niter.white=niter.white)
 
 	if(is.null(freevector)){
-		freevector<-getFreeVector(startingPriorsFns=startingPriorsFns, parallelSimulateWithPriors=parallelSimulateWithPriors, 
+		freevector<-getFreeVector(startingPriorsFns=startingPriorsFns, startingPriorsValue=startingPriorsValue, 
 					intrinsicPriorsFns=intrinsicPriorsFns, intrinsicPriorsValues=intrinsicPriorsValues,
 					extrinsicPriorsFns=extrinsicPriorsFns, extrinsicPriorsValues=extrinsicPriorsValues)
 		}
@@ -225,7 +225,7 @@ parallelSimulateWithPriors<-function(phy,
 	cat("Doing simulations: ")
 	if (is.null(checkpointFile)) {
 		trueFreeValuesANDSummaryValues<-foreach(1:nrepSim, .combine=rbind) %dopar% simulateWithPriors(phy=phy, taxon.df=taxon.df,
-			parallelSimulateWithPriors=parallelSimulateWithPriors, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues,
+			startingPriorsValue=startingPriorsValue, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues,
 			startingPriorsFns=startingPriorsFns, intrinsicPriorsFns=intrinsicPriorsFns, extrinsicPriorsFns=extrinsicPriorsFns, 
 			freevector=freevector, timeStep=timeStep, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, verbose=verbose, checks=FALSE)
 	}
@@ -243,7 +243,7 @@ parallelSimulateWithPriors<-function(phy,
 		for (rep in sequence(numberLoops)) {
 			trueFreeValuesANDSummaryValues<-rbind(trueFreeValuesANDSummaryValues, 
 				foreach(1:numberSimsPerLoop, .combine=rbind) %dopar% simulateWithPriors(phy=phy,  taxon.df=taxon.df,
-					parallelSimulateWithPriors=parallelSimulateWithPriors, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues,
+					startingPriorsValue=startingPriorsValue, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues,
 					startingPriorsFns=startingPriorsFns, intrinsicPriorsFns=intrinsicPriorsFns, extrinsicPriorsFns=extrinsicPriorsFns, 
 					freevector=freevector, timeStep=timeStep, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, verbose=verbose, checks=FALSE))
 			save(trueFreeValuesANDSummaryValues,file=checkpointFileName)
@@ -251,7 +251,7 @@ parallelSimulateWithPriors<-function(phy,
 		}
 		trueFreeValuesANDSummaryValues<-rbind(trueFreeValuesANDSummaryValues, 
 			foreach(1:numberSimsAfterLastCheckpoint, .combine=rbind) %dopar% simulateWithPriors(phy=phy,  taxon.df=taxon.df,
-				parallelSimulateWithPriors=startingPriorsValues, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues,
+				startingPriorsValue=startingPriorsValues, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues,
 				startingPriorsFns=startingPriorsFns, intrinsicPriorsFns=intrinsicPriorsFns, extrinsicPriorsFns=extrinsicPriorsFns, 
 				freevector=freevector, timeStep=timeStep, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, verbose=verbose, checks=FALSE))
 	}

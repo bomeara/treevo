@@ -1,11 +1,20 @@
-#' Discrete Time Character Simulation
+#' Discrete-Time Character Simulation
 #'
-#' These simulation function evolve continuous characters under a discrete time process.
+#' The \code{doSimulation} family of functions evolve continuous characters under a discrete time process.
+#' These functions are mainly used as internal components, generating simulations
+#' within ABC analyses using the \code{\link{doRun}} functions. See \emph{Note} below.
 #'
 #' When \code{saveHistory} is \code{TRUE}, processor time will increase quite a bit.
-#' \code{SaveRealParams} is useful for tracking the "real" true values if simulating
-#' data for abc runs.  It is not useful for empirical abc runs.
+#' \code{SaveRealParams} is useful for tracking the \emph{real} true values if simulating
+#' data to test the performance of ABC analyses.  It is not useful for ABC analyses of empirical data.
 #'
+
+#' @note 
+#' The \code{\link{simulateWithPriors}} functions are effectively the engine that powers the \code{\link{doRun}}
+#' functions, while the \code{\link{doSimulation}} functions are the pistons within the \code{\link{simulateWithPriors}} engine.
+#' In general, most users will just drive the car - they will just use \code{\link{doRun}}, but some users may
+#' want to use \code{\link{simulateWithPriors}} or \code{\link{doSimulation}} functions to do various simulations.
+
 
 #' @param phy A phylogenetic tree, in package \code{ape}'s \code{phylo} format.
 
@@ -30,9 +39,10 @@
 
 
 #' @param timeStep This value corresponds to the number of discrete time steps
-#' on the shortest branch
+#' on the shortest branch.
 
-#' @param saveHistory If \code{TRUE}, saves the character history throughout the simulation
+#' @param saveHistory If \code{TRUE}, saves the character history throughout the simulation.
+#' When \code{saveHistory} is \code{TRUE}, processor time will increase quite a bit.
 
 #' @param saveRealParams Saves \code{intrinsicValues} and \code{extrinsicValues} as both a
 #' matrix and a vector to an external .Rdata file.
@@ -43,7 +53,7 @@
 
 #' @param verbose If \code{TRUE}, gives messages about how the simulation is progessing via \code{print}.
 
-#' @param reject.NaN If \code{TRUE}, stop run if any simulated value is NaN
+#' @param reject.NaN If \code{TRUE}, stop run if any simulated value is \code{NaN}.
 
 
 

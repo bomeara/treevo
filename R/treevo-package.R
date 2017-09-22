@@ -21,7 +21,34 @@
 
 #' @examples
 #'
-#' breakThisExample
+#' data(simRun)
+#'
+#' doRun_prc(
+#'   phy = simPhy,
+#'   traits = simChar,
+#'   intrinsicFn=brownianIntrinsic,
+#'   extrinsicFn=nullExtrinsic,
+#'   startingPriorsFns="normal",
+#'   startingPriorsValue=matrix(c(mean(simChar[,1]), sd(simChar[,1]))),
+#'   intrinsicPriorsFns=c("exponential"),
+#'   intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
+#'   extrinsicPriorsFns=c("fixed"),
+#'   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
+#'   TreeYears=1000,
+#'   standardDevFactor=0.2,
+#'   plot=FALSE,
+#'   StartSims=300,
+#'   epsilonProportion=0.7,
+#'   epsilonMultiplier=0.7,
+#'   nStepsPRC=5,
+#'   numParticles=100,
+#'   jobName="examplerun_prc",
+#'   stopRule=FALSE,
+#'   multicore=FALSE,
+#'   coreLimit=1
+#' )
+#' 
+#' 
 
 # NAMESPACE IMPORTING
 
@@ -42,50 +69,7 @@
 #' @importFrom grDevices dev.new dev.off gray pdf rgb 
 #' @importFrom methods as setAs
 
-# need to import class gpc.poly from gpclib, and setAs from methods
-# @importClassesFrom gpclib gpc.poly
-# and triangulate
-# @importFrom gpclib triangulate 
 
-# interval functions - DO NOT EXPORT
-# @export abcparticle
-# @export abctaxon
-# @export fitContinuous.hacked
-# @export interparticleDistance
-# @export pairings
-# @export pullFromPrior
-# @export summarizeTaxonStates
-# @export summaryStatsLong
-#  @export sumStatNames
-#  @export getSimulationSplits
-#  @export getTaxonDFWithPossibleExtinction
-
-# exporting, but would be better to do this in each functions ro2 there, not here...
-# the following should all be exported without these statements now (09-06-17)
-
-#  @export compareListIPD
-#  @export convertTaxonFrameToGeigerData
-#  @export credibleInt
-#  @export doSimulation
-#  @export doSimulationForPlotting
-#  @export mutateState
-#  @export PairwiseESS
-#  @export PairwiseKS
-#  @export parallelSimulateWithPriors
-#  @export parentOffspringPlots
-#  @export plotPosteriors
-#  @export plotPrior
-#  @export simulateWithPriors
-#  @export ThreeD.ABCplots
-#  @export getUnivariatePriorCurve
-#  @export getUnivariatePosteriorCurve
-#  @export plotUnivariatePosteriorVsPrior
-#  @export PLSRejection
-#  @export returnPLSModel
-#  @export PLSTransform
-#  @export GetBMRatePrior
-#  @export doSimulationWithPossibleExtinction
-#  @export createAbcTaxonFromHeightsRow
 
 #'
 NULL

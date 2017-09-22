@@ -6,7 +6,7 @@
 \alias{doRun_rej}
 \title{Run Approximate Bayesian Computation for Phylogenetic Comparative Methods}
 \usage{
-doRun_prc(phy, traits, intrinsicFn, extrinsicFn, parallelSimulateWithPriors,
+doRun_prc(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValue,
   startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns,
   extrinsicPriorsValues, extrinsicPriorsFns, startingValuesGuess = c(),
   intrinsicValuesGuess = c(), extrinsicValuesGuess = c(),
@@ -17,7 +17,7 @@ doRun_prc(phy, traits, intrinsicFn, extrinsicFn, parallelSimulateWithPriors,
   validation = "CV", scale = TRUE, variance.cutoff = 95, niter.goal = 5,
   generation.time = 1)
 
-doRun_rej(phy, traits, intrinsicFn, extrinsicFn, parallelSimulateWithPriors,
+doRun_rej(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValue,
   startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns,
   extrinsicPriorsValues, extrinsicPriorsFns, startingValuesGuess = c(),
   intrinsicValuesGuess = c(), extrinsicValuesGuess = c(),
@@ -39,7 +39,7 @@ traits evolve within a lineage, regardless of the trait values of other taxa.}
 traits evolve within a lineage, based on their own ('internal') trait vlaue and the trait values
 of other taxa.}
 
-\item{parallelSimulateWithPriors}{Matrix with number of columns equal to the number of states (characters)
+\item{startingPriorsValue}{Matrix with number of columns equal to the number of states (characters)
 at root and number of rows equal to two (representing two parameters to pass to prior distribution).}
 
 \item{startingPriorsFns}{Vector containing names of prior distributions to
@@ -63,30 +63,33 @@ use for extrinsic function parameters: can be one of \code{"fixed"}, \code{"unif
 
 \item{extrinsicValuesGuess}{Optional guess of extrinsic values.}
 
-\item{TreeYears}{Unit length of phy}
+\item{TreeYears}{Absolute scale of time-units for \code{phy}, from the root
+to the furthest tip (sometimes referred to as 'unit-length'). For ultrametric
+trees where all tips are at time zero (i.e., the modern day), this would be
+the root age of the tree. By default, this is set to 10000 time-units.}
 
-\item{numParticles}{Number of accepted particles per generation}
+\item{numParticles}{Number of accepted particles per generation.}
 
-\item{standardDevFactor}{Standard deviation for mutating states}
+\item{standardDevFactor}{Standard deviation for mutating states.}
 
-\item{StartSims}{Number of initial simulations}
+\item{StartSims}{Number of initial simulations.}
 
-\item{plot}{If TRUE, plots distance of each simulation}
+\item{plot}{If \code{TRUE}, plots distance of each simulation.}
 
-\item{epsilonProportion}{Sets tolerance for initial simulations}
+\item{epsilonProportion}{Sets tolerance for initial simulations.}
 
-\item{epsilonMultiplier}{Sets tolerance on subsequent generations}
+\item{epsilonMultiplier}{Sets tolerance on subsequent generations.}
 
-\item{nStepsPRC}{Number of generations}
+\item{nStepsPRC}{Number of generations to run.}
 
-\item{jobName}{Optional job name}
+\item{jobName}{Optional job name.}
 
-\item{stopRule}{If TRUE, an analysis will be terminated prior to set number
+\item{stopRule}{If \code{TRUE}, an analysis will be terminated prior to set number
 of generations if the ratio of all parameters from one generation to the
-next falls below the stopValue}
+next falls below the \code{stopValue}.}
 
 \item{stopValue}{Threshold value for terminating an analysis prior to
-nStpesPRC}
+\code{nStepesPRC}.}
 
 \item{multicore}{Whether to use multicore, default is \code{FALSE}. If \code{TRUE}, one of
 two suggested packages must be installed, either \code{doMC} (for UNIX systems) or
@@ -108,18 +111,18 @@ scaling by the standard deviation is done for every segment.}
 number of components included in the final PLS model fit. This value is a 
 percentage and must be between 0 and 100. Default is 95 percent.}
 
-\item{niter.goal}{Adjust number of starting points for Geiger to return the best parameter estimates this number of times on average}
+\item{niter.goal}{Adjust number of starting points for package \code{geiger} to return the best parameter estimates this number of times on average.}
 
 \item{generation.time}{The number of years per generation. This sets the coarseness of the simulation; if it's set to 1000, 
 for example, the population moves every 1000 years.}
 
-\item{abcTolerance}{Proportion of accepted simulations}
+\item{abcTolerance}{Proportion of accepted simulations.}
 
-\item{checkpointFile}{Optional file name for checkpointing simulations}
+\item{checkpointFile}{Optional file name for checkpointing simulations.}
 
-\item{checkpointFreq}{Saving frequency for checkpointing}
+\item{checkpointFreq}{Saving frequency for checkpointing.}
 
-\item{savesims}{option to save individual simulations}
+\item{savesims}{Option to save individual simulations.}
 }
 \value{
 The output of these two functions are lists, composed of multiple objects,
@@ -134,7 +137,6 @@ including generation, attempt, id, parentid, distance, weight, and parameter sta
 \item{phy}{Input phylogeny} 
 \item{traits}{Input traits} \item{simTime}{Processor time for initial simulations} 
 \item{time.per.gen}{Processor time for subsequent generations}
-\item{whichVip}{Matrix of vip summary statistics for each free parameter} 
 \item{credibleInt}{Credible Interval calculation for each free parameter of the final generation} 
 \item{HPD}{Highest Posterior Density calculation each free parameter of the final generation}
 }
@@ -147,7 +149,6 @@ treeYears, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standa
 \item{traits}{Input traits}
 \item{trueFreeValuesANDSummaryValues}{Parameter estimates and summary stats from all sims} 
 \item{simTime}{Processor time for simulations}
-\item{whichVip}{Matrix of vip summary statistics for each free parameter}
 \item{abcDistancesRaw}{Euclidean distances for each simulation and free parameter} 
 \item{particleDataFrame}{DataFrame with information from each 
 simulation, including generation, attempt, id, parentid, distance, weight, and parameter states} 
@@ -156,42 +157,37 @@ simulation, including generation, attempt, id, parentid, distance, weight, and p
 }
 }
 \description{
-Partial Rejection Control
+The \code{doRun} functions are the main interface for \code{TreEvo} users to do Approximate Bayesian Computation (ABC) analysis,
+effectively wrapping the \code{\link{simulateWithPriors}} functions to perform simulations, which
+themselves are wrappers for the the \code{\link{doSimulation}} functions. The two current \code{doRun}
+functions are \code{doRun_prc} which applies a partial rejection control(PRC) ABC analysis over multiple generations of simulations,
+and \code{doRun_rej} which performs a full rejection ('rej') ABC analysis.
 }
 \details{
-Rejection
+Both \code{doRun} functions take an input phylogeny (\code{phy}),
+observed trait data set (\code{traits}), models (\code{intrinsicFn}, \code{extrinsicFn}), and priors
+(\code{startingPriorsValue}, \code{startingPriorsFns}, \code{intrinsicPriorsValues},
+\code{intrinsicPriorsFns}, \code{extrinsicPriorsValues}, \code{extrinsicPriorsFns}). Pulling from
+the priors, it simulates an initial set of simulations (\code{StartSims}). This set of simulations is
+boxcox transformed ,and a PLS regression (see \code{\link{PLSmethods}}) is performed for each free parameter
+to determine the most informative summary statistics (using \code{variance.cutoff}). The euclidean distance is calculated
+between each each initial simulation's most informative summary statistics and the input observed data.
 
-Starts the ABC-rejection run.
+Following that step, the approach of the two functions diverge drastically.
 
-This function performs an abc-prc analysis using an input phylogeny (phy),
-character data set (traits), models (intrinsicFn, extrinsicFn), and priors
-(parallelSimulateWithPriors, startingPriorsFns, intrinsicPriorsValues,
-intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns). Pulling from
-the priors, it simulates an initial set of simulations (StartSims). The set
-of simulations are boxcox transformed and a pls regression is performed for
-each free parameter to determine the most informative summary statistics
-(vipthresh). The euclidean distance of each initial simulation's vip summary
-stats to the input data is calculated, and tolerance is set based on
-epsilonProportion and epsilonMultiplier.
+For function \code{doRun_rej}, those simulations whose most informative summary statistics fall below
+\code{abcTolerance} are kept as accepted 'particles' (simulations runs), describing the
+posterior distribution of parameters. No additional generations of simulations are performed.
 
-The prc analysis begins with generation 1 and continues through nStepsPRC.
-Single simulations (or particles) are accepted if the distance of vip
-summary stats to the original data is less than the tolerance. A generation
-is complete when enough particles (numParticles) have been accepted. These
+Coversely, function \code{doRun_prc} performs an ABC-PRC analysis,
+which follows a much more complicated algorithm with additional generations. In PRC, tolerance is set based on
+\code{epsilonProportion} and \code{epsilonMultiplier}, and the analysis
+begins with generation 1 and continues through a number of generations equal to \code{nStepsPRC}.
+Single simulation runs ('particles') are accepted if the distance of the
+most informative summary stats to the original data is less than this tolerance. A generation
+is complete when enough particles (\code{numParticles}) have been accepted. These
 particles make up the distribution for the next generation. The accepted
 particles from the final generation describe the posterior distributions of
-parameters.
-
-This function performs an abc-rejection analysis using an input phylogeny
-(phy), character data set (traits), models (intrinsicFn, extrinsicFn), and
-priors (parallelSimulateWithPriors, startingPriorsFns, intrinsicPriorsValues,
-intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns). Pulling from
-the priors, it performs StartSims simulations. This set of simulations are
-boxcox transformed and a pls regression is performed for each free parameter
-to determine the most informative summary statistics (vipthresh). The
-euclidean distance of each initial simulation's vip summary stats to the
-input data is calculated, and those that fall under the abcTolerance are
-kept as accepted particles. These describe the posterior distributions of
 parameters.
 }
 \examples{
@@ -204,7 +200,7 @@ doRun_prc(
   intrinsicFn=brownianIntrinsic,
   extrinsicFn=nullExtrinsic,
   startingPriorsFns="normal",
-  parallelSimulateWithPriors=matrix(c(mean(simChar[,1]), sd(simChar[,1]))),
+  startingPriorsValue=matrix(c(mean(simChar[,1]), sd(simChar[,1]))),
   intrinsicPriorsFns=c("exponential"),
   intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
   extrinsicPriorsFns=c("fixed"),
@@ -217,7 +213,7 @@ doRun_prc(
   epsilonMultiplier=0.7,
   nStepsPRC=5,
   numParticles=100,
-  jobName="exampleRun",
+  jobName="examplerun_prc",
   stopRule=FALSE,
   multicore=FALSE,
   coreLimit=1
@@ -225,19 +221,19 @@ doRun_prc(
 
 
 #make sure priors are uniform with this one!
-result<-doRun_rej( 
+doRun_rej( 
 	phy=simPhy,
 	traits=simChar,
 	intrinsicFn=brownianIntrinsic,
 	extrinsicFn=nullExtrinsic,
 	startingPriorsFns="normal",
-	parallelSimulateWithPriors=matrix(c(mean(char[,1]), sd(char[,1]))),
+	startingPriorsValue=matrix(c(mean(char[,1]), sd(char[,1]))),
 	intrinsicPriorsFns=c("exponential"),
 	intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE), #grep for normal in pkg
 	extrinsicPriorsFns=c("fixed"),
 	extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
 	StartSims=1000,
-	jobName="run_c",
+	jobName="examplerun_rej",
 	abcTolerance=0.05,
 	multicore=F,
 	coreLimit=1

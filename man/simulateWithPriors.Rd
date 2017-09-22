@@ -2,34 +2,34 @@
 % Please edit documentation in R/simulateData.R, R/simulateWithPriors.R
 \name{simulateWithPriors}
 \alias{simulateWithPriors}
-\alias{parallelSimulateWithPriors}
+\alias{startingPriorsValue}
 \alias{simulateWithPriors}
 \alias{parallelSimulateWithPriors}
 \title{Simulate data for initial TreEvo analysis}
 \usage{
 simulateWithPriors(phy = NULL, intrinsicFn, extrinsicFn, startingPriorsFns,
-  parallelSimulateWithPriors, intrinsicPriorsFns, intrinsicPriorsValues,
+  startingPriorsValue, intrinsicPriorsFns, intrinsicPriorsValues,
   extrinsicPriorsFns, extrinsicPriorsValues, timeStep, giveUpAttempts = 10,
   verbose = FALSE, checks = TRUE, taxon.df = NULL, freevector = NULL,
   niter.brown = 25, niter.lambda = 25, niter.delta = 25, niter.OU = 25,
   niter.white = 25)
 
-parallelSimulateWithPriors(phy, intrinsicFn, extrinsicFn, startingPriorsFns,
-  parallelSimulateWithPriors, intrinsicPriorsFns, intrinsicPriorsValues,
+startingPriorsValue(phy, intrinsicFn, extrinsicFn, startingPriorsFns,
+  startingPriorsValue, intrinsicPriorsFns, intrinsicPriorsValues,
   extrinsicPriorsFns, extrinsicPriorsValues, timeStep, nrepSim, coreLimit,
   multicore, checkpointFile = NULL, checkpointFreq = 24, verbose = FALSE,
   freevector = NULL, taxon.df = NULL, niter.brown = 25,
   niter.lambda = 25, niter.delta = 25, niter.OU = 25, niter.white = 25)
 
 simulateWithPriors(phy = NULL, intrinsicFn, extrinsicFn, startingPriorsFns,
-  parallelSimulateWithPriors, intrinsicPriorsFns, intrinsicPriorsValues,
+  startingPriorsValue, intrinsicPriorsFns, intrinsicPriorsValues,
   extrinsicPriorsFns, extrinsicPriorsValues, timeStep, giveUpAttempts = 10,
   verbose = FALSE, checks = TRUE, taxon.df = NULL, freevector = NULL,
   niter.brown = 25, niter.lambda = 25, niter.delta = 25, niter.OU = 25,
   niter.white = 25)
 
 parallelSimulateWithPriors(phy, intrinsicFn, extrinsicFn, startingPriorsFns,
-  parallelSimulateWithPriors, intrinsicPriorsFns, intrinsicPriorsValues,
+  startingPriorsValue, intrinsicPriorsFns, intrinsicPriorsValues,
   extrinsicPriorsFns, extrinsicPriorsValues, timeStep, nrepSim, coreLimit,
   multicore, checkpointFile = NULL, checkpointFreq = 24, verbose = FALSE,
   freevector = NULL, taxon.df = NULL, niter.brown = 25,
@@ -48,7 +48,7 @@ of other taxa.}
 \item{startingPriorsFns}{Vector containing names of prior distributions to
 use for root states: can be one of \code{"fixed"}, \code{"uniform"}, \code{"normal"},}
 
-\item{parallelSimulateWithPriors}{Matrix with number of columns equal to the number of states (characters)
+\item{startingPriorsValue}{Matrix with number of columns equal to the number of states (characters)
 at root and number of rows equal to two (representing two parameters to pass to prior distribution).}
 
 \item{intrinsicPriorsFns}{Vector containing names of prior distributions to
@@ -64,14 +64,14 @@ use for extrinsic function parameters: can be one of \code{"fixed"}, \code{"unif
 to the extrinsic function and nrow=2 (two parameters to pass to prior distribution)}
 
 \item{timeStep}{This value corresponds to the number of discrete time steps
-on the shortest branch}
+on the shortest branch.}
 
 \item{giveUpAttempts}{Value for when to stop the analysis if \code{NA} values are present.}
 
 \item{verbose}{If \code{TRUE}, gives messages about how the simulation is progessing via \code{print}.}
 
 \item{checks}{If \code{TRUE}, checks inputs for consistency. This activity is skipped (\code{checks = FALSE})
-when run in parallel by \code{parallelSimulateWithPriors}, and instead is only checked once.}
+when run in parallel by \code{startingPriorsValue}, and instead is only checked once.}
 
 \item{taxon.df}{A data.frame containing data on nodes (both tips and internal nodes) output by various internal functions.
 Can be supplied as input to spead up repeated calculations, but by default is
@@ -103,7 +103,7 @@ If neither package is installed, this function will fail if \code{multicore=TRUE
 
 \item{checkpointFreq}{Saving frequency for checkpointing}
 
-\item{parallelSimulateWithPriors}{Matrix with number of columns equal to the number of states (characters)
+\item{startingPriorsValue}{Matrix with number of columns equal to the number of states (characters)
 at root and number of rows equal to two (representing two parameters to pass to prior distribution).}
 
 \item{intrinsicPriorsValues}{Matrix with number of columns equal to the number of parameters to pass
@@ -163,15 +163,21 @@ simulations.
 The function \code{simulateWithPriors} pulls parameters from prior distributions and simulates
 continuous characters, and is used by TreEvo \code{\link{doRun}} functions to perform simulations.
 
-The function \code{simulateWithPriors} pulls parameters from prior distributions and simulates
-continuous characters, and is used by TreEvo \code{\link{doRun}} functions to perform simulations.
+The \code{simulateWithPriors} function pulls parameters from prior distributions and simulates
+continuous characters (using \code{\link{doSimulation}} functions), returning useful summary statistics for ABC.
+\code{parallelSimulateWithPriors} is a wrapper function for \code{simulateWithPriors} that allows for multithreading
+and checkpointing. This family of functions is mostly used as internal components, generating simulations
+within ABC analyses using the \code{\link{doRun}} functions. See \emph{Note} below.
 }
 \details{
-\code{parallelSimulateWithPriors} is a wrapper function for \code{simulateWithPriors} that allows for multithreading
+\code{startingPriorsValue} is a wrapper function for \code{simulateWithPriors} that allows for multithreading
 and checkpointing.
-
-\code{parallelSimulateWithPriors} is a wrapper function for \code{simulateWithPriors} that allows for multithreading
-and checkpointing.
+}
+\note{
+The \code{\link{simulateWithPriors}} functions are effectively the engine that powers the \code{\link{doRun}}
+functions, while the \code{\link{doSimulation}} functions are the pistons within the \code{\link{simulateWithPriors}} engine.
+In general, most users will just drive the car - they will just use \code{\link{doRun}}, but some users may
+want to use \code{\link{simulateWithPriors}} or \code{\link{doSimulation}} functions to do various simulations.
 }
 \examples{
 
@@ -185,7 +191,7 @@ simData<-simulateWithPriors(phy=simPhy,
   intrinsicFn=brownianIntrinsic,
   extrinsicFn=nullExtrinsic,
   startingPriorsFns="normal",
-  parallelSimulateWithPriors=matrix(c(mean(simChar[,1]), sd(simChar[,1]))),
+  startingPriorsValue=matrix(c(mean(simChar[,1]), sd(simChar[,1]))),
   intrinsicPriorsFns=c("exponential"),
   intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
   extrinsicPriorsFns=c("fixed"),
@@ -196,11 +202,11 @@ simData<-simulateWithPriors(phy=simPhy,
 	 verbose=TRUE,
 	 niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) 
 
-simDataParallel<-parallelSimulateWithPriors(phy=simPhy, 
+simDataParallel<-startingPriorsValue(phy=simPhy, 
   intrinsicFn=brownianIntrinsic,
   extrinsicFn=nullExtrinsic,
   startingPriorsFns="normal",
-  parallelSimulateWithPriors=matrix(c(mean(simChar[,1]), sd(simChar[,1]))),
+  startingPriorsValue=matrix(c(mean(simChar[,1]), sd(simChar[,1]))),
   intrinsicPriorsFns=c("exponential"),
   intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
   extrinsicPriorsFns=c("fixed"),
@@ -214,17 +220,15 @@ simDataParallel<-parallelSimulateWithPriors(phy=simPhy,
 	 niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) 
 
 
-data(simRun)
-
+simPhy<-rcoal(30)
 
 # example simulation
-
 	
 simData<-simulateWithPriors(phy=simPhy, 
   intrinsicFn=brownianIntrinsic,
   extrinsicFn=nullExtrinsic,
   startingPriorsFns="normal",
-  parallelSimulateWithPriors=matrix(c(mean(simChar[,1]), sd(simChar[,1]))),
+  startingPriorsValue=matrix(c(mean(simChar[,1]), sd(simChar[,1]))),
   intrinsicPriorsFns=c("exponential"),
   intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
   extrinsicPriorsFns=c("fixed"),
@@ -235,11 +239,13 @@ simData<-simulateWithPriors(phy=simPhy,
 	 verbose=TRUE,
 	 niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) 
 
+simData
+
 simDataParallel<-parallelSimulateWithPriors(phy=simPhy, 
   intrinsicFn=brownianIntrinsic,
   extrinsicFn=nullExtrinsic,
   startingPriorsFns="normal",
-  parallelSimulateWithPriors=matrix(c(mean(simChar[,1]), sd(simChar[,1]))),
+  startingPriorsValue=matrix(c(mean(simChar[,1]), sd(simChar[,1]))),
   intrinsicPriorsFns=c("exponential"),
   intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
   extrinsicPriorsFns=c("fixed"),
@@ -251,6 +257,8 @@ simDataParallel<-parallelSimulateWithPriors(phy=simPhy,
 	 giveUpAttempts=10, 
 	 verbose=TRUE,
 	 niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) 
+
+simDataParallel
 
 }
 \author{
