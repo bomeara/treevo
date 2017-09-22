@@ -132,7 +132,7 @@
 #' @name simulateData
 #' @rdname simulateData
 #' @export
-simulateData<-function(phy, intrinsicFn, extrinsicFn, startingPriorsFns, startingPriorsValues, 
+simulateData<-function(phy=NULL, intrinsicFn, extrinsicFn, startingPriorsFns, startingPriorsValues, 
 	intrinsicPriorsFns, intrinsicPriorsValues, extrinsicPriorsFns, extrinsicPriorsValues, 
 	taxon.df=NULL, freevector=NULL, timeStep, 
 	giveUpAttempts=10, verbose=FALSE, checks=TRUE,
@@ -190,6 +190,8 @@ simulateData<-function(phy, intrinsicFn, extrinsicFn, startingPriorsFns, startin
 	}
 	return(simTrueAndStats)
 }
+
+
 
 
 #' @rdname simulateData

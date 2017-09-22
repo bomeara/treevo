@@ -5,7 +5,7 @@
 \alias{parallelSimulation}
 \title{Simulate data for initial TreEvo analysis}
 \usage{
-simulateData(phy, intrinsicFn, extrinsicFn, startingPriorsFns,
+simulateData(phy = NULL, intrinsicFn, extrinsicFn, startingPriorsFns,
   startingPriorsValues, intrinsicPriorsFns, intrinsicPriorsValues,
   extrinsicPriorsFns, extrinsicPriorsValues, taxon.df = NULL,
   freevector = NULL, timeStep, giveUpAttempts = 10, verbose = FALSE,
@@ -46,6 +46,10 @@ use for extrinsic function parameters: can be one of \code{"fixed"}, \code{"unif
 
 \item{extrinsicPriorsValues}{Matrix with number of columns equal to the number of parameters to pass
 to the extrinsic function and nrow=2 (two parameters to pass to prior distribution)}
+
+\item{taxon.df}{A data.frame containing data on nodes (both tips and internal nodes) output by various internal functions.
+Can be supplied as input to spead up repeated calculations, but by default is
+\code{NULL}, which instead forces a calculation from input \code{phy}.}
 
 \item{freevector}{A logical vector (with length equal to the number of parameters), indicating free (\code{TRUE}) and
 fixed (\code{FALSE}) parameters.}

@@ -9,7 +9,9 @@
 
 #' @param phy A phylogenetic tree, in package \code{ape}'s \code{phylo} format.
 
-
+#' @param taxon.df A data.frame containing data on nodes (both tips and internal nodes) output by various internal functions.
+#' Can be supplied as input to spead up repeated calculations, but by default is
+#' \code{NULL}, which instead forces a calculation from input \code{phy}.
 
 #' @param intrinsicFn Name of (previously-defined) function that governs how
 #' traits evolve within a lineage, regardless of the trait values of other taxa.
@@ -137,8 +139,8 @@
 #' @name doSimulation
 #' @rdname doSimulation
 #' @export
-doSimulation<-function(phy=NULL, taxon.df=NULL, intrinsicFn, extrinsicFn, 
-	startingValues, intrinsicValues, extrinsicValues, timeStep, saveHistory=FALSE, saveRealParams=FALSE, jobName="") {
+doSimulation<-function(phy=NULL, intrinsicFn, extrinsicFn, startingValues, intrinsicValues, extrinsicValues, 
+	timeStep, saveHistory=FALSE, saveRealParams=FALSE, jobName="", taxon.df=NULL) {
 	
 	if(is.null(taxon.df)){
 		splits=getSimulationSplits(phy)
@@ -163,46 +165,46 @@ doSimulation<-function(phy=NULL, taxon.df=NULL, intrinsicFn, extrinsicFn,
 		startTime<-c()
 		endTime<-c()
 	}
-	numberofsteps<-floor(splits[1, 1]/timeStep)
-	mininterval<-min(splits[1:(dim(splits)[1]-1), 1]-splits[2:(dim(splits)[1]), 1])
+	numberofsteps<-floor(taxon.df[1, 1]/timeStep)
+	mininterval<-min(taxon.df[1:(dim(taxon.df)[1]-1), 1]-taxon.df[2:(dim(taxon.df)[1]), 1])
 	if (numberofsteps<1000) {
-		#warning(paste("You have only ", numberofsteps, " but should probably have a lot more. I would suggest decreasing timeStep to no more than ", splits[1, 1]/1000))
+		#warning(paste("You have only ", numberofsteps, " but should probably have a lot more. I would suggest decreasing timeStep to no more than ", taxon.df[1, 1]/1000))
 	}
 	if (floor(mininterval/timeStep)<50) {
 		#warning(paste("You have only ", floor(mininterval/timeStep), " on the shortest interval but should probably have a lot more if you expect change on this branch. I would suggest decreasing timeStep to no more than ", mininterval/50))
 	}
 	#initial setup
-	timefrompresent=splits[1, 1]
-	taxa<-list(abctaxon(id=splits[1, 3], states=startingValues), abctaxon(id=splits[1, 4], states=startingValues))
-	splits<-splits[2:dim(splits)[1], ] #pop off top value
+	timefrompresent=taxon.df[1, 1]
+	taxa<-list(abctaxon(id=taxon.df[1, 3], states=startingValues), abctaxon(id=taxon.df[1, 4], states=startingValues))
+	taxon.df<-taxon.df[2:dim(taxon.df)[1], ] #pop off top value
 
 	#start running
 	while(timefrompresent>0) {
 		#print(timefrompresent)
 		#speciation if needed
-		while ((timefrompresent-timeStep)<=splits[1, 1]) { #do speciation. changed from if to while to deal with effectively polytomies
+		while ((timefrompresent-timeStep)<=taxon.df[1, 1]) { #do speciation. changed from if to while to deal with effectively polytomies
 			originallength<-length(taxa)
 			taxontodelete<-Inf
 			originallength<-length(taxa)
 			taxontodelete<-Inf
 			for (i in 1:originallength) { #need to merge this from my branch still -DG
-				if (taxa[[i]]$id==splits[1, 2]) {
+				if (taxa[[i]]$id==taxon.df[1, 2]) {
 					taxontodelete<-i
 					taxa[[originallength+1]] <- taxa[[i]]
 					taxa[[originallength+2]] <- taxa[[i]]
-					taxa[[originallength+1]]$id<-splits[1, 3]
+					taxa[[originallength+1]]$id<-taxon.df[1, 3]
 					taxa[[originallength+1]]$timeSinceSpeciation<-0
-					taxa[[originallength+2]]$id<-splits[1, 4]
+					taxa[[originallength+2]]$id<-taxon.df[1, 4]
 					taxa[[originallength+2]]$timeSinceSpeciation<-0
 				}
 			}
 			#cat("taxontodelete = ", taxontodelete)
 			taxa<-taxa[-1*taxontodelete]
-			if(dim(splits)[1]>1) {
-				splits<-splits[2:(dim(splits)[1]), ] #pop off top value
+			if(dim(taxon.df)[1]>1) {
+				taxon.df<-taxon.df[2:(dim(taxon.df)[1]), ] #pop off top value
 			}
 			else {
-				splits[1, ]<-c(-1, 0, 0, 0)
+				taxon.df[1, ]<-c(-1, 0, 0, 0)
 			}
 			#print("------------------- speciation -------------------")
 			#print(taxa)
@@ -256,11 +258,11 @@ doSimulation<-function(phy=NULL, taxon.df=NULL, intrinsicFn, extrinsicFn,
 
 #' @rdname doSimulation
 #' @export
-doSimulationForPlotting<-function(phy=NULL, taxon.df=NULL, intrinsicFn, extrinsicFn, startingValues, intrinsicValues, 
-	extrinsicValues, timeStep, plot=FALSE, savePlot=FALSE, saveHistory=FALSE, saveRealParams=FALSE, jobName="") {
+doSimulationForPlotting<-function(phy=NULL, intrinsicFn, extrinsicFn, startingValues, intrinsicValues, 
+	extrinsicValues, timeStep, plot=FALSE, savePlot=FALSE, saveHistory=FALSE, saveRealParams=FALSE, jobName="", taxon.df=NULL) {
 
 	if(is.null(taxon.df)){
-		splits=getSimulationSplits(phy)
+		taxon.df=getSimulationSplits(phy)
 		}
 
 	if (saveRealParams){
@@ -281,44 +283,44 @@ doSimulationForPlotting<-function(phy=NULL, taxon.df=NULL, intrinsicFn, extrinsi
 		startTime<-c()
 		endTime<-c()
 	}
-		numberofsteps<-floor(splits[1, 1]/timeStep)
-		mininterval<-min(splits[1:(dim(splits)[1]-1), 1]-splits[2:(dim(splits)[1]), 1])
+		numberofsteps<-floor(taxon.df[1, 1]/timeStep)
+		mininterval<-min(taxon.df[1:(dim(taxon.df)[1]-1), 1]-taxon.df[2:(dim(taxon.df)[1]), 1])
 		if (numberofsteps<1000) {
-			#warning(paste("You have only ", numberofsteps, " but should probably have a lot more. I would suggest decreasing timeStep to no more than ", splits[1, 1]/1000))
+			#warning(paste("You have only ", numberofsteps, " but should probably have a lot more. I would suggest decreasing timeStep to no more than ", taxon.df[1, 1]/1000))
 		}
 		if (floor(mininterval/timeStep)<50) {
 			#warning(paste("You have only ", floor(mininterval/timeStep), " on the shortest interval but should probably have a lot more. I would suggest decreasing timeStep to no more than ", mininterval/50))
 		}
 	#initial setup
-		timefrompresent=splits[1, 1]
-		taxa<-list(abctaxon(id=splits[1, 3], states=startingValues), abctaxon(id=splits[1, 4], states=startingValues))
-		splits<-splits[2:dim(splits)[1], ] #pop off top value
+		timefrompresent=taxon.df[1, 1]
+		taxa<-list(abctaxon(id=taxon.df[1, 3], states=startingValues), abctaxon(id=taxon.df[1, 4], states=startingValues))
+		taxon.df<-taxon.df[2:dim(taxon.df)[1], ] #pop off top value
 		
 	#start running
 		while(timefrompresent>0) {
 	#print(timefrompresent)
 	#speciation if needed
-			while ((timefrompresent-timeStep)<=splits[1, 1]) { #do speciation. changed from if to while to deal with effectively polytomies
+			while ((timefrompresent-timeStep)<=taxon.df[1, 1]) { #do speciation. changed from if to while to deal with effectively polytomies
 				originallength<-length(taxa)
 				taxontodelete<-Inf
 				for (i in 1:originallength) {
-					if (taxa[[i]]$id==splits[1, 2]) {
+					if (taxa[[i]]$id==taxon.df[1, 2]) {
 						taxontodelete<-i
 						taxa[[originallength+1]] <- taxa[[i]]
 						taxa[[originallength+2]] <- taxa[[i]]
-						taxa[[originallength+1]]$id<-splits[1, 3]
+						taxa[[originallength+1]]$id<-taxon.df[1, 3]
 						taxa[[originallength+1]]$timeSinceSpeciation<-0
-						taxa[[originallength+2]]$id<-splits[1, 4]
+						taxa[[originallength+2]]$id<-taxon.df[1, 4]
 						taxa[[originallength+2]]$timeSinceSpeciation<-0
 					}
 				}
 	#cat("taxontodelete = ", taxontodelete)
 				taxa<-taxa[-1*taxontodelete]
-				if(dim(splits)[1]>1) {
-					splits<-splits[2:(dim(splits)[1]), ] #pop off top value
+				if(dim(taxon.df)[1]>1) {
+					taxon.df<-taxon.df[2:(dim(taxon.df)[1]), ] #pop off top value
 				}
 				else {
-					splits[1, ]<-c(-1, 0, 0, 0)
+					taxon.df[1, ]<-c(-1, 0, 0, 0)
 				}
 	#print("------------------- speciation -------------------")
 	#print(taxa)
@@ -385,8 +387,8 @@ doSimulationForPlotting<-function(phy=NULL, taxon.df=NULL, intrinsicFn, extrinsi
 
 #' @rdname doSimulation
 #' @export
-doSimulationWithPossibleExtinction<-function(phy=NULL, taxon.df=NULL, intrinsicFn, extrinsicFn, startingValues, intrinsicValues, extrinsicValues,
-	timeStep, saveHistory=FALSE, saveRealParams=FALSE, jobName="", returnAll = FALSE, verbose=FALSE, reject.NaN=TRUE) {
+doSimulationWithPossibleExtinction<-function(phy=NULL, intrinsicFn, extrinsicFn, startingValues, intrinsicValues, extrinsicValues,
+	timeStep, saveHistory=FALSE, saveRealParams=FALSE, jobName="", returnAll = FALSE, verbose=FALSE, reject.NaN=TRUE, taxon.df=NULL) {
 	
 	if(is.null(taxon.df)){
 		taxon.df <- getTaxonDFWithPossibleExtinction(phy)
@@ -413,7 +415,7 @@ doSimulationWithPossibleExtinction<-function(phy=NULL, taxon.df=NULL, intrinsicF
 	numberofsteps<-max(taxon.df$endTime)/timeStep
 	mininterval<-min(taxon.df$endTime - taxon.df$startTime)
 	if (numberofsteps<1000) {
-		#warning(paste("You have only ", numberofsteps, " but should probably have a lot more. I would suggest decreasing timeStep to no more than ", splits[1, 1]/1000))
+		#warning(paste("You have only ", numberofsteps, " but should probably have a lot more. I would suggest decreasing timeStep to no more than ", taxon.df[1, 1]/1000))
 	}
 	if (floor(mininterval/timeStep)<50) {
 		warning(paste("You have only ", floor(mininterval/timeStep), " on the shortest interval but should probably have a lot more if you expect change on this branch. I would suggest decreasing timeStep to no more than ", mininterval/50))

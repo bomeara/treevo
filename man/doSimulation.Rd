@@ -6,19 +6,20 @@
 \alias{doSimulationWithPossibleExtinction}
 \title{Discrete Time Character Simulation}
 \usage{
-doSimulation(phy = NULL, taxon.df = NULL, intrinsicFn, extrinsicFn,
+doSimulation(phy = NULL, intrinsicFn, extrinsicFn, startingValues,
+  intrinsicValues, extrinsicValues, timeStep, saveHistory = FALSE,
+  saveRealParams = FALSE, jobName = "", taxon.df = NULL)
+
+doSimulationForPlotting(phy = NULL, intrinsicFn, extrinsicFn, startingValues,
+  intrinsicValues, extrinsicValues, timeStep, plot = FALSE,
+  savePlot = FALSE, saveHistory = FALSE, saveRealParams = FALSE,
+  jobName = "", taxon.df = NULL)
+
+doSimulationWithPossibleExtinction(phy = NULL, intrinsicFn, extrinsicFn,
   startingValues, intrinsicValues, extrinsicValues, timeStep,
-  saveHistory = FALSE, saveRealParams = FALSE, jobName = "")
-
-doSimulationForPlotting(phy = NULL, taxon.df = NULL, intrinsicFn,
-  extrinsicFn, startingValues, intrinsicValues, extrinsicValues, timeStep,
-  plot = FALSE, savePlot = FALSE, saveHistory = FALSE,
-  saveRealParams = FALSE, jobName = "")
-
-doSimulationWithPossibleExtinction(phy = NULL, taxon.df = NULL, intrinsicFn,
-  extrinsicFn, startingValues, intrinsicValues, extrinsicValues, timeStep,
   saveHistory = FALSE, saveRealParams = FALSE, jobName = "",
-  returnAll = FALSE, verbose = FALSE, reject.NaN = TRUE)
+  returnAll = FALSE, verbose = FALSE, reject.NaN = TRUE,
+  taxon.df = NULL)
 }
 \arguments{
 \item{phy}{A phylogenetic tree, in package \code{ape}'s \code{phylo} format.}
@@ -47,6 +48,10 @@ on the shortest branch}
 matrix and a vector to an external .Rdata file.}
 
 \item{jobName}{Optional name for the job.}
+
+\item{taxon.df}{A data.frame containing data on nodes (both tips and internal nodes) output by various internal functions.
+Can be supplied as input to spead up repeated calculations, but by default is
+\code{NULL}, which instead forces a calculation from input \code{phy}.}
 
 \item{plot}{Will create a new interactive window that plots character values
 throughout the history of the tree.}
