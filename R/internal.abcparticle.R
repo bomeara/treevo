@@ -34,12 +34,12 @@ abcparticle <- function( id=NA, generation=NA, weight=NA, distance=NA, startingV
 	return(particle)
 }
 
-initializeStatesFromMatrices <- function(particle, startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns) {
-	particle$startingValues  <- rep(NA,length=dim(startingPriorsValues)[2])
+initializeStatesFromMatrices <- function(particle, parallelSimulateWithPriors, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns) {
+	particle$startingValues  <- rep(NA,length=dim(parallelSimulateWithPriors)[2])
 	particle$intrinsicValues <- rep(NA,length=dim(intrinsicPriorsValues)[2])
 	particle$extrinsicValues <- rep(NA,length=dim(extrinsicPriorsValues)[2])
-	for (j in sequence(dim(startingPriorsValues)[2])) {
-		particle$startingValues[j] <- pullFromPrior(priorValues=startingPriorsValues[, j], priorFn=startingPriorsFns[j])
+	for (j in sequence(dim(parallelSimulateWithPriors)[2])) {
+		particle$startingValues[j] <- pullFromPrior(priorValues=parallelSimulateWithPriors[, j], priorFn=startingPriorsFns[j])
 	}
 	for (j in sequence(dim(intrinsicPriorsValues)[2])) {
 		particle$intrinsicValues[j] <- pullFromPrior(priorValues=intrinsicPriorsValues[, j], priorFn=intrinsicPriorsFns[j])
@@ -50,9 +50,9 @@ initializeStatesFromMatrices <- function(particle, startingPriorsValues, startin
 	return(particle)
 }
 
-mutateStates <- function(particle, startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, standardDevFactor) {
-	for (j in sequence(dim(startingPriorsValues)[2])) {
-		particle$startingValues[j] <- mutateState(startingState=particle$startingValues[j], standardDevFactor=standardDevFactor, priorValues=startingPriorsValues[, j], priorFn=startingPriorsFns[j])
+mutateStates <- function(particle, parallelSimulateWithPriors, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, standardDevFactor) {
+	for (j in sequence(dim(parallelSimulateWithPriors)[2])) {
+		particle$startingValues[j] <- mutateState(startingState=particle$startingValues[j], standardDevFactor=standardDevFactor, priorValues=parallelSimulateWithPriors[, j], priorFn=startingPriorsFns[j])
 	}
 	for (j in sequence(dim(intrinsicPriorsValues)[2])) {
 		particle$intrinsicValues[j] <- mutateState(startingState=particle$intrinsicValues[j], standardDevFactor=standardDevFactor, priorValues=intrinsicPriorsValues[, j], priorFn=intrinsicPriorsFns[j])

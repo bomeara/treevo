@@ -71,11 +71,11 @@
 #  @export mutateState
 #  @export PairwiseESS
 #  @export PairwiseKS
-#  @export parallelSimulation
+#  @export parallelSimulateWithPriors
 #  @export parentOffspringPlots
 #  @export plotPosteriors
 #  @export plotPrior
-#  @export simulateData
+#  @export simulateWithPriors
 #  @export ThreeD.ABCplots
 #  @export getUnivariatePriorCurve
 #  @export getUnivariatePosteriorCurve

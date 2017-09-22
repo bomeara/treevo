@@ -11,7 +11,7 @@
 #'
 #' This function performs an abc-prc analysis using an input phylogeny (phy),
 #' character data set (traits), models (intrinsicFn, extrinsicFn), and priors
-#' (startingPriorsValues, startingPriorsFns, intrinsicPriorsValues,
+#' (parallelSimulateWithPriors, startingPriorsFns, intrinsicPriorsValues,
 #' intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns). Pulling from
 #' the priors, it simulates an initial set of simulations (StartSims). The set
 #' of simulations are boxcox transformed and a pls regression is performed for
@@ -33,7 +33,7 @@
 #'
 #' This function performs an abc-rejection analysis using an input phylogeny
 #' (phy), character data set (traits), models (intrinsicFn, extrinsicFn), and
-#' priors (startingPriorsValues, startingPriorsFns, intrinsicPriorsValues,
+#' priors (parallelSimulateWithPriors, startingPriorsFns, intrinsicPriorsValues,
 #' intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns). Pulling from
 #' the priors, it performs StartSims simulations. This set of simulations are
 #' boxcox transformed and a pls regression is performed for each free parameter
@@ -45,7 +45,7 @@
 #'
 
 #' @inheritParams doSimulation
-#' @inheritParams simulateData
+#' @inheritParams simulateWithPriors
 #' @inheritParams PLSmethods
 
 #' @param traits Data matrix with rownames identical to \code{phy@tip.label}.
@@ -189,7 +189,7 @@
 #'   intrinsicFn=brownianIntrinsic,
 #'   extrinsicFn=nullExtrinsic,
 #'   startingPriorsFns="normal",
-#'   startingPriorsValues=matrix(c(mean(simChar[,1]), sd(simChar[,1]))),
+#'   parallelSimulateWithPriors=matrix(c(mean(simChar[,1]), sd(simChar[,1]))),
 #'   intrinsicPriorsFns=c("exponential"),
 #'   intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
 #'   extrinsicPriorsFns=c("fixed"),
@@ -216,7 +216,7 @@
 #' 	intrinsicFn=brownianIntrinsic,
 #' 	extrinsicFn=nullExtrinsic,
 #' 	startingPriorsFns="normal",
-#' 	startingPriorsValues=matrix(c(mean(char[,1]), sd(char[,1]))),
+#' 	parallelSimulateWithPriors=matrix(c(mean(char[,1]), sd(char[,1]))),
 #' 	intrinsicPriorsFns=c("exponential"),
 #' 	intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE), #grep for normal in pkg
 #' 	extrinsicPriorsFns=c("fixed"),
@@ -241,7 +241,7 @@
 #' @name doRun
 #' @rdname doRun
 #' @export
-doRun_prc<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues, 
+doRun_prc<-function(phy, traits, intrinsicFn, extrinsicFn, parallelSimulateWithPriors, 
 	startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, 
 	extrinsicPriorsFns, startingValuesGuess=c(), intrinsicValuesGuess=c(), 
 	extrinsicValuesGuess=c(), TreeYears=1e+04, numParticles=300, standardDevFactor=0.20, 
@@ -264,7 +264,7 @@ doRun_prc<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
 	taxon.df <- getTaxonDFWithPossibleExtinction(phy)
 
 	#figure out number of free params
-	numberParametersTotal<-dim(startingPriorsValues)[2] +  dim(intrinsicPriorsValues)[2] + dim(extrinsicPriorsValues)[2]
+	numberParametersTotal<-dim(parallelSimulateWithPriors)[2] +  dim(intrinsicPriorsValues)[2] + dim(extrinsicPriorsValues)[2]
 	numberParametersFree<-numberParametersTotal
 	numberParametersStarting<-0
 	numberParametersIntrinsic<-0
@@ -276,7 +276,7 @@ doRun_prc<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
 	#create PriorMatrix
 	namesForPriorMatrix<-c()
 	PriorMatrix<-matrix(c(startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns), nrow=1, ncol=numberParametersTotal)
-	for (a in 1:dim(startingPriorsValues)[2]) {
+	for (a in 1:dim(parallelSimulateWithPriors)[2]) {
 		namesForPriorMatrix<-c(paste("StartingStates", a, sep=""))
 	}
 	for (b in 1:dim(intrinsicPriorsValues)[2]) {
@@ -286,13 +286,13 @@ doRun_prc<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
 	for (c in 1:dim(extrinsicPriorsValues)[2]) {
 		namesForPriorMatrix <-append(namesForPriorMatrix, paste("ExtrinsicValue", c, sep=""))
 	}
-	PriorMatrix<-rbind(PriorMatrix, cbind(startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues))
+	PriorMatrix<-rbind(PriorMatrix, cbind(parallelSimulateWithPriors, intrinsicPriorsValues, extrinsicPriorsValues))
 	colnames(PriorMatrix)<-namesForPriorMatrix
 	rownames(PriorMatrix)<-c("shape", "value1", "value2")
 
 	
 	# get freevector
-	freevector<-getFreeVector(startingPriorsFns=startingPriorsFns, startingPriorsValues=startingPriorsValues, 
+	freevector<-getFreeVector(startingPriorsFns=startingPriorsFns, parallelSimulateWithPriors=parallelSimulateWithPriors, 
 						intrinsicPriorsFns=intrinsicPriorsFns, intrinsicPriorsValues=intrinsicPriorsValues,
 						extrinsicPriorsFns=extrinsicPriorsFns, extrinsicPriorsValues=extrinsicPriorsValues)
 	
@@ -309,7 +309,7 @@ doRun_prc<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
 	if (length(startingValuesGuess)==0) { #if no user guesses, try pulling a value from the prior
 		startingValuesGuess<-rep(NA,length(startingPriorsFns))
 		for (i in 1:length(startingPriorsFns)) {
-			startingValuesGuess[i]<-pullFromPrior(startingPriorsValues[,i],startingPriorsFns[i])
+			startingValuesGuess[i]<-pullFromPrior(parallelSimulateWithPriors[,i],startingPriorsFns[i])
 		}
 	}
 	if (length(intrinsicValuesGuess)==0) { #if no user guesses, try pulling a value from the prior
@@ -370,8 +370,8 @@ doRun_prc<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
 	#set up initial sum stats as length of SSL of original data
 	summaryValues<-matrix(nrow=0, ncol=length(summaryStatsLong(phy=phy, traits=traits, 
 		niter.brown=200, niter.lambda=200, niter.delta=200, niter.OU=200, niter.white=200))) 
-	trueFreeValuesANDSummaryValues<-parallelSimulation(nrepSim=nrepSim, coreLimit=coreLimit, phy=phy, 
-		startingPriorsValues=startingPriorsValues, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues, 
+	trueFreeValuesANDSummaryValues<-parallelSimulateWithPriors(nrepSim=nrepSim, coreLimit=coreLimit, phy=phy,  taxon.df=taxon.df,
+		parallelSimulateWithPriors=parallelSimulateWithPriors, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues, 
 		startingPriorsFns=startingPriorsFns, intrinsicPriorsFns=intrinsicPriorsFns, extrinsicPriorsFns=extrinsicPriorsFns, 
 		freevector=freevector, timeStep=timeStep, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, multicore=multicore, 
 		niter.brown=niter.brown.g, niter.lambda=niter.lambda.g, niter.delta=niter.delta.g, niter.OU=niter.OU.g, niter.white=niter.white.g)
@@ -416,7 +416,7 @@ doRun_prc<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
 				if (plot) {
 					plot(x=c(min(intrinsicPriorsValues), max(intrinsicPriorsValues)), y=c(0, 5*max(toleranceVector)), type="n")
 				}
-				for (i in 1:dim(startingPriorsValues)[2]) {
+				for (i in 1:dim(parallelSimulateWithPriors)[2]) {
 					nameVector<-append(nameVector, paste("StartingStates", i, sep=""))
 				}
 				for (i in 1:dim(intrinsicPriorsValues)[2]) {
@@ -430,7 +430,7 @@ doRun_prc<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
 				particleWeights=rep(0, numParticles) 
 				#stores parameters in model for each particle
 				particleParameters<-matrix(nrow=numParticles, 
-					ncol=dim(startingPriorsValues)[2] +  dim(intrinsicPriorsValues)[2] + dim(extrinsicPriorsValues)[2]) 
+					ncol=dim(parallelSimulateWithPriors)[2] +  dim(intrinsicPriorsValues)[2] + dim(extrinsicPriorsValues)[2]) 
 				particleDistance=rep(NA, numParticles)
 				particle<-1
 				attempts<-0
@@ -444,12 +444,12 @@ doRun_prc<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
 
 					newparticleList<-list(abcparticle(id=particle, generation=1, weight=0))
 					newparticleList[[1]]<-initializeStatesFromMatrices(newparticleList[[1]], 
-						startingPriorsValues=startingPriorsValues, startingPriorsFns=startingPriorsFns, intrinsicPriorsValues=intrinsicPriorsValues, 
+						parallelSimulateWithPriors=parallelSimulateWithPriors, startingPriorsFns=startingPriorsFns, intrinsicPriorsValues=intrinsicPriorsValues, 
 						intrinsicPriorsFns=intrinsicPriorsFns, extrinsicPriorsValues=extrinsicPriorsValues, extrinsicPriorsFns=extrinsicPriorsFns)
 
 					newparticleList[[1]]$distance<-abcDistance(summaryStatsLong
 						(phy, 
-							doSimulationWithPossibleExtinction(phy=phy, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, 
+							doSimulationWithPossibleExtinction(phy=phy,  taxon.df=taxon.df, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, 
 								newparticleList[[1]]$startingValues, newparticleList[[1]]$intrinsicValues, 
 								newparticleList[[1]]$extrinsicValues, timeStep), 
 							niter.brown=niter.brown.g, niter.lambda=niter.lambda.g, niter.delta=niter.delta.g, 
@@ -542,7 +542,7 @@ doRun_prc<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
 							particleWeights=rep(0, numParticles) 
 							#stores parameters in model for each particle
 							particleParameters<-matrix(nrow=numParticles,
-								ncol=dim(startingPriorsValues)[2] +  dim(intrinsicPriorsValues)[2] + dim(extrinsicPriorsValues)[2]) 
+								ncol=dim(parallelSimulateWithPriors)[2] +  dim(intrinsicPriorsValues)[2] + dim(extrinsicPriorsValues)[2]) 
 							particleDistance=rep(NA, numParticles)
 							particle<-1
 							attempts<-0
@@ -565,7 +565,7 @@ doRun_prc<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
 								#cat("mutateStates\n")
 
 								newparticleList[[1]]<-mutateStates(newparticleList[[1]], 
-									startingPriorsValues=startingPriorsValues, startingPriorsFns=startingPriorsFns, 
+									parallelSimulateWithPriors=parallelSimulateWithPriors, startingPriorsFns=startingPriorsFns, 
 									intrinsicPriorsValues=intrinsicPriorsValues, intrinsicPriorsFns=intrinsicPriorsFns, 
 									extrinsicPriorsValues=extrinsicPriorsValues, extrinsicPriorsFns=extrinsicPriorsFns, 
 									standardDevFactor=standardDevFactor)
@@ -575,7 +575,7 @@ doRun_prc<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
 
 								newparticleList[[1]]$distance<-abcDistance(
 									summaryStatsLong(phy=phy, 
-										doSimulationWithPossibleExtinction(phy=phy, 
+										doSimulationWithPossibleExtinction(phy=phy,  taxon.df=taxon.df,
 											intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, 
 											newparticleList[[1]]$startingValues, newparticleList[[1]]$intrinsicValues, 
 											newparticleList[[1]]$extrinsicValues, timeStep), 
@@ -615,25 +615,25 @@ doRun_prc<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
 											newvalue<-newparticleList[[1]]$startingValues[j]
 											meantouse= oldParticleList[[i]]$startingValues[j]
 												if (startingPriorsFns[j]=="uniform") {
-													sdtouse<-standardDevFactor*((max(startingPriorsValues[,j])-min(startingPriorsValues[,j]))/sqrt(12))
+													sdtouse<-standardDevFactor*((max(parallelSimulateWithPriors[,j])-min(parallelSimulateWithPriors[,j]))/sqrt(12))
 													#print(paste("startingPriorFn is uniform and sdtouse =", sdtouse))
 												}
 												else if (startingPriorsFns[j]=="exponential") {
-													sdtouse<-standardDevFactor*(1/startingPriorsValues[,j])
+													sdtouse<-standardDevFactor*(1/parallelSimulateWithPriors[,j])
 													#print(paste("startingPriorFn is exponential and sdtouse =", sdtouse))
 												}
 												else {
-													sdtouse<-standardDevFactor*(startingPriorsValues[2,j])
+													sdtouse<-standardDevFactor*(parallelSimulateWithPriors[2,j])
 												}
 
 											lnlocalTransitionProb=dnorm(newvalue, mean=meantouse, sd=sdtouse,log=TRUE
-												) - ((log(1)/pnorm(min(startingPriorsValues[, j]), mean=meantouse, sd=sdtouse, lower.tail=T, log.p=T))
-													* pnorm(max(startingPriorsValues[,j]), mean=meantouse , sd=sdtouse, lower.tail=F, log.p=T))
+												) - ((log(1)/pnorm(min(parallelSimulateWithPriors[, j]), mean=meantouse, sd=sdtouse, lower.tail=T, log.p=T))
+													* pnorm(max(parallelSimulateWithPriors[,j]), mean=meantouse , sd=sdtouse, lower.tail=F, log.p=T))
 
 											if (lnlocalTransitionProb == "NaN") {  #to prevent lnlocalTransitionProb from being NaN (if pnorm=0)
 												lnlocalTransitionProb<-.Machine$double.xmin
 											}
-											if (min(startingPriorsValues[, j])==max(startingPriorsValues[, j])) {
+											if (min(parallelSimulateWithPriors[, j])==max(parallelSimulateWithPriors[, j])) {
 												lnlocalTransitionProb=log(1)
 											}
 											lnTransitionProb<-lnTransitionProb+lnlocalTransitionProb
@@ -838,7 +838,7 @@ doRun_prc<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
 
 #' @rdname doRun
 #' @export
-doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues, startingPriorsFns, 
+doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, parallelSimulateWithPriors, startingPriorsFns, 
 	intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, 
 	startingValuesGuess=c(), intrinsicValuesGuess=c(), extrinsicValuesGuess=c(), TreeYears=1e+04, 
 	standardDevFactor=0.20, StartSims=NA, jobName=NA, abcTolerance=0.1, multicore=FALSE, coreLimit=NA, 
@@ -857,7 +857,7 @@ doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
 
 
 	#figure out number of free params
-	numberParametersTotal<-dim(startingPriorsValues)[2] +  dim(intrinsicPriorsValues)[2] + dim(extrinsicPriorsValues)[2]
+	numberParametersTotal<-dim(parallelSimulateWithPriors)[2] +  dim(intrinsicPriorsValues)[2] + dim(extrinsicPriorsValues)[2]
 	numberParametersFree<-numberParametersTotal
 	numberParametersStarting<-0
 	numberParametersIntrinsic<-0
@@ -868,7 +868,7 @@ doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
 
 	namesForPriorMatrix<-c()
 	PriorMatrix<-matrix(c(startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns), nrow=1, ncol=numberParametersTotal)
-	for (a in 1:dim(startingPriorsValues)[2]) {
+	for (a in 1:dim(parallelSimulateWithPriors)[2]) {
 		namesForPriorMatrix<-c(paste("StartingStates", a, sep=""))
 	}
 	for (b in 1:dim(intrinsicPriorsValues)[2]) {
@@ -877,12 +877,12 @@ doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
 	for (c in 1:dim(extrinsicPriorsValues)[2]) {
 		namesForPriorMatrix <-append(namesForPriorMatrix, paste("ExtrinsicValue", c, sep=""))
 	}
-	PriorMatrix<-rbind(PriorMatrix, cbind(startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues))
+	PriorMatrix<-rbind(PriorMatrix, cbind(parallelSimulateWithPriors, intrinsicPriorsValues, extrinsicPriorsValues))
 	colnames(PriorMatrix)<-namesForPriorMatrix
 	rownames(PriorMatrix)<-c("shape", "value1", "value2")
 
 	# get freevector
-	freevector<-getFreeVector(startingPriorsFns=startingPriorsFns, startingPriorsValues=startingPriorsValues, 
+	freevector<-getFreeVector(startingPriorsFns=startingPriorsFns, parallelSimulateWithPriors=parallelSimulateWithPriors, 
 						intrinsicPriorsFns=intrinsicPriorsFns, intrinsicPriorsValues=intrinsicPriorsValues,
 						extrinsicPriorsFns=extrinsicPriorsFns, extrinsicPriorsValues=extrinsicPriorsValues)
 
@@ -890,7 +890,7 @@ doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
 	if (length(startingValuesGuess)==0) { #if no user guesses, try pulling a value from the prior
 		startingValuesGuess<-rep(NA,length(startingPriorsFns))
 		for (i in 1:length(startingPriorsFns)) {
-			startingValuesGuess[i]<-pullFromPrior(startingPriorsValues[,i],startingPriorsFns[i])
+			startingValuesGuess[i]<-pullFromPrior(parallelSimulateWithPriors[,i],startingPriorsFns[i])
 		}
 	}
 	if (length(intrinsicStatesGuess)==0) { #if no user guesses, try pulling a value from the prior
@@ -938,8 +938,8 @@ doRun_rej<-function(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
 	niter.white.g <- round(max(10, min(niter.goal/solnfreq(white),100)))
 	cat(paste("\n",niter.white.g, "for white noise"))
 
-	trueFreeValuesANDSummaryValues<-parallelSimulation(nrepSim=nrepSim, coreLimit=coreLimit, phy=phy, 
-		startingPriorsValues=startingPriorsValues, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues, 
+	trueFreeValuesANDSummaryValues<-parallelSimulateWithPriors(nrepSim=nrepSim, coreLimit=coreLimit, phy=phy,  taxon.df=taxon.df,
+		parallelSimulateWithPriors=parallelSimulateWithPriors, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues, 
 		startingPriorsFns=startingPriorsFns, intrinsicPriorsFns=intrinsicPriorsFns, extrinsicPriorsFns=extrinsicPriorsFns, 
 		freevector=freevector, timeStep=timeStep, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, 
 		multicore=multicore, checkpointFile=checkpointFile, checkpointFreq=checkpointFreq, 

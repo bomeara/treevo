@@ -1,11 +1,11 @@
 # internal function for calculating freevector
 
-getFreeVector<-function(startingPriorsFns, startingPriorsValues, 
+getFreeVector<-function(startingPriorsFns, parallelSimulateWithPriors, 
 						intrinsicPriorsFns, intrinsicPriorsValues, extrinsicPriorsFns, extrinsicPriorsValues){
 	# calculate freevector
 	freevector<-c()
 	#Calculate freevector
-	for (i in 1:dim(startingPriorsValues)[2]) {
+	for (i in 1:dim(parallelSimulateWithPriors)[2]) {
 		priorFn<-match.arg(arg=startingPriorsFns[i],choices=c("fixed", "uniform", "normal", "lognormal", "gamma", "exponential"),several.ok=FALSE)
 		if (priorFn=="fixed") {
 			numberParametersFree<-numberParametersFree-1
@@ -13,7 +13,7 @@ getFreeVector<-function(startingPriorsFns, startingPriorsValues,
 		}
 		else {
 			numberParametersStarting<-numberParametersStarting+1
-			freevariables<-cbind(freevariables, startingPriorsValues[, i])
+			freevariables<-cbind(freevariables, parallelSimulateWithPriors[, i])
 			titlevector <-c(titlevector, paste("Starting", numberParametersStarting))
 			freevector<-c(freevector, TRUE)
 		}
