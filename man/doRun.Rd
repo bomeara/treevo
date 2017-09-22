@@ -6,7 +6,7 @@
 \alias{doRun_rej}
 \title{Run Approximate Bayesian Computation for Phylogenetic Comparative Methods}
 \usage{
-doRun_prc(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
+doRun_prc(phy, traits, intrinsicFn, extrinsicFn, parallelSimulateWithPriors,
   startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns,
   extrinsicPriorsValues, extrinsicPriorsFns, startingValuesGuess = c(),
   intrinsicValuesGuess = c(), extrinsicValuesGuess = c(),
@@ -17,7 +17,7 @@ doRun_prc(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
   validation = "CV", scale = TRUE, variance.cutoff = 95, niter.goal = 5,
   generation.time = 1)
 
-doRun_rej(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
+doRun_rej(phy, traits, intrinsicFn, extrinsicFn, parallelSimulateWithPriors,
   startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns,
   extrinsicPriorsValues, extrinsicPriorsFns, startingValuesGuess = c(),
   intrinsicValuesGuess = c(), extrinsicValuesGuess = c(),
@@ -39,7 +39,7 @@ traits evolve within a lineage, regardless of the trait values of other taxa.}
 traits evolve within a lineage, based on their own ('internal') trait vlaue and the trait values
 of other taxa.}
 
-\item{startingPriorsValues}{Matrix with number of columns equal to the number of states (characters)
+\item{parallelSimulateWithPriors}{Matrix with number of columns equal to the number of states (characters)
 at root and number of rows equal to two (representing two parameters to pass to prior distribution).}
 
 \item{startingPriorsFns}{Vector containing names of prior distributions to
@@ -165,7 +165,7 @@ Starts the ABC-rejection run.
 
 This function performs an abc-prc analysis using an input phylogeny (phy),
 character data set (traits), models (intrinsicFn, extrinsicFn), and priors
-(startingPriorsValues, startingPriorsFns, intrinsicPriorsValues,
+(parallelSimulateWithPriors, startingPriorsFns, intrinsicPriorsValues,
 intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns). Pulling from
 the priors, it simulates an initial set of simulations (StartSims). The set
 of simulations are boxcox transformed and a pls regression is performed for
@@ -184,7 +184,7 @@ parameters.
 
 This function performs an abc-rejection analysis using an input phylogeny
 (phy), character data set (traits), models (intrinsicFn, extrinsicFn), and
-priors (startingPriorsValues, startingPriorsFns, intrinsicPriorsValues,
+priors (parallelSimulateWithPriors, startingPriorsFns, intrinsicPriorsValues,
 intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns). Pulling from
 the priors, it performs StartSims simulations. This set of simulations are
 boxcox transformed and a pls regression is performed for each free parameter
@@ -204,7 +204,7 @@ doRun_prc(
   intrinsicFn=brownianIntrinsic,
   extrinsicFn=nullExtrinsic,
   startingPriorsFns="normal",
-  startingPriorsValues=matrix(c(mean(simChar[,1]), sd(simChar[,1]))),
+  parallelSimulateWithPriors=matrix(c(mean(simChar[,1]), sd(simChar[,1]))),
   intrinsicPriorsFns=c("exponential"),
   intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
   extrinsicPriorsFns=c("fixed"),
@@ -231,7 +231,7 @@ result<-doRun_rej(
 	intrinsicFn=brownianIntrinsic,
 	extrinsicFn=nullExtrinsic,
 	startingPriorsFns="normal",
-	startingPriorsValues=matrix(c(mean(char[,1]), sd(char[,1]))),
+	parallelSimulateWithPriors=matrix(c(mean(char[,1]), sd(char[,1]))),
 	intrinsicPriorsFns=c("exponential"),
 	intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE), #grep for normal in pkg
 	extrinsicPriorsFns=c("fixed"),
