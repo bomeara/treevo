@@ -6,14 +6,14 @@
 \title{Simulate data for initial TreEvo analysis}
 \usage{
 simulateWithPriors(phy = NULL, intrinsicFn, extrinsicFn, startingPriorsFns,
-  startingPriorsValue, intrinsicPriorsFns, intrinsicPriorsValues,
+  startingPriorsValues, intrinsicPriorsFns, intrinsicPriorsValues,
   extrinsicPriorsFns, extrinsicPriorsValues, timeStep, giveUpAttempts = 10,
   verbose = FALSE, checks = TRUE, taxon.df = NULL, freevector = NULL,
   niter.brown = 25, niter.lambda = 25, niter.delta = 25, niter.OU = 25,
   niter.white = 25)
 
 parallelSimulateWithPriors(phy, intrinsicFn, extrinsicFn, startingPriorsFns,
-  startingPriorsValue, intrinsicPriorsFns, intrinsicPriorsValues,
+  startingPriorsValues, intrinsicPriorsFns, intrinsicPriorsValues,
   extrinsicPriorsFns, extrinsicPriorsValues, timeStep, nrepSim, coreLimit,
   multicore, checkpointFile = NULL, checkpointFreq = 24, verbose = FALSE,
   freevector = NULL, taxon.df = NULL, niter.brown = 25,
@@ -31,9 +31,6 @@ of other taxa.}
 
 \item{startingPriorsFns}{Vector containing names of prior distributions to
 use for root states: can be one of \code{"fixed"}, \code{"uniform"}, \code{"normal"},}
-
-\item{startingPriorsValue}{Matrix with number of columns equal to the number of states (characters)
-at root and number of rows equal to two (representing two parameters to pass to prior distribution).}
 
 \item{intrinsicPriorsFns}{Vector containing names of prior distributions to
 use for intrinsic function parameters: can be one of \code{"fixed"}, \code{"uniform"}, \code{"normal"},}
@@ -86,6 +83,9 @@ If neither package is installed, this function will fail if \code{multicore=TRUE
 \item{checkpointFile}{Optional file name for checkpointing simulations}
 
 \item{checkpointFreq}{Saving frequency for checkpointing}
+
+\item{startingPriorsValue}{Matrix with number of columns equal to the number of states (characters)
+at root and number of rows equal to two (representing two parameters to pass to prior distribution).}
 }
 \value{
 Returns matrix of \code{trueFreeValues} and summary statistics for

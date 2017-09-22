@@ -125,7 +125,7 @@
 #' @name simulateWithPriors
 #' @rdname simulateWithPriors
 #' @export
-simulateWithPriors<-function(phy=NULL, intrinsicFn, extrinsicFn, startingPriorsFns, startingPriorsValue, 
+simulateWithPriors<-function(phy=NULL, intrinsicFn, extrinsicFn, startingPriorsFns, startingPriorsValues, 
 	intrinsicPriorsFns, intrinsicPriorsValues, extrinsicPriorsFns, extrinsicPriorsValues, timeStep,
 	giveUpAttempts=10, verbose=FALSE, checks=TRUE, taxon.df=NULL, freevector=NULL, 
 	niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) {
@@ -142,7 +142,7 @@ simulateWithPriors<-function(phy=NULL, intrinsicFn, extrinsicFn, startingPriorsF
 		}
 		
 	if(is.null(freevector)){
-		freevector<-getFreeVector(startingPriorsFns=startingPriorsFns, startingPriorsValue=startingPriorsValue, 
+		freevector<-getFreeVector(startingPriorsFns=startingPriorsFns, startingPriorsValues=startingPriorsValues, 
 					intrinsicPriorsFns=intrinsicPriorsFns, intrinsicPriorsValues=intrinsicPriorsValues,
 					extrinsicPriorsFns=extrinsicPriorsFns, extrinsicPriorsValues=extrinsicPriorsValues)
 		}
@@ -154,11 +154,11 @@ simulateWithPriors<-function(phy=NULL, intrinsicFn, extrinsicFn, startingPriorsF
 	    if (n.attempts>giveUpAttempts) {
 	    	stop("Error: keep getting NA in the output of simulateWithPriors")
 	    }
-		trueStarting<-rep(NaN, dim(startingPriorsValue)[2])
+		trueStarting<-rep(NaN, dim(startingPriorsValues)[2])
 		trueIntrinsic<-rep(NaN, dim(intrinsicPriorsValues)[2])
 		trueExtrinsic<-rep(NaN, dim(extrinsicPriorsValues)[2])
-		for (j in 1:dim(startingPriorsValue)[2]) {
-			trueStarting[j]=pullFromPrior(startingPriorsValue[,j],startingPriorsFns[j])
+		for (j in 1:dim(startingPriorsValues)[2]) {
+			trueStarting[j]=pullFromPrior(startingPriorsValues[,j],startingPriorsFns[j])
 		}
 		for (j in 1:dim(intrinsicPriorsValues)[2]) {
 			trueIntrinsic[j]=pullFromPrior(intrinsicPriorsValues[,j],intrinsicPriorsFns[j])
@@ -189,7 +189,7 @@ simulateWithPriors<-function(phy=NULL, intrinsicFn, extrinsicFn, startingPriorsF
 #' @rdname simulateWithPriors
 #' @export
 parallelSimulateWithPriors<-function(phy, 
-	intrinsicFn, extrinsicFn, startingPriorsFns, startingPriorsValue, 
+	intrinsicFn, extrinsicFn, startingPriorsFns, startingPriorsValues,
 	intrinsicPriorsFns, intrinsicPriorsValues, extrinsicPriorsFns, extrinsicPriorsValues, timeStep,
 	nrepSim, coreLimit, multicore, 
 	checkpointFile=NULL, checkpointFreq=24, verbose=FALSE, freevector=NULL, taxon.df=NULL, 
