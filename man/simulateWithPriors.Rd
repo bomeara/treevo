@@ -149,7 +149,7 @@ simDataParallel<-parallelSimulateWithPriors(
   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE), 
   timeStep=0.0001,
   checkpointFile=NULL, checkpointFreq=24,
-  verbose=TRUE,
+  verbose=FALSE,
   freevector=NULL, taxon.df=NULL,
   niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) 
 
