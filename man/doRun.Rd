@@ -3,29 +3,18 @@
 \name{doRun}
 \alias{doRun}
 \alias{doRun_prc}
-\alias{doRun_rej}
 \title{Run Approximate Bayesian Computation for Phylogenetic Comparative Methods}
 \usage{
-doRun_prc(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValue,
+doRun_prc(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
   startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns,
   extrinsicPriorsValues, extrinsicPriorsFns, startingValuesGuess = c(),
   intrinsicValuesGuess = c(), extrinsicValuesGuess = c(),
-  TreeYears = 10000, numParticles = 300, standardDevFactor = 0.2,
-  StartSims = 300, plot = FALSE, epsilonProportion = 0.7,
-  epsilonMultiplier = 0.7, nStepsPRC = 5, jobName = NA,
-  stopRule = FALSE, stopValue = 0.05, multicore = FALSE, coreLimit = NA,
+  TreeYears = 10000, multicore = FALSE, coreLimit = NA,
   validation = "CV", scale = TRUE, variance.cutoff = 95, niter.goal = 5,
-  generation.time = 1)
-
-doRun_rej(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValue,
-  startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns,
-  extrinsicPriorsValues, extrinsicPriorsFns, startingValuesGuess = c(),
-  intrinsicValuesGuess = c(), extrinsicValuesGuess = c(),
-  TreeYears = 10000, standardDevFactor = 0.2, StartSims = NA,
-  jobName = NA, abcTolerance = 0.1, multicore = FALSE, coreLimit = NA,
-  checkpointFile = NULL, checkpointFreq = 24, validation = "CV",
-  scale = TRUE, variance.cutoff = 95, savesims = FALSE, niter.goal = 5,
-  generation.time = 1)
+  generation.time = 1, numParticles = 300, standardDevFactor = 0.2,
+  StartSims = 300, epsilonProportion = 0.7, epsilonMultiplier = 0.7,
+  nStepsPRC = 5, jobName = NA, stopRule = FALSE, stopValue = 0.05,
+  plot = FALSE)
 }
 \arguments{
 \item{phy}{A phylogenetic tree, in package \code{ape}'s \code{phylo} format.}
@@ -39,7 +28,7 @@ traits evolve within a lineage, regardless of the trait values of other taxa.}
 traits evolve within a lineage, based on their own ('internal') trait vlaue and the trait values
 of other taxa.}
 
-\item{startingPriorsValue}{Matrix with number of columns equal to the number of states (characters)
+\item{startingPriorsValues}{Matrix with number of columns equal to the number of states (characters)
 at root and number of rows equal to two (representing two parameters to pass to prior distribution).}
 
 \item{startingPriorsFns}{Vector containing names of prior distributions to
@@ -68,29 +57,6 @@ to the furthest tip (sometimes referred to as 'unit-length'). For ultrametric
 trees where all tips are at time zero (i.e., the modern day), this would be
 the root age of the tree. By default, this is set to 10000 time-units.}
 
-\item{numParticles}{Number of accepted particles per generation.}
-
-\item{standardDevFactor}{Standard deviation for mutating states.}
-
-\item{StartSims}{Number of initial simulations.}
-
-\item{plot}{If \code{TRUE}, plots distance of each simulation.}
-
-\item{epsilonProportion}{Sets tolerance for initial simulations.}
-
-\item{epsilonMultiplier}{Sets tolerance on subsequent generations.}
-
-\item{nStepsPRC}{Number of generations to run.}
-
-\item{jobName}{Optional job name.}
-
-\item{stopRule}{If \code{TRUE}, an analysis will be terminated prior to set number
-of generations if the ratio of all parameters from one generation to the
-next falls below the \code{stopValue}.}
-
-\item{stopValue}{Threshold value for terminating an analysis prior to
-\code{nStepesPRC}.}
-
 \item{multicore}{Whether to use multicore, default is \code{FALSE}. If \code{TRUE}, one of
 two suggested packages must be installed, either \code{doMC} (for UNIX systems) or
 \code{doParallel} (for Windows), which are used to activate multithreading.
@@ -115,6 +81,29 @@ percentage and must be between 0 and 100. Default is 95 percent.}
 
 \item{generation.time}{The number of years per generation. This sets the coarseness of the simulation; if it's set to 1000, 
 for example, the population moves every 1000 years.}
+
+\item{numParticles}{Number of accepted particles per generation.}
+
+\item{standardDevFactor}{Standard deviation for mutating states.}
+
+\item{StartSims}{Number of initial simulations.}
+
+\item{epsilonProportion}{Sets tolerance for initial simulations.}
+
+\item{epsilonMultiplier}{Sets tolerance on subsequent generations.}
+
+\item{nStepsPRC}{Number of generations to run.}
+
+\item{jobName}{Optional job name.}
+
+\item{stopRule}{If \code{TRUE}, an analysis will be terminated prior to set number
+of generations if the ratio of all parameters from one generation to the
+next falls below the \code{stopValue}.}
+
+\item{stopValue}{Threshold value for terminating an analysis prior to
+\code{nStepesPRC}.}
+
+\item{plot}{If \code{TRUE}, plots distance of each simulation.}
 
 \item{abcTolerance}{Proportion of accepted simulations.}
 
@@ -166,7 +155,7 @@ and \code{doRun_rej} which performs a full rejection ('rej') ABC analysis.
 \details{
 Both \code{doRun} functions take an input phylogeny (\code{phy}),
 observed trait data set (\code{traits}), models (\code{intrinsicFn}, \code{extrinsicFn}), and priors
-(\code{startingPriorsValue}, \code{startingPriorsFns}, \code{intrinsicPriorsValues},
+(\code{startingPriorsValues}, \code{startingPriorsFns}, \code{intrinsicPriorsValues},
 \code{intrinsicPriorsFns}, \code{extrinsicPriorsValues}, \code{extrinsicPriorsFns}). Pulling from
 the priors, it simulates an initial set of simulations (\code{StartSims}). This set of simulations is
 boxcox transformed ,and a PLS regression (see \code{\link{PLSmethods}}) is performed for each free parameter
@@ -200,7 +189,7 @@ doRun_prc(
   intrinsicFn=brownianIntrinsic,
   extrinsicFn=nullExtrinsic,
   startingPriorsFns="normal",
-  startingPriorsValue=matrix(c(mean(simChar[,1]), sd(simChar[,1]))),
+  startingPriorsValues=matrix(c(mean(simChar[,1]), sd(simChar[,1]))),
   intrinsicPriorsFns=c("exponential"),
   intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
   extrinsicPriorsFns=c("fixed"),
@@ -227,7 +216,7 @@ doRun_rej(
 	intrinsicFn=brownianIntrinsic,
 	extrinsicFn=nullExtrinsic,
 	startingPriorsFns="normal",
-	startingPriorsValue=matrix(c(mean(char[,1]), sd(char[,1]))),
+	startingPriorsValues=matrix(c(mean(char[,1]), sd(char[,1]))),
 	intrinsicPriorsFns=c("exponential"),
 	intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE), #grep for normal in pkg
 	extrinsicPriorsFns=c("fixed"),

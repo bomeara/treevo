@@ -12,10 +12,10 @@ simulateWithPriors(phy = NULL, intrinsicFn, extrinsicFn, startingPriorsFns,
   niter.brown = 25, niter.lambda = 25, niter.delta = 25, niter.OU = 25,
   niter.white = 25)
 
-parallelSimulateWithPriors(phy, intrinsicFn, extrinsicFn, startingPriorsFns,
-  startingPriorsValues, intrinsicPriorsFns, intrinsicPriorsValues,
-  extrinsicPriorsFns, extrinsicPriorsValues, timeStep, nrepSim, coreLimit,
-  multicore, checkpointFile = NULL, checkpointFreq = 24, verbose = FALSE,
+parallelSimulateWithPriors(nrepSim, multicore, coreLimit, phy, intrinsicFn,
+  extrinsicFn, startingPriorsFns, startingPriorsValues, intrinsicPriorsFns,
+  intrinsicPriorsValues, extrinsicPriorsFns, extrinsicPriorsValues, timeStep,
+  checkpointFile = NULL, checkpointFreq = 24, verbose = FALSE,
   freevector = NULL, taxon.df = NULL, niter.brown = 25,
   niter.lambda = 25, niter.delta = 25, niter.OU = 25, niter.white = 25)
 }
@@ -31,6 +31,9 @@ of other taxa.}
 
 \item{startingPriorsFns}{Vector containing names of prior distributions to
 use for root states: can be one of \code{"fixed"}, \code{"uniform"}, \code{"normal"},}
+
+\item{startingPriorsValues}{Matrix with number of columns equal to the number of states (characters)
+at root and number of rows equal to two (representing two parameters to pass to prior distribution).}
 
 \item{intrinsicPriorsFns}{Vector containing names of prior distributions to
 use for intrinsic function parameters: can be one of \code{"fixed"}, \code{"uniform"}, \code{"normal"},}
@@ -52,7 +55,9 @@ on the shortest branch.}
 \item{verbose}{If \code{TRUE}, gives messages about how the simulation is progessing via \code{print}.}
 
 \item{checks}{If \code{TRUE}, checks inputs for consistency. This activity is skipped (\code{checks = FALSE})
-when run in parallel by \code{parallelSimulateWithPriors}, and instead is only checked once.}
+when run in parallel by \code{parallelSimulateWithPriors}, and instead is only checked once. This
+argument also controls whether \code{simulateWithPriors} assigns \code{freevector} as an attribute to the
+output produced.}
 
 \item{taxon.df}{A data.frame containing data on nodes (both tips and internal nodes) output by various internal functions.
 Can be supplied as input to spead up repeated calculations, but by default is
@@ -73,27 +78,30 @@ fixed (\code{FALSE}) parameters.}
 
 \item{nrepSim}{Number of replicated simulations to run.}
 
-\item{coreLimit}{Maximum number of cores to be used.}
-
 \item{multicore}{Whether to use multicore, default is \code{FALSE}. If \code{TRUE}, one of
 two suggested packages must be installed, either \code{doMC} (for UNIX systems) or
 \code{doParallel} (for Windows), which are used to activate multithreading.
 If neither package is installed, this function will fail if \code{multicore=TRUE}.}
 
+\item{coreLimit}{Maximum number of cores to be used.}
+
 \item{checkpointFile}{Optional file name for checkpointing simulations}
 
 \item{checkpointFreq}{Saving frequency for checkpointing}
-
-\item{startingPriorsValue}{Matrix with number of columns equal to the number of states (characters)
-at root and number of rows equal to two (representing two parameters to pass to prior distribution).}
 }
 \value{
-Returns matrix of \code{trueFreeValues} and summary statistics for
-simulations.
+Function \code{simulateWithPriors} returns a vector of \code{trueFreeValues},
+the true generating parameters used in the simulation
+(a set of values as long as the number of freely varying parameters), concatenated with a set of summary statistics for
+the simulation. Function \code{parallelSimulateWithPriors} returns a matrix of such vectors bound
+together, with each row representing a different simulation. By default,
+both functions also assign a logical vector named \code{freevector}, indicating the total number of 
+parameters and which parameters are freely-varying (have \code{TRUE} values), as an attribute of
+the output.
 }
 \description{
-The \code{simulateWithPriors} function pulls parameters from prior distributions and simulates
-continuous characters (using \code{\link{doSimulation}} functions), returning useful summary statistics for ABC.
+The \code{simulateWithPriors} function pulls parameters from prior distributions and conducts a single simulation of
+continuous trait evolution (using \code{\link{doSimulation}} functions), returning useful summary statistics for ABC.
 \code{parallelSimulateWithPriors} is a wrapper function for \code{simulateWithPriors} that allows for multithreading
 and checkpointing. This family of functions is mostly used as internal components, generating simulations
 within ABC analyses using the \code{\link{doRun}} functions. See \emph{Note} below.
@@ -114,7 +122,7 @@ simData<-simulateWithPriors(phy=simPhy,
   intrinsicFn=brownianIntrinsic,
   extrinsicFn=nullExtrinsic,
   startingPriorsFns="normal",
-  startingPriorsValue=matrix(c(mean(simChar[,1]), sd(simChar[,1]))),
+  startingPriorsValues=matrix(c(mean(simChar[,1]), sd(simChar[,1]))),
   intrinsicPriorsFns=c("exponential"),
   intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
   extrinsicPriorsFns=c("fixed"),
@@ -127,22 +135,23 @@ simData<-simulateWithPriors(phy=simPhy,
 
 simData
 
-simDataParallel<-parallelSimulateWithPriors(phy=simPhy, 
+simDataParallel<-parallelSimulateWithPriors( 
+  nrepSim=10, multicore=FALSE, coreLimit=1, 
+  phy=simPhy,
   intrinsicFn=brownianIntrinsic,
   extrinsicFn=nullExtrinsic,
   startingPriorsFns="normal",
-  startingPriorsValue=matrix(c(mean(simChar[,1]), sd(simChar[,1]))),
+  startingPriorsValues=matrix(c(mean(simChar[,1]), sd(simChar[,1]))),
   intrinsicPriorsFns=c("exponential"),
   intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
   extrinsicPriorsFns=c("fixed"),
   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE), 
- multicore=FALSE, nrepSim=10, coreLimit=1, 
-	 checkpointFile=NULL, checkpointFreq=24, verbose=FALSE,
-	 freevector=NULL, 	
-	 timeStep=0.0001,
-	 giveUpAttempts=10, 
-	 verbose=TRUE,
-	 niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) 
+  checkpointFile=NULL, checkpointFreq=24, verbose=FALSE,
+  freevector=NULL, 	
+  timeStep=0.0001,
+  giveUpAttempts=10, 
+  verbose=TRUE,
+  niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) 
 
 simDataParallel
 

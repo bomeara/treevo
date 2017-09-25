@@ -29,7 +29,7 @@
 #'   intrinsicFn=brownianIntrinsic,
 #'   extrinsicFn=nullExtrinsic,
 #'   startingPriorsFns="normal",
-#'   startingPriorsValue=matrix(c(mean(simChar[,1]), sd(simChar[,1]))),
+#'   startingPriorsValues=matrix(c(mean(simChar[,1]), sd(simChar[,1]))),
 #'   intrinsicPriorsFns=c("exponential"),
 #'   intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
 #'   extrinsicPriorsFns=c("fixed"),

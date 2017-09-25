@@ -1,7 +1,7 @@
 #' Simulate data for initial TreEvo analysis
 #'
-#' The \code{simulateWithPriors} function pulls parameters from prior distributions and simulates
-#' continuous characters (using \code{\link{doSimulation}} functions), returning useful summary statistics for ABC.
+#' The \code{simulateWithPriors} function pulls parameters from prior distributions and conducts a single simulation of
+#' continuous trait evolution (using \code{\link{doSimulation}} functions), returning useful summary statistics for ABC.
 #' \code{parallelSimulateWithPriors} is a wrapper function for \code{simulateWithPriors} that allows for multithreading
 #' and checkpointing. This family of functions is mostly used as internal components, generating simulations
 #' within ABC analyses using the \code{\link{doRun}} functions. See \emph{Note} below.
@@ -16,7 +16,7 @@
 #' @inheritParams doSimulation
 
 
-#' @param startingPriorsValue Matrix with number of columns equal to the number of states (characters)
+#' @param startingPriorsValues Matrix with number of columns equal to the number of states (characters)
 #' at root and number of rows equal to two (representing two parameters to pass to prior distribution).
 
 #' @param intrinsicPriorsValues Matrix with number of columns equal to the number of parameters to pass
@@ -64,15 +64,23 @@
 
 
 #' @param checks If \code{TRUE}, checks inputs for consistency. This activity is skipped (\code{checks = FALSE})
-#' when run in parallel by \code{parallelSimulateWithPriors}, and instead is only checked once.
+#' when run in parallel by \code{parallelSimulateWithPriors}, and instead is only checked once. This
+#' argument also controls whether \code{simulateWithPriors} assigns \code{freevector} as an attribute to the
+#' output produced.
 
 #' @param checkpointFile Optional file name for checkpointing simulations
 
 #' @param checkpointFreq Saving frequency for checkpointing
 
 
-#' @return Returns matrix of \code{trueFreeValues} and summary statistics for
-#' simulations.
+#' @return Function \code{simulateWithPriors} returns a vector of \code{trueFreeValues},
+#' the true generating parameters used in the simulation
+#' (a set of values as long as the number of freely varying parameters), concatenated with a set of summary statistics for
+#' the simulation. Function \code{parallelSimulateWithPriors} returns a matrix of such vectors bound
+#' together, with each row representing a different simulation. By default,
+#' both functions also assign a logical vector named \code{freevector}, indicating the total number of 
+#' parameters and which parameters are freely-varying (have \code{TRUE} values), as an attribute of
+#' the output.
 
 #' @author Brian O'Meara and Barb Banbury
 
@@ -88,7 +96,7 @@
 #'   intrinsicFn=brownianIntrinsic,
 #'   extrinsicFn=nullExtrinsic,
 #'   startingPriorsFns="normal",
-#'   startingPriorsValue=matrix(c(mean(simChar[,1]), sd(simChar[,1]))),
+#'   startingPriorsValues=matrix(c(mean(simChar[,1]), sd(simChar[,1]))),
 #'   intrinsicPriorsFns=c("exponential"),
 #'   intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
 #'   extrinsicPriorsFns=c("fixed"),
@@ -101,22 +109,23 @@
 #' 
 #' simData
 #' 
-#' simDataParallel<-parallelSimulateWithPriors(phy=simPhy, 
+#' simDataParallel<-parallelSimulateWithPriors( 
+#'   nrepSim=10, multicore=FALSE, coreLimit=1, 
+#'   phy=simPhy,
 #'   intrinsicFn=brownianIntrinsic,
 #'   extrinsicFn=nullExtrinsic,
 #'   startingPriorsFns="normal",
-#'   startingPriorsValue=matrix(c(mean(simChar[,1]), sd(simChar[,1]))),
+#'   startingPriorsValues=matrix(c(mean(simChar[,1]), sd(simChar[,1]))),
 #'   intrinsicPriorsFns=c("exponential"),
 #'   intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
 #'   extrinsicPriorsFns=c("fixed"),
 #'   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE), 
-#'	 multicore=FALSE, nrepSim=10, coreLimit=1, 
-#' 	 checkpointFile=NULL, checkpointFreq=24, verbose=FALSE,
-#' 	 freevector=NULL, 	
-#' 	 timeStep=0.0001,
-#' 	 giveUpAttempts=10, 
-#' 	 verbose=TRUE,
-#' 	 niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) 
+#'   checkpointFile=NULL, checkpointFreq=24, verbose=FALSE,
+#'   freevector=NULL, 	
+#'   timeStep=0.0001,
+#'   giveUpAttempts=10, 
+#'   verbose=TRUE,
+#'   niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) 
 #' 
 #' simDataParallel
 #' 
@@ -125,7 +134,8 @@
 #' @name simulateWithPriors
 #' @rdname simulateWithPriors
 #' @export
-simulateWithPriors<-function(phy=NULL, intrinsicFn, extrinsicFn, startingPriorsFns, startingPriorsValues, 
+simulateWithPriors<-function(
+	phy=NULL, intrinsicFn, extrinsicFn, startingPriorsFns, startingPriorsValues, 
 	intrinsicPriorsFns, intrinsicPriorsValues, extrinsicPriorsFns, extrinsicPriorsValues, timeStep,
 	giveUpAttempts=10, verbose=FALSE, checks=TRUE, taxon.df=NULL, freevector=NULL, 
 	niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) {
@@ -180,6 +190,9 @@ simulateWithPriors<-function(phy=NULL, intrinsicFn, extrinsicFn, startingPriorsF
 	if(n.attempts>1) {
 		warning(paste("Had to run simulateWithPriors()",n.attempts,"times to get results with no NA. This could bias results if runs with certain parameters failed more often and this happens in many attempted simulations"))
 	}
+	if(!checks){
+		attr(trueFreeValuesANDSummaryValues,"freevector")<-freevector
+		}
 	return(simTrueAndStats)
 }
 
@@ -188,10 +201,12 @@ simulateWithPriors<-function(phy=NULL, intrinsicFn, extrinsicFn, startingPriorsF
 
 #' @rdname simulateWithPriors
 #' @export
-parallelSimulateWithPriors<-function(phy, 
+parallelSimulateWithPriors<-function(
+	nrepSim, multicore, coreLimit,  
+	phy, 
 	intrinsicFn, extrinsicFn, startingPriorsFns, startingPriorsValues,
 	intrinsicPriorsFns, intrinsicPriorsValues, extrinsicPriorsFns, extrinsicPriorsValues, timeStep,
-	nrepSim, coreLimit, multicore, 
+	
 	checkpointFile=NULL, checkpointFreq=24, verbose=FALSE, freevector=NULL, taxon.df=NULL, 
 	niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) {
 	
@@ -203,7 +218,7 @@ parallelSimulateWithPriors<-function(phy,
 		niter.delta=niter.delta, niter.OU=niter.OU, niter.white=niter.white)
 
 	if(is.null(freevector)){
-		freevector<-getFreeVector(startingPriorsFns=startingPriorsFns, startingPriorsValue=startingPriorsValue, 
+		freevector<-getFreeVector(startingPriorsFns=startingPriorsFns, startingPriorsValues=startingPriorsValues, 
 					intrinsicPriorsFns=intrinsicPriorsFns, intrinsicPriorsValues=intrinsicPriorsValues,
 					extrinsicPriorsFns=extrinsicPriorsFns, extrinsicPriorsValues=extrinsicPriorsValues)
 		}
@@ -230,7 +245,7 @@ parallelSimulateWithPriors<-function(phy,
 	cat("Doing simulations: ")
 	if (is.null(checkpointFile)) {
 		trueFreeValuesANDSummaryValues<-foreach(1:nrepSim, .combine=rbind) %dopar% simulateWithPriors(phy=phy, taxon.df=taxon.df,
-			startingPriorsValue=startingPriorsValue, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues,
+			startingPriorsValues=startingPriorsValues, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues,
 			startingPriorsFns=startingPriorsFns, intrinsicPriorsFns=intrinsicPriorsFns, extrinsicPriorsFns=extrinsicPriorsFns, 
 			freevector=freevector, timeStep=timeStep, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, verbose=verbose, checks=FALSE)
 	}
@@ -248,7 +263,7 @@ parallelSimulateWithPriors<-function(phy,
 		for (rep in sequence(numberLoops)) {
 			trueFreeValuesANDSummaryValues<-rbind(trueFreeValuesANDSummaryValues, 
 				foreach(1:numberSimsPerLoop, .combine=rbind) %dopar% simulateWithPriors(phy=phy,  taxon.df=taxon.df,
-					startingPriorsValue=startingPriorsValue, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues,
+					startingPriorsValues=startingPriorsValues, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues,
 					startingPriorsFns=startingPriorsFns, intrinsicPriorsFns=intrinsicPriorsFns, extrinsicPriorsFns=extrinsicPriorsFns, 
 					freevector=freevector, timeStep=timeStep, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, verbose=verbose, checks=FALSE))
 			save(trueFreeValuesANDSummaryValues,file=checkpointFileName)
@@ -256,10 +271,11 @@ parallelSimulateWithPriors<-function(phy,
 		}
 		trueFreeValuesANDSummaryValues<-rbind(trueFreeValuesANDSummaryValues, 
 			foreach(1:numberSimsAfterLastCheckpoint, .combine=rbind) %dopar% simulateWithPriors(phy=phy,  taxon.df=taxon.df,
-				startingPriorsValue=startingPriorsValues, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues,
+				startingPriorsValues=startingPriorsValues, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues,
 				startingPriorsFns=startingPriorsFns, intrinsicPriorsFns=intrinsicPriorsFns, extrinsicPriorsFns=extrinsicPriorsFns, 
 				freevector=freevector, timeStep=timeStep, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, verbose=verbose, checks=FALSE))
 	}
+	attr(trueFreeValuesANDSummaryValues,"freevector")<-freevector
 	return(trueFreeValuesANDSummaryValues)
 }
 

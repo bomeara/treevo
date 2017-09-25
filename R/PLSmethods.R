@@ -45,13 +45,41 @@
 #' 
 #' data(simRun)
 #' 
-#' PLSmodel<-returnPLSModel(trueFreeValuesMatrix,
-#' 	  summaryValuesMatrix=summaryValuesMatrix,
-#'    validation="CV", scale=TRUE, variance.cutoff=95)
+#' # example simulation
+#' simDataParallel <- parallelSimulateWithPriors( 
+#'   nrepSim=10, multicore=FALSE, coreLimit=1, 
+#'   phy=simPhy,
+#'   intrinsicFn=brownianIntrinsic,
+#'   extrinsicFn=nullExtrinsic,
+#'   startingPriorsFns="normal",
+#'   startingPriorsValues= startingPriorsValues,
+#'   intrinsicPriorsFns=c("exponential"),
+#'   intrinsicPriorsValues=intrinsicPriorsValues,
+#'   extrinsicPriorsFns=c("fixed"),
+#'   extrinsicPriorsValues=extrinsicPriorsValues, 
+#'   checkpointFile=NULL, checkpointFreq=24, verbose=FALSE,
+#'   freevector=NULL, 	
+#'   timeStep=0.0001,
+#'   giveUpAttempts=10, 
+#'   verbose=TRUE,
+#'   niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) 
 #' 
+#' nParFree<-sum(attr(simDataParallel,"freevector"))
 #' 
-#' PLSTransform(summaryValuesMatrix=summaryValuesMatrix, pls.model=PLSmodel)
+#' #separate the simulation results: 'true' generating parameter values from the summary values
+#' trueFreeValuesMat<-simDataParallel[,1:nParFree]
+#' summaryValuesMat<-simDataParallel[,-1:-nParFree]
 #' 
+#' PLSmodel<-returnPLSModel(trueFreeValuesMatrix=trueFreeValuesMat,
+#' 	  	summaryValuesMatrix=summaryValuesMat,
+#'    		validation="CV", scale=TRUE, variance.cutoff=95)
+#' 
+#' PLSmodel
+#' 
+#' PLSTransform(summaryValuesMatrix=summaryValuesMat, pls.model=PLSmodel)
+#' 
+
+
 
 #' @name PLSmethods
 #' @rdname PLSmethods
