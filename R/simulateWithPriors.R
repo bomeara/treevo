@@ -120,7 +120,7 @@
 #'   intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
 #'   extrinsicPriorsFns=c("fixed"),
 #'   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE), 
-#'   checkpointFile=NULL, checkpointFreq=24, verbose=FALSE,
+#'   checkpointFile=NULL, checkpointFreq=24,
 #'   freevector=NULL, 	
 #'   timeStep=0.0001,
 #'   giveUpAttempts=10, 

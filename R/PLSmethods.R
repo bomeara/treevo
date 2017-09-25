@@ -57,11 +57,11 @@
 #'   intrinsicPriorsValues=intrinsicPriorsValues,
 #'   extrinsicPriorsFns=c("fixed"),
 #'   extrinsicPriorsValues=extrinsicPriorsValues, 
-#'   checkpointFile=NULL, checkpointFreq=24, verbose=FALSE,
+#'   checkpointFile=NULL, checkpointFreq=24, 
 #'   freevector=NULL, 	
 #'   timeStep=0.0001,
 #'   giveUpAttempts=10, 
-#'   verbose=TRUE,
+#'   verbose=FALSE,
 #'   niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) 
 #' 
 #' nParFree<-sum(attr(simDataParallel,"freevector"))
