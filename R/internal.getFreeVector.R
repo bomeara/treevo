@@ -35,7 +35,7 @@ getFreeVector<-function(startingPriorsFns, startingPriorsValues,
 		}
 		else {
 			#numberParametersIntrinsic<-numberParametersIntrinsic+1
-			freevariables<-cbind(freevariables, intrinsicPriorsValues[, i])
+			#freevariables<-cbind(freevariables, intrinsicPriorsValues[, i])
 			#titlevector <-c(titlevector, paste("Intrinsic", numberParametersIntrinsic))
 			freevector<-c(freevector, TRUE)
 		}

@@ -16,8 +16,9 @@ parallelSimulateWithPriors(nrepSim, multicore, coreLimit, phy, intrinsicFn,
   extrinsicFn, startingPriorsFns, startingPriorsValues, intrinsicPriorsFns,
   intrinsicPriorsValues, extrinsicPriorsFns, extrinsicPriorsValues, timeStep,
   checkpointFile = NULL, checkpointFreq = 24, verbose = FALSE,
-  freevector = NULL, taxon.df = NULL, niter.brown = 25,
-  niter.lambda = 25, niter.delta = 25, niter.OU = 25, niter.white = 25)
+  freevector = NULL, taxon.df = NULL, giveUpAttempts = 10,
+  niter.brown = 25, niter.lambda = 25, niter.delta = 25, niter.OU = 25,
+  niter.white = 25)
 }
 \arguments{
 \item{phy}{A phylogenetic tree, in package \code{ape}'s \code{phylo} format.}
@@ -127,8 +128,8 @@ simData<-simulateWithPriors(phy=simPhy,
   intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
   extrinsicPriorsFns=c("fixed"),
   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
-	 freevector=NULL, 	
 	 timeStep=0.0001,
+	 freevector=NULL, 	
 	 giveUpAttempts=10, 
 	 verbose=TRUE,
 	 niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) 
@@ -146,11 +147,10 @@ simDataParallel<-parallelSimulateWithPriors(
   intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
   extrinsicPriorsFns=c("fixed"),
   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE), 
-  checkpointFile=NULL, checkpointFreq=24,
-  freevector=NULL, 	
   timeStep=0.0001,
-  giveUpAttempts=10, 
+  checkpointFile=NULL, checkpointFreq=24,
   verbose=TRUE,
+  freevector=NULL, taxon.df=NULL,
   niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) 
 
 simDataParallel
