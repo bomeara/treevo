@@ -3,6 +3,7 @@
 \name{doRun}
 \alias{doRun}
 \alias{doRun_prc}
+\alias{doRun_rej}
 \title{Run Approximate Bayesian Computation for Phylogenetic Comparative Methods}
 \usage{
 doRun_prc(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
@@ -15,6 +16,16 @@ doRun_prc(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
   StartSims = 300, epsilonProportion = 0.7, epsilonMultiplier = 0.7,
   nStepsPRC = 5, jobName = NA, stopRule = FALSE, stopValue = 0.05,
   plot = FALSE)
+
+doRun_rej(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
+  startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns,
+  extrinsicPriorsValues, extrinsicPriorsFns, startingValuesGuess = c(),
+  intrinsicValuesGuess = c(), extrinsicValuesGuess = c(),
+  TreeYears = 10000, multicore = FALSE, coreLimit = NA,
+  validation = "CV", scale = TRUE, variance.cutoff = 95, niter.goal = 5,
+  generation.time = 1, standardDevFactor = 0.2, StartSims = NA,
+  jobName = NA, abcTolerance = 0.1, checkpointFile = NULL,
+  checkpointFreq = 24, savesims = FALSE)
 }
 \arguments{
 \item{phy}{A phylogenetic tree, in package \code{ape}'s \code{phylo} format.}

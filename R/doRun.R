@@ -215,11 +215,6 @@
 #' @name doRun
 #' @rdname doRun
 #' @export
-#' @rdname doRun
-#' @export
-
-	
-
 doRun_prc<-function(
 	phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues, startingPriorsFns, 
 	intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, 
@@ -811,8 +806,8 @@ doRun_prc<-function(
 }
 
 
-
-
+#' @rdname doRun
+#' @export
 doRun_rej<-function(
 	phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues, startingPriorsFns, 
 	intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, 
