@@ -46,22 +46,22 @@
 #' data(simRun)
 #' 
 #' # example simulation
-#' simDataParallel <- parallelSimulateWithPriors( 
+#' 
+#' simDataParallel<-parallelSimulateWithPriors( 
 #'   nrepSim=10, multicore=FALSE, coreLimit=1, 
 #'   phy=simPhy,
 #'   intrinsicFn=brownianIntrinsic,
 #'   extrinsicFn=nullExtrinsic,
 #'   startingPriorsFns="normal",
-#'   startingPriorsValues= startingPriorsValues,
+#'   startingPriorsValues=matrix(c(mean(simChar[,1]), sd(simChar[,1]))),
 #'   intrinsicPriorsFns=c("exponential"),
-#'   intrinsicPriorsValues=intrinsicPriorsValues,
+#'   intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
 #'   extrinsicPriorsFns=c("fixed"),
-#'   extrinsicPriorsValues=extrinsicPriorsValues, 
-#'   checkpointFile=NULL, checkpointFreq=24, 
-#'   freevector=NULL, 	
+#'   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE), 
 #'   timeStep=0.0001,
-#'   giveUpAttempts=10, 
-#'   verbose=FALSE,
+#'   checkpointFile=NULL, checkpointFreq=24,
+#'   verbose=TRUE,
+#'   freevector=NULL, taxon.df=NULL,
 #'   niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) 
 #' 
 #' nParFree<-sum(attr(simDataParallel,"freevector"))
