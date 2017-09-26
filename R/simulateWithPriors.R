@@ -101,7 +101,7 @@
 #'   intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
 #'   extrinsicPriorsFns=c("fixed"),
 #'   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
-#' 	 timeStep=0.0001,
+#'   timeStep=10^-6,
 #' 	 freevector=NULL, 	
 #' 	 giveUpAttempts=10, 
 #' 	 verbose=TRUE,
@@ -120,7 +120,7 @@
 #'   intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
 #'   extrinsicPriorsFns=c("fixed"),
 #'   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE), 
-#'   timeStep=0.0001,
+#'   timeStep=10^-6,
 #'   checkpointFile=NULL, checkpointFreq=24,
 #'   verbose=FALSE,
 #'   freevector=NULL, taxon.df=NULL,
@@ -189,8 +189,8 @@ simulateWithPriors<-function(
 	if(n.attempts>1) {
 		warning(paste("Had to run simulateWithPriors()",n.attempts,"times to get results with no NA. This could bias results if runs with certain parameters failed more often and this happens in many attempted simulations"))
 	}
-	if(!checks){
-		attr(trueFreeValuesANDSummaryValues,"freevector")<-freevector
+	if(checks){
+		attr(simTrueAndStats,"freevector")<-freevector
 		}
 	return(simTrueAndStats)
 }
