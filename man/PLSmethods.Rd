@@ -61,7 +61,7 @@ simDataParallel<-parallelSimulateWithPriors(
   intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
   extrinsicPriorsFns=c("fixed"),
   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE), 
-  timeStep=0.0001,
+  timeStep=10^-6,
   checkpointFile=NULL, checkpointFreq=24,
   verbose=FALSE,
   freevector=NULL, taxon.df=NULL,
