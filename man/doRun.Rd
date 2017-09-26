@@ -192,6 +192,8 @@ parameters.
 }
 \examples{
 
+\donttest{
+
 data(simRun)
 
 doRun_prc(
@@ -239,7 +241,7 @@ doRun_rej(
 	coreLimit=1
 	)
 
-
+}
 
 }
 \references{

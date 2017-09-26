@@ -155,6 +155,8 @@
 
 #' @examples
 #'
+#' \donttest{
+#' 
 #' data(simRun)
 #'
 #' doRun_prc(
@@ -202,7 +204,7 @@
 #' 	coreLimit=1
 #' 	)
 #'
-#'
+#' }
 #'
 
 ##This seems to be working if partialResults does not exist.  If checkpoint=TRUE, then run fails.
