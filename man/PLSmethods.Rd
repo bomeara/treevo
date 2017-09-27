@@ -46,6 +46,8 @@ Function \code{PLSTransform} uses results from a Partial Least Squares (PLS) mod
 }
 \examples{
 
+\donttest{
+
 data(simRun)
 
 # example simulation
@@ -80,6 +82,8 @@ PLSmodel<-returnPLSModel(trueFreeValuesMatrix=trueFreeValuesMat,
 PLSmodel
 
 PLSTransform(summaryValuesMatrix=summaryValuesMat, pls.model=PLSmodel)
+
+}
 
 }
 \seealso{

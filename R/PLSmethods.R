@@ -43,6 +43,8 @@
 
 #' @examples
 #' 
+#' \donttest{
+#' 
 #' data(simRun)
 #' 
 #' # example simulation
@@ -77,6 +79,8 @@
 #' PLSmodel
 #' 
 #' PLSTransform(summaryValuesMatrix=summaryValuesMat, pls.model=PLSmodel)
+#' 
+#' }
 #' 
 
 
