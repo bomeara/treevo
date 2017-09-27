@@ -22,7 +22,10 @@ This function calculates the highest posterior density (HPD) for each freely var
 }
 \examples{
 
-breakThisExample
+data(simRun)
+
+highestPostDens(results$particleDataFrame, percent=0.95, returnData=F)
+
 }
 \seealso{
 \code{\link{HPDinterval}} in package \code{coda}

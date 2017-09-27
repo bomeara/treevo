@@ -20,7 +20,10 @@ parameter.
 }
 \examples{
 
-breakThisExample
+data(simRun)
+
+compareListIPDn(results$particleDataFrame, verbose=F)
+
 }
 \author{
 Brian O'Meara and Barb Banbury

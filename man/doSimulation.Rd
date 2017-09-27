@@ -66,7 +66,7 @@ throughout the history of the tree.}
 \item{reject.NaN}{If \code{TRUE}, stop run if any simulated value is \code{NaN}.}
 }
 \value{
-A data frame of species character (tip) values in the tree
+If \code{returnAll = FALSE} (the default), this function returns a data frame of species character (tip) values in the tree, with column headings \code{taxonid}, \code{taxonname}, \code{taxontimesincespeciation}, \code{statesmatrix}.
 (unless \code{returnAll = TRUE}, in which case the raw \code{data.frame} from the simulation).
 }
 \description{
@@ -137,8 +137,7 @@ char<-doSimulationForPlotting(
 	plot=TRUE,
 	saveHistory=FALSE)
 
-
-tree<-rcoal(30)
+# with extinction
 
 #Simple Brownian motion
 char<-doSimulationWithPossibleExtinction(

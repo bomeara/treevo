@@ -64,7 +64,7 @@
 
 
 
-#' @return A data frame of species character (tip) values in the tree
+#' @return If \code{returnAll = FALSE} (the default), this function returns a data frame of species character (tip) values in the tree, with column headings \code{taxonid}, \code{taxonname}, \code{taxontimesincespeciation}, \code{statesmatrix}.
 #' (unless \code{returnAll = TRUE}, in which case the raw \code{data.frame} from the simulation).
 
 #' @author Brian O'Meara and Barb Banbury
@@ -127,11 +127,7 @@
 #' 	plot=TRUE,
 #' 	saveHistory=FALSE)
 #' 
-
-
-#' @examples
-#'
-#' tree<-rcoal(30)
+#' # with extinction
 #'
 #' #Simple Brownian motion
 #' char<-doSimulationWithPossibleExtinction(
@@ -150,10 +146,10 @@
 #' @rdname doSimulation
 #' @export
 doSimulation<-function(phy=NULL, intrinsicFn, extrinsicFn, startingValues, intrinsicValues, extrinsicValues, 
-	timeStep, saveHistory=FALSE, saveRealParams=FALSE, jobName="", taxon.df=NULL) {
+	timeStep, saveHistory=FALSE, saveRealParams=FALSE, jobName="", taxon.df = NULL) {
 	
 	if(is.null(taxon.df)){
-		splits=getSimulationSplits(phy)
+		taxon.df<-getSimulationSplits(phy)
 		}
 		
 	#
@@ -272,7 +268,7 @@ doSimulationForPlotting<-function(phy=NULL, intrinsicFn, extrinsicFn, startingVa
 	extrinsicValues, timeStep, plot=FALSE, savePlot=FALSE, saveHistory=FALSE, saveRealParams=FALSE, jobName="", taxon.df=NULL) {
 
 	if(is.null(taxon.df)){
-		taxon.df=getSimulationSplits(phy)
+		taxon.df<-getSimulationSplits(phy)
 		}
 
 	if (saveRealParams){

@@ -21,8 +21,11 @@
 
 
 #' @examples
-#'
-#' breakThisExample
+#' 
+#' data(simRun)
+#' 
+#' highestPostDens(results$particleDataFrame, percent=0.95, returnData=F)
+#' 
 
 #' @name highestPostDens
 #' @rdname highestPostDens

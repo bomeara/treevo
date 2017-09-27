@@ -21,7 +21,25 @@
 
 #' @examples
 #'
-#' breakThisExample
+#'
+#' data(simRun)
+#' 
+#' tree<-rcoal(30)
+#'
+#' #Simple Brownian motion
+#' char<-doSimulation(
+#' 	phy=tree,
+#' 	intrinsicFn=brownianIntrinsic,
+#' 	extrinsicFn=nullExtrinsic,
+#' 	startingValues=c(10), #root state
+#' 	intrinsicValues=c(0.01),
+#' 	extrinsicValues=c(0),
+#' 	timeStep=0.0001,
+#' 	saveHistory=FALSE)
+#' 
+#' bayesCoverageProb(RealParam, HPD, verbose=TRUE)
+#' 
+
 
 
 #used to be BCP = Bayesian Coverage Probability, now bayesCoverageProb (08-29-17)
@@ -40,7 +58,8 @@ bayesCoverageProb<-function(RealParam, HPD, verbose=F){
 		}
 	}
 	else{rps<-RealParam}
-	#if(length(RealParam) != dim(HPD[[1]])[1]){ warning("RealParams and HPD do not match")}  #need something like this, but it will have to be after changing the RealParam to take a list 
+	#if(length(RealParam) != dim(HPD[[1]])[1]){ warning("RealParams and HPD do not match")}  
+		#need something like this, but it will have to be after changing the RealParam to take a list 
 	Covered<-matrix(nrow=length(HPD), ncol=length(rps[[i]]))
 	colnames(Covered)<-rownames(HPD[[1]])
 	for(i in 1:length(HPD)){

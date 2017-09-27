@@ -18,7 +18,10 @@
 
 #' @examples
 #'
-#' breakThisExample
+#' data(simRun)
+#' 
+#' compareListIPDn(results$particleDataFrame, verbose=F)
+#' 
 
 
 #will compare IPD from a list of particleDataFrames.  Calculates the ratio of IPD
