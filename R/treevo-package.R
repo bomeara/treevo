@@ -21,6 +21,8 @@
 
 #' @examples
 #'
+#' \donttest{
+#'
 #' data(simRun)
 #'
 #' doRun_prc(
@@ -48,6 +50,7 @@
 #'   coreLimit=1
 #' )
 #' 
+#' }
 #' 
 
 # NAMESPACE IMPORTING

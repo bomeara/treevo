@@ -14,6 +14,8 @@ A package for applying Approximate Bayesian Computation to estimating parameters
 }
 \examples{
 
+\donttest{
+
 data(simRun)
 
 doRun_prc(
@@ -41,6 +43,7 @@ doRun_prc(
   coreLimit=1
 )
 
+}
 
 }
 \author{
