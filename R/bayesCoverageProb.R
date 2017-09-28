@@ -20,27 +20,6 @@
 
 
 #' @examples
-#'
-#'
-#' data(simRun)
-#' 
-#' tree<-rcoal(30)
-#'
-#' #Simple Brownian motion
-#' char<-doSimulation(
-#' 	phy=tree,
-#' 	intrinsicFn=brownianIntrinsic,
-#' 	extrinsicFn=nullExtrinsic,
-#' 	startingValues=c(10), #root state
-#' 	intrinsicValues=c(0.01),
-#' 	extrinsicValues=c(0),
-#' 	timeStep=0.0001,
-#' 	saveHistory=FALSE)
-#' 
-#' bayesCoverageProb(RealParam, HPD, verbose=TRUE)
-#' 
-
-#' @examples
 #' 
 #' data(simRun)
 #' 
