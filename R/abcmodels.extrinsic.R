@@ -24,20 +24,21 @@
 #' \code{nearestNeighborDisplacementExtrinsic} params = sd, springK, maximum force
 #' 
 #' 
-#' \code{ExponentiallyDecayingPushExtrinsic} describes a model of extrinsic trait evolution where the haracter
+#' \code{everyoneDisplacementExtrinsic} describes a model of extrinsic trait evolution where the character
+#' values of a focal taxon depend on the values of all co-extant relatives on the simulated tree.
+#' 
+#' The input parameters for this model are:
+#' \code{everyoneDisplacementExtrinsic} params = sd, springK, maximum force
+#' 
+#' 
+#' \code{ExponentiallyDecayingPushExtrinsic} describes a model of extrinsic trait evolution where the character
 #' values of a focal taxon is 'pushed' away from other taxa with similar values, but the force of that 'push' 
 #' exponentially decays as lineages diverge and their character values become less similar.
 #' 
 #' The input parameters for this model are:
 #' \code{ExponentiallyDecayingPushExtrinsic} params = sd, maximum force, half distance
 #' 
-#' 
-#' \code{nearestNeighborDisplacementExtrinsic} describes a model of extrinsic trait evolution where the character
-#' values of a focal taxon depend on the values of all co-extant relatives on the simulated tree.
-#' 
-#' The input parameters for this model are:
-#' \code{nearestNeighborDisplacementExtrinsic} params = sd, springK, maximum force
-#' 
+
 
 #' @param params describes input paramaters for the model (see Description)
 
@@ -55,7 +56,49 @@
 
 #' @examples
 #'
-#' breakThisExample
+#' # Examples of simulations with various extrinsic models (and null intrinsic model)
+#' tree<-rcoal(30)
+#'
+#' #No trait evolution except due to
+#'		# character displacement due to nearest neighbor taxon
+#' char<-doSimulationForPlotting(
+#' 	phy=tree,
+#' 	intrinsicFn=nullIntrinsic,
+#' 	extrinsicFn=nearestNeighborDisplacementExtrinsic,
+#' 	startingValues=c(10), #root state
+#' 	intrinsicValues=c(0),
+#' 	extrinsicValues=c(0.1,0.1,0.1),
+#' 	timeStep=0.0001,
+#' 	plot=TRUE,
+#' 	saveHistory=FALSE)
+#' 
+#' #Similarly, no trait evolution except due to
+#'		# character displacement from all other taxa in the clade
+#' char<-doSimulationForPlotting(
+#' 	phy=tree,
+#' 	intrinsicFn=nullIntrinsic,
+#' 	extrinsicFn=everyoneDisplacementExtrinsic,
+#' 	startingValues=c(10), #root state
+#' 	intrinsicValues=c(0),
+#' 	extrinsicValues=c(0.1,0.1,0.1),
+#' 	timeStep=0.0001,
+#' 	plot=TRUE,
+#' 	saveHistory=FALSE)
+#' 
+#' # A variant where force of character displacement decays exponentially
+#' 		# as lineages become more different
+#' char<-doSimulationForPlotting(
+#' 	phy=tree,
+#' 	intrinsicFn=nullIntrinsic,
+#' 	extrinsicFn=ExponentiallyDecayingPushExtrinsic,
+#' 	startingValues=c(10), #root state
+#' 	intrinsicValues=c(0),
+#' 	extrinsicValues=c(0.1,0.1,2),
+#' 	timeStep=0.0001,
+#' 	plot=TRUE,
+#' 	saveHistory=FALSE)
+#' 
+#' 
 
 #' @name extrinsicModels
 #' @rdname extrinsicModels
@@ -83,24 +126,6 @@ nearestNeighborDisplacementExtrinsic<-function(params,selfstates,otherstates, ti
 	return(newdisplacement)
 }
 
-#' @rdname extrinsicModels
-#' @export
-ExponentiallyDecayingPushExtrinsic<-function(params,selfstates,otherstates, timefrompresent) { 
-	#params[1] is sd, params[2] is maxForce when character difference = 0, params[3] is half
-		# distance (the phenotypic distance at which repulsion is half maxForce)
-	repulsorTaxon<-which.min(abs(otherstates-selfstates))
-	repulsorValue<-otherstates[repulsorTaxon]
-	sd<-params[1]
-	maxForce<-params[2]
-	halfDistance<-params[3] #is like half life
-	rate<-log(2, base = exp(1))/ halfDistance
-	localsign<-sign(selfstates[1]- repulsorValue)
-	if(localsign==0) {  #to deal with case of identical values
-		localsign=sign(rnorm(n=1))	
-	}
-	newdisplacement<-rnorm(n=1,mean=maxForce*localsign*exp(-1*rate*abs((selfstates[1]-repulsorValue))),sd=sd)
-	return(newdisplacement)
-}
 
 #' @rdname extrinsicModels
 #' @export
@@ -123,6 +148,24 @@ everyoneDisplacementExtrinsic<-function(params,selfstates,otherstates, timefromp
 }
 
 
+#' @rdname extrinsicModels
+#' @export
+ExponentiallyDecayingPushExtrinsic<-function(params,selfstates,otherstates, timefrompresent) { 
+	#params[1] is sd, params[2] is maxForce when character difference = 0, params[3] is half
+		# distance (the phenotypic distance at which repulsion is half maxForce)
+	repulsorTaxon<-which.min(abs(otherstates-selfstates))
+	repulsorValue<-otherstates[repulsorTaxon]
+	sd<-params[1]
+	maxForce<-params[2]
+	halfDistance<-params[3] #is like half life
+	rate<-log(2, base = exp(1))/ halfDistance
+	localsign<-sign(selfstates[1]- repulsorValue)
+	if(localsign==0) {  #to deal with case of identical values
+		localsign=sign(rnorm(n=1))	
+	}
+	newdisplacement<-rnorm(n=1,mean=maxForce*localsign*exp(-1*rate*abs((selfstates[1]-repulsorValue))),sd=sd)
+	return(newdisplacement)
+}
 
 #Extra functions for calculating Exponential Decay Push priors
 GetExpPushPriors<-function(numSteps, phy, data) {

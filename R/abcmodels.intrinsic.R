@@ -100,6 +100,7 @@
 
 #' @examples
 #'
+#' # Examples of simulations with various intrinsic models (and null extrinsic model)
 #' tree<-rcoal(30)
 #'
 #' #Simple Brownian motion Intrinsic Model
@@ -114,16 +115,31 @@
 #' 	plot=TRUE,
 #' 	saveHistory=FALSE)
 #' 
+#' # Simple model with BM, but a minimum bound at 0
 #' char<-doSimulationForPlotting(
 #' 	phy=tree,
-#' 	intrinsicFn=brownianIntrinsic,
+#' 	intrinsicFn=boundaryIntrinsic,
 #' 	extrinsicFn=nullExtrinsic,
 #' 	startingValues=c(10), #root state
-#' 	intrinsicValues=c(0.01),
+#' 	intrinsicValues=c(0.01,0),
 #' 	extrinsicValues=c(0),
 #' 	timeStep=0.0001,
 #' 	plot=TRUE,
 #' 	saveHistory=FALSE)
+#' 
+#' # Autoregressive (Ornstein-Uhlenbeck) model
+#'		# with minimum bound at 0
+#' char<-doSimulationForPlotting(
+#' 	phy=tree,
+#' 	intrinsicFn=minBoundaryAutoregressiveIntrinsic,
+#' 	extrinsicFn=nullExtrinsic,
+#' 	startingValues=c(10), #root state
+#' 	intrinsicValues=c(0.01,3,0.1,0),
+#' 	extrinsicValues=c(0),
+#' 	timeStep=0.0001,
+#' 	plot=TRUE,
+#' 	saveHistory=FALSE)
+#' 
 #' 
 #' 
 

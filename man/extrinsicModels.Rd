@@ -4,8 +4,8 @@
 \alias{extrinsicModels}
 \alias{nullExtrinsic}
 \alias{nearestNeighborDisplacementExtrinsic}
-\alias{ExponentiallyDecayingPushExtrinsic}
 \alias{everyoneDisplacementExtrinsic}
+\alias{ExponentiallyDecayingPushExtrinsic}
 \title{Extrinsic Character Evolution Models}
 \usage{
 nullExtrinsic(params, selfstates, otherstates, timefrompresent)
@@ -13,10 +13,10 @@ nullExtrinsic(params, selfstates, otherstates, timefrompresent)
 nearestNeighborDisplacementExtrinsic(params, selfstates, otherstates,
   timefrompresent)
 
+everyoneDisplacementExtrinsic(params, selfstates, otherstates, timefrompresent)
+
 ExponentiallyDecayingPushExtrinsic(params, selfstates, otherstates,
   timefrompresent)
-
-everyoneDisplacementExtrinsic(params, selfstates, otherstates, timefrompresent)
 }
 \arguments{
 \item{params}{describes input paramaters for the model (see Description)}
@@ -50,22 +50,64 @@ values of a focal taxon depend on the values of closest relatives on the tree (e
 The input parameters for this model are:
 \code{nearestNeighborDisplacementExtrinsic} params = sd, springK, maximum force
 
-\code{ExponentiallyDecayingPushExtrinsic} describes a model of extrinsic trait evolution where the haracter
+\code{everyoneDisplacementExtrinsic} describes a model of extrinsic trait evolution where the character
+values of a focal taxon depend on the values of all co-extant relatives on the simulated tree.
+
+The input parameters for this model are:
+\code{everyoneDisplacementExtrinsic} params = sd, springK, maximum force
+
+\code{ExponentiallyDecayingPushExtrinsic} describes a model of extrinsic trait evolution where the character
 values of a focal taxon is 'pushed' away from other taxa with similar values, but the force of that 'push' 
 exponentially decays as lineages diverge and their character values become less similar.
 
 The input parameters for this model are:
 \code{ExponentiallyDecayingPushExtrinsic} params = sd, maximum force, half distance
-
-\code{nearestNeighborDisplacementExtrinsic} describes a model of extrinsic trait evolution where the character
-values of a focal taxon depend on the values of all co-extant relatives on the simulated tree.
-
-The input parameters for this model are:
-\code{nearestNeighborDisplacementExtrinsic} params = sd, springK, maximum force
 }
 \examples{
 
-breakThisExample
+# Examples of simulations with various extrinsic models (and null intrinsic model)
+tree<-rcoal(30)
+
+#No trait evolution except due to
+	# character displacement due to nearest neighbor taxon
+char<-doSimulationForPlotting(
+	phy=tree,
+	intrinsicFn=nullIntrinsic,
+	extrinsicFn=nearestNeighborDisplacementExtrinsic,
+	startingValues=c(10), #root state
+	intrinsicValues=c(0),
+	extrinsicValues=c(0.1,0.1,0.1),
+	timeStep=0.0001,
+	plot=TRUE,
+	saveHistory=FALSE)
+
+#Similarly, no trait evolution except due to
+	# character displacement from all other taxa in the clade
+char<-doSimulationForPlotting(
+	phy=tree,
+	intrinsicFn=nullIntrinsic,
+	extrinsicFn=everyoneDisplacementExtrinsic,
+	startingValues=c(10), #root state
+	intrinsicValues=c(0),
+	extrinsicValues=c(0.1,0.1,0.1),
+	timeStep=0.0001,
+	plot=TRUE,
+	saveHistory=FALSE)
+
+# A variant where force of character displacement decays exponentially
+		# as lineages become more different
+char<-doSimulationForPlotting(
+	phy=tree,
+	intrinsicFn=nullIntrinsic,
+	extrinsicFn=ExponentiallyDecayingPushExtrinsic,
+	startingValues=c(10), #root state
+	intrinsicValues=c(0),
+	extrinsicValues=c(0.1,0.1,2),
+	timeStep=0.0001,
+	plot=TRUE,
+	saveHistory=FALSE)
+
+
 }
 \author{
 Brian O'Meara and Barb Banbury
