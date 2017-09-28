@@ -64,7 +64,12 @@
 
 
 
-#' @return If \code{returnAll = FALSE} (the default), this function returns a data frame of species character (tip) values in the tree, with column headings \code{taxonid}, \code{taxonname}, \code{taxontimesincespeciation}, \code{statesmatrix}.
+#' @return If \code{returnAll = FALSE} (the default), this function returns a data frame of species character (tip)
+#' values in the tree, with column headings \code{taxonid} (representing the index for the corresponding tip label
+#" for that taxon, as given in \code{phy$tip.label)), \code{taxonname}, \code{taxontimesincespeciation} (the time to
+#' the most recent divergence event for that lineage), and \code{statesmatrix} (the simulated trait data).
+
+
 #' (unless \code{returnAll = TRUE}, in which case the raw \code{data.frame} from the simulation).
 
 #' @author Brian O'Meara and Barb Banbury
@@ -224,7 +229,10 @@ doSimulation<-function(phy=NULL, intrinsicFn, extrinsicFn, startingValues, intri
 		otherMatrix<-function(i){
 			taxvec<-c(1:length(taxa))
 			taxvec<-taxvec[-which(taxvec==i)]
-			otherstatesvector<-sapply(taxvec,otherstatefn) # NOTE this step is slow. Figure out way to make it faster. taxa is a list of abctaxon objects, so taxa$state won't work
+			#
+			# NOTE this step is slow. Figure out way to make it faster. taxa is a list of abctaxon objects, so taxa$state won't work
+			otherstatesvector<-sapply(taxvec,otherstatefn) 
+			#
 			otherstatesmatrix<-matrix(otherstatesvector, ncol=length(taxa[[i]]$states), byrow=TRUE) #each row represents one taxon
 			newvalues<-taxa[[i]]$states+intrinsicFn(params=intrinsicValues, states=taxa[[i]]$states, timefrompresent =timefrompresent)+extrinsicFn(params=extrinsicValues, selfstates=taxa[[i]]$states, otherstates=otherstatesmatrix, timefrompresent =timefrompresent)
 			taxa[[i]]$nextstates<-newvalues

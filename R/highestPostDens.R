@@ -24,13 +24,13 @@
 #' 
 #' data(simRun)
 #' 
-#' highestPostDens(results$particleDataFrame, percent=0.95, returnData=F)
+#' highestPostDens(results$particleDataFrame, percent=0.95, returnData=FALSE)
 #' 
 
 #' @name highestPostDens
 #' @rdname highestPostDens
 #' @export
-highestPostDens<-function(particleDataFrame, percent=0.95, returnData=F){
+highestPostDens<-function(particleDataFrame, percent=0.95, returnData=FALSE){
   	# ugh ugh
 	#generation<-NULL #to appease R CMD CHECK
 	# yes??? I think this is right, not sure

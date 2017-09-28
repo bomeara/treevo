@@ -7,7 +7,7 @@
 
 #' @param RealParam Real parameter values.
 
-#' @param HPD List of highest posterior density from \code{\link{doRun}} results
+#' @param HPD List of highest posterior density from \code{\link{doRun}} results.
 
 #' @param verbose If \code{TRUE}, commented screen output is produced.
 
@@ -40,6 +40,17 @@
 #' bayesCoverageProb(RealParam, HPD, verbose=TRUE)
 #' 
 
+#' @examples
+#' 
+#' data(simRun)
+#' 
+#' # real (generating) parameters
+#' genPar<-c(ancState,genRate)
+#' 
+#' HPDs<-list(results$HPD,resultsBound$HPD)
+#' 
+#' bayesCoverageProb(RealParam=genPar, HPD=HPDs, verbose=TRUE)
+#' 
 
 
 #used to be BCP = Bayesian Coverage Probability, now bayesCoverageProb (08-29-17)
@@ -55,9 +66,15 @@ bayesCoverageProb<-function(RealParam, HPD, verbose=F){
 		rps<-vector("list", length=length(HPD))
 		for (i in 1: length(HPD)){
 			rps[[i]]<-RealParam
-		}
-	}
-	else{rps<-RealParam}
+			}
+		}else{
+			rps<-RealParam
+			}
+	# should we allow for only one HPD to be evaluated?
+	#If(is.data.frame(HPD)){
+	#	HPD<-list(HPD)
+	#	}
+	#
 	#if(length(RealParam) != dim(HPD[[1]])[1]){ warning("RealParams and HPD do not match")}  
 		#need something like this, but it will have to be after changing the RealParam to take a list 
 	Covered<-matrix(nrow=length(HPD), ncol=length(rps[[i]]))

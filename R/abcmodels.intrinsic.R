@@ -111,8 +111,10 @@ nullIntrinsic<-function(params,states, timefrompresent) {
 	return(newdisplacement)
 }
 
-
-
+#' data(simRun)
+#' 
+#' highestPostDens(results$particleDataFrame, percent=0.95, returnData=F)
+#' 
 
 
 #' @rdname intrinsicModels
