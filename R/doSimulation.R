@@ -55,8 +55,6 @@
 
 #' @param reject.NaN If \code{TRUE}, stop run if any simulated value is \code{NaN}.
 
-
-
 #' @param plot Will create a new interactive window that plots character values
 #' throughout the history of the tree.
 
@@ -68,12 +66,9 @@
 #' values in the tree, with column headings \code{taxonid} (representing the index for the corresponding tip label
 #" for that taxon, as given in \code{phy$tip.label)), \code{taxonname}, \code{taxontimesincespeciation} (the time to
 #' the most recent divergence event for that lineage), and \code{statesmatrix} (the simulated trait data).
-
-
-#' (unless \code{returnAll = TRUE}, in which case the raw \code{data.frame} from the simulation).
+#' If \code{returnAll = TRUE}, the raw \code{data.frame} from the simulation will instead be returned.
 
 #' @author Brian O'Meara and Barb Banbury
-
 
 #' @author Brian O'Meara and Barb Banbury
 

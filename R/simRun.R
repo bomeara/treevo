@@ -19,8 +19,11 @@
 
 #' \item{\code{simPhy}}{A simulated 30-tip coalescent phylogeny in typical \code{phylo} format.}
 
-#' \item{\code{ancState}}{The starting ancestral value for the simulated continuous trait data.}
-#' \item{\code{genRate}}{}
+#' \item{\code{ancState}}{The starting ancestral value,
+#' used for generating the simulated continuous trait data.}
+
+#' \item{\code{genRate}}{The true rate of trait change under Brownian Motion,
+#' used for generating the simulated continuous trait data.}
 
 #' \item{\code{simCharOut}}{The raw output of \code{\link{doSimulation}} on \code{simPhy},
 #' under the model \code{\link{brownianIntrinsic}}.}
@@ -33,7 +36,7 @@
 #' \item{\code{resultsBound}}{The results of \code{\link{doRun_prc}}, under the incorrect model of \code{\link{boundaryMinIntrinsic}}}
 
 #' }
-
+#' 
 #' The objects \code{results} and \code{resultsBound} are lists composed of a number
 #' of elements (see the documentation for the \code{\link{doRun_prc}} function for more detail). These elements are
 #' respectively \code{input.data}, \code{PriorMatrix}, \code{particleDataFrame}, \code{toleranceVector}, \code{phy}, 

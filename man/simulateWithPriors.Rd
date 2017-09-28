@@ -40,13 +40,13 @@ at root and number of rows equal to two (representing two parameters to pass to 
 use for intrinsic function parameters: can be one of \code{"fixed"}, \code{"uniform"}, \code{"normal"},}
 
 \item{intrinsicPriorsValues}{Matrix with number of columns equal to the number of parameters to pass
-to the intrinsic function and nrow=2 (two parameters to pass to prior distribution)}
+to the intrinsic function and number of rows equal to two (representing two parameters to pass to prior distribution).}
 
 \item{extrinsicPriorsFns}{Vector containing names of prior distributions to
 use for extrinsic function parameters: can be one of \code{"fixed"}, \code{"uniform"}, \code{"normal"},}
 
 \item{extrinsicPriorsValues}{Matrix with number of columns equal to the number of parameters to pass
-to the extrinsic function and nrow=2 (two parameters to pass to prior distribution)}
+to the extrinsic function and number of rows equal to two (representing two parameters to pass to prior distribution).}
 
 \item{timeStep}{This value corresponds to the number of discrete time steps
 on the shortest branch.}

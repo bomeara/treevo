@@ -45,6 +45,12 @@
 #' simChar<-simCharOut[,"statesmatrix",drop=FALSE]
 #' rownames(simChar)<-simPhy$tip.label[simCharOut$taxonid]
 #' 
+#' # NOTE: the example analyses below sample too few particles, 
+#' 	# over too few steps, with too few starting simulations
+#' 	# - all for the sake of examples that reasonably test the functions
+#' 
+#' # Please set these values to more realistic levels for your analyses!
+#' 
 #' results<-doRun_prc(
 #'   phy = simPhy,
 #'   traits = simChar,

@@ -20,10 +20,10 @@
 #' at root and number of rows equal to two (representing two parameters to pass to prior distribution).
 
 #' @param intrinsicPriorsValues Matrix with number of columns equal to the number of parameters to pass
-#' to the intrinsic function and nrow=2 (two parameters to pass to prior distribution)
+#' to the intrinsic function and number of rows equal to two (representing two parameters to pass to prior distribution).
 
 #' @param extrinsicPriorsValues Matrix with number of columns equal to the number of parameters to pass
-#' to the extrinsic function and nrow=2 (two parameters to pass to prior distribution)
+#' to the extrinsic function and number of rows equal to two (representing two parameters to pass to prior distribution).
 
 
 #' @param startingPriorsFns Vector containing names of prior distributions to
@@ -61,7 +61,6 @@
 #' @param niter.OU Number of random starts for the Ornstein-Uhlenbeck (OU) model (minimum of 2).
 
 #' @param niter.white Number of random starts for the white noise model (minimum of 2).
-
 
 #' @param checks If \code{TRUE}, checks inputs for consistency. This activity is skipped (\code{checks = FALSE})
 #' when run in parallel by \code{parallelSimulateWithPriors}, and instead is only checked once. This

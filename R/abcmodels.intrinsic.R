@@ -100,8 +100,32 @@
 
 #' @examples
 #'
-#' breakThisExample
-
+#' tree<-rcoal(30)
+#'
+#' #Simple Brownian motion Intrinsic Model
+#' char<-doSimulationForPlotting(
+#' 	phy=tree,
+#' 	intrinsicFn=brownianIntrinsic,
+#' 	extrinsicFn=nullExtrinsic,
+#' 	startingValues=c(10), #root state
+#' 	intrinsicValues=c(0.01),
+#' 	extrinsicValues=c(0),
+#' 	timeStep=0.0001,
+#' 	plot=TRUE,
+#' 	saveHistory=FALSE)
+#' 
+#' char<-doSimulationForPlotting(
+#' 	phy=tree,
+#' 	intrinsicFn=brownianIntrinsic,
+#' 	extrinsicFn=nullExtrinsic,
+#' 	startingValues=c(10), #root state
+#' 	intrinsicValues=c(0.01),
+#' 	extrinsicValues=c(0),
+#' 	timeStep=0.0001,
+#' 	plot=TRUE,
+#' 	saveHistory=FALSE)
+#' 
+#' 
 
 #' @name intrinsicModels
 #' @rdname intrinsicModels
@@ -110,11 +134,6 @@ nullIntrinsic<-function(params,states, timefrompresent) {
 	newdisplacement<-0*states
 	return(newdisplacement)
 }
-
-#' data(simRun)
-#' 
-#' highestPostDens(results$particleDataFrame, percent=0.95, returnData=F)
-#' 
 
 
 #' @rdname intrinsicModels

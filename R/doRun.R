@@ -191,7 +191,7 @@
 #' )
 #'
 #'
-#' #make sure priors are uniform with doRun_rej
+#' #one should make sure priors are uniform with doRun_rej!
 #'
 #' doRun_rej( 
 #' 	phy=simPhy,

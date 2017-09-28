@@ -69,7 +69,7 @@ throughout the history of the tree.}
 If \code{returnAll = FALSE} (the default), this function returns a data frame of species character (tip)
 values in the tree, with column headings \code{taxonid} (representing the index for the corresponding tip label
 the most recent divergence event for that lineage), and \code{statesmatrix} (the simulated trait data).
-(unless \code{returnAll = TRUE}, in which case the raw \code{data.frame} from the simulation).
+If \code{returnAll = TRUE}, the raw \code{data.frame} from the simulation will instead be returned.
 }
 \description{
 The \code{doSimulation} family of functions evolve continuous characters under a discrete time process.

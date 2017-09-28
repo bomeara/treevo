@@ -45,8 +45,6 @@ time step in the tree.
 \description{
 Functions describing various models of 'intrinsic' evolution (i.e. evolutionary processes intrinsic to the evolving
 lineage, independent of other evolving lineages (competitors, predators, etc).
-
-highestPostDens(results$particleDataFrame, percent=0.95, returnData=F)
 }
 \details{
 The following intrinsic models are:
@@ -122,7 +120,32 @@ attractor-2 (character mean-2), attraction-2 (alpha-2), time threshold-2
 }
 \examples{
 
-breakThisExample
+tree<-rcoal(30)
+
+#Simple Brownian motion Intrinsic Model
+char<-doSimulationForPlotting(
+	phy=tree,
+	intrinsicFn=brownianIntrinsic,
+	extrinsicFn=nullExtrinsic,
+	startingValues=c(10), #root state
+	intrinsicValues=c(0.01),
+	extrinsicValues=c(0),
+	timeStep=0.0001,
+	plot=TRUE,
+	saveHistory=FALSE)
+
+char<-doSimulationForPlotting(
+	phy=tree,
+	intrinsicFn=brownianIntrinsic,
+	extrinsicFn=nullExtrinsic,
+	startingValues=c(10), #root state
+	intrinsicValues=c(0.01),
+	extrinsicValues=c(0),
+	timeStep=0.0001,
+	plot=TRUE,
+	saveHistory=FALSE)
+
+
 }
 \author{
 Brian O'Meara and Barb Banbury
