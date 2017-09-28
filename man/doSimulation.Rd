@@ -66,7 +66,9 @@ throughout the history of the tree.}
 \item{reject.NaN}{If \code{TRUE}, stop run if any simulated value is \code{NaN}.}
 }
 \value{
-If \code{returnAll = FALSE} (the default), this function returns a data frame of species character (tip) values in the tree, with column headings \code{taxonid}, \code{taxonname}, \code{taxontimesincespeciation}, \code{statesmatrix}.
+If \code{returnAll = FALSE} (the default), this function returns a data frame of species character (tip)
+values in the tree, with column headings \code{taxonid} (representing the index for the corresponding tip label
+the most recent divergence event for that lineage), and \code{statesmatrix} (the simulated trait data).
 (unless \code{returnAll = TRUE}, in which case the raw \code{data.frame} from the simulation).
 }
 \description{

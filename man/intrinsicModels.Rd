@@ -45,6 +45,8 @@ time step in the tree.
 \description{
 Functions describing various models of 'intrinsic' evolution (i.e. evolutionary processes intrinsic to the evolving
 lineage, independent of other evolving lineages (competitors, predators, etc).
+
+highestPostDens(results$particleDataFrame, percent=0.95, returnData=F)
 }
 \details{
 The following intrinsic models are:

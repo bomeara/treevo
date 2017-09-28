@@ -196,6 +196,12 @@ parameters.
 
 data(simRun)
 
+# NOTE: the example analyses below sample too few particles, 
+	# over too few steps, with too few starting simulations
+	# - all for the sake of examples that reasonably test the functions
+
+# Please set these values to more realistic levels for your analyses!
+
 doRun_prc(
   phy = simPhy,
   traits = simChar,
@@ -210,11 +216,11 @@ doRun_prc(
   TreeYears=1000,
   standardDevFactor=0.2,
   plot=FALSE,
-  StartSims=300,
+  StartSims=10,
   epsilonProportion=0.7,
   epsilonMultiplier=0.7,
-  nStepsPRC=5,
-  numParticles=100,
+  nStepsPRC=3,
+  numParticles=20,
   jobName="examplerun_prc",
   stopRule=FALSE,
   multicore=FALSE,
@@ -222,7 +228,8 @@ doRun_prc(
 )
 
 
-#make sure priors are uniform with this one!
+#make sure priors are uniform with doRun_rej
+
 doRun_rej( 
 	phy=simPhy,
 	traits=simChar,
@@ -234,7 +241,7 @@ doRun_rej(
 	intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE), #grep for normal in pkg
 	extrinsicPriorsFns=c("fixed"),
 	extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
-	StartSims=1000,
+	StartSims=10,
 	jobName="examplerun_rej",
 	abcTolerance=0.05,
 	multicore=F,

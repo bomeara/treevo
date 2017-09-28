@@ -9,7 +9,7 @@ bayesCoverageProb(RealParam, HPD, verbose = F)
 \arguments{
 \item{RealParam}{Real parameter values.}
 
-\item{HPD}{List of highest posterior density from \code{\link{doRun}} results}
+\item{HPD}{List of highest posterior density from \code{\link{doRun}} results.}
 
 \item{verbose}{If \code{TRUE}, commented screen output is produced.}
 }
@@ -42,6 +42,16 @@ char<-doSimulation(
 	saveHistory=FALSE)
 
 bayesCoverageProb(RealParam, HPD, verbose=TRUE)
+
+
+data(simRun)
+
+# real (generating) parameters
+genPar<-c(ancState,genRate)
+
+HPDs<-list(results$HPD,resultsBound$HPD)
+
+bayesCoverageProb(RealParam=genPar, HPD=HPDs, verbose=TRUE)
 
 }
 \author{

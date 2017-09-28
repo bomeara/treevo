@@ -16,9 +16,29 @@ A package for applying Approximate Bayesian Computation to estimating parameters
 
 \donttest{
 
-data(simRun)
+# let's simulate some data, and then try to infer the parameters using ABC
 
-doRun_prc(
+simPhy<-rcoal(30)
+
+genRate<-c(0.01)
+ancState<-c(10)
+
+#Simple Brownian motion
+simCharOut<-doSimulation(
+	phy=simPhy,
+	intrinsicFn=brownianIntrinsic,
+	extrinsicFn=nullExtrinsic,
+	startingValues=ancState, #root state
+	intrinsicValues=genRate,
+	extrinsicValues=c(0),
+	timeStep=0.0001,
+	saveHistory=FALSE)
+
+# clean for use with doRun
+simChar<-simCharOut[,"statesmatrix",drop=FALSE]
+rownames(simChar)<-simPhy$tip.label[simCharOut$taxonid]
+
+results<-doRun_prc(
   phy = simPhy,
   traits = simChar,
   intrinsicFn=brownianIntrinsic,
@@ -32,16 +52,16 @@ doRun_prc(
   TreeYears=1000,
   standardDevFactor=0.2,
   plot=FALSE,
-  StartSims=300,
+  StartSims=10,
   epsilonProportion=0.7,
   epsilonMultiplier=0.7,
-  nStepsPRC=5,
-  numParticles=100,
+  nStepsPRC=3,
+  numParticles=20,
   jobName="examplerun_prc",
   stopRule=FALSE,
   multicore=FALSE,
   coreLimit=1
-)
+  )
 
 }
 

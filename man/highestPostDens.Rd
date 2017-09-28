@@ -4,7 +4,7 @@
 \alias{highestPostDens}
 \title{Highest Posterior Density}
 \usage{
-highestPostDens(particleDataFrame, percent = 0.95, returnData = F)
+highestPostDens(particleDataFrame, percent = 0.95, returnData = FALSE)
 }
 \arguments{
 \item{particleDataFrame}{\code{particleDataFrame} output from \code{doRun}}
@@ -24,7 +24,7 @@ This function calculates the highest posterior density (HPD) for each freely var
 
 data(simRun)
 
-highestPostDens(results$particleDataFrame, percent=0.95, returnData=F)
+highestPostDens(results$particleDataFrame, percent=0.95, returnData=FALSE)
 
 }
 \seealso{
