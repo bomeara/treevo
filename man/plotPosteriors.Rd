@@ -44,7 +44,7 @@ the true values are known.
 data(simRun)
 
 plotPosteriors(particleDataFrame=results$particleDataFrame,
-   PriorMatrix=results$PriorMatrix,
+   priorsMat=results$PriorMatrix,
    realParam=TRUE, realParamValues=c(ancState,genRate))
 
 }
