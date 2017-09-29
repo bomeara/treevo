@@ -3,29 +3,29 @@
 #' This function plots posterior distributions from the last generation of each
 #' free parameter.
 #' 
-#' If the \code{particleDataFrame} is a list of seperate TreEvo runs, posteriors will
-#' be layered over each other to check for repeatability.  The relative grayscale of
-#' posterior distributions in the plot depends on their total number of runs.
-#' 
-#' If the \code{PriorMatrix} is a list of matrices, only the first matrix will be
-#' plotted and others will be ignores.  
-#' In other words, prior matrices MUST be identical for all runs.
-#' 
+
+#' @note
 #' \code{realParam} and \code{realParamValues} should only be used with simulated data, where
 #' the true values are known.
 #' 
 
 #' @param particleDataFrame A \code{particleDataFrame} object returned by TreEvo ABC analyses, can be a
 #' single data frame or a list of data frames.
+#' If the \code{particleDataFrame} is a list of seperate TreEvo runs, posteriors will
+#' be layered over each other to check for repeatability.  The relative grayscale of
+#' posterior distributions in the plot depends on their total number of runs.
 
-#' @param PriorMatrix A \code{PriorMatrix} object returned by TreEvo ABC analyses, can be a single matrix
-#' or a list of matrices. If a list, only the first matrix is used, all others are discarded.
+#' @param priorsMat A \code{PriorMatrix} object s returned by TreEvo \code{\link{doRun}} functions. Can be a single such matrix
+#' or a list of matrices from a series of analyses. 
+#' If the \code{PriorMatrix} is a list of matrices, only the first matrix will be
+#' evaluated, and all other matrices will be ignored.  
+#' In other words, prior matrices are expected to be identical for all runs considered to the first matrix given.
 
 #' @param realParam If \code{TRUE}, this function will plot line segments where real
 #' parameter values are known. (Usually only true when simulated data is analyzed.)
 
 #' @param realParamValues Values for real paramters, include a value for each
-#' parameter (inlcuding fixed values). Otherwise should be \code{NA}.
+#' parameter (including fixed values). Otherwise should be \code{NA}.
 
 #' @return Returns a plot for each free parameter.
 
