@@ -7,9 +7,9 @@
 compareListIPD(particleDataFrameList, verbose = FALSE)
 }
 \arguments{
-\item{verbose}{Commented screen output.}
+\item{particleDataFrameList}{A list composed of multiple \code{particleDataFrame} objects, as output by \code{\link{doRun}} functions.}
 
-\item{particleDataFrame}{A list composed of multiple \code{particleDataFrame} objects, as output by \code{\link{doRun}} functions.}
+\item{verbose}{Commented screen output.}
 }
 \value{
 Produces a plot with IPD between runs per generation.

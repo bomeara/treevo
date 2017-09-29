@@ -5,7 +5,7 @@
 #' 
 #' 
 
-#' @param particleDataFrame A list composed of multiple \code{particleDataFrame} objects, as output by \code{\link{doRun}} functions.
+#' @param particleDataFrameList A list composed of multiple \code{particleDataFrame} objects, as output by \code{\link{doRun}} functions.
 
 #' @param verbose Commented screen output.
 
@@ -34,14 +34,14 @@
 #' @export
 compareListIPD<-function(particleDataFrameList, verbose=FALSE){  
 	#expects *list* of particleDataFrames
-	params<-dim(particleDataFrame[[1]][7:dim(particleDataFrame[[1]])[2]])[2]
+	params<-dim(particleDataFrameList[[1]][7:dim(particleDataFrameList[[1]])[2]])[2]
 	plot.new()
 	nf<-layout(matrix(1:params, nrow=1, byrow=TRUE), respect=TRUE)
 	layout.show(nf)	
 	data1<-vector("list")
 	maxgen<-c()
-	for (list in 1:length(particleDataFrame)) {
-		data1[[list]]<-subset(particleDataFrame[[list]][which(particleDataFrame[[list]][,6]>0),], ) 
+	for (list in 1:length(particleDataFrameList)) {
+		data1[[list]]<-subset(particleDataFrameList[[list]][which(particleDataFrameList[[list]][,6]>0),], ) 
 		maxgen<-append(maxgen, max(data1[[list]]$generation))
 	}	
 	for (param in 1:params){
