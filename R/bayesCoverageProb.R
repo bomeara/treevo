@@ -40,7 +40,7 @@
 #' @name bayesCoverageProb
 #' @rdname bayesCoverageProb
 #' @export
-bayesCoverageProb<-function(RealParam, HPD, verbose=F){  
+bayesCoverageProb<-function(RealParam, HPD, verbose=FALSE){  
 	if(class(RealParam)=="numeric"){
 		rps<-vector("list", length=length(HPD))
 		for (i in 1: length(HPD)){

@@ -20,7 +20,7 @@
 #'
 #' data(simRun)
 #' 
-#' compareListIPDn(results$particleDataFrame, verbose=F)
+#' compareListIPD(results$particleDataFrame, verbose=FALSE)
 #' 
 
 
@@ -30,7 +30,7 @@
 #' @name compareListIPD
 #' @rdname compareListIPD
 #' @export
-compareListIPD<-function(particleDataFrame, verbose=F){  #list of particleDataFrames
+compareListIPD<-function(particleDataFrame, verbose=FALSE){  #list of particleDataFrames
 	params<-dim(particleDataFrame[[1]][7:dim(particleDataFrame[[1]])[2]])[2]
 	plot.new()
 	nf<-layout(matrix(1:params, nrow=1, byrow=TRUE), respect=TRUE)

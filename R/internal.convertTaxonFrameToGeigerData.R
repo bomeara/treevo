@@ -27,6 +27,6 @@
 # 	for (i in 1:ntax) {
 # 		newrownames[i]<-phy$tip.label[(taxonframe$taxonid[i])]
 # 	}
-# 	geigerframe<-data.frame(newmatrix, row.names= newrownames, stringsAsFactors=F)
+# 	geigerframe<-data.frame(newmatrix, row.names= newrownames, stringsAsFactors=FALSE)
 # 	geigerframe
 # }

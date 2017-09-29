@@ -4,7 +4,7 @@
 \alias{compareListIPD}
 \title{Plot Interparticle Distance between Runs}
 \usage{
-compareListIPD(particleDataFrame, verbose = F)
+compareListIPD(particleDataFrame, verbose = FALSE)
 }
 \arguments{
 \item{particleDataFrame}{A \code{particleDataFrame} object output from \code{doRun}}
@@ -22,7 +22,7 @@ parameter.
 
 data(simRun)
 
-compareListIPDn(results$particleDataFrame, verbose=F)
+compareListIPD(results$particleDataFrame, verbose=FALSE)
 
 }
 \author{

@@ -244,7 +244,7 @@ doRun_rej(
 	StartSims=10,
 	jobName="examplerun_rej",
 	abcTolerance=0.05,
-	multicore=F,
+	multicore=FALSE,
 	coreLimit=1
 	)
 

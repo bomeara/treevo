@@ -54,7 +54,7 @@ function(phy, data, data.names=NULL, model=c("BM", "OU", "lambda", "kappa", "del
 	
 	model<-match.arg(model)
 	
-	td<-treedata(phy, data, data.names, sort=T)
+	td<-treedata(phy, data, data.names, sort=TRUE)
 
 	ntax=length(td$phy$tip.label)
 	
@@ -191,7 +191,7 @@ function(ds, print=TRUE)
 			options(warn=-1) #do this so that warnings and error get surpressed. Gets generated from exp(param)=Inf in phylogmean
 			#print ("in tryFoo")
 			#badLnL=100000
-			result<-try(foo(x), silent=T)
+			result<-try(foo(x), silent=TRUE)
 			if (is.finite(result) && result < log(.Machine$double.xmax)) {
 				return(result)
 			}
@@ -207,7 +207,7 @@ function(ds, print=TRUE)
 			diag(vv)<-diag(vv)+meserr^2
 			mu<-phylogMean(vv, y)
 			mu<-rep(mu, n)
-			-dmvnorm(y, mu, vv, log=T)
+			-dmvnorm(y, mu, vv, log=TRUE)
 		}
 		o<-nlm(tryFoo, p=start)
 		#o<-optim(foo, p=start, lower=lower, upper=upper, method="L")
@@ -229,7 +229,7 @@ function(ds, print=TRUE)
 			options(warn=-1) #do this so that warnings and error get surpressed. Gets generated from exp(param)=Inf in phylogmean
 			#print ("in tryFoo")
 			#badLnL=100000
-			result<-try(foo(x), silent=T)
+			result<-try(foo(x), silent=TRUE)
 			if (is.finite(result) && result < log(.Machine$double.xmax)) {
 				#print(paste("in is.finite, result =", result))
 				return(result)
@@ -264,7 +264,7 @@ function(ds, print=TRUE)
 			mu<-phylogMean(vv, y)
 			mu<-rep(mu, n)
 			#print("about to call dmvnormPseudoinverse")
-			-dmvnormPseudoinverse(y, mu, vv, log=T)
+			-dmvnormPseudoinverse(y, mu, vv, log=TRUE)
 		}
 		#print("starting nlm")
 		o<-nlm(tryFoo, p=start)
@@ -286,7 +286,7 @@ function(ds, print=TRUE)
 		tryFoo<-function(x) {
 			options(warn=-1) #do this so that warnings and error get surpressed. Gets generated from exp(param)=Inf in phylogmean
 			#badLnL=100000
-			result<-try(foo(x), silent=T)
+			result<-try(foo(x), silent=TRUE)
 			if (is.finite(result) && result < log(.Machine$double.xmax)) {
 				return(result)
 			}
@@ -309,7 +309,7 @@ function(ds, print=TRUE)
 			mu<-phylogMean(vv, y)
 			mu<-rep(mu, n)
 			
-			-dmvnormPseudoinverse(y, mu, vv, log=T)
+			-dmvnormPseudoinverse(y, mu, vv, log=TRUE)
 		}
 
 		o<-nlm(tryFoo, p=start)
@@ -337,7 +337,7 @@ function(ds, print=TRUE)
 		tryFoo<-function(x) {
 			options(warn=-1) #do this so that warnings and error get surpressed. Gets generated from exp(param)=Inf in phylogmean
 			#badLnL=100000
-			result<-try(foo(x), silent=T)
+			result<-try(foo(x), silent=TRUE)
 			#print(paste("badLnL in delta is set to",badLnL))
 			if (is.finite(result) && result < log(.Machine$double.xmax)) {
 				#print(paste("in is.finite, result =", result))
@@ -367,7 +367,7 @@ function(ds, print=TRUE)
 			#}
 			mu<-phylogMean(vv, y)
 			mu<-rep(mu, n)
-			-dmvnorm(y, mu, vv, log=T)
+			-dmvnorm(y, mu, vv, log=TRUE)
 		}
 		#o<-optim(foo, p=start, lower=lower, upper=upper, method="SANN")
 		o<-nlm(tryFoo, p=start)
@@ -386,7 +386,7 @@ function(ds, print=TRUE)
 		tryLnl.noise<-function (p, x, se) {
 			options(warn=-1) #do this so that warnings and error get surpressed. Gets generated from exp(param)=Inf in phylogmean
 			#badLnL=100000
-			result<-try(Lnl.noise(p, x, se), silent=T)
+			result<-try(Lnl.noise(p, x, se), silent=TRUE)
 			if (is.finite(result) && result < log(.Machine$double.xmax)) {
 				return(result)
 			}
@@ -436,7 +436,7 @@ function(ds, print=TRUE)
 		tryLnl.BMtrend <-function(p, vcv, x, se) {
 			options(warn=-1) #do this so that warnings and error get surpressed. Gets generated from exp(param)=Inf in phylogmean
 			#badLnL=100000
-			result<-try(Lnl.BMtrend(p, vcv, x, se), silent=T)
+			result<-try(Lnl.BMtrend(p, vcv, x, se), silent=TRUE)
 			if (is.finite(result) && result < log(.Machine$double.xmax)) {
 				return(result)
 			}
@@ -488,7 +488,7 @@ function(ds, print=TRUE)
 			options(warn=-1) #do this so that warnings and error get surpressed. Gets generated from exp(param)=Inf in phylogmean
 			#print ("in tryFoo")
 			#badLnL=100000
-			result<-try(foo(x), silent=T)
+			result<-try(foo(x), silent=TRUE)
 			if (is.finite(result) && result < log(.Machine$double.xmax)) {
 				return(result)
 			}
@@ -509,7 +509,7 @@ function(ds, print=TRUE)
 			
 			mu<-phylogMean(vv, y)
 			mu<-rep(mu, n)
-			-dmvnormPseudoinverse(y, mu, vv, log=T)
+			-dmvnormPseudoinverse(y, mu, vv, log=TRUE)
 		}
 		
 		outTries<-list()
@@ -533,14 +533,14 @@ function(ds, print=TRUE)
 				lower=c(runif(2, min=-20, max=-1))
 				upper=lower+runif(2, min=0, max=10)
 				start=c(runif(1, min=lower[1], max=upper[1]), runif(1, min=lower[2], max=upper[2]))
-				te<-try(outTries[[i+2]]<-nlm(foo, p=start,print.level=nlm.print.level,interlim=25), silent=T)
+				te<-try(outTries[[i+2]]<-nlm(foo, p=start,print.level=nlm.print.level,interlim=25), silent=TRUE)
 				#print(te)
-				#te<-try(outTries[[i+2]]<-optim(foo, p=start, lower=lower, upper=upper, method="L"), silent=T)
+				#te<-try(outTries[[i+2]]<-optim(foo, p=start, lower=lower, upper=upper, method="L"), silent=TRUE)
 				if(class(te)!="try-error") break
 				failureCount<-failureCount+1
 				if (failureCount>failureCountSwitch) { #nlm isn't working, let's try optim
-					#toptim<-try(outTries[[i+2]]<-nlm(tryFoo, p=start), silent=T)
-					toptim<-try(outTries[[i+2]]<-optim(foo, par=start, lower=lower, upper=upper, method="L"), silent=T)
+					#toptim<-try(outTries[[i+2]]<-nlm(tryFoo, p=start), silent=TRUE)
+					toptim<-try(outTries[[i+2]]<-optim(foo, par=start, lower=lower, upper=upper, method="L"), silent=TRUE)
 					if (class(toptim)!="try-error") {
 						outTries[[i+2]]$estimate<-outTries[[i+2]]$par
 						outTries[[i+2]]$minimum<-outTries[[i+2]]$value
@@ -560,14 +560,14 @@ function(ds, print=TRUE)
 				lower=c(-20, -20)
 				upper=c(10, 10)
 				start=c(stry[i], atry[i])
-				te<-try(outTries[[i+12]]<-nlm(foo, p=start,print.level=nlm.print.level,interlim=25), silent=T)
+				te<-try(outTries[[i+12]]<-nlm(foo, p=start,print.level=nlm.print.level,interlim=25), silent=TRUE)
 				#print(te)
-				#te<-try(outTries[[i+12]]<-optim(foo, p=start, lower=lower, upper=upper, method="L"), silent=T)
+				#te<-try(outTries[[i+12]]<-optim(foo, p=start, lower=lower, upper=upper, method="L"), silent=TRUE)
 				if(class(te)!="try-error") break
 				failureCount<-failureCount+1
 				if (failureCount>failureCountSwitch) { #nlm isn't working, let's try optim
-					#toptim<-try(outTries[[i+12]]<-nlm(tryFoo, p=start), silent=T)
-					toptim<-try(outTries[[i+12]]<-optim(foo, par=start, lower=lower, upper=upper, method="L"), silent=T)
+					#toptim<-try(outTries[[i+12]]<-nlm(tryFoo, p=start), silent=TRUE)
+					toptim<-try(outTries[[i+12]]<-optim(foo, par=start, lower=lower, upper=upper, method="L"), silent=TRUE)
 					if (class(toptim)!="try-error") {
 						outTries[[i+12]]$estimate<-outTries[[i+12]]$par
 						outTries[[i+12]]$minimum<-outTries[[i+12]]$value
@@ -619,7 +619,7 @@ function(ds, print=TRUE)
 			options(warn=-1) #do this so that warnings and error get surpressed. Gets generated from exp(param)=Inf in phylogmean
 			#print ("in tryFoo")
 			#badLnL=100000
-			result<-try(foo(x), silent=T)
+			result<-try(foo(x), silent=TRUE)
 			if (is.finite(result) && result < log(.Machine$double.xmax)) {
 				return(result)
 			}
@@ -641,7 +641,7 @@ function(ds, print=TRUE)
 			mu<-phylogMean(vv, y)
 			mu<-rep(mu, n)
 			
-			-dmvnorm(y, mu, vv, log=T)
+			-dmvnorm(y, mu, vv, log=TRUE)
 		}
 
 		o<-nlm(tryFoo, p=start)
@@ -698,7 +698,7 @@ phylogMean<-function(phyvcv, data) {
 	#print("phyvcv in phylogMean")
 	#print(phyvcv)
 	#save(phyvcv, file="phyvcv")
-	ci<-try(solve(phyvcv), silent=T)
+	ci<-try(solve(phyvcv), silent=TRUE)
 	if(class(ci)=="try-error"){
 		#print(paste("ci used pseudoinverse"))
 		ci<-pseudoinverse(phyvcv)
@@ -708,7 +708,7 @@ phylogMean<-function(phyvcv, data) {
 	
 	#print("t(o) %*% ci %*% o")
 	#print(t(o) %*% ci %*% o)
-	m1<-try(solve(t(o) %*% ci %*% o), silent=T)
+	m1<-try(solve(t(o) %*% ci %*% o), silent=TRUE)
 	if (class(m1)=="try-error"){
 		#print(paste("m1 used pseudoinverse"))
 		#save(ci, o, file="stuff")
@@ -725,7 +725,7 @@ ouMatrix <- function(vcvMatrix, alpha) {
 ## vectorized by LJH
   vcvDiag<-diag(vcvMatrix)
   diagi<-matrix(vcvDiag, nrow=length(vcvDiag), ncol=length(vcvDiag))
-  diagj<-matrix(vcvDiag, nrow=length(vcvDiag), ncol=length(vcvDiag), byrow=T)
+  diagj<-matrix(vcvDiag, nrow=length(vcvDiag), ncol=length(vcvDiag), byrow=TRUE)
 
   Tij = diagi + diagj - (2 * vcvMatrix)
     

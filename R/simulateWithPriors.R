@@ -207,8 +207,8 @@ parallelSimulateWithPriors<-function(
 	checkpointFile=NULL, checkpointFreq=24, verbose=FALSE, freevector=NULL, taxon.df=NULL, giveUpAttempts=10, 
 	niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) {
 	
-	#library(doMC, quietly=T)
-	#library(foreach, quietly=T)
+	#library(doMC, quietly=TRUE)
+	#library(foreach, quietly=TRUE)
 	
 	# checks
 	checkNiter(niter.brown=niter.brown, niter.lambda=niter.lambda,

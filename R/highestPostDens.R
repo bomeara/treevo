@@ -36,11 +36,11 @@ highestPostDens<-function(particleDataFrame, percent=0.95, returnData=FALSE){
 	# yes??? I think this is right, not sure
 	generation<-particleDataFrame$generation 
 	
-#	library(coda, quietly=T)
+#	library(coda, quietly=TRUE)
 	summary<-vector("list")
 	subpDF<-as.data.frame(subset(particleDataFrame[which(particleDataFrame$weight>0),], generation==max(particleDataFrame$generation))[7:dim(particleDataFrame)[2]])
 	for(i in 1:dim(subpDF)[2]){
-		if(sd(subpDF[,i], na.rm=T) == 0) {
+		if(sd(subpDF[,i], na.rm=TRUE) == 0) {
 			subpDF<-subpDF[,-i]
 		}
 	}

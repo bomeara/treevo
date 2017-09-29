@@ -4,7 +4,7 @@
 \alias{bayesCoverageProb}
 \title{Bayesian Coverage Probability}
 \usage{
-bayesCoverageProb(RealParam, HPD, verbose = F)
+bayesCoverageProb(RealParam, HPD, verbose = FALSE)
 }
 \arguments{
 \item{RealParam}{Real parameter values.}
