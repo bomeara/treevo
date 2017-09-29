@@ -87,6 +87,8 @@
 
 #' @examples
 #'
+#' \donttest{
+#' 
 #' simPhy<-rcoal(30)
 #' 
 #' # example simulation
@@ -108,8 +110,6 @@
 #' 
 #' simData
 #'
-#' \donttest{
-#' 
 #' simDataParallel<-parallelSimulateWithPriors( 
 #'   nrepSim=10, multicore=FALSE, coreLimit=1, 
 #'   phy=simPhy,

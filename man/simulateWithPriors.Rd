@@ -115,6 +115,8 @@ want to use \code{\link{simulateWithPriors}} or \code{\link{doSimulation}} funct
 }
 \examples{
 
+\donttest{
+
 simPhy<-rcoal(30)
 
 # example simulation
@@ -135,8 +137,6 @@ simData<-simulateWithPriors(phy=simPhy,
 	 niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) 
 
 simData
-
-\donttest{
 
 simDataParallel<-parallelSimulateWithPriors( 
   nrepSim=10, multicore=FALSE, coreLimit=1, 
