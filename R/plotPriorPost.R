@@ -89,7 +89,7 @@
 #' 
 #' # examples of getting density coordinates and summary statistics from distributions
 #' 
-#' priorKernal<-getUnivariatePriorCurve(priorFn="normal", priorValues=c(28,2),
+#' priorKernal<-getUnivariatePriorCurve(priorFn="normal", priorVariables=c(28,2),
 #' 	nPoints=100000, from=NULL, to=NULL, prob=0.95)
 #' 
 #' postKernal<-getUnivariatePosteriorCurve(acceptedValues=results$particleDataFrame$StartingStates1, 

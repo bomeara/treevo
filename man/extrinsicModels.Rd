@@ -65,6 +65,8 @@ The input parameters for this model are:
 }
 \examples{
 
+\donttest{
+
 # Examples of simulations with various extrinsic models (and null intrinsic model)
 tree<-rcoal(30)
 
@@ -107,6 +109,7 @@ char<-doSimulationForPlotting(
 	plot=TRUE,
 	saveHistory=FALSE)
 
+} 
 
 }
 \author{
