@@ -107,6 +107,8 @@
 #' 	 niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) 
 #' 
 #' simData
+#'
+#' \donttest{
 #' 
 #' simDataParallel<-parallelSimulateWithPriors( 
 #'   nrepSim=10, multicore=FALSE, coreLimit=1, 
@@ -126,6 +128,8 @@
 #'   niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) 
 #' 
 #' simDataParallel
+#' 
+#' }
 #' 
 
 

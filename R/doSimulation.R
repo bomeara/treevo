@@ -89,7 +89,8 @@
 #' 	extrinsicValues=c(0),
 #' 	timeStep=0.0001,
 #' 	saveHistory=FALSE)
-#'
+#' 
+#' \donttest{
 #'
 #' #Character displacement model with minimum bound
 #' char<-doSimulation(
@@ -101,6 +102,8 @@
 #' 	extrinsicValues=c(0, .1, .25),
 #' 	timeStep=0.001,
 #' 	saveHistory=FALSE)
+#' 
+#' }
 #'
 #' #Simple Brownian motion
 #' char<-doSimulationForPlotting(
@@ -114,6 +117,7 @@
 #' 	plot=FALSE,
 #' 	saveHistory=FALSE)
 #' 
+#' \donttest{
 #' 
 #' #Character displacement model with minimum bound
 #' char<-doSimulationForPlotting(
@@ -126,6 +130,8 @@
 #' 	timeStep=0.001,
 #' 	plot=TRUE,
 #' 	saveHistory=FALSE)
+#' 
+#' }
 #' 
 #' # with extinction
 #'
