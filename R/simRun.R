@@ -8,7 +8,7 @@
 #'
 #' @name simRun
 
-#' @aliases simRun simPhy simChar resultsPRC
+#' @aliases simRun simPhy simChar results resultsBound genRate ancState simCharOut 
 
 #' @docType data
 

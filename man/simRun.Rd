@@ -5,7 +5,11 @@
 \alias{simRun}
 \alias{simPhy}
 \alias{simChar}
-\alias{resultsPRC}
+\alias{results}
+\alias{resultsBound}
+\alias{genRate}
+\alias{ancState}
+\alias{simCharOut}
 \title{Example Analysis Output of a Simulated Dataset}
 \format{Loading the \code{simRun} example dataset adds seven new objects to the namespace:
 
