@@ -89,6 +89,8 @@ want to use \code{\link{simulateWithPriors}} or \code{\link{doSimulation}} funct
 }
 \examples{
 
+\donttest{
+
 tree<-rcoal(30)
 
 #Simple Brownian motion
@@ -102,8 +104,6 @@ char<-doSimulation(
 	timeStep=0.0001,
 	saveHistory=FALSE)
 
-\donttest{
-
 #Character displacement model with minimum bound
 char<-doSimulation(
 	phy=tree,
@@ -114,8 +114,6 @@ char<-doSimulation(
 	extrinsicValues=c(0, .1, .25),
 	timeStep=0.001,
 	saveHistory=FALSE)
-
-}
 
 #Simple Brownian motion
 char<-doSimulationForPlotting(
@@ -129,7 +127,6 @@ char<-doSimulationForPlotting(
 	plot=FALSE,
 	saveHistory=FALSE)
 
-\donttest{
 
 #Character displacement model with minimum bound
 char<-doSimulationForPlotting(
@@ -143,7 +140,6 @@ char<-doSimulationForPlotting(
 	plot=TRUE,
 	saveHistory=FALSE)
 
-}
 
 # with extinction
 
@@ -158,6 +154,7 @@ char<-doSimulationWithPossibleExtinction(
 	timeStep=0.0001,
 	saveHistory=FALSE)
 
+}
 }
 \author{
 Brian O'Meara and Barb Banbury
