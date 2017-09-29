@@ -375,15 +375,17 @@ doSimulationForPlotting<-function(phy=NULL, intrinsicFn, extrinsicFn, startingVa
 			}
 		}
 		if (plot) {
-			dev.new()
-			plot(x=c(min(c(startVector, endVector)), max(c(startVector, endVector))), y=c(0, max(c(startTime, endTime))), type="n", ylab="Time", xlab="Trait value", main="", bty="n")
+			#dev.new()
+			plot(x=c(min(c(startVector, endVector)), max(c(startVector, endVector))), y=c(0, max(c(startTime, endTime))),
+				type="n", ylab="Time", xlab="Trait value", main="", bty="n")
 			for (i in 1:length(startVector)) {
 				lines(x=c(startVector[i], endVector[i]), y=max(c(startTime, endTime)) - c(startTime[i], endTime[i]))
 			}
 		}
 		if (savePlot) {
 			pdf(paste("SimTree", jobName, ".pdf", sep=""))	
-			plot(x=c(min(c(startVector, endVector)), max(c(startVector, endVector))), y=c(0, max(c(startTime, endTime))), type="n", ylab="Time", xlab="Trait value", main="", bty="n")
+			plot(x=c(min(c(startVector, endVector)), max(c(startVector, endVector))), y=c(0, max(c(startTime, endTime))),
+				type="n", ylab="Time", xlab="Trait value", main="", bty="n")
 			for (i in 1:length(startVector)) {
 				lines(x=c(startVector[i], endVector[i]), y=max(c(startTime, endTime)) - c(startTime[i], endTime[i]))
 			}

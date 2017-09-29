@@ -115,13 +115,13 @@
 #' 	plot=TRUE,
 #' 	saveHistory=FALSE)
 #' 
-#' # Simple model with BM, but a minimum bound at 0
+#' # Simple model with BM, but a minimum bound at 0, max bound at 15
 #' char<-doSimulationForPlotting(
 #' 	phy=tree,
 #' 	intrinsicFn=boundaryIntrinsic,
 #' 	extrinsicFn=nullExtrinsic,
 #' 	startingValues=c(10), #root state
-#' 	intrinsicValues=c(0.01,0),
+#' 	intrinsicValues=c(0.01,0,15),
 #' 	extrinsicValues=c(0),
 #' 	timeStep=0.0001,
 #' 	plot=TRUE,
