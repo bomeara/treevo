@@ -7,9 +7,9 @@
 credibleInt(particleDataFrame, percent = 0.95)
 }
 \arguments{
-\item{particleDataFrame}{A \code{particleDataFrame} object output from \code{doRun}}
+\item{particleDataFrame}{A \code{particleDataFrame} object, as found among the output from \code{\link{doRun}} functions.}
 
-\item{percent}{Probability content of the highest probability density}
+\item{percent}{Probability content of the highest probability density.}
 }
 \value{
 Returns a matrix with weighted mean, standard deviation, upper and lower credible

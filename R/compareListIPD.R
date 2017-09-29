@@ -5,7 +5,7 @@
 #' 
 #' 
 
-#' @inheritParams credibleInt
+#' @param particleDataFrame A list composed of multiple \code{particleDataFrame} objects, as output by \code{\link{doRun}} functions.
 
 #' @param verbose Commented screen output.
 
@@ -20,7 +20,9 @@
 #'
 #' data(simRun)
 #' 
-#' compareListIPD(results$particleDataFrame, verbose=FALSE)
+#' pdfList<-list(results$particleDataFrame,resultsBound$particleDataFrame)
+#' 
+#' compareListIPD(particleDataFrameList=pdfList, verbose=TRUE)
 #' 
 
 
@@ -30,7 +32,8 @@
 #' @name compareListIPD
 #' @rdname compareListIPD
 #' @export
-compareListIPD<-function(particleDataFrame, verbose=FALSE){  #list of particleDataFrames
+compareListIPD<-function(particleDataFrameList, verbose=FALSE){  
+	#expects *list* of particleDataFrames
 	params<-dim(particleDataFrame[[1]][7:dim(particleDataFrame[[1]])[2]])[2]
 	plot.new()
 	nf<-layout(matrix(1:params, nrow=1, byrow=TRUE), respect=TRUE)

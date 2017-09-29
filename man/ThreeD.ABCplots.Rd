@@ -8,7 +8,7 @@ ThreeD.ABCplots(particleDataFrame, parameter, show.particles = "none",
   plot.parent = FALSE, realParam = FALSE, realParamValues = NA)
 }
 \arguments{
-\item{particleDataFrame}{A \code{particleDataFrame} object output from \code{doRun}}
+\item{particleDataFrame}{A \code{particleDataFrame} object, as found among the output from \code{\link{doRun}} functions.}
 
 \item{parameter}{Column number of parameter of interest from
 \code{particleDataFrame}.}

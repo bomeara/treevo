@@ -4,12 +4,12 @@
 \alias{compareListIPD}
 \title{Plot Interparticle Distance between Runs}
 \usage{
-compareListIPD(particleDataFrame, verbose = FALSE)
+compareListIPD(particleDataFrameList, verbose = FALSE)
 }
 \arguments{
-\item{particleDataFrame}{A \code{particleDataFrame} object output from \code{doRun}}
-
 \item{verbose}{Commented screen output.}
+
+\item{particleDataFrame}{A list composed of multiple \code{particleDataFrame} objects, as output by \code{\link{doRun}} functions.}
 }
 \value{
 Produces a plot with IPD between runs per generation.
@@ -22,7 +22,9 @@ parameter.
 
 data(simRun)
 
-compareListIPD(results$particleDataFrame, verbose=FALSE)
+pdfList<-list(results$particleDataFrame,resultsBound$particleDataFrame)
+
+compareListIPD(particleDataFrameList=pdfList, verbose=TRUE)
 
 }
 \author{

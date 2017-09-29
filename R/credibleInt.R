@@ -4,9 +4,9 @@
 #' 
 #' 
 
-#' @param particleDataFrame A \code{particleDataFrame} object output from \code{doRun}
+#' @param particleDataFrame A \code{particleDataFrame} object, as found among the output from \code{\link{doRun}} functions.
 
-#' @param percent Probability content of the highest probability density
+#' @param percent Probability content of the highest probability density.
 
 #' @return Returns a matrix with weighted mean, standard deviation, upper and lower credible
 #' intervals for each free parameter.
