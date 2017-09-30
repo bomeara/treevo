@@ -49,6 +49,8 @@
 #'   freevector=NULL, taxon.df=NULL,
 #'   niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) 
 #' 
+#' nParFree<-sum(attr(simDataParallel,"freevector"))
+#' 
 #' #separate the simulation results: 'true' generating parameter values from the summary values
 #' summaryValuesMat<-simDataParallel[,-1:-nParFree]
 #' 
