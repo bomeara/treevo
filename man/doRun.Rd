@@ -8,24 +8,21 @@
 \usage{
 doRun_prc(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
   startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns,
-  extrinsicPriorsValues, extrinsicPriorsFns, startingValuesGuess = c(),
-  intrinsicValuesGuess = c(), extrinsicValuesGuess = c(),
-  TreeYears = 10000, multicore = FALSE, coreLimit = NA,
-  validation = "CV", scale = TRUE, variance.cutoff = 95, niter.goal = 5,
-  generation.time = 1, numParticles = 300, standardDevFactor = 0.2,
-  StartSims = 300, epsilonProportion = 0.7, epsilonMultiplier = 0.7,
-  nStepsPRC = 5, jobName = NA, stopRule = FALSE, stopValue = 0.05,
-  plot = FALSE)
+  extrinsicPriorsValues, extrinsicPriorsFns, TreeYears = 10000,
+  multicore = FALSE, coreLimit = NA, validation = "CV", scale = TRUE,
+  variance.cutoff = 95, niter.goal = 5, generation.time = 1,
+  numParticles = 300, standardDevFactor = 0.2, StartSims = 300,
+  epsilonProportion = 0.7, epsilonMultiplier = 0.7, nStepsPRC = 5,
+  jobName = NA, stopRule = FALSE, stopValue = 0.05, plot = FALSE)
 
 doRun_rej(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
   startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns,
-  extrinsicPriorsValues, extrinsicPriorsFns, startingValuesGuess = c(),
-  intrinsicValuesGuess = c(), extrinsicValuesGuess = c(),
-  TreeYears = 10000, multicore = FALSE, coreLimit = NA,
-  validation = "CV", scale = TRUE, variance.cutoff = 95, niter.goal = 5,
-  generation.time = 1, standardDevFactor = 0.2, StartSims = NA,
-  jobName = NA, abcTolerance = 0.1, checkpointFile = NULL,
-  checkpointFreq = 24, savesims = FALSE)
+  extrinsicPriorsValues, extrinsicPriorsFns, TreeYears = 10000,
+  multicore = FALSE, coreLimit = NA, validation = "CV", scale = TRUE,
+  variance.cutoff = 95, niter.goal = 5, generation.time = 1,
+  standardDevFactor = 0.2, StartSims = NA, jobName = NA,
+  abcTolerance = 0.1, checkpointFile = NULL, checkpointFreq = 24,
+  savesims = FALSE)
 }
 \arguments{
 \item{phy}{A phylogenetic tree, in package \code{ape}'s \code{phylo} format.}
@@ -56,12 +53,6 @@ to the extrinsic function and number of rows equal to two (representing two para
 
 \item{extrinsicPriorsFns}{Vector containing names of prior distributions to
 use for extrinsic function parameters: can be one of \code{"fixed"}, \code{"uniform"}, \code{"normal"},}
-
-\item{startingValuesGuess}{Optional guess of starting values.}
-
-\item{intrinsicValuesGuess}{Optional guess of intrinsic values.}
-
-\item{extrinsicValuesGuess}{Optional guess of extrinsic values.}
 
 \item{TreeYears}{Absolute scale of time-units for \code{phy}, from the root
 to the furthest tip (sometimes referred to as 'unit-length'). For ultrametric

@@ -5,7 +5,6 @@ Version: 0.4.2
 Date: 2017-09-30
 Authors@R: c(person("Brian", "O'Meara", role=c("aut", "cre"), email="omeara.brian@gmail.com"),
   person("Barb", "Banbury", role=c("aut")),person("David","Bapst", role=c("aut")))
-Author: Brian O'Meara, Barb L. Banbury, David W. Bapst
 Maintainer: Brian O'Meara <omeara.brian@gmail.com>
 Depends:
     R (>= 2.13.0),

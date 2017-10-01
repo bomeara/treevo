@@ -40,11 +40,11 @@
 
 #' @param traits Data matrix with rownames identical to \code{phy@tip.label}.
 
-#' @param startingValuesGuess Optional guess of starting values.
+# @param startingValuesGuess Optional guess of starting values.
 
-#' @param intrinsicValuesGuess Optional guess of intrinsic values.
+# @param intrinsicValuesGuess Optional guess of intrinsic values.
 
-#' @param extrinsicValuesGuess Optional guess of extrinsic values.
+# @param extrinsicValuesGuess Optional guess of extrinsic values.
 
 #' @param TreeYears Absolute scale of time-units for \code{phy}, from the root
 #' to the furthest tip (sometimes referred to as 'unit-length'). For ultrametric
@@ -227,7 +227,8 @@
 doRun_prc<-function(
 	phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues, startingPriorsFns, 
 	intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, 
-	startingValuesGuess=c(), intrinsicValuesGuess=c(), extrinsicValuesGuess=c(), TreeYears=1e+04, 
+	#startingValuesGuess=c(), intrinsicValuesGuess=c(), extrinsicValuesGuess=c(), 
+	TreeYears=1e+04, 
 	multicore=FALSE, coreLimit=NA, validation="CV", scale=TRUE, variance.cutoff=95,
 	niter.goal=5, generation.time=1,
 	numParticles=300, standardDevFactor=0.20, 
@@ -285,24 +286,24 @@ doRun_prc<-function(
 	rownames(param.stdev)<-paste("Gen", c(1: nStepsPRC), sep="")
 
 	#initialize guesses, if needed
-	if (length(startingValuesGuess)==0) { #if no user guesses, try pulling a value from the prior
-		startingValuesGuess<-rep(NA,length(startingPriorsFns))
-		for (i in 1:length(startingPriorsFns)) {
-			startingValuesGuess[i]<-pullFromPrior(startingPriorsValues[,i],startingPriorsFns[i])
-		}
-	}
-	if (length(intrinsicValuesGuess)==0) { #if no user guesses, try pulling a value from the prior
-		intrinsicValuesGuess<-rep(NA,length(intrinsicPriorsFns))
-		for (i in 1:length(intrinsicPriorsFns)) {
-			intrinsicValuesGuess[i]<-pullFromPrior(intrinsicPriorsValues[,i],intrinsicPriorsFns[i])
-		}
-	}
-	if (length(extrinsicValuesGuess)==0) { #if no user guesses, try pulling a value from the prior
-		extrinsicValuesGuess<-rep(NA,length(extrinsicPriorsFns))
-		for (i in 1:length(extrinsicPriorsFns)) {
-			extrinsicValuesGuess[i]<-pullFromPrior(extrinsicPriorsValues[,i],extrinsicPriorsFns[i])
-		}
-	}
+	#if (length(startingValuesGuess)==0) { #if no user guesses, try pulling a value from the prior
+	#	startingValuesGuess<-rep(NA,length(startingPriorsFns))
+	#	for (i in 1:length(startingPriorsFns)) {
+	#		startingValuesGuess[i]<-pullFromPrior(startingPriorsValues[,i],startingPriorsFns[i])
+	#	}
+	#}
+	#if (length(intrinsicValuesGuess)==0) { #if no user guesses, try pulling a value from the prior
+	#	intrinsicValuesGuess<-rep(NA,length(intrinsicPriorsFns))
+	#	for (i in 1:length(intrinsicPriorsFns)) {
+	#		intrinsicValuesGuess[i]<-pullFromPrior(intrinsicPriorsValues[,i],intrinsicPriorsFns[i])
+	#	}
+	#}
+	#if (length(extrinsicValuesGuess)==0) { #if no user guesses, try pulling a value from the prior
+	#	extrinsicValuesGuess<-rep(NA,length(extrinsicPriorsFns))
+	#	for (i in 1:length(extrinsicPriorsFns)) {
+	#		extrinsicValuesGuess[i]<-pullFromPrior(extrinsicPriorsValues[,i],extrinsicPriorsFns[i])
+	#	}
+	#}
 
 	if (is.na(StartSims)) {
 		StartSims<-1000*numberParametersFree
@@ -502,10 +503,6 @@ doRun_prc<-function(
 				prcResults$time.per.gen<-time.per.gen
 
 				save(prcResults, file=paste("partialResults", jobName, ".txt", sep=""))
-
-
-
-
 
 						while (dataGenerationStep < nStepsPRC) {
 							dataGenerationStep<-dataGenerationStep+1
@@ -820,7 +817,8 @@ doRun_prc<-function(
 doRun_rej<-function(
 	phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues, startingPriorsFns, 
 	intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, 
-	startingValuesGuess=c(), intrinsicValuesGuess=c(), extrinsicValuesGuess=c(), TreeYears=1e+04, 
+	#startingValuesGuess=c(), intrinsicValuesGuess=c(), extrinsicValuesGuess=c(), 
+	TreeYears=1e+04, 
 	multicore=FALSE, coreLimit=NA, validation="CV", scale=TRUE, variance.cutoff=95,
 	niter.goal=5, generation.time=1,
 	standardDevFactor=0.20, StartSims=NA, jobName=NA, abcTolerance=0.1, 
@@ -861,24 +859,24 @@ doRun_rej<-function(
 	rownames(PriorMatrix)<-c("shape", "value1", "value2")	
 
 	#initialize guesses, if needed
-	if (length(startingValuesGuess)==0) { #if no user guesses, try pulling a value from the prior
-		startingValuesGuess<-rep(NA,length(startingPriorsFns))
-		for (i in 1:length(startingPriorsFns)) {
-			startingValuesGuess[i]<-pullFromPrior(startingPriorsValues[,i],startingPriorsFns[i])
-		}
-	}
-	if (length(intrinsicStatesGuess)==0) { #if no user guesses, try pulling a value from the prior
-		intrinsicStatesGuess<-rep(NA,length(intrinsicPriorsFns))
-		for (i in 1:length(intrinsicPriorsFns)) {
-			intrinsicStatesGuess[i]<-pullFromPrior(intrinsicPriorsValues[,i],intrinsicPriorsFns[i])
-		}
-	}
-	if (length(extrinsicStatesGuess)==0) { #if no user guesses, try pulling a value from the prior
-		extrinsicStatesGuess<-rep(NA,length(extrinsicPriorsFns))
-		for (i in 1:length(extrinsicPriorsFns)) {
-			extrinsicStatesGuess[i]<-pullFromPrior(extrinsicPriorsValues[,i],extrinsicPriorsFns[i])
-		}
-	}
+	#if (length(startingValuesGuess)==0) { #if no user guesses, try pulling a value from the prior
+	#	startingValuesGuess<-rep(NA,length(startingPriorsFns))
+	#	for (i in 1:length(startingPriorsFns)) {
+	#		startingValuesGuess[i]<-pullFromPrior(startingPriorsValues[,i],startingPriorsFns[i])
+	#	}
+	#}
+	#if (length(intrinsicValuesGuess)==0) { #if no user guesses, try pulling a value from the prior
+	#	intrinsicValuesGuess<-rep(NA,length(intrinsicPriorsFns))
+	#	for (i in 1:length(intrinsicPriorsFns)) {
+	#		intrinsicValuesGuess[i]<-pullFromPrior(intrinsicPriorsValues[,i],intrinsicPriorsFns[i])
+	#	}
+	#}
+	#if (length(extrinsicValuesGuess)==0) { #if no user guesses, try pulling a value from the prior
+	#	extrinsicValuesGuess<-rep(NA,length(extrinsicPriorsFns))
+	#	for (i in 1:length(extrinsicPriorsFns)) {
+	#		extrinsicValuesGuess[i]<-pullFromPrior(extrinsicPriorsValues[,i],extrinsicPriorsFns[i])
+	#	}
+	#}
 
 	if (is.na(StartSims)) {
 		StartSims<-1000*numberParametersFree
