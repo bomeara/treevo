@@ -53,7 +53,7 @@ data(simRun)
 # example simulation
 
 simDataParallel<-parallelSimulateWithPriors( 
-  nrepSim=10, multicore=FALSE, coreLimit=1, 
+  nrepSim=3, multicore=FALSE, coreLimit=1, 
   phy=simPhy,
   intrinsicFn=brownianIntrinsic,
   extrinsicFn=nullExtrinsic,
@@ -63,7 +63,7 @@ simDataParallel<-parallelSimulateWithPriors(
   intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
   extrinsicPriorsFns=c("fixed"),
   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE), 
-  timeStep=10^-6,
+  timeStep=1e-04,
   checkpointFile=NULL, checkpointFreq=24,
   verbose=FALSE,
   freevector=NULL, taxon.df=NULL,

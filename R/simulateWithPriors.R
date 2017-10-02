@@ -92,6 +92,9 @@
 #' simPhy<-rcoal(30)
 #' 
 #' # example simulation
+#' 
+#' # NOTE: the example analyses involve too few simulations, with coarse time-units
+#' 	# - all for the sake of examples that reasonably test the functions
 #' 	
 #' simData<-simulateWithPriors(phy=simPhy, 
 #'   intrinsicFn=brownianIntrinsic,
@@ -102,16 +105,16 @@
 #'   intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
 #'   extrinsicPriorsFns=c("fixed"),
 #'   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
-#'   timeStep=10^-6,
+#'   timeStep=1e-04,
 #' 	 freevector=NULL, 	
 #' 	 giveUpAttempts=10, 
-#' 	 verbose=TRUE,
+#' 	 verbose=FALSE,
 #' 	 niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) 
 #' 
 #' simData
 #'
 #' simDataParallel<-parallelSimulateWithPriors( 
-#'   nrepSim=10, multicore=FALSE, coreLimit=1, 
+#'   nrepSim=2, multicore=FALSE, coreLimit=1, 
 #'   phy=simPhy,
 #'   intrinsicFn=brownianIntrinsic,
 #'   extrinsicFn=nullExtrinsic,
@@ -121,7 +124,7 @@
 #'   intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
 #'   extrinsicPriorsFns=c("fixed"),
 #'   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE), 
-#'   timeStep=10^-6,
+#'   timeStep=1e-04,
 #'   checkpointFile=NULL, checkpointFreq=24,
 #'   verbose=FALSE,
 #'   freevector=NULL, taxon.df=NULL,
@@ -138,8 +141,8 @@
 #' @export
 simulateWithPriors<-function(
 	phy=NULL, intrinsicFn, extrinsicFn, startingPriorsFns, startingPriorsValues, 
-	intrinsicPriorsFns, intrinsicPriorsValues, extrinsicPriorsFns, extrinsicPriorsValues, timeStep,
-	giveUpAttempts=10, verbose=FALSE, checks=TRUE, taxon.df=NULL, freevector=NULL, 
+	intrinsicPriorsFns, intrinsicPriorsValues, extrinsicPriorsFns, extrinsicPriorsValues, 
+	timeStep=1e-04, giveUpAttempts=10, verbose=FALSE, checks=TRUE, taxon.df=NULL, freevector=NULL, 
 	niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) {
 
 	if(is.null(taxon.df)){
@@ -207,7 +210,8 @@ parallelSimulateWithPriors<-function(
 	nrepSim, multicore, coreLimit,  
 	phy, 
 	intrinsicFn, extrinsicFn, startingPriorsFns, startingPriorsValues,
-	intrinsicPriorsFns, intrinsicPriorsValues, extrinsicPriorsFns, extrinsicPriorsValues, timeStep,
+	intrinsicPriorsFns, intrinsicPriorsValues, extrinsicPriorsFns, extrinsicPriorsValues, 
+	timeStep=1e-04,
 	checkpointFile=NULL, checkpointFreq=24, verbose=FALSE, freevector=NULL, taxon.df=NULL, giveUpAttempts=10, 
 	niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) {
 	
