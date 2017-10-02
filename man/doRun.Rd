@@ -193,7 +193,7 @@ data(simRun)
 
 # Please set these values to more realistic levels for your analyses!
 
-doRun_prc(
+resultsPRC<-doRun_prc(
   phy = simPhy,
   traits = simChar,
   intrinsicFn=brownianIntrinsic,
@@ -218,10 +218,11 @@ doRun_prc(
   coreLimit=1
 )
 
+resultsPRC
 
 #one should make sure priors are uniform with doRun_rej!
 
-doRun_rej( 
+resultsRej<-doRun_rej( 
 	phy=simPhy,
 	traits=simChar,
 	intrinsicFn=brownianIntrinsic,
@@ -238,6 +239,8 @@ doRun_rej(
 	multicore=FALSE,
 	coreLimit=1
 	)
+
+resultsRej
 
 }
 
