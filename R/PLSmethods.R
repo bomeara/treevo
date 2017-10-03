@@ -26,6 +26,12 @@
 #' number of components included in the final PLS model fit. This value is a 
 #' percentage and must be between 0 and 100. Default is 95 percent.
 
+#' @param ... Additional arguments, passed to \code{\link{plsr}}. In particular, if the number of observations is less than
+#' 10 (such as for the example below), it may be necessary to pass a revised \code{segments} argument, which 
+#' \code{plsr} passes to \code{\link{mvrCv}}, as the default \code{segments} value is 10 (and there cannot be more segments
+#' than observations). Note that this should be an atypical situation outside of examples, as the number of observations
+#' should often be much greater than 10. 
+
 # for \code{pls.model.list} # Used in doc for both scale and variance.cutoff
 	# I HAVE NO IDEA WHAT THIS MEANS? WHAT IS pls.model.list???
 
@@ -45,12 +51,15 @@
 #' 
 #' \donttest{
 #' 
+#' set.seed(1)
 #' data(simRun)
 #' 
 #' # example simulation
 #' 
+#' nSimulations<-6
+#' 
 #' simDataParallel<-parallelSimulateWithPriors( 
-#'   nrepSim=3, multicore=FALSE, coreLimit=1, 
+#'   nrepSim=nSimulations, multicore=FALSE, coreLimit=1, 
 #'   phy=simPhy,
 #'   intrinsicFn=brownianIntrinsic,
 #'   extrinsicFn=nullExtrinsic,
@@ -74,7 +83,7 @@
 #' 
 #' PLSmodel<-returnPLSModel(trueFreeValuesMatrix=trueFreeValuesMat,
 #' 	  	summaryValuesMatrix=summaryValuesMat,
-#'    		validation="CV", scale=TRUE, variance.cutoff=95)
+#'    		validation="CV", scale=TRUE, variance.cutoff=95 , segments = nSimulations)
 #' 
 #' PLSmodel
 #' 
@@ -88,7 +97,7 @@
 #' @name PLSmethods
 #' @rdname PLSmethods
 #' @export
-returnPLSModel<-function(trueFreeValuesMatrix, summaryValuesMatrix, validation="CV", scale=TRUE, variance.cutoff=95) {
+returnPLSModel<-function(trueFreeValuesMatrix, summaryValuesMatrix, validation="CV", scale=TRUE, variance.cutoff=95, ...) {
   #note that this assumes that trueFreeValues is for a single param at a time, which works MUCH better
   
   trueFreeValuesMatrix<-trueFreeValuesMatrix
@@ -100,14 +109,14 @@ returnPLSModel<-function(trueFreeValuesMatrix, summaryValuesMatrix, validation="
   }
   #
   #scaling is important
-  pls.model <- plsr(trueFreeValuesMatrix~summaryValuesMatrix,validation=validation,scale=scale) 
+  pls.model <- plsr(trueFreeValuesMatrix~summaryValuesMatrix,validation=validation,scale=scale,...) 
   explained.variance <-cumsum(sort(attr(scores(pls.model),"explvar"),decreasing=TRUE))
   ncomp.final<-min(c(as.numeric(which(explained.variance>=variance.cutoff)[1]),
 	length(explained.variance)),na.rm=TRUE) #min is to deal with case of never explaining >95%
   #
   # now rerun with the ideal number of components
   pls.model.final <- plsr(trueFreeValuesMatrix~summaryValuesMatrix,
-	ncomp=ncomp.final, validation="none",scale=scale) 
+	ncomp=ncomp.final, validation="none",scale=scale,...) 
   return(pls.model.final)
 }
 

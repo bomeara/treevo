@@ -7,7 +7,7 @@
 \title{Fitting Univariate Partial Least Squares Models to Free Parameters in ABC}
 \usage{
 returnPLSModel(trueFreeValuesMatrix, summaryValuesMatrix, validation = "CV",
-  scale = TRUE, variance.cutoff = 95)
+  scale = TRUE, variance.cutoff = 95, ...)
 
 PLSTransform(summaryValuesMatrix, pls.model)
 }
@@ -29,6 +29,12 @@ scaling by the standard deviation is done for every segment.}
 number of components included in the final PLS model fit. This value is a 
 percentage and must be between 0 and 100. Default is 95 percent.}
 
+\item{...}{Additional arguments, passed to \code{\link{plsr}}. In particular, if the number of observations is less than
+10 (such as for the example below), it may be necessary to pass a revised \code{segments} argument, which 
+\code{plsr} passes to \code{\link{mvrCv}}, as the default \code{segments} value is 10 (and there cannot be more segments
+than observations). Note that this should be an atypical situation outside of examples, as the number of observations
+should often be much greater than 10.}
+
 \item{pls.model}{Output from \code{\link{returnPLSModel}}.}
 }
 \value{
@@ -48,12 +54,15 @@ Function \code{PLSTransform} uses results from a Partial Least Squares (PLS) mod
 
 \donttest{
 
+set.seed(1)
 data(simRun)
 
 # example simulation
 
+nSimulations<-6
+
 simDataParallel<-parallelSimulateWithPriors( 
-  nrepSim=3, multicore=FALSE, coreLimit=1, 
+  nrepSim=nSimulations, multicore=FALSE, coreLimit=1, 
   phy=simPhy,
   intrinsicFn=brownianIntrinsic,
   extrinsicFn=nullExtrinsic,
@@ -77,7 +86,7 @@ summaryValuesMat<-simDataParallel[,-1:-nParFree]
 
 PLSmodel<-returnPLSModel(trueFreeValuesMatrix=trueFreeValuesMat,
 	  	summaryValuesMatrix=summaryValuesMat,
-   		validation="CV", scale=TRUE, variance.cutoff=95)
+   		validation="CV", scale=TRUE, variance.cutoff=95 , segments = nSimulations)
 
 PLSmodel
 
