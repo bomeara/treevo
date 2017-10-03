@@ -2,24 +2,30 @@
 % Please edit documentation in R/compareListIPD.R
 \name{compareListIPD}
 \alias{compareListIPD}
-\title{Plot interparticle distance between runs}
+\title{Plot Interparticle Distance between Runs}
 \usage{
-compareListIPD(particleDataFrame, verbose = F)
+compareListIPD(particleDataFrameList, verbose = FALSE)
 }
 \arguments{
-\item{particleDataFrame}{particleDataFrame output from doRun}
+\item{particleDataFrameList}{A list composed of multiple \code{particleDataFrame} objects, as output by \code{\link{doRun}} functions.}
 
-\item{verbose}{Commented screen output}
+\item{verbose}{Commented screen output.}
 }
 \value{
-Returns a plot with IPD between runs per generation
+Produces a plot with IPD between runs per generation.
 }
 \description{
-This function plots interparticle distance between runs for each free
-parameter
+This function plots interparticle distance (IPD) between runs for each free
+parameter.
 }
-\references{
-O'Meara and Banbury, unpublished
+\examples{
+
+data(simRun)
+
+pdfList<-list(results$particleDataFrame,resultsBound$particleDataFrame)
+
+compareListIPD(particleDataFrameList=pdfList, verbose=TRUE)
+
 }
 \author{
 Brian O'Meara and Barb Banbury

@@ -1,43 +1,59 @@
 #' Pairwise Kolmogorov-Smirnov test
 #' 
-#' This function calculates KS on results.
+#' This function calculates Kolmogorov-Smirnov on results.
 #' 
 #' 
-#' @param particleDataFrame List of particleDataFrames from separate runs
-#' @return Returns a matrix with KS values of all pairwise runs
+
+#' @param particleDataFrameList An object of type list, composed of particleDataFrames from separate analyses.
+
+#' @return Returns a matrix with Kolmogorov-Smirnov values of all pairwise runs
+
 #' @author Brian O'Meara and Barb Banbury
-#' @references O'Meara and Banbury, unpublished
-PairwiseKS<-function(particleDataFrame) {
-#Combine doRun$particleDataFrame results and performs Kolmogorov-Smirnov tests
-# particleDataFrame should be a list of particleDataFrames (1:n)
+
+# @references O'Meara and Banbury, unpublished
+
+#' @examples
+#'
+#' data(simRun)
+#'
+#' pdfList<-list(results$particleDataFrame,results$particleDataFrame)
+#' 
+#' PairwiseKS(particleDataFrameList = pdfList)
+
+
+#' @name PairwiseKS
+#' @rdname PairwiseKS
+#' @export
+PairwiseKS<-function(particleDataFrameList) {
+	#Combine doRun$particleDataFrame results and performs Kolmogorov-Smirnov tests
+	# particleDataFrame should be a list of particleDataFrames (1:n)
 
 	#source("/Users/Barb/Desktop/treevo/pkg/R/pairings.R")
-	
 		
-	if(class(particleDataFrame)=="data.frame"){
-		warning("KS test requires comparison of two runs")
+	if(class(particleDataFrameList)=="data.frame" | class(particleDataFrameList)!="list" ){ # | length(particleDataFrameList)!=2
+		warning("KS test requires a list, composed of particleDataFrameList objects from two ABC runs")
 	}
 	
-	if(class(particleDataFrame)=="list"){
-		x<-vector("list")
-		for (list in 1:length(particleDataFrame)) {
-			x[[list]]<-subset(particleDataFrame[[list]][which(particleDataFrame[[list]][,6]>0),], particleDataFrame[[list]]$generation==max(particleDataFrame[[list]]$generation)) 
+	x<-vector("list")
+	for (list in 1:length(particleDataFrameList)) {
+		x[[list]]<-subset(particleDataFrameList[[list]][which(particleDataFrameList[[list]][,6]>0),],
+			particleDataFrameList[[list]]$generation==max(particleDataFrameList[[list]]$generation)) 
 		}	
-	
-		KSMatrixList<-vector("list", dim(x[[1]])[2]-6)
-		names(KSMatrixList)<-names(x[[1]][7:dim(x[[1]])[2]])
-		for (m in 1:length(KSMatrixList)){
+
+	KSMatrixList<-vector("list", dim(x[[1]])[2]-6)
+	names(KSMatrixList)<-names(x[[1]][7:dim(x[[1]])[2]])
+	for (m in 1:length(KSMatrixList)){
 		param<-6+m
 		KSMatrix<-matrix(nrow=length(x), ncol=length(x))
 		rownames(KSMatrix)<-paste("run", 1:length(x), sep="")
 		colnames(KSMatrix)<-paste("run", 1:length(x), sep="")
-			for (i in 1:dim(KSMatrix)[1]){
-				for (j in 1:dim(KSMatrix)[2]){
-					KSMatrix[i, j]<-suppressWarnings(round(ks.test(x[[i]][, param],x[[j]][, param])$p.value, digits=4)) #make diag
+		for (i in 1:dim(KSMatrix)[1]){
+			for (j in 1:dim(KSMatrix)[2]){
+				KSMatrix[i, j]<-suppressWarnings(round(ks.test(x[[i]][, param],x[[j]][, param])$p.value, digits=4)) #make diag
 				}
 			}
 		KSMatrixList[[m]]<-KSMatrix
 		}
-	}
+
 	return(KSMatrixList)
 }

@@ -2,29 +2,72 @@
 % Please edit documentation in R/boxcoxTransformation.R
 \name{boxcoxTransformation}
 \alias{boxcoxTransformation}
-\title{Box-Cox Transformation}
+\alias{boxcoxTransformationMatrix}
+\title{Box-Cox Transformation for Simulation Summary Values}
 \usage{
-boxcoxTransformation(summaryValues, boxcoxAddition, boxcoxLambda)
+boxcoxTransformation(summaryValuesVector, boxcoxAddition, boxcoxLambda)
+
+boxcoxTransformationMatrix(summaryValuesMatrix)
 }
 \arguments{
-\item{summaryValues}{Vector of summary statistics}
+\item{summaryValuesVector}{Vector of summary statistics from a single simulation}
 
-\item{boxcoxAddition}{Vector of boxcox additions from boxcoxEstimation}
+\item{boxcoxAddition}{Vector of boxcox additions from \code{boxcoxTransformationMatrix}}
 
-\item{boxcoxLambda}{Vector of boxcox lambda values from boxcoxEstimation}
+\item{boxcoxLambda}{Vector of boxcox lambda values from \code{boxcoxTransformationMatrix}}
+
+\item{summaryValuesMatrix}{Matrix of summary statistics from simulations}
 }
 \value{
-Returns a vector of Box-Cox transformed summary statistics from a
-single observation.
+\code{boxcoxTransformation} returns a vector of Box-Cox transformed summary statistics from a
+single observation. \code{boxcoxTransformationMatrix} returns a matrix of Box-Cox transformed summary statistics with the
+same dimensions as \code{summaryValuesMatrix}.
 }
 \description{
-This function Box-Cox transforms summary values from a single simulation
+\code{boxcoxTransformation} Box-Cox transforms summary values from a single simulation, while
+\code{boxcoxTransformationMatrix} Box-Cox transforms summary values from multiple simulations. The
+output of \code{boxcoxTransformationMatrix} needs to be provided as input for \code{boxcoxTransformation}.
 }
-\references{
-O'Meara and Banbury, unpublished; Bates et al. 2009
+\examples{
+
+
+\donttest{
+
+data(simRun)
+
+# example simulation
+
+simDataParallel<-parallelSimulateWithPriors( 
+  nrepSim=3, multicore=FALSE, coreLimit=1, 
+  phy=simPhy,
+  intrinsicFn=brownianIntrinsic,
+  extrinsicFn=nullExtrinsic,
+  startingPriorsFns="normal",
+  startingPriorsValues=matrix(c(mean(simChar[,1]), sd(simChar[,1]))),
+  intrinsicPriorsFns=c("exponential"),
+  intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
+  extrinsicPriorsFns=c("fixed"),
+  extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE), 
+  timeStep=1e-04,
+  checkpointFile=NULL, checkpointFreq=24,
+  verbose=FALSE,
+  freevector=NULL, taxon.df=NULL,
+  niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) 
+
+nParFree<-sum(attr(simDataParallel,"freevector"))
+
+#separate the simulation results: 'true' generating parameter values from the summary values
+summaryValuesMat<-simDataParallel[,-1:-nParFree]
+
+boxTranMat<-boxcoxTransformationMatrix(summaryValuesMatrix = summaryValuesMat)
+boxTranMat
+
+boxcoxTransformation(summaryValuesVector=summaryValuesMat[,1],
+ boxcoxAddition=boxTranMat$boxcoxAddition, boxcoxLambda=boxTranMat$boxcoxLambda)
+
+}
+
 }
 \author{
 Brian O'Meara and Barb Banbury
 }
-\keyword{Box-Cox}
-\keyword{boxcoxTransformation}

@@ -3,49 +3,116 @@
 #otherstates has one row per taxon, one column per state
 #states is a vector for each taxon, with length=nchar
 
-
-
 #' Extrinsic Character Evolution Models
 #' 
-#' This function describes a model of no extrinsic character evolution
+#' Functions describing various models of 'extrinsive' evolution (i.e. evolutionary processes
+#' dependent on factors extrinsic to the evolving lineage, such as environmental change, or
+#' other evolving lineages that interact with the lineage in question (competitors, predators, etc).
+#'
+#' The following extrinsic models are:
+#'
+#' 
+#' \code{nullExtrinsic} describes a model of no extrinsic character change.
+#'
+#' It has no parameters, really.
 #' 
 #' 
-#' @param params describes input paramaters for the model
+#' \code{nearestNeighborDisplacementExtrinsic} describes a model of extrinsic trait evolution where character
+#' values of a focal taxon depend on the values of closest relatives on the tree (e.g. competitive exclusion).
+#' 
+#' The input parameters for this model are:
+#' \code{nearestNeighborDisplacementExtrinsic} params = sd, springK, maximum force
+#' 
+#' 
+#' \code{everyoneDisplacementExtrinsic} describes a model of extrinsic trait evolution where the character
+#' values of a focal taxon depend on the values of all co-extant relatives on the simulated tree.
+#' 
+#' The input parameters for this model are:
+#' \code{everyoneDisplacementExtrinsic} params = sd, springK, maximum force
+#' 
+#' 
+#' \code{ExponentiallyDecayingPushExtrinsic} describes a model of extrinsic trait evolution where the character
+#' values of a focal taxon is 'pushed' away from other taxa with similar values, but the force of that 'push' 
+#' exponentially decays as lineages diverge and their character values become less similar.
+#' 
+#' The input parameters for this model are:
+#' \code{ExponentiallyDecayingPushExtrinsic} params = sd, maximum force, half distance
+#' 
+
+
+#' @param params describes input paramaters for the model (see Description)
+
 #' @param selfstates vector of states for each taxon
+
 #' @param otherstates matrix of character states, one row per taxon and once
 #' column per state
+
 #' @param timefrompresent which time slice in the tree
+
 #' @return A matrix of values representing character displacement from a single
 #' time step in the tree.
+
 #' @author Brian O'Meara and Barb Banbury
-#' @references O'Meara and Banbury, unpublished
-#' @keywords nullExtrinsic extrinsic
+
+#' @examples
+#'
+#' \donttest{
+#' 
+#' # Examples of simulations with various extrinsic models (and null intrinsic model)
+#' tree<-rcoal(30)
+#'
+#' #No trait evolution except due to
+#'		# character displacement due to nearest neighbor taxon
+#' char<-doSimulationForPlotting(
+#' 	phy=tree,
+#' 	intrinsicFn=nullIntrinsic,
+#' 	extrinsicFn=nearestNeighborDisplacementExtrinsic,
+#' 	startingValues=c(10), #root state
+#' 	intrinsicValues=c(0),
+#' 	extrinsicValues=c(0.1,0.1,0.1),
+#' 	timeStep=0.0001,
+#' 	plot=TRUE,
+#' 	saveHistory=FALSE)
+#' 
+#' #Similarly, no trait evolution except due to
+#'		# character displacement from all other taxa in the clade
+#' char<-doSimulationForPlotting(
+#' 	phy=tree,
+#' 	intrinsicFn=nullIntrinsic,
+#' 	extrinsicFn=everyoneDisplacementExtrinsic,
+#' 	startingValues=c(10), #root state
+#' 	intrinsicValues=c(0),
+#' 	extrinsicValues=c(0.1,0.1,0.1),
+#' 	timeStep=0.0001,
+#' 	plot=TRUE,
+#' 	saveHistory=FALSE)
+#' 
+#' # A variant where force of character displacement decays exponentially
+#' 		# as lineages become more different
+#' char<-doSimulationForPlotting(
+#' 	phy=tree,
+#' 	intrinsicFn=nullIntrinsic,
+#' 	extrinsicFn=ExponentiallyDecayingPushExtrinsic,
+#' 	startingValues=c(10), #root state
+#' 	intrinsicValues=c(0),
+#' 	extrinsicValues=c(0.1,0.1,2),
+#' 	timeStep=0.0001,
+#' 	plot=TRUE,
+#' 	saveHistory=FALSE)
+#'
+#' } 
+#' 
+
+#' @name extrinsicModels
+#' @rdname extrinsicModels
+#' @export
 nullExtrinsic<-function(params,selfstates,otherstates, timefrompresent) {
 	newdisplacement<-0*selfstates
 	return(newdisplacement)
 }
 
-
-
-
-#' Extrinsic Character Evolution Models
-#' 
-#' This function describes a model of extrinsic character evolution.  Character
-#' values of a focal taxon depend on values of closest relatives on the tree
-#' 
-#' 
-#' @param params describes input paramaters for the model.
-#' \code{nearestNeighborDisplacementExtrinsic} params = sd, springK, maximum
-#' force
-#' @param selfstates vector of states for each taxon
-#' @param otherstates matrix of character states, one row per taxon and once
-#' column per state
-#' @param timefrompresent which time slice in the tree
-#' @return A matrix of values representing character displacement from a single
-#' time step in the tree.
-#' @author Brian O'Meara and Barb Banbury
-#' @references O'Meara and Banbury, unpublished
-#' @keywords nearestNeighborDisplacementExtrinsic extrinsic
+#' @rdname extrinsicModels
+#' @export
 nearestNeighborDisplacementExtrinsic<-function(params,selfstates,otherstates, timefrompresent) { 
 	#params[1] is sd, params[2] is springK, params[3] is maxforce
 	repulsorTaxon<-which.min(abs(otherstates-selfstates))
@@ -63,62 +130,10 @@ nearestNeighborDisplacementExtrinsic<-function(params,selfstates,otherstates, ti
 }
 
 
-
-#' Extrinsic Character Evolution Models
-#' 
-#' This function describes a model of extrinsic character evolution.  Character
-#' values of a focal taxon pushes away harder from other taxa with like values;
-#' "push" exponentially decays as the values become less similar
-#' 
-#' 
-#' @param params describes input paramaters for the model.
-#' \code{ExponentiallyDecayingPush} params = sd, maximum force, half distance
-#' @param selfstates vector of states for each taxon
-#' @param otherstates matrix of character states, one row per taxon and once
-#' column per state
-#' @param timefrompresent which time slice in the tree
-#' @return A matrix of values representing character displacement from a single
-#' time step in the tree.
-#' @author Brian O'Meara and Barb Banbury
-#' @references O'Meara and Banbury, unpublished
-#' @keywords ExponentiallyDecayingPush extrinsic
-ExponentiallyDecayingPush<-function(params,selfstates,otherstates, timefrompresent) { 
-	#params[1] is sd, params[2] is maxForce when character difference = 0, params[3] is half distance (the phenotypic distance at which repulsion is half maxForce)
-	repulsorTaxon<-which.min(abs(otherstates-selfstates))
-	repulsorValue<-otherstates[repulsorTaxon]
-	sd<-params[1]
-	maxForce<-params[2]
-	halfDistance<-params[3] #is like half life
-	rate<-log(2, base = exp(1))/ halfDistance
-	localsign<-sign(selfstates[1]- repulsorValue)
-	if(localsign==0) {  #to deal with case of identical values
-		localsign=sign(rnorm(n=1))	
-	}
-	newdisplacement<-rnorm(n=1,mean=maxForce*localsign*exp(-1*rate*abs((selfstates[1]-repulsorValue))),sd=sd)
-	return(newdisplacement)
-}
-
-
-
-#' Extrinsic Character Evolution Models
-#' 
-#' This function describes a model of extrinsic character evolution.  Character
-#' values of a focal taxon depend on values of all relatives on the tree
-#' 
-#' 
-#' @param params describes input paramaters for the model.
-#' \code{nearestNeighborDisplacementExtrinsic} params = sd, springK, maximum
-#' force
-#' @param selfstates vector of states for each taxon
-#' @param otherstates matrix of character states, one row per taxon and once
-#' column per state
-#' @param timefrompresent which time slice in the tree
-#' @return A matrix of values representing character displacement from a single
-#' time step in the tree.
-#' @author Brian O'Meara and Barb Banbury
-#' @references O'Meara and Banbury, unpublished
-#' @keywords everyoneDisplacementExtrinsic extrinsic
-everyoneDisplacementExtrinsic<-function(params,selfstates,otherstates, timefrompresent) { #this is set up for one character only right now
+#' @rdname extrinsicModels
+#' @export
+everyoneDisplacementExtrinsic<-function(params,selfstates,otherstates, timefrompresent) { 
+	#this is set up for one character only right now
 	#params[1] is sd, params[2] is springK, params[3] is maxforce
 	sd<-params[1]
 	springK <-params[2]
@@ -136,6 +151,24 @@ everyoneDisplacementExtrinsic<-function(params,selfstates,otherstates, timefromp
 }
 
 
+#' @rdname extrinsicModels
+#' @export
+ExponentiallyDecayingPushExtrinsic<-function(params,selfstates,otherstates, timefrompresent) { 
+	#params[1] is sd, params[2] is maxForce when character difference = 0, params[3] is half
+		# distance (the phenotypic distance at which repulsion is half maxForce)
+	repulsorTaxon<-which.min(abs(otherstates-selfstates))
+	repulsorValue<-otherstates[repulsorTaxon]
+	sd<-params[1]
+	maxForce<-params[2]
+	halfDistance<-params[3] #is like half life
+	rate<-log(2, base = exp(1))/ halfDistance
+	localsign<-sign(selfstates[1]- repulsorValue)
+	if(localsign==0) {  #to deal with case of identical values
+		localsign=sign(rnorm(n=1))	
+	}
+	newdisplacement<-rnorm(n=1,mean=maxForce*localsign*exp(-1*rate*abs((selfstates[1]-repulsorValue))),sd=sd)
+	return(newdisplacement)
+}
 
 #Extra functions for calculating Exponential Decay Push priors
 GetExpPushPriors<-function(numSteps, phy, data) {

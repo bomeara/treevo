@@ -8,22 +8,22 @@ ThreeD.ABCplots(particleDataFrame, parameter, show.particles = "none",
   plot.parent = FALSE, realParam = FALSE, realParamValues = NA)
 }
 \arguments{
-\item{particleDataFrame}{particleDataFrame output from doRun}
+\item{particleDataFrame}{A \code{particleDataFrame} object, as found among the output from \code{\link{doRun}} functions.}
 
-\item{parameter}{column number of parameter of interest from
-particleDataFrame}
+\item{parameter}{Column number of parameter of interest from
+\code{particleDataFrame}.}
 
-\item{show.particles}{option to show particles on 3d plot as "none" or as a
-function of "weights" or "distance"}
+\item{show.particles}{Option to show particles on 3d plot as "none" or as a
+function of "weights" or "distance".}
 
-\item{plot.parent}{option to plot lines on the floor of the 3d plot to show
-particle parantage}
+\item{plot.parent}{Option to plot lines on the floor of the 3d plot to show
+particle parantage.}
 
-\item{realParam}{option to display real parameter value as a solid line,
+\item{realParam}{Option to display real parameter value as a solid line,
 also must give actual value for this (realParamValues).  Note: this should
-only be done with simulated data where real param values are recorded}
+only be done with simulated data where real param values are recorded.}
 
-\item{realParamValues}{Value for (realParam)}
+\item{realParamValues}{Value for \code{realParam}.}
 }
 \description{
 Plot posterior density distribution for each generation in 3d plot window
@@ -35,17 +35,20 @@ options are available to add to the plot: plotting particles by weight or
 distance, plotting particle parantage, and plotting the real parameter
 values (if known).
 }
+\note{
+This function requires access functions \code{triangulate} and the \code{as} method for
+class \code{gpc.poly} from package \code{gpclib}. As of 09-12-17, this package
+was not available from CRAN as a Windows binary, and thus this function is likely
+unavailable to many (if not all) Windows users.
+}
 \examples{
 
-# data(simRun)
-# ThreeD.ABCplots(particleDataFrame=results$particleDataFrame, parameter=7,
-#     show.particles="none", plot.parent=FALSE, realParam=FALSE, realParamValues=NA) 
 
-}
-\references{
-O'Meara and Banbury, unpublished
+ data(simRun)
+ ThreeD.ABCplots(particleDataFrame=results$particleDataFrame, parameter=7,
+     show.particles="none", plot.parent=FALSE, realParam=FALSE, realParamValues=NA) 
+
 }
 \author{
 Barb Banbury
 }
-\keyword{ThreeD.ABCplots}

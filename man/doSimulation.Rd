@@ -2,59 +2,100 @@
 % Please edit documentation in R/doSimulation.R
 \name{doSimulation}
 \alias{doSimulation}
-\title{Discrete Time Character Simulation}
+\alias{doSimulationForPlotting}
+\alias{doSimulationWithPossibleExtinction}
+\title{Discrete-Time Character Simulation}
 \usage{
-doSimulation(splits, intrinsicFn, extrinsicFn, startingValues, intrinsicValues,
-  extrinsicValues, timeStep, saveHistory = FALSE, saveRealParams = FALSE,
-  jobName = "")
+doSimulation(phy = NULL, intrinsicFn, extrinsicFn, startingValues,
+  intrinsicValues, extrinsicValues, timeStep, saveHistory = FALSE,
+  saveRealParams = FALSE, jobName = "", taxon.df = NULL)
+
+doSimulationForPlotting(phy = NULL, intrinsicFn, extrinsicFn, startingValues,
+  intrinsicValues, extrinsicValues, timeStep, plot = FALSE,
+  savePlot = FALSE, saveHistory = FALSE, saveRealParams = FALSE,
+  jobName = "", taxon.df = NULL)
+
+doSimulationWithPossibleExtinction(phy = NULL, intrinsicFn, extrinsicFn,
+  startingValues, intrinsicValues, extrinsicValues, timeStep,
+  saveHistory = FALSE, saveRealParams = FALSE, jobName = "",
+  returnAll = FALSE, verbose = FALSE, reject.NaN = TRUE,
+  taxon.df = NULL)
 }
 \arguments{
-\item{splits}{Output from the function getSimulationSplits; is a data frame
-of branching times, ancestor and descendant vectors}
+\item{phy}{A phylogenetic tree, in package \code{ape}'s \code{phylo} format.}
 
-\item{intrinsicFn}{Name of intrinsic function characters should be simulated
-under}
+\item{intrinsicFn}{Name of (previously-defined) function that governs how
+traits evolve within a lineage, regardless of the trait values of other taxa.}
 
-\item{extrinsicFn}{Name of extrinsic function characters should be simulated
-under}
+\item{extrinsicFn}{Name of (previously-defined) function that governs how
+traits evolve within a lineage, based on their own ('internal') trait vlaue and the trait values
+of other taxa.}
 
-\item{startingValues}{State at the root}
+\item{startingValues}{State at the root.}
 
-\item{intrinsicValues}{Vector of values corresponding to the params of the
-intrinsic model}
+\item{intrinsicValues}{Vector of values corresponding to the parameters of the
+intrinsic model.}
 
-\item{extrinsicValues}{Vector of values corresponding to the params of the
-extrinsic model}
+\item{extrinsicValues}{Vector of values corresponding to the parameters of the
+extrinsic model.}
 
 \item{timeStep}{This value corresponds to the number of discrete time steps
-on the shortest branch}
+on the shortest branch.}
 
-\item{saveHistory}{Saves the character history throughout the simulation}
+\item{saveHistory}{If \code{TRUE}, saves the character history throughout the simulation.
+When \code{saveHistory} is \code{TRUE}, processor time will increase quite a bit.}
 
-\item{saveRealParams}{Saves intrinsicValues and extrinsicValues as both a
-matrix and a vector}
+\item{saveRealParams}{Saves \code{intrinsicValues} and \code{extrinsicValues} as both a
+matrix and a vector to an external .Rdata file.}
 
-\item{jobName}{Optional name for the job}
+\item{jobName}{Optional name for the job.}
+
+\item{taxon.df}{A data.frame containing data on nodes (both tips and internal nodes) output by various internal functions.
+Can be supplied as input to spead up repeated calculations, but by default is
+\code{NULL}, which instead forces a calculation from input \code{phy}.}
+
+\item{plot}{Will create a new interactive window that plots character values
+throughout the history of the tree.}
+
+\item{savePlot}{Saves the character tree using \code{jobName}.}
+
+\item{returnAll}{If \code{TRUE}, the output returned is a \code{data.frame} containing the values at each node from the simulation.}
+
+\item{verbose}{If \code{TRUE}, gives messages about how the simulation is progessing via \code{print}.}
+
+\item{reject.NaN}{If \code{TRUE}, stop run if any simulated value is \code{NaN}.}
 }
 \value{
-A data frame of species character (tip) values in the tree.
+If \code{returnAll = FALSE} (the default), this function returns a data frame of species character (tip)
+values in the tree, with column headings \code{taxonid} (representing the index for the corresponding tip label
+the most recent divergence event for that lineage), and \code{statesmatrix} (the simulated trait data).
+If \code{returnAll = TRUE}, the raw \code{data.frame} from the simulation will instead be returned.
 }
 \description{
-This function evolves continuous characters in a discrete time process.
+The \code{doSimulation} family of functions evolve continuous characters under a discrete time process.
+These functions are mainly used as internal components, generating simulations
+within ABC analyses using the \code{\link{doRun}} functions. See \emph{Note} below.
 }
 \details{
-When saveHistory is TRUE, processor time will increase quite a bit.
-SaveRealParams is useful for tracking the "real" true values if simulating
-data for abc runs.  It is not useful for empirical abc runs.
+When \code{saveHistory} is \code{TRUE}, processor time will increase quite a bit.
+\code{SaveRealParams} is useful for tracking the \emph{real} true values if simulating
+data to test the performance of ABC analyses.  It is not useful for ABC analyses of empirical data.
+}
+\note{
+The \code{\link{simulateWithPriors}} functions are effectively the engine that powers the \code{\link{doRun}}
+functions, while the \code{\link{doSimulation}} functions are the pistons within the \code{\link{simulateWithPriors}} engine.
+In general, most users will just drive the car - they will just use \code{\link{doRun}}, but some users may
+want to use \code{\link{simulateWithPriors}} or \code{\link{doSimulation}} functions to do various simulations.
 }
 \examples{
 
+\donttest{
 
-phy<-rcoal(30)
+tree<-rcoal(30)
 
 #Simple Brownian motion
 char<-doSimulation(
-	splits=getSimulationSplits(phy),
+	phy=tree,
 	intrinsicFn=brownianIntrinsic,
 	extrinsicFn=nullExtrinsic,
 	startingValues=c(10), #root state
@@ -63,23 +104,60 @@ char<-doSimulation(
 	timeStep=0.0001,
 	saveHistory=FALSE)
 
-
 #Character displacement model with minimum bound
 char<-doSimulation(
-	splits=getSimulationSplits(phy),
+	phy=tree,
 	intrinsicFn=boundaryMinIntrinsic,
-	extrinsicFn=ExponentiallyDecayingPush,
+	extrinsicFn=ExponentiallyDecayingPushExtrinsic,
 	startingValues=c(10), #root state
 	intrinsicValues=c(0.05, 10, 0.01),
 	extrinsicValues=c(0, .1, .25),
 	timeStep=0.001,
 	saveHistory=FALSE)
 
+#Simple Brownian motion
+char<-doSimulationForPlotting(
+	phy=tree,
+	intrinsicFn=brownianIntrinsic,
+	extrinsicFn=nullExtrinsic,
+	startingValues=c(10), #root state
+	intrinsicValues=c(0.01),
+	extrinsicValues=c(0),
+	timeStep=0.0001,
+	plot=FALSE,
+	saveHistory=FALSE)
+
+
+#Character displacement model with minimum bound
+char<-doSimulationForPlotting(
+	phy=tree,
+	intrinsicFn=boundaryMinIntrinsic,
+	extrinsicFn=ExponentiallyDecayingPushExtrinsic,
+	startingValues=c(10), #root state
+	intrinsicValues=c(0.05, 10, 0.01),
+	extrinsicValues=c(0, .1, .25),
+	timeStep=0.001,
+	plot=TRUE,
+	saveHistory=FALSE)
+
+
+# with extinction
+
+#Simple Brownian motion
+char<-doSimulationWithPossibleExtinction(
+	phy=tree,
+	intrinsicFn=brownianIntrinsic,
+	extrinsicFn=nullExtrinsic,
+	startingValues=c(10), #root state
+	intrinsicValues=c(0.01),
+	extrinsicValues=c(0),
+	timeStep=0.0001,
+	saveHistory=FALSE)
+
 }
-\references{
-O'Meara and Banbury, unpublished
 }
 \author{
 Brian O'Meara and Barb Banbury
+
+Brian O'Meara and Barb Banbury
 }
-\keyword{doSimulation}

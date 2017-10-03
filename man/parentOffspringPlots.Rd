@@ -2,18 +2,18 @@
 % Please edit documentation in R/parentOffspringPlots.R
 \name{parentOffspringPlots}
 \alias{parentOffspringPlots}
-\title{Plotting parent-offspring particles}
+\title{Plotting Parent-Offspring Particles}
 \usage{
 parentOffspringPlots(particleDataFrame)
 }
 \arguments{
-\item{particleDataFrame}{particleDataFrame from TreEvo results}
+\item{particleDataFrame}{\code{particleDataFrame} output by TreEvo ABC analyses.}
 }
 \value{
-Returns a layout of parent-offspring plots
+Creates a set of parent-offspring plots.
 }
 \description{
-This function uses the particleDataFrame from TreEvo results and plots
+This function uses the \code{particleDataFrame} output by TreEvo ABC analyses and plots
 parent-offspring particles from generation to generation.
 }
 \details{
@@ -27,14 +27,10 @@ Grayed out stars represent rejected particles.
 }
 \examples{
 
-#data(res)
-#parentOffspringPlots(res$particleDataFrame)
+data(simRun)
+parentOffspringPlots(results$particleDataFrame)
 
-}
-\references{
-O'Meara and Banbury, unpublished
 }
 \author{
 Brian O'Meara and Barb Banbury
 }
-\keyword{parentOffspringPlots}

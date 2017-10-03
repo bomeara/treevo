@@ -4,19 +4,24 @@
 \alias{PairwiseKS}
 \title{Pairwise Kolmogorov-Smirnov test}
 \usage{
-PairwiseKS(particleDataFrame)
+PairwiseKS(particleDataFrameList)
 }
 \arguments{
-\item{particleDataFrame}{List of particleDataFrames from separate runs}
+\item{particleDataFrameList}{An object of type list, composed of particleDataFrames from separate analyses.}
 }
 \value{
-Returns a matrix with KS values of all pairwise runs
+Returns a matrix with Kolmogorov-Smirnov values of all pairwise runs
 }
 \description{
-This function calculates KS on results.
+This function calculates Kolmogorov-Smirnov on results.
 }
-\references{
-O'Meara and Banbury, unpublished
+\examples{
+
+data(simRun)
+
+pdfList<-list(results$particleDataFrame,results$particleDataFrame)
+
+PairwiseKS(particleDataFrameList = pdfList)
 }
 \author{
 Brian O'Meara and Barb Banbury

@@ -1,11 +1,10 @@
 Package: TreEvo
 Type: Package
-Title: Using ABC to understand trait evolution
-Version: 0.4.1
-Date: 2017-07-04
+Title: Using ABC to Understand Trait Evolution
+Version: 0.4.3
+Date: 2017-10-03
 Authors@R: c(person("Brian", "O'Meara", role=c("aut", "cre"), email="omeara.brian@gmail.com"),
-  person("Barb", "Banbury", role=c("aut")))
-Author: Brian O'Meara, Barb L. Banbury
+  person("Barb", "Banbury", role=c("aut")),person("David","Bapst", role=c("aut")))
 Maintainer: Brian O'Meara <omeara.brian@gmail.com>
 Depends:
     R (>= 2.13.0),
@@ -17,21 +16,22 @@ Imports:
     corpcor,
     coda,
     foreach,
-    rgl,
     partitions,
     car,
     mvtnorm,
     methods,
     grDevices,
     graphics,
+	rgl,	
     phytools
 Suggests:
-    testthat,
     covr,
     doMC,
-	doParallel
+	doParallel,
+	gpclib,
+    testthat
 LazyData: yes
-Description: Various functions for estimating parameters of trait evolution
+Description: Various functions for estimating parameters of trait evolution in comparative analyses
     using Approximate Bayesian Computation.
 License: GPL
 URL: https://github.com/bomeara/treevo

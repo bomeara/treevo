@@ -6,8 +6,7 @@
 \alias{treevo}
 \title{TreEvo--abc for comparative methods}
 \description{
-A package for using approximate Bayesian computation for comparative methods
-in trait evolution
+A package for applying Approximate Bayesian Computation to estimating parameters of trait evolution in comparative analyses.
 }
 \details{
 \tabular{ll}{ Package: \tab TreEvo\cr Type: \tab Package\cr Version: \tab
@@ -15,23 +14,66 @@ in trait evolution
 }
 \examples{
 
-#Continuous character simulation under Brownian motion
-library(ape)
-phy<-rcoal(20)
-char<-doSimulationWithPossibleExtinction(
-	taxon.df=getTaxonDFWithPossibleExtinction(phy),
+\donttest{
+
+# let's simulate some data, and then try to infer the parameters using ABC
+
+simPhy<-rcoal(30)
+
+genRate<-c(0.01)
+ancState<-c(10)
+
+#Simple Brownian motion
+simCharOut<-doSimulation(
+	phy=simPhy,
 	intrinsicFn=brownianIntrinsic,
 	extrinsicFn=nullExtrinsic,
-	startingValues=c(30),
-	intrinsicValues=c(.01),
+	startingValues=ancState, #root state
+	intrinsicValues=genRate,
 	extrinsicValues=c(0),
-	timeStep=0.001)
+	timeStep=0.0001,
+	saveHistory=FALSE)
+
+# clean for use with doRun
+simChar<-simCharOut[,"statesmatrix",drop=FALSE]
+rownames(simChar)<-simPhy$tip.label[simCharOut$taxonid]
+
+# NOTE: the example analyses below sample too few particles, 
+	# over too few steps, with too few starting simulations
+	# - all for the sake of examples that reasonably test the functions
+
+# Please set these values to more realistic levels for your analyses!
+
+results<-doRun_prc(
+  phy = simPhy,
+  traits = simChar,
+  intrinsicFn=brownianIntrinsic,
+  extrinsicFn=nullExtrinsic,
+  startingPriorsFns="normal",
+  startingPriorsValues=matrix(c(mean(simChar[,1]), sd(simChar[,1]))),
+  intrinsicPriorsFns=c("exponential"),
+  intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
+  extrinsicPriorsFns=c("fixed"),
+  extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
+  TreeYears=1000,
+  standardDevFactor=0.2,
+  plot=FALSE,
+  StartSims=10,
+  epsilonProportion=0.7,
+  epsilonMultiplier=0.7,
+  nStepsPRC=3,
+  numParticles=20,
+  jobName="examplerun_prc",
+  stopRule=FALSE,
+  multicore=FALSE,
+  coreLimit=1
+  )
+
+}
 
 }
 \author{
-Brian O'Meara, Barb L. Banbury
+Brian O'Meara, Barb L. Banbury, David W. Bapst
 
-Maintainer: Barb Banbury <darwinthesun@gmail.com>
+Maintainer: David Bapst <dwbapst@gmail.com>
 }
-\keyword{abc}
-\keyword{treevo}

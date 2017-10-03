@@ -1,20 +1,103 @@
-#' Box-Cox Transformation
+#' Box-Cox Transformation for Simulation Summary Values
 #' 
-#' This function Box-Cox transforms summary values from a single simulation
+#' \code{boxcoxTransformation} Box-Cox transforms summary values from a single simulation, while
+#' \code{boxcoxTransformationMatrix} Box-Cox transforms summary values from multiple simulations. The
+#' output of \code{boxcoxTransformationMatrix} needs to be provided as input for \code{boxcoxTransformation}.
 #' 
 #' 
-#' @param summaryValues Vector of summary statistics
-#' @param boxcoxAddition Vector of boxcox additions from boxcoxEstimation
-#' @param boxcoxLambda Vector of boxcox lambda values from boxcoxEstimation
-#' @return Returns a vector of Box-Cox transformed summary statistics from a
-#' single observation.
+
+#' @param summaryValuesMatrix Matrix of summary statistics from simulations
+
+#' @param summaryValuesVector Vector of summary statistics from a single simulation
+
+#' @param boxcoxAddition Vector of boxcox additions from \code{boxcoxTransformationMatrix}
+
+#' @param boxcoxLambda Vector of boxcox lambda values from \code{boxcoxTransformationMatrix}
+
+#' @return \code{boxcoxTransformation} returns a vector of Box-Cox transformed summary statistics from a
+#' single observation. \code{boxcoxTransformationMatrix} returns a matrix of Box-Cox transformed summary statistics with the
+#' same dimensions as \code{summaryValuesMatrix}.
+
 #' @author Brian O'Meara and Barb Banbury
-#' @references O'Meara and Banbury, unpublished; Bates et al. 2009
-#' @keywords boxcoxTransformation Box-Cox
-boxcoxTransformation<-function(summaryValues, boxcoxAddition, boxcoxLambda) { #yes, a row of summary values
-	for (summaryValueIndex in 1:length(summaryValues)) {
-        summaryValues[summaryValueIndex] <- (summaryValues[summaryValueIndex] + 
+
+# @references O'Meara and Banbury, unpublished; Bates et al. 2009
+# @keywords boxcoxEstimation Box-Cox
+
+#' @examples
+#' 
+#' 
+#' \donttest{
+#' 
+#' data(simRun)
+#' 
+#' # example simulation
+#' 
+#' simDataParallel<-parallelSimulateWithPriors( 
+#'   nrepSim=3, multicore=FALSE, coreLimit=1, 
+#'   phy=simPhy,
+#'   intrinsicFn=brownianIntrinsic,
+#'   extrinsicFn=nullExtrinsic,
+#'   startingPriorsFns="normal",
+#'   startingPriorsValues=matrix(c(mean(simChar[,1]), sd(simChar[,1]))),
+#'   intrinsicPriorsFns=c("exponential"),
+#'   intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
+#'   extrinsicPriorsFns=c("fixed"),
+#'   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE), 
+#'   timeStep=1e-04,
+#'   checkpointFile=NULL, checkpointFreq=24,
+#'   verbose=FALSE,
+#'   freevector=NULL, taxon.df=NULL,
+#'   niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) 
+#' 
+#' nParFree<-sum(attr(simDataParallel,"freevector"))
+#' 
+#' #separate the simulation results: 'true' generating parameter values from the summary values
+#' summaryValuesMat<-simDataParallel[,-1:-nParFree]
+#' 
+#' boxTranMat<-boxcoxTransformationMatrix(summaryValuesMatrix = summaryValuesMat)
+#' boxTranMat
+#' 
+#' boxcoxTransformation(summaryValuesVector=summaryValuesMat[,1],
+#'  boxcoxAddition=boxTranMat$boxcoxAddition, boxcoxLambda=boxTranMat$boxcoxLambda)
+#' 
+#' }
+#' 
+
+
+#' @name boxcoxTransformation
+#' @rdname boxcoxTransformation
+#' @export
+boxcoxTransformation<-function(summaryValuesVector, boxcoxAddition, boxcoxLambda) { 
+	#yes, a row of summary values
+	for (summaryValueIndex in 1:length(summaryValuesVector)) {
+        summaryValuesVector[summaryValueIndex] <- (summaryValuesVector[summaryValueIndex] + 
             boxcoxAddition[summaryValueIndex])^boxcoxLambda[summaryValueIndex]
     }
-    return(summaryValues)
+    return(summaryValuesVector)
+}
+
+#' @rdname boxcoxTransformation
+#' @export
+boxcoxTransformationMatrix<-function (summaryValuesMatrix) {
+  #library("car", quietly = T)
+  boxcoxLambda <- rep(NA, dim(summaryValuesMatrix)[2])
+  boxcoxAddition <- rep(NA, dim(summaryValuesMatrix)[2])
+  for (summaryValueIndex in 1:dim(summaryValuesMatrix)[2]) {
+    boxcoxAddition[summaryValueIndex] <- 0
+    lowValue <- min(summaryValuesMatrix[, summaryValueIndex]) - 4 * sd(summaryValuesMatrix[, summaryValueIndex])
+    if (lowValue <= 0) {
+      boxcoxAddition[summaryValueIndex] <- 4 * abs(lowValue)
+    }
+    summary <- summaryValuesMatrix[, summaryValueIndex] + boxcoxAddition[summaryValueIndex]
+    boxcoxLambda[summaryValueIndex] <- 1
+    if (sd(summaryValuesMatrix[, summaryValueIndex]) > 0) {
+      newLambda <- as.numeric(try(powerTransform(summary, method = "Nelder-Mead")$lambda))
+      if (!is.na(newLambda)) {
+        boxcoxLambda[summaryValueIndex] <- newLambda
+      }
+    }
+    summaryValuesMatrix[, summaryValueIndex] <- summary^boxcoxLambda[summaryValueIndex]
+  }
+  return(list(boxcoxAddition = boxcoxAddition, boxcoxLambda = boxcoxLambda, 
+              boxcoxSummaryValuesMatrix = summaryValuesMatrix))
 }
