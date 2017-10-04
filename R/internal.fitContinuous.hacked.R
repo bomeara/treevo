@@ -164,7 +164,7 @@ function(ds, print=TRUE)
 
 	#----- MINIMIZE NEGATIVE LOG LIKELIHOOD
 	
-	beta.start<-var(ds$data)/max(branching.times(ds$tree))
+	beta.start<-var(ds$data)/max(node.depth.edgelength(ds$tree))
 
 
 	out         <- NULL
@@ -424,7 +424,7 @@ function(ds, print=TRUE)
 		k<-3
 		vcv<- vcv.phylo(tree)
   		ww<- lm(y ~ diag(vcv))
-  		p0<- c(phylogMean(vcv, y), var(y)/max(branching.times(tree)), coef(ww)[2])
+  		p0<- c(phylogMean(vcv, y), var(y)/max(node.depth.edgelength(tree)), coef(ww)[2])
 		if(is.na(p0[3])) {
 			p0[3]<-0
 			if(is.ultrametric(tree))
