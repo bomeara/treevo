@@ -36,7 +36,7 @@ GetBMRatePrior<-function(phy, traits, timeStep) {
     if(is.null(names(traits))){
 		names(traits) <- colnames(traits)
 		}
-	continuous.time.sigma.squared <- fitContinuous(phy, traits)$opt$sigsq
+	continuous.time.sigma.squared <- makeQuiet(fitContinuous(phy, traits))$opt$sigsq
     numSteps <- getSimulationSplits(phy)[1, 1] / timeStep
     discrete.time.sigma.squared<-continuous.time.sigma.squared * max(node.depth.edgelength(phy)) / numSteps
     discrete.time.sd<-sqrt(discrete.time.sigma.squared)

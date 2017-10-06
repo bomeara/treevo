@@ -109,14 +109,14 @@ returnPLSModel<-function(trueFreeValuesMatrix, summaryValuesMatrix, validation="
   }
   #
   #scaling is important
-  pls.model <- plsr(trueFreeValuesMatrix~summaryValuesMatrix,validation=validation,scale=scale,...) 
+  pls.model <- makeQuiet(plsr(trueFreeValuesMatrix~summaryValuesMatrix,validation=validation,scale=scale,...)) 
   explained.variance <-cumsum(sort(attr(scores(pls.model),"explvar"),decreasing=TRUE))
   ncomp.final<-min(c(as.numeric(which(explained.variance>=variance.cutoff)[1]),
 	length(explained.variance)),na.rm=TRUE) #min is to deal with case of never explaining >95%
   #
   # now rerun with the ideal number of components
-  pls.model.final <- plsr(trueFreeValuesMatrix~summaryValuesMatrix,
-	ncomp=ncomp.final, validation="none",scale=scale,...) 
+  pls.model.final <- makeQuiet(plsr(trueFreeValuesMatrix~summaryValuesMatrix,
+	ncomp=ncomp.final, validation="none",scale=scale,...)) 
   return(pls.model.final)
 }
 

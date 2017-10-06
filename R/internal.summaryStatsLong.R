@@ -33,6 +33,8 @@ solnfreq <- function(fitContResult, tol = .Machine$double.eps^0.5){
 #  state reconstruction confidence interval.
 #  
 
+# actually the above isn't true - isn't clear it uses fitContinuous.hacked at all!
+
 # @inheritParams doSimulation
 # @inheritParams doRun
 
@@ -80,30 +82,32 @@ summaryStatsLong<-function(phy, traits, niter.brown=25, niter.lambda=25, niter.d
 #	if(is.null(names(traits)))
 #		names(traits) <- rownames(traits)
 #	traits<-as.data.frame(traits)
-	brown<-fitContinuous(phy=phy, dat=traits, model="BM", ncores=1, control=list(niter=niter.brown)) #it actually runs faster without checking for cores. And we parallelize elsewhere
+
+	#it actually runs faster without checking for cores. And we parallelize elsewhere
+	brown<-makeQuiet(fitContinuous(phy=phy, dat=traits, model="BM", ncores=1, control=list(niter=niter.brown))) 
 	brown.lnl<-as.numeric(brown$opt$lnL)
 	brown.beta <-as.numeric(brown$opt$sigsq)
 	brown.aic <-as.numeric(brown$opt$aic)
 
-	lambda<-fitContinuous(phy=phy, dat=traits, model="lambda", ncores=1, control=list(niter=niter.lambda))
+	lambda<-makeQuiet(fitContinuous(phy=phy, dat=traits, model="lambda", ncores=1, control=list(niter=niter.lambda)))
 	lambda.lnl <-as.numeric(lambda$opt$lnL)
 	lambda.beta <-as.numeric(lambda$opt$sigsq)
 	lambda.lambda <-as.numeric(lambda$opt$lambda)
 	lambda.aic <-as.numeric(lambda$opt$aic)
 
-	delta<-fitContinuous(phy=phy, dat=traits, model="delta", ncores=1, control=list(niter=niter.delta))
+	delta<-makeQuiet(fitContinuous(phy=phy, dat=traits, model="delta", ncores=1, control=list(niter=niter.delta)))
 	delta.lnl <-as.numeric(delta$opt$lnL)
 	delta.beta <-as.numeric(delta$opt$sigsq)
 	delta.delta <-as.numeric(delta$opt$delta)
 	delta.aic <-as.numeric(delta$opt$aic)
 
-	ou<-fitContinuous(phy=phy, dat=traits, model="OU", ncores=1, control=list(niter=niter.OU))
+	ou<-makeQuiet(fitContinuous(phy=phy, dat=traits, model="OU", ncores=1, control=list(niter=niter.OU)))
 	ou.lnl <-as.numeric(ou$opt$lnL)
 	ou.beta <-as.numeric(ou$opt$sigsq)
 	ou.alpha <-as.numeric(ou$opt$alpha)
 	ou.aic <-as.numeric(ou$opt$aic)
 
-	white<-fitContinuous(phy=phy, dat=traits, model="white", ncores=1, control=list(niter=niter.white))
+	white<-makeQuiet(fitContinuous(phy=phy, dat=traits, model="white", ncores=1, control=list(niter=niter.white)))
 	white.lnl<-as.numeric(white$opt$lnL)
 	white.aic<-as.numeric(white$opt$aic)
 
@@ -119,7 +123,9 @@ summaryStatsLong<-function(phy, traits, niter.brown=25, niter.lambda=25, niter.d
 	anc.states<-as.vector(aceResults$ace) #ancestral states
 
 	#combined summary stats
-	summarystats<-c(brown.lnl, brown.beta, brown.aic, lambda.lnl, lambda.beta, lambda.lambda, lambda.aic, delta.lnl, delta.beta, delta.delta, delta.aic, ou.lnl, ou.beta, ou.alpha, ou.aic, white.lnl, white.aic, raw.mean, raw.max, raw.min, raw.var, raw.median, traits[[1]], pic, anc.states)
+	summarystats<-c(brown.lnl, brown.beta, brown.aic, lambda.lnl, lambda.beta, lambda.lambda, lambda.aic,
+		delta.lnl, delta.beta, delta.delta, delta.aic, ou.lnl, ou.beta, ou.alpha, ou.aic, white.lnl, white.aic,
+		raw.mean, raw.max, raw.min, raw.var, raw.median, traits[[1]], pic, anc.states)
 
 	if(do.CI) {
 		anc.CIrange<-as.vector(aceResults$CI95[,2]-aceResults$CI95[,1]) #range between upper and lower 95% CI
