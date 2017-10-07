@@ -154,6 +154,17 @@ simulateWithPriors<-function(
 	if(checks){
 		checkNiter(niter.brown=niter.brown, niter.lambda=niter.lambda,
 			niter.delta=niter.delta, niter.OU=niter.OU, niter.white=niter.white)
+		# check TimeStep
+		numberofsteps<-max(taxon.df$endTime)/timeStep
+		mininterval<-min(taxon.df$endTime - taxon.df$startTime)
+		#
+		if (floor(mininterval/timeStep)<50) {
+			warning(paste("You have only ", floor(mininterval/timeStep), " on the shortest interval but should probably have a lot more if you expect change on this branch. I would suggest decreasing timeStep to no more than ", mininterval/50))
+			}
+		if (floor(mininterval/timeStep)<3) {
+			warning(paste("You have only ", floor(mininterval/timeStep), " on the shortest interval but should probably have a lot more if you expect change on this branch. I would suggest decreasing timeStep to no more than ", mininterval/50,"we would suggest at least", mininterval/3))
+		#	timeStep <- mininterval/3
+			}
 		}
 		
 	if(is.null(freevector)){
@@ -186,7 +197,7 @@ simulateWithPriors<-function(
 
 		cat(".")
 		simTraits<-doSimulationWithPossibleExtinction(phy=phy, taxon.df=taxon.df, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, 
-			startingValues=trueStarting, intrinsicValues=trueIntrinsic, extrinsicValues=trueExtrinsic, timeStep=timeStep, verbose=verbose)
+			startingValues=trueStarting, intrinsicValues=trueIntrinsic, extrinsicValues=trueExtrinsic, timeStep=timeStep, verbose=verbose, checkTimeStep=FALSE)
 		simSumStats<-summaryStatsLong(phy=phy, traits=simTraits, 
 			niter.brown=niter.brown, niter.lambda=niter.lambda, niter.delta=niter.delta,
 			niter.OU=niter.OU, niter.white=niter.white)
@@ -221,7 +232,7 @@ parallelSimulateWithPriors<-function(
 	# checks
 	checkNiter(niter.brown=niter.brown, niter.lambda=niter.lambda,
 		niter.delta=niter.delta, niter.OU=niter.OU, niter.white=niter.white)
-
+		
 	if(is.null(freevector)){
 		freevector<-getFreeVector(startingPriorsFns=startingPriorsFns, startingPriorsValues=startingPriorsValues, 
 					intrinsicPriorsFns=intrinsicPriorsFns, intrinsicPriorsValues=intrinsicPriorsValues,
@@ -232,6 +243,20 @@ parallelSimulateWithPriors<-function(
 		taxon.df <- getTaxonDFWithPossibleExtinction(phy)
 		}
 
+	# check TimeStep
+	numberofsteps<-max(taxon.df$endTime)/timeStep
+	mininterval<-min(taxon.df$endTime - taxon.df$startTime)
+	#
+	if (floor(mininterval/timeStep)<50) {
+		warning(paste("You have only ", floor(mininterval/timeStep), " on the shortest interval but should probably have a lot more if you expect change on this branch. I would suggest decreasing timeStep to no more than ", mininterval/50))
+		}
+	if (floor(mininterval/timeStep)<3) {
+		warning(paste("You have only ", floor(mininterval/timeStep), " on the shortest interval but should probably have a lot more if you expect change on this branch. I would suggest decreasing timeStep to no more than ", mininterval/50,"we would suggest at least", mininterval/3))
+	#	timeStep <- mininterval/3
+		}
+
+		
+	# multicore
 	cores=1
 	if (multicore) {
 		if (is.na(coreLimit)){

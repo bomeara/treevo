@@ -41,6 +41,8 @@
 #' @param timeStep This value corresponds to the number of discrete time steps
 #' on the shortest branch.
 
+#' @param checkTimeStep If \code{TRUE}, warnings will be issued if \code{TimeStep} is too short.
+
 #' @param saveHistory If \code{TRUE}, saves the character history throughout the simulation.
 #' When \code{saveHistory} is \code{TRUE}, processor time will increase quite a bit.
 
@@ -399,10 +401,11 @@ doSimulationForPlotting<-function(phy=NULL, intrinsicFn, extrinsicFn, startingVa
 
 
 
+
 #' @rdname doSimulation
 #' @export
 doSimulationWithPossibleExtinction<-function(phy=NULL, intrinsicFn, extrinsicFn, startingValues, intrinsicValues, extrinsicValues,
-	timeStep, saveHistory=FALSE, saveRealParams=FALSE, jobName="", returnAll = FALSE, verbose=FALSE, reject.NaN=TRUE, taxon.df=NULL) {
+	timeStep, saveHistory=FALSE, saveRealParams=FALSE, jobName="", returnAll = FALSE, verbose=FALSE, reject.NaN=TRUE, taxon.df=NULL, check=TRUE) {
 	
 	if(is.null(taxon.df)){
 		taxon.df <- getTaxonDFWithPossibleExtinction(phy)
@@ -428,16 +431,19 @@ doSimulationWithPossibleExtinction<-function(phy=NULL, intrinsicFn, extrinsicFn,
 	}
 	numberofsteps<-max(taxon.df$endTime)/timeStep
 	mininterval<-min(taxon.df$endTime - taxon.df$startTime)
-	if (numberofsteps<1000) {
-		#warning(paste("You have only ", numberofsteps, " but should probably have a lot more. I would suggest decreasing timeStep to no more than ", taxon.df[1, 1]/1000))
-	}
-	if (floor(mininterval/timeStep)<50) {
-		warning(paste("You have only ", floor(mininterval/timeStep), " on the shortest interval but should probably have a lot more if you expect change on this branch. I would suggest decreasing timeStep to no more than ", mininterval/50))
-	}
-	if (floor(mininterval/timeStep)<3) {
-		warning(paste("You have only ", floor(mininterval/timeStep), " on the shortest interval but should probably have a lot more if you expect change on this branch. I would suggest decreasing timeStep to no more than ", mininterval/50,"we would suggest at least", mininterval/3))
-	#	timeStep <- mininterval/3
-	}
+	#
+	if(checkTimeStep){
+		if (numberofsteps<1000) {
+			#warning(paste("You have only ", numberofsteps, " but should probably have a lot more. I would suggest decreasing timeStep to no more than ", taxon.df[1, 1]/1000))
+			}
+		if (floor(mininterval/timeStep)<50) {
+			warning(paste("You have only ", floor(mininterval/timeStep), " on the shortest interval but should probably have a lot more if you expect change on this branch. I would suggest decreasing timeStep to no more than ", mininterval/50))
+			}
+		if (floor(mininterval/timeStep)<3) {
+			warning(paste("You have only ", floor(mininterval/timeStep), " on the shortest interval but should probably have a lot more if you expect change on this branch. I would suggest decreasing timeStep to no more than ", mininterval/50,"we would suggest at least", mininterval/3))
+		#	timeStep <- mininterval/3
+			}
+		}
 	#initial setup
 	depthfrompresent = max(taxon.df$endTime)
 	heightfromroot = 0
