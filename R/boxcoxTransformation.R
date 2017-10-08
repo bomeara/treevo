@@ -91,7 +91,7 @@ boxcoxTransformationMatrix<-function (summaryValuesMatrix) {
     summary <- summaryValuesMatrix[, summaryValueIndex] + boxcoxAddition[summaryValueIndex]
     boxcoxLambda[summaryValueIndex] <- 1
     if (sd(summaryValuesMatrix[, summaryValueIndex]) > 0) {
-      newLambda <- as.numeric(try(powerTransform(summary, method = "Nelder-Mead")$lambda))
+      newLambda <- makeQuiet(as.numeric(try(powerTransform(summary, method = "Nelder-Mead")$lambda)))
       if (!is.na(newLambda)) {
         boxcoxLambda[summaryValueIndex] <- newLambda
       }

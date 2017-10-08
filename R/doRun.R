@@ -376,8 +376,8 @@ doRun_prc<-function(
 				#---------------------- Initial Simulations (End) ------------------------------
 
 
-	  pls.model.list <- apply(trueFreeValuesMatrix, 2, returnPLSModel, summaryValuesMatrix=summaryValuesMatrix, validation=validation, 
-		scale=scale, variance.cutoff = variance.cutoff)
+	  pls.model.list <- makeQuiet(apply(trueFreeValuesMatrix, 2, returnPLSModel, summaryValuesMatrix=summaryValuesMatrix, validation=validation, 
+		scale=scale, variance.cutoff = variance.cutoff))
 
 	  originalSummaryValues <- summaryStatsLong(phy, traits, niter.brown=200, niter.lambda=200, niter.delta=200, niter.OU=200, niter.white=200)
 
@@ -438,7 +438,7 @@ doRun_prc<-function(
 						(phy, 
 							doSimulationWithPossibleExtinction(phy=phy,  taxon.df=taxon.df, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, 
 								newparticleList[[1]]$startingValues, newparticleList[[1]]$intrinsicValues, 
-								newparticleList[[1]]$extrinsicValues, timeStep), 
+								newparticleList[[1]]$extrinsicValues, timeStep, checkTimeStep=FALSE), 
 							niter.brown=niter.brown.g, niter.lambda=niter.lambda.g, niter.delta=niter.delta.g, 
 							niter.OU=niter.OU.g, niter.white=niter.white.g)
 						, originalSummaryValues, pls.model.list )
@@ -614,11 +614,15 @@ doRun_prc<-function(
 													sdtouse<-standardDevFactor*(startingPriorsValues[2,j])
 												}
 
-											lnlocalTransitionProb=dnorm(newvalue, mean=meantouse, sd=sdtouse,log=TRUE
+											lnlocalTransitionProb<-dnorm(newvalue, mean=meantouse, sd=sdtouse,log=TRUE
 												) - ((log(1)/pnorm(min(startingPriorsValues[, j]), mean=meantouse, sd=sdtouse, lower.tail=TRUE, log.p=TRUE))
 													* pnorm(max(startingPriorsValues[,j]), mean=meantouse , sd=sdtouse, lower.tail=FALSE, log.p=TRUE))
 
-											if (lnlocalTransitionProb == "NaN") {  #to prevent lnlocalTransitionProb from being NaN (if pnorm=0)
+											if(length(lnlocalTransitionProb)!=1){
+												print(lnlocalTransitionProb)
+												stop("Somehow, multiple lnlocalTransitionProb values produced")
+												}
+											if (is.nan(lnlocalTransitionProb)) {  #to prevent lnlocalTransitionProb from being NaN (if pnorm=0)
 												lnlocalTransitionProb<-.Machine$double.xmin
 											}
 											if (min(startingPriorsValues[, j])==max(startingPriorsValues[, j])) {

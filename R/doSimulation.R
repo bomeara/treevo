@@ -178,12 +178,14 @@ doSimulation<-function(phy=NULL, intrinsicFn, extrinsicFn, startingValues, intri
 	}
 	numberofsteps<-floor(taxon.df[1, 1]/timeStep)
 	mininterval<-min(taxon.df[1:(dim(taxon.df)[1]-1), 1]-taxon.df[2:(dim(taxon.df)[1]), 1])
-	if (numberofsteps<1000) {
-		#warning(paste("You have only ", numberofsteps, " but should probably have a lot more. I would suggest decreasing timeStep to no more than ", taxon.df[1, 1]/1000))
-	}
-	if (floor(mininterval/timeStep)<50) {
-		#warning(paste("You have only ", floor(mininterval/timeStep), " on the shortest interval but should probably have a lot more if you expect change on this branch. I would suggest decreasing timeStep to no more than ", mininterval/50))
-	}
+
+	#if (numberofsteps<1000) {
+		#warning(paste("You have only ", numberofsteps, " but should probably have a lot more. Please consider decreasing timeStep to no more than ", taxon.df[1, 1]/1000))
+	#}
+	#if (floor(mininterval/timeStep)<50 {
+		#warning(paste("You have only ", floor(mininterval/timeStep), " timeSteps on the shortest branch in this dataset but should probably have a lot more if you expect change on this branch. Please consider decreasing timeStep to no more than ", signif(mininterval/50)))
+	#}
+
 	#initial setup
 	timefrompresent=taxon.df[1, 1]
 	taxa<-list(abctaxon(id=taxon.df[1, 3], states=startingValues), abctaxon(id=taxon.df[1, 4], states=startingValues))
@@ -300,10 +302,10 @@ doSimulationForPlotting<-function(phy=NULL, intrinsicFn, extrinsicFn, startingVa
 		numberofsteps<-floor(taxon.df[1, 1]/timeStep)
 		mininterval<-min(taxon.df[1:(dim(taxon.df)[1]-1), 1]-taxon.df[2:(dim(taxon.df)[1]), 1])
 		if (numberofsteps<1000) {
-			#warning(paste("You have only ", numberofsteps, " but should probably have a lot more. I would suggest decreasing timeStep to no more than ", taxon.df[1, 1]/1000))
+			#warning(paste("You have only ", numberofsteps, " but should probably have a lot more. Please consider decreasing timeStep to no more than ", taxon.df[1, 1]/1000))
 		}
 		if (floor(mininterval/timeStep)<50) {
-			#warning(paste("You have only ", floor(mininterval/timeStep), " on the shortest interval but should probably have a lot more. I would suggest decreasing timeStep to no more than ", mininterval/50))
+			#warning(paste("You have only ", floor(mininterval/timeStep), " timeSteps on the shortest branch in this dataset but should probably have a lot more. Please consider decreasing timeStep to no more than ", signif(mininterval/50)))
 		}
 	#initial setup
 		timefrompresent=taxon.df[1, 1]
@@ -433,14 +435,17 @@ doSimulationWithPossibleExtinction<-function(phy=NULL, intrinsicFn, extrinsicFn,
 	mininterval<-min(taxon.df$endTime - taxon.df$startTime)
 	#
 	if(checkTimeStep){
-		if (numberofsteps<1000) {
-			#warning(paste("You have only ", numberofsteps, " but should probably have a lot more. I would suggest decreasing timeStep to no more than ", taxon.df[1, 1]/1000))
-			}
-		if (floor(mininterval/timeStep)<50) {
-			warning(paste("You have only ", floor(mininterval/timeStep), " on the shortest interval but should probably have a lot more if you expect change on this branch. I would suggest decreasing timeStep to no more than ", mininterval/50))
+		#if (numberofsteps<1000) {
+			#warning(paste("You have only ", numberofsteps, " but should probably have a lot more. Please consider decreasing timeStep to no more than ", taxon.df[1, 1]/1000))
+		#	}
+		if (floor(mininterval/timeStep)<50 & floor(mininterval/timeStep)>=3) {
+			warning(paste("You have only ", floor(mininterval/timeStep), 
+				" timeSteps on the shortest branch in this dataset but should probably have a lot more if you expect change on this branch. Please consider decreasing timeStep to no more than ", signif(mininterval/50)))
 			}
 		if (floor(mininterval/timeStep)<3) {
-			warning(paste("You have only ", floor(mininterval/timeStep), " on the shortest interval but should probably have a lot more if you expect change on this branch. I would suggest decreasing timeStep to no more than ", mininterval/50,"we would suggest at least", mininterval/3))
+			warning(paste("You have only ", floor(mininterval/timeStep), 
+				" timeSteps on the shortest branch in this dataset but should probably have a lot more if you expect change on this branch. Please consider decreasing timeStep to no more than ", 
+					signif(mininterval/50)," or at the very least ", signif(mininterval/3)))
 		#	timeStep <- mininterval/3
 			}
 		}
