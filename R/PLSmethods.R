@@ -102,7 +102,7 @@ returnPLSModel<-function(trueFreeValuesMatrix, summaryValuesMatrix, validation="
   
   trueFreeValuesMatrix<-trueFreeValuesMatrix
   if (dim(summaryValuesMatrix)[2]>1) {
-    warning("in practice, doing PLS works best if you do each free parameter separately, so one does not dominate")
+    warning("in practice, doing PLS works best if you do each free parameter separately, so one parameter does not dominate")
   }
   if (class(trueFreeValuesMatrix)!="matrix") {
     trueFreeValuesMatrix<-matrix(trueFreeValuesMatrix,nrow=max(c(1,length(trueFreeValuesMatrix)),na.rm=TRUE)) 
