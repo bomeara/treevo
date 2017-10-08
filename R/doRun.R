@@ -650,7 +650,11 @@ doRun_prc<-function(
 												)-((log(1)/pnorm(min(intrinsicPriorsValues[, j]), mean=meantouse , sd=sdtouse, lower.tail=TRUE, log.p=TRUE)) *
 												pnorm(max(intrinsicPriorsValues[,j]), mean=meantouse , sd=sdtouse, lower.tail=FALSE, log.p=TRUE))
 
-											if (lnlocalTransitionProb == "NaN") {  #to prevent lnlocalTransitionProb from being NaN (if pnorm=0)
+											if(length(lnlocalTransitionProb)!=1){
+												print(lnlocalTransitionProb)
+												stop("Somehow, multiple lnlocalTransitionProb values produced")
+												}
+											if (is.nan(lnlocalTransitionProb)) {  #to prevent lnlocalTransitionProb from being NaN (if pnorm=0)
 												lnlocalTransitionProb<-.Machine$double.xmin
 											}
 											if (min(intrinsicPriorsValues[, j])==max(intrinsicPriorsValues[, j])) {
@@ -678,8 +682,12 @@ doRun_prc<-function(
 											lnlocalTransitionProb=dnorm(newvalue, mean= meantouse, sd= sdtouse,log=TRUE
 												)-((log(1)/pnorm(min(extrinsicPriorsValues[,j]), mean=meantouse , sd=sdtouse, lower.tail=TRUE, log.p=TRUE))
 												* pnorm(max(extrinsicPriorsValues[,j]), mean=meantouse , sd=sdtouse, lower.tail=FALSE, log.p=TRUE))
-												
-											if (lnlocalTransitionProb == "NaN") {  #to prevent lnlocalTransitionProb from being NaN (if pnorm=0)
+										
+											if(length(lnlocalTransitionProb)!=1){
+												print(lnlocalTransitionProb)
+												stop("Somehow, multiple lnlocalTransitionProb values produced")
+												}			
+											if (is.nan(lnlocalTransitionProb)) {  #to prevent lnlocalTransitionProb from being NaN (if pnorm=0)
 												lnlocalTransitionProb<-.Machine$double.xmin
 											}
 											if (min(extrinsicPriorsValues[, j])==max(extrinsicPriorsValues[, j])) {
