@@ -37,7 +37,7 @@ compareListIPD<-function(particleDataFrameList, verbose=FALSE){
 	params<-dim(particleDataFrameList[[1]][7:dim(particleDataFrameList[[1]])[2]])[2]
 	plot.new()
 	nf<-layout(matrix(1:params, nrow=1, byrow=TRUE), respect=TRUE)
-	layout.show(nf)	
+	#layout.show(nf)	
 	data1<-vector("list")
 	maxgen<-c()
 	for (list in 1:length(particleDataFrameList)) {
@@ -74,7 +74,9 @@ compareListIPD<-function(particleDataFrameList, verbose=FALSE){
 		}
 		#pdf(paste("compareListIPD", jobName, ".pdf", sep=""))
 		plot(genvector, IPDvector, xlab="generation", ylab="IPD", sub=names(data1[[1]][6+param]))
+		layout(1)
 	}	
+	
 }
 
 #   Calculate interparticle distance

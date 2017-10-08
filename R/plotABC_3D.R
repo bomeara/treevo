@@ -119,7 +119,11 @@ plotABC_3D<-function(particleDataFrame, parameter, show.particles="none",
 				rgl::rgl.material(color="black", alpha=opacity, lit=FALSE)
 				#print(dim(triangles))
 				#print(dim(zfit))
-				rgl::triangles3d(cbind(triangles, zfit), col="red")
+				if(length(zfit)!=nrow(triangles)){
+					stop("Error, predict() not properly returning vector for same number of input")
+				}else{
+					rgl::triangles3d(cbind(triangles, zfit), col="red")
+					}
 				#readline(prompt="hit enter ")
 				if (realParam) {
 					rgl::rgl.material(color="blue", lwd=2)

@@ -36,7 +36,7 @@ parentOffspringPlots<-function(particleDataFrame){
 	nparams<-dim(x)[2]-6
 	nb<-2*nparams
 	nf<-layout(matrix(1:nb, nrow=2, byrow=TRUE), respect=TRUE)
-	layout.show(nf)
+	#layout.show(nf)
 
 	for (param in 1:nparams) {
 		param.position<-param+6
@@ -89,5 +89,5 @@ parentOffspringPlots<-function(particleDataFrame){
 			lines(c(short.kept[k, param.position], prev.gen[short.kept[k,]$parentid, param.position]), c(short.kept[k, 1], short.kept[k, 1]-1))
 		}	
 	}	
-
+	layout(1)
 }		

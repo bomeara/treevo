@@ -19,7 +19,7 @@ doSimulationWithPossibleExtinction(phy = NULL, intrinsicFn, extrinsicFn,
   startingValues, intrinsicValues, extrinsicValues, timeStep,
   saveHistory = FALSE, saveRealParams = FALSE, jobName = "",
   returnAll = FALSE, verbose = FALSE, reject.NaN = TRUE,
-  taxon.df = NULL, check = TRUE)
+  taxon.df = NULL, checkTimeStep = TRUE)
 }
 \arguments{
 \item{phy}{A phylogenetic tree, in package \code{ape}'s \code{phylo} format.}

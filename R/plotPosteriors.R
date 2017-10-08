@@ -95,11 +95,11 @@ plotPosteriors<-function(particleDataFrame, priorsMat, realParam=FALSE, realPara
 	freeParams<-dim(subset(priorsMat[,which(priorsMat[1,] != "fixed")])[,])[2] 
 	dev.new(width=2.5*freeParams, height=3)
 	nf<-layout(matrix(1:freeParams, nrow=1, byrow=TRUE), respect=TRUE)
-	layout.show(nf)
+	#layout.show(nf)
 
 	#alternatively, we can plotPrior above the posterior density to check if it is moving
 	#nf<-layout(matrix(1:(2*paramsToPlot), nrow=2, byrow=FALSE), respect=TRUE)
-	#layout.show(nf)
+	##layout.show(nf)
 
 	v<-vector("list", max(all$run))
 	nParticles<-dim(subset(all[which(all$weight>0),], run==max(all$run)))[1]
@@ -210,6 +210,6 @@ plotPosteriors<-function(particleDataFrame, priorsMat, realParam=FALSE, realPara
 			}
 		} #if (priorsMat[1,param] != "fixed") 
 	} #for
-
+	layout(1)
 	
 }

@@ -204,7 +204,8 @@ simulateWithPriors<-function(
 		simTrueAndStats <-c(trueFreeValues, simSumStats)
 	}
 	if(n.attempts>1) {
-		warning(paste("Had to run simulateWithPriors()",n.attempts,"times to get results with no NA. This could bias results if runs with certain parameters failed more often and this happens in many attempted simulations"))
+		warning(paste("Had to run simulateWithPriors()",n.attempts,
+			"times to get results with no NA. This could bias results if runs with certain parameters failed more often and this happens in many attempted simulations"))
 	}
 	if(checks){
 		attr(simTrueAndStats,"freevector")<-freevector

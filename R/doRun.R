@@ -80,7 +80,9 @@
 
 #' @param checkpointFreq Saving frequency for checkpointing.
 
-#' @param savesims Option to save individual simulations.
+#' @param savesims Option to save individual simulations, output to a .Rdata file.
+
+#' @param saveData Option to save various run information during the analysis, including summary statistics from analyses, output to external .Rdata and .txt files.
 
 #' @param niter.goal Adjust number of starting points for package \code{geiger} to return the best parameter estimates this number of times on average.
 
@@ -236,7 +238,7 @@ doRun_prc<-function(
 	niter.goal=5, generation.time=1,
 	numParticles=300, standardDevFactor=0.20, 
 	StartSims=300, epsilonProportion=0.7, epsilonMultiplier=0.7, nStepsPRC=5, 
-	jobName=NA, stopRule=FALSE, stopValue=0.05, plot=FALSE) {	
+	jobName=NA, stopRule=FALSE, stopValue=0.05, saveData=FALSE, plot=FALSE) {	
 
 	
 	if (!is.binary.tree(phy)) {
@@ -359,7 +361,10 @@ doRun_prc<-function(
 		niter.brown=niter.brown.g, niter.lambda=niter.lambda.g, niter.delta=niter.delta.g, niter.OU=niter.OU.g, niter.white=niter.white.g)
 	cat("\n\n")
 
-	save(trueFreeValues,summaryValues,file=paste("CompletedSimulations",jobName,".Rdata",sep=""))
+	if(saveData){
+		save(trueFreeValues,summaryValues,file=paste("CompletedSimulations",jobName,".Rdata",sep=""))
+		}
+	
 	simTime<-proc.time()[[3]]-Time
 	cat(paste("Initial simulations took", round(simTime, digits=3), "seconds"), "\n")
 
@@ -493,7 +498,10 @@ doRun_prc<-function(
 				}
 
 
-				save.image(file=paste("WS", jobName, ".Rdata", sep=""))
+				if(saveData){
+					save.image(file=paste("WS", jobName, ".Rdata", sep=""))
+					}
+				
 				prcResults<-vector("list")
 				prcResults$input.data<-input.data
 				prcResults$PriorMatrix<-PriorMatrix
@@ -505,7 +513,9 @@ doRun_prc<-function(
 				prcResults$simTime<-simTime
 				prcResults$time.per.gen<-time.per.gen
 
-				save(prcResults, file=paste("partialResults", jobName, ".txt", sep=""))
+				if(saveData){
+					save(prcResults, file=paste("partialResults", jobName, ".txt", sep=""))
+					}
 
 						while (dataGenerationStep < nStepsPRC) {
 							dataGenerationStep<-dataGenerationStep+1
@@ -755,7 +765,10 @@ doRun_prc<-function(
 								}
 							}
 
-							save.image(file=paste("WS", jobName, ".Rdata", sep=""))
+							if(saveData){
+								save.image(file=paste("WS", jobName, ".Rdata", sep=""))
+								}
+								
 							prcResults<-vector("list")
 							prcResults$input.data<-input.data
 							prcResults$PriorMatrix<-PriorMatrix
@@ -767,7 +780,9 @@ doRun_prc<-function(
 							prcResults$simTime
 							prcResults$time.per.gen<-time.per.gen
 
-							save(prcResults, file=paste("partialResults", jobName, ".txt", sep=""))
+							if(saveData){
+								save(prcResults, file=paste("partialResults", jobName, ".txt", sep=""))
+								}
 
 						} #while (dataGenerationStep < nStepsPRC) bracket
 
@@ -927,10 +942,12 @@ doRun_rej<-function(
 	#separate the simulation results: true values and the summary values
 	trueFreeValuesMatrix<-trueFreeValuesANDSummaryValues[,1:numberParametersFree]
 	summaryValuesMatrix<-trueFreeValuesANDSummaryValues[,-1:-numberParametersFree]
+
 	if (savesims){
 		save(trueFreeValuesMatrix, summaryValuesMatrix, simTime, file=paste("sims", jobName, ".Rdata", sep=""))
-	}
-	res<-PLSRejection(summaryValuesMatrix=summaryValuesMatrix, trueFreeValuesMatrix=trueFreeValuesMatrix,
+		}
+
+		res<-PLSRejection(summaryValuesMatrix=summaryValuesMatrix, trueFreeValuesMatrix=trueFreeValuesMatrix,
 		phy=phy, traits=traits, abcTolerance=abcTolerance)
 	#save(abcDistancesRaw, abcDistancesRawTotal, abcDistances, abcResults, particleDataFrame, file="")
 	input.data<-rbind(jobName, length(phy[[3]]), timeStep, StartSims, standardDevFactor, abcTolerance)
