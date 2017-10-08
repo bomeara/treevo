@@ -94,7 +94,7 @@
 #' @importFrom partitions blockparts 
 #' @importFrom car powerTransform 
 #' @importFrom mvtnorm dmvnorm 
-#' @importFrom graphics curve layout #layout.show legend lines plot plot.new points polygon rect segments symbols text title 
+#' @importFrom graphics curve layout legend lines plot plot.new points polygon rect segments symbols text title 
 #' @importFrom grDevices dev.new dev.off gray pdf rgb 
 #' @importFrom methods as setAs
 #' @importFrom utils capture.output
