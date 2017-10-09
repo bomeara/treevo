@@ -93,7 +93,7 @@ plotPosteriors<-function(particleDataFrame, priorsMat, realParam=FALSE, realPara
 
 
 	freeParams<-dim(subset(priorsMat[,which(priorsMat[1,] != "fixed")])[,])[2] 
-	dev.new(width=2.5*freeParams, height=3)
+	#dev.new(width=2.5*freeParams, height=3)
 	nf<-layout(matrix(1:freeParams, nrow=1, byrow=TRUE), respect=TRUE)
 	#layout.show(nf)
 

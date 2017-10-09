@@ -268,14 +268,14 @@ doRun_prc<-function(
 	namesForPriorMatrix<-c()
 	PriorMatrix<-matrix(c(startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns), nrow=1, ncol=numberParametersTotal)
 	for (a in 1:dim(startingPriorsValues)[2]) {
-		namesForPriorMatrix<-c(paste("StartingStates", a, sep=""))
+		namesForPriorMatrix<-c(paste0("StartingStates", a, sep=""))
 	}
 	for (b in 1:dim(intrinsicPriorsValues)[2]) {
-		namesForPriorMatrix<-append(namesForPriorMatrix, paste("IntrinsicValue", b, sep=""))
+		namesForPriorMatrix<-append(namesForPriorMatrix, paste0("IntrinsicValue", b, sep=""))
 	}
 	#print(extrinsicPriorsValues)
 	for (c in 1:dim(extrinsicPriorsValues)[2]) {
-		namesForPriorMatrix <-append(namesForPriorMatrix, paste("ExtrinsicValue", c, sep=""))
+		namesForPriorMatrix <-append(namesForPriorMatrix, paste0("ExtrinsicValue", c, sep=""))
 	}
 	PriorMatrix<-rbind(PriorMatrix, cbind(startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues))
 	colnames(PriorMatrix)<-namesForPriorMatrix
@@ -285,10 +285,10 @@ doRun_prc<-function(
 	#initialize weighted mean sd matrices
 	weightedMeanParam<-matrix(nrow=nStepsPRC, ncol=numberParametersTotal)
 	colnames(weightedMeanParam)<-namesForPriorMatrix
-	rownames(weightedMeanParam)<-paste("Gen", c(1: nStepsPRC), sep="")
+	rownames(weightedMeanParam)<-paste0("Gen", c(1: nStepsPRC), sep="")
 	param.stdev<-matrix(nrow=nStepsPRC, ncol=numberParametersTotal)
 	colnames(param.stdev)<-namesForPriorMatrix
-	rownames(param.stdev)<-paste("Gen", c(1: nStepsPRC), sep="")
+	rownames(param.stdev)<-paste0("Gen", c(1: nStepsPRC), sep="")
 
 	#initialize guesses, if needed
 	#if (length(startingValuesGuess)==0) { #if no user guesses, try pulling a value from the prior
@@ -325,15 +325,15 @@ doRun_prc<-function(
 
 	cat("Setting number of starting points for Geiger optimization to")
 	niter.brown.g <- round(max(10, min(niter.goal/solnfreq(brown),100)))
-	cat(paste("\n",niter.brown.g, "for Brownian motion"))
+	cat(paste0("\n",niter.brown.g, "for Brownian motion"))
 	niter.lambda.g <- round(max(10, min(niter.goal/solnfreq(lambda),100)))
-	cat(paste("\n",niter.lambda.g, "for lambda"))
+	cat(paste0("\n",niter.lambda.g, "for lambda"))
 	niter.delta.g <- round(max(10, min(niter.goal/solnfreq(delta),100)))
-	cat(paste("\n",niter.delta.g, "for delta"))
+	cat(paste0("\n",niter.delta.g, "for delta"))
 	niter.OU.g <- round(max(10, min(niter.goal/solnfreq(ou),100)))
-	cat(paste("\n",niter.OU.g, "for OU"))
+	cat(paste0("\n",niter.OU.g, "for OU"))
 	niter.white.g <- round(max(10, min(niter.goal/solnfreq(white),100)))
-	cat(paste("\n",niter.white.g, "for white noise"))
+	cat(paste0("\n",niter.white.g, "for white noise"))
 
 
 		#---------------------- Initial Simulations (Start) ------------------------------
@@ -347,7 +347,7 @@ doRun_prc<-function(
 	nrepSim<-StartSims 
 
 	input.data<-rbind(jobName, length(phy[[3]]), nrepSim, TreeYears, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor)
-	cat(paste("\nNumber of initial simulations set to", nrepSim, "\n"))
+	cat(paste0("\nNumber of initial simulations set to", nrepSim, "\n"))
 	cat("Doing simulations:")
 	Time<-proc.time()[[3]]
 	trueFreeValues<-matrix(nrow=0, ncol= numberParametersFree)
@@ -362,11 +362,11 @@ doRun_prc<-function(
 	cat("\n\n")
 
 	if(saveData){
-		save(trueFreeValues,summaryValues,file=paste("CompletedSimulations",jobName,".Rdata",sep=""))
+		save(trueFreeValues,summaryValues,file=paste0("CompletedSimulations",jobName,".Rdata",sep=""))
 		}
 	
 	simTime<-proc.time()[[3]]-Time
-	cat(paste("Initial simulations took", round(simTime, digits=3), "seconds"), "\n")
+	cat(paste0("Initial simulations took", round(simTime, digits=3), "seconds"), "\n")
 
 	#separate the simulation results: true values and the summary values
 	trueFreeValuesMatrix<-trueFreeValuesANDSummaryValues[,1:numberParametersFree]
@@ -404,13 +404,13 @@ doRun_prc<-function(
 					plot(x=c(min(intrinsicPriorsValues), max(intrinsicPriorsValues)), y=c(0, 5*max(toleranceVector)), type="n")
 				}
 				for (i in 1:dim(startingPriorsValues)[2]) {
-					nameVector<-append(nameVector, paste("StartingStates", i, sep=""))
+					nameVector<-append(nameVector, paste0("StartingStates", i, sep=""))
 				}
 				for (i in 1:dim(intrinsicPriorsValues)[2]) {
-					nameVector<-append(nameVector, paste("IntrinsicValue", i, sep=""))
+					nameVector<-append(nameVector, paste0("IntrinsicValue", i, sep=""))
 				}
 				for (i in 1:dim(extrinsicPriorsValues)[2]) {
-					nameVector<-append(nameVector, paste("ExtrinsicValue", i, sep=""))
+					nameVector<-append(nameVector, paste0("ExtrinsicValue", i, sep=""))
 				}
 				
 				#stores weights for each particle. Initially, assume infinite number of possible particles (so might not apply in discrete case)
@@ -439,8 +439,8 @@ doRun_prc<-function(
 							doSimulationWithPossibleExtinction(phy=phy,  taxon.df=taxon.df, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, 
 								newparticleList[[1]]$startingValues, newparticleList[[1]]$intrinsicValues, 
 								newparticleList[[1]]$extrinsicValues, timeStep, checkTimeStep=FALSE), 
-							niter.brown=niter.brown.g, niter.lambda=niter.lambda.g, niter.delta=niter.delta.g, 
-							niter.OU=niter.OU.g, niter.white=niter.white.g)
+								niter.brown=niter.brown.g, niter.lambda=niter.lambda.g, niter.delta=niter.delta.g, 
+								niter.OU=niter.OU.g, niter.white=niter.white.g)
 						, originalSummaryValues, pls.model.list )
 
 					if (is.na(newparticleList[[1]]$distance)) {
@@ -499,7 +499,7 @@ doRun_prc<-function(
 
 
 				if(saveData){
-					save.image(file=paste("WS", jobName, ".Rdata", sep=""))
+					save.image(file=paste0("WS", jobName, ".Rdata", sep=""))
 					}
 				
 				prcResults<-vector("list")
@@ -514,7 +514,7 @@ doRun_prc<-function(
 				prcResults$time.per.gen<-time.per.gen
 
 				if(saveData){
-					save(prcResults, file=paste("partialResults", jobName, ".txt", sep=""))
+					save(prcResults, file=paste0("partialResults", jobName, ".txt", sep=""))
 					}
 
 						while (dataGenerationStep < nStepsPRC) {
@@ -566,7 +566,7 @@ doRun_prc<-function(
 										doSimulationWithPossibleExtinction(phy=phy,  taxon.df=taxon.df,
 											intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, 
 											newparticleList[[1]]$startingValues, newparticleList[[1]]$intrinsicValues, 
-											newparticleList[[1]]$extrinsicValues, timeStep), 
+											newparticleList[[1]]$extrinsicValues, timeStep, checkTimeStep=FALSE), 
 										niter.brown=niter.brown.g, niter.lambda=niter.lambda.g, niter.delta=niter.delta.g, 
 										niter.OU=niter.OU.g, niter.white=niter.white.g)
 									, originalSummaryValues, pls.model.list)
@@ -604,11 +604,11 @@ doRun_prc<-function(
 											meantouse= oldParticleList[[i]]$startingValues[j]
 												if (startingPriorsFns[j]=="uniform") {
 													sdtouse<-standardDevFactor*((max(startingPriorsValues[,j])-min(startingPriorsValues[,j]))/sqrt(12))
-													#print(paste("startingPriorFn is uniform and sdtouse =", sdtouse))
+													#print(paste0("startingPriorFn is uniform and sdtouse =", sdtouse))
 												}
 												else if (startingPriorsFns[j]=="exponential") {
 													sdtouse<-standardDevFactor*(1/startingPriorsValues[,j])
-													#print(paste("startingPriorFn is exponential and sdtouse =", sdtouse))
+													#print(paste0("startingPriorFn is exponential and sdtouse =", sdtouse))
 												}
 												else {
 													sdtouse<-standardDevFactor*(startingPriorsValues[2,j])
@@ -620,6 +620,7 @@ doRun_prc<-function(
 
 											if(length(lnlocalTransitionProb)!=1){
 												print(lnlocalTransitionProb)
+												print("A")
 												stop("Somehow, multiple lnlocalTransitionProb values produced")
 												}
 											if (is.nan(lnlocalTransitionProb)) {  #to prevent lnlocalTransitionProb from being NaN (if pnorm=0)
@@ -630,13 +631,17 @@ doRun_prc<-function(
 											}
 											lnTransitionProb<-lnTransitionProb+lnlocalTransitionProb
 											if(!is.finite(lnTransitionProb) || is.na(lnlocalTransitionProb)) {
-												print(paste("issue with lnTransitionProb: lnlocalTransitionProb = ",lnlocalTransitionProb,
+												print(paste0("issue with lnTransitionProb: lnlocalTransitionProb = ",lnlocalTransitionProb,
 													" lnTransitionProb = ",lnTransitionProb))
 											}
 										}
 										for (j in 1:length(newparticleList[[1]]$intrinsicValues)) {
 											newvalue<-newparticleList[[1]]$intrinsicValues[j]
+											if(length(newvalue)!=1){
+												stop("more than one intrinsicValues newvalue per element??")}
 											meantouse= oldParticleList[[i]]$intrinsicValues[j]
+											if(length(meantouse)!=1){
+												stop("more than one intrinsicValues meantouse per element??")}
 											if (intrinsicPriorsFns[j]=="uniform") {
 												sdtouse<-standardDevFactor*((max(intrinsicPriorsValues[,j])-min(intrinsicPriorsValues[,j]))/sqrt(12))
 											}
@@ -646,12 +651,13 @@ doRun_prc<-function(
 											else {
 												sdtouse<-standardDevFactor*(intrinsicPriorsValues[2,j])
 											}
-											lnlocalTransitionProb=dnorm(newvalue, mean= meantouse, sd= sdtouse,log=TRUE
+											lnlocalTransitionProb <- dnorm(newvalue, mean= meantouse, sd= sdtouse,log=TRUE
 												)-((log(1)/pnorm(min(intrinsicPriorsValues[, j]), mean=meantouse , sd=sdtouse, lower.tail=TRUE, log.p=TRUE)) *
 												pnorm(max(intrinsicPriorsValues[,j]), mean=meantouse , sd=sdtouse, lower.tail=FALSE, log.p=TRUE))
-
+											#
 											if(length(lnlocalTransitionProb)!=1){
 												print(lnlocalTransitionProb)
+												print("B")
 												stop("Somehow, multiple lnlocalTransitionProb values produced")
 												}
 											if (is.nan(lnlocalTransitionProb)) {  #to prevent lnlocalTransitionProb from being NaN (if pnorm=0)
@@ -662,7 +668,7 @@ doRun_prc<-function(
 											}
 											lnTransitionProb<-lnTransitionProb+lnlocalTransitionProb
 											if(!is.finite(lnTransitionProb) || is.na(lnlocalTransitionProb)) {
-												print(paste("issue with lnTransitionProb: lnlocalTransitionProb = ",lnlocalTransitionProb,
+												print(paste0("issue with lnTransitionProb: lnlocalTransitionProb = ",lnlocalTransitionProb,
 													" lnTransitionProb = ",lnTransitionProb))
 											}
 
@@ -679,12 +685,13 @@ doRun_prc<-function(
 											else {
 												sdtouse<-standardDevFactor*(extrinsicPriorsValues[2,j])
 											}
-											lnlocalTransitionProb=dnorm(newvalue, mean= meantouse, sd= sdtouse,log=TRUE
+											lnlocalTransitionProb <- dnorm(newvalue, mean= meantouse, sd= sdtouse,log=TRUE
 												)-((log(1)/pnorm(min(extrinsicPriorsValues[,j]), mean=meantouse , sd=sdtouse, lower.tail=TRUE, log.p=TRUE))
 												* pnorm(max(extrinsicPriorsValues[,j]), mean=meantouse , sd=sdtouse, lower.tail=FALSE, log.p=TRUE))
 										
 											if(length(lnlocalTransitionProb)!=1){
 												print(lnlocalTransitionProb)
+												print("C")
 												stop("Somehow, multiple lnlocalTransitionProb values produced")
 												}			
 											if (is.nan(lnlocalTransitionProb)) {  #to prevent lnlocalTransitionProb from being NaN (if pnorm=0)
@@ -695,7 +702,7 @@ doRun_prc<-function(
 											}
 											lnTransitionProb<-lnTransitionProb+lnlocalTransitionProb
 											if(!is.finite(lnTransitionProb) || is.na(lnlocalTransitionProb)) {
-												print(paste("issue with lnTransitionProb: lnlocalTransitionProb = ",lnlocalTransitionProb
+												print(paste0("issue with lnTransitionProb: lnlocalTransitionProb = ",lnlocalTransitionProb
 													," lnTransitionProb = ",lnTransitionProb))
 											}
 
@@ -704,7 +711,7 @@ doRun_prc<-function(
 									} #for (i in 1:length(oldParticleList)) bracket
 
 									if (!is.finite(newWeight)) {
-										print(paste("warning: newWeight is ",newWeight))
+										print(paste0("warning: newWeight is ",newWeight))
 									}
 									newparticleList[[1]]$weight<- newWeight
 									particleWeights[particle-1]<-newWeight
@@ -778,7 +785,7 @@ doRun_prc<-function(
 							}
 
 							if(saveData){
-								save.image(file=paste("WS", jobName, ".Rdata", sep=""))
+								save.image(file=paste0("WS", jobName, ".Rdata", sep=""))
 								}
 								
 							prcResults<-vector("list")
@@ -793,7 +800,7 @@ doRun_prc<-function(
 							prcResults$time.per.gen<-time.per.gen
 
 							if(saveData){
-								save(prcResults, file=paste("partialResults", jobName, ".txt", sep=""))
+								save(prcResults, file=paste0("partialResults", jobName, ".txt", sep=""))
 								}
 
 						} #while (dataGenerationStep < nStepsPRC) bracket
@@ -802,7 +809,7 @@ doRun_prc<-function(
 
 					names(particleDataFrame)<-nameVector
 					if(plot) {
-						dev.new()
+						#dev.new()
 						plot(x=c(min(intrinsicPriorsValues), max(intrinsicPriorsValues)), y=c(0, 1), type="n")
 						for (i in 1:(length(toleranceVector)-1)) {
 							graycolor<-gray(0.5*(length(toleranceVector)-i)/length(toleranceVector))
@@ -875,14 +882,14 @@ doRun_rej<-function(
 	namesForPriorMatrix<-c()
 	PriorMatrix<-matrix(c(startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns), nrow=1, ncol=numberParametersTotal)
 	for (a in 1:dim(startingPriorsValues)[2]) {
-		namesForPriorMatrix<-c(paste("StartingStates", a, sep=""))
+		namesForPriorMatrix<-c(paste0("StartingStates", a, sep=""))
 	}
 	for (b in 1:dim(intrinsicPriorsValues)[2]) {
-		namesForPriorMatrix<-append(namesForPriorMatrix, paste("IntrinsicValue", b, sep=""))
+		namesForPriorMatrix<-append(namesForPriorMatrix, paste0("IntrinsicValue", b, sep=""))
 	}
 	#print(extrinsicPriorsValues)
 	for (c in 1:dim(extrinsicPriorsValues)[2]) {
-		namesForPriorMatrix <-append(namesForPriorMatrix, paste("ExtrinsicValue", c, sep=""))
+		namesForPriorMatrix <-append(namesForPriorMatrix, paste0("ExtrinsicValue", c, sep=""))
 	}
 	PriorMatrix<-rbind(PriorMatrix, cbind(startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues))
 	colnames(PriorMatrix)<-namesForPriorMatrix
@@ -915,9 +922,9 @@ doRun_rej<-function(
 	#Used to be multiple tries where nrepSim = StartSims*((2^try)/2).  
 		#If initial simulations are not enough, and we need to try again then new analysis will double number of initial simulations
 	nrepSim<-StartSims 
-	cat(paste("Number of simulations set to", nrepSim, "\n"))
+	cat(paste0("Number of simulations set to", nrepSim, "\n"))
 	if(!is.null(checkpointFile)) {
-		save(list=ls(),file=paste(checkpointFile,".intialsettings.Rsave",sep=""))
+		save(list=ls(),file=paste0(checkpointFile,".intialsettings.Rsave",sep=""))
 	}
 
 	#Figure out how many iterations to use for optimization in Geiger.
@@ -930,15 +937,15 @@ doRun_rej<-function(
 
 	cat("Setting number of starting points for Geiger optimization to")
 	niter.brown.g <- round(max(10, min(niter.goal/solnfreq(brown),100)))
-	cat(paste("\n",niter.brown.g, "for Brownian motion"))
+	cat(paste0("\n",niter.brown.g, "for Brownian motion"))
 	niter.lambda.g <- round(max(10, min(niter.goal/solnfreq(lambda),100)))
-	cat(paste("\n",niter.lambda.g, "for lambda"))
+	cat(paste0("\n",niter.lambda.g, "for lambda"))
 	niter.delta.g <- round(max(10, min(niter.goal/solnfreq(delta),100)))
-	cat(paste("\n",niter.delta.g, "for delta"))
+	cat(paste0("\n",niter.delta.g, "for delta"))
 	niter.OU.g <- round(max(10, min(niter.goal/solnfreq(ou),100)))
-	cat(paste("\n",niter.OU.g, "for OU"))
+	cat(paste0("\n",niter.OU.g, "for OU"))
 	niter.white.g <- round(max(10, min(niter.goal/solnfreq(white),100)))
-	cat(paste("\n",niter.white.g, "for white noise"))
+	cat(paste0("\n",niter.white.g, "for white noise"))
 
 	trueFreeValuesANDSummaryValues<-parallelSimulateWithPriors(nrepSim=nrepSim, coreLimit=coreLimit, phy=phy,  taxon.df=taxon.df,
 		startingPriorsValues=startingPriorsValues, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues, 
@@ -949,14 +956,14 @@ doRun_rej<-function(
 
 	cat("\n\n")
 	simTime<-proc.time()[[3]]-startTime
-	cat(paste("Simulations took", round(simTime, digits=3), "seconds"), "\n")
+	cat(paste0("Simulations took", round(simTime, digits=3), "seconds"), "\n")
 
 	#separate the simulation results: true values and the summary values
 	trueFreeValuesMatrix<-trueFreeValuesANDSummaryValues[,1:numberParametersFree]
 	summaryValuesMatrix<-trueFreeValuesANDSummaryValues[,-1:-numberParametersFree]
 
 	if (savesims){
-		save(trueFreeValuesMatrix, summaryValuesMatrix, simTime, file=paste("sims", jobName, ".Rdata", sep=""))
+		save(trueFreeValuesMatrix, summaryValuesMatrix, simTime, file=paste0("sims", jobName, ".Rdata", sep=""))
 		}
 
 		res<-PLSRejection(summaryValuesMatrix=summaryValuesMatrix, trueFreeValuesMatrix=trueFreeValuesMatrix,

@@ -168,7 +168,7 @@ doSimulation<-function(phy=NULL, intrinsicFn, extrinsicFn, startingValues, intri
 		RealParams$matrix[1,]<-c(startingValues, rep(NA, maxLength-length(startingValues)))
 		RealParams$matrix[2,]<-c(intrinsicValues, rep(NA, maxLength-length(intrinsicValues)))
 		RealParams$matrix[3,]<-c(extrinsicValues, rep(NA, maxLength-length(extrinsicValues)))
-		save(RealParams, file=paste("RealParams", jobName, ".Rdata", sep=""))
+		save(RealParams, file=paste0("RealParams", jobName, ".Rdata", sep=""))
 	}
 	if (saveHistory) {
 		startVector<-c()
@@ -180,10 +180,12 @@ doSimulation<-function(phy=NULL, intrinsicFn, extrinsicFn, startingValues, intri
 	mininterval<-min(taxon.df[1:(dim(taxon.df)[1]-1), 1]-taxon.df[2:(dim(taxon.df)[1]), 1])
 
 	#if (numberofsteps<1000) {
-		#warning(paste("You have only ", numberofsteps, " but should probably have a lot more. Please consider decreasing timeStep to no more than ", taxon.df[1, 1]/1000))
+		#warning(paste0("You have only ", numberofsteps, " but should probably have a lot more. Please consider decreasing timeStep to no more than ", taxon.df[1, 1]/1000))
 	#}
 	#if (floor(mininterval/timeStep)<50 {
-		#warning(paste("You have only ", floor(mininterval/timeStep), " timeSteps on the shortest branch in this dataset but should probably have a lot more if you expect change on this branch. Please consider decreasing timeStep to no more than ", signif(mininterval/50)))
+		#warning(paste0("You have only ", floor(mininterval/timeStep),
+		#" timeSteps on the shortest branch in this dataset but should probably have a lot more if you expect change on this branch. Please consider decreasing timeStep to no more than ",
+		#	signif(mininterval/50,2)))
 	#}
 
 	#initial setup
@@ -243,7 +245,7 @@ doSimulation<-function(phy=NULL, intrinsicFn, extrinsicFn, startingValues, intri
 				endVector <-append(endVector, newvalues)
 				startTime <-append(startTime, timefrompresent+timeStep)
 				endTime <-append(endTime, timefrompresent)
-				save(startVector, endVector, startTime, endTime, file=paste("savedHistory", jobName, ".Rdata", sep=""))
+				save(startVector, endVector, startTime, endTime, file=paste0("savedHistory", jobName, ".Rdata", sep=""))
 			}
 
 
@@ -291,7 +293,7 @@ doSimulationForPlotting<-function(phy=NULL, intrinsicFn, extrinsicFn, startingVa
 		RealParams$matrix[1,]<-c(startingValues, rep(NA, maxLength-length(startingValues)))
 		RealParams$matrix[2,]<-c(intrinsicValues, rep(NA, maxLength-length(intrinsicValues)))
 		RealParams$matrix[3,]<-c(extrinsicValues, rep(NA, maxLength-length(extrinsicValues)))
-		save(RealParams, file=paste("RealParams", jobName, ".Rdata", sep=""))
+		save(RealParams, file=paste0("RealParams", jobName, ".Rdata", sep=""))
 	}
 	if (plot || savePlot || saveHistory) {
 		startVector<-c()
@@ -302,10 +304,10 @@ doSimulationForPlotting<-function(phy=NULL, intrinsicFn, extrinsicFn, startingVa
 		numberofsteps<-floor(taxon.df[1, 1]/timeStep)
 		mininterval<-min(taxon.df[1:(dim(taxon.df)[1]-1), 1]-taxon.df[2:(dim(taxon.df)[1]), 1])
 		if (numberofsteps<1000) {
-			#warning(paste("You have only ", numberofsteps, " but should probably have a lot more. Please consider decreasing timeStep to no more than ", taxon.df[1, 1]/1000))
+			#warning(paste0("You have only ", numberofsteps, " but should probably have a lot more. Please consider decreasing timeStep to no more than ", taxon.df[1, 1]/1000))
 		}
 		if (floor(mininterval/timeStep)<50) {
-			#warning(paste("You have only ", floor(mininterval/timeStep), " timeSteps on the shortest branch in this dataset but should probably have a lot more. Please consider decreasing timeStep to no more than ", signif(mininterval/50)))
+			#warning(paste0("You have only ", floor(mininterval/timeStep), " timeSteps on the shortest branch in this dataset but should probably have a lot more. Please consider decreasing timeStep to no more than ", signif(mininterval/50)))
 		}
 	#initial setup
 		timefrompresent=taxon.df[1, 1]
@@ -361,7 +363,7 @@ doSimulationForPlotting<-function(phy=NULL, intrinsicFn, extrinsicFn, startingVa
 					startTime <-append(startTime, timefrompresent+timeStep)
 					endTime <-append(endTime, timefrompresent)
 					if(saveHistory){
-						save(startVector, endVector, startTime, endTime, file=paste("savedHistory", jobName, ".Rdata", sep=""))
+						save(startVector, endVector, startTime, endTime, file=paste0("savedHistory", jobName, ".Rdata", sep=""))
 					}
 				}
 				
@@ -390,7 +392,7 @@ doSimulationForPlotting<-function(phy=NULL, intrinsicFn, extrinsicFn, startingVa
 			}
 		}
 		if (savePlot) {
-			pdf(paste("SimTree", jobName, ".pdf", sep=""))	
+			pdf(paste0("SimTree", jobName, ".pdf", sep=""))	
 			plot(x=c(min(c(startVector, endVector)), max(c(startVector, endVector))), y=c(0, max(c(startTime, endTime))),
 				type="n", ylab="Time", xlab="Trait value", main="", bty="n")
 			for (i in 1:length(startVector)) {
@@ -423,7 +425,7 @@ doSimulationWithPossibleExtinction<-function(phy=NULL, intrinsicFn, extrinsicFn,
 		RealParams$matrix[1,]<-c(startingValues, rep(NA, maxLength-length(startingValues)))
 		RealParams$matrix[2,]<-c(intrinsicValues, rep(NA, maxLength-length(intrinsicValues)))
 		RealParams$matrix[3,]<-c(extrinsicValues, rep(NA, maxLength-length(extrinsicValues)))
-		save(RealParams, file=paste("RealParams", jobName, ".Rdata", sep=""))
+		save(RealParams, file=paste0("RealParams", jobName, ".Rdata", sep=""))
 	}
 	if (saveHistory) {
 		startVector<-c()
@@ -436,16 +438,17 @@ doSimulationWithPossibleExtinction<-function(phy=NULL, intrinsicFn, extrinsicFn,
 	#
 	if(checkTimeStep){
 		#if (numberofsteps<1000) {
-			#warning(paste("You have only ", numberofsteps, " but should probably have a lot more. Please consider decreasing timeStep to no more than ", taxon.df[1, 1]/1000))
+			#warning(paste0("You have only ", numberofsteps, " but should probably have a lot more. Please consider decreasing timeStep to no more than ", taxon.df[1, 1]/1000))
 		#	}
 		if (floor(mininterval/timeStep)<50 & floor(mininterval/timeStep)>=3) {
-			warning(paste("You have only ", floor(mininterval/timeStep), 
-				" timeSteps on the shortest branch in this dataset but should probably have a lot more if you expect change on this branch. Please consider decreasing timeStep to no more than ", signif(mininterval/50)))
+			warning(paste0("You have only ", floor(mininterval/timeStep), 
+				" timeSteps on the shortest branch in this dataset but should probably have a lot more if you expect change on this branch. Please consider decreasing timeStep to no more than ",
+				signif(mininterval/50,2)))
 			}
 		if (floor(mininterval/timeStep)<3) {
-			warning(paste("You have only ", floor(mininterval/timeStep), 
+			warning(paste0("You have only ", floor(mininterval/timeStep), 
 				" timeSteps on the shortest branch in this dataset but should probably have a lot more if you expect change on this branch. Please consider decreasing timeStep to no more than ", 
-					signif(mininterval/50)," or at the very least ", signif(mininterval/3)))
+					signif(mininterval/50,2)," or at the very least ", signif(mininterval/3,2)))
 		#	timeStep <- mininterval/3
 			}
 		}
@@ -484,12 +487,12 @@ doSimulationWithPossibleExtinction<-function(phy=NULL, intrinsicFn, extrinsicFn,
 					intrinsic.displacement = intrinsicFn(params=intrinsicValues, states=current.states[taxon.index], timefrompresent =depthfrompresent)
 					extrinsic.displacement = extrinsicFn(params=extrinsicValues, selfstates=current.states[taxon.index], otherstates=current.states[-taxon.index], timefrompresent =depthfrompresent)
 					new.state <- old + intrinsic.displacement + extrinsic.displacement
-					warning(paste("Attempt ", attempt.count, "led to using old value of", old, "intrinsicFn return of ",intrinsic.displacement, "and extrinsicFn return of ", extrinsic.displacement))
+					warning(paste0("Attempt ", attempt.count, "led to using old value of", old, "intrinsicFn return of ",intrinsic.displacement, "and extrinsicFn return of ", extrinsic.displacement))
 					print("IntrinsicValues")
 					print(intrinsicValues)
 				}
 				if(is.na(new.state) & attempt.count==100) {
-					stop(paste(
+					stop(paste0(
 						"Simulating with these parameters resulted in problematic results; for one example, taxon.df$states[alive.rows[taxon.index]] was ",
 						taxon.df$states[alive.rows[taxon.index]], "intrinsicFn returned ",
 						intrinsicFn(params=intrinsicValues, states=current.states[taxon.index],
@@ -509,13 +512,13 @@ doSimulationWithPossibleExtinction<-function(phy=NULL, intrinsicFn, extrinsicFn,
 		depthfrompresent <- depth.end
 		heightfromroot <- height.end
 		if(verbose) {
-			print(paste("now at height", height.end, "finishing at", max(taxon.df$endTime)))
+			print(paste0("now at height", height.end, "finishing at", max(taxon.df$endTime)))
 			print(taxon.df)
 		}
 		if(reject.NaN) {
 			if(any(is.nan(taxon.df$states))) {
 				save(list=ls(), file="ErrorRun.rda")
-				stop(paste("There was an NaN generated. See saved objects in ", getwd(), "/ErrorRun.rda", sep=""))
+				stop(paste0("There was an NaN generated. See saved objects in ", getwd(), "/ErrorRun.rda", sep=""))
 			}
 		}
 	}

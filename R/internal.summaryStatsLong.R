@@ -12,10 +12,11 @@
 # @rdname solnfreq
 # @export
 solnfreq <- function(fitContResult, tol = .Machine$double.eps^0.5){
-			ll=logLik(fitContResult)
-			aa=abs(fitContResult$res[,"lnL"]-ll)<=tol
-			max(1,sum(aa[!is.na(aa)]))/length(aa)
-}
+	ll=logLik(fitContResult)
+	aa=abs(fitContResult$res[,"lnL"]-ll)<=tol
+	result<-max(1,sum(aa[!is.na(aa)]))/length(aa)
+	return(result)
+	}
 
 
 
@@ -66,7 +67,10 @@ solnfreq <- function(fitContResult, tol = .Machine$double.eps^0.5){
 # @name summaryStatsLong
 # @rdname summaryStatsLong
 # @export
-summaryStatsLong<-function(phy, traits, niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25, do.CI=is.ultrametric(phy)) {
+summaryStatsLong<-function(phy, traits,
+		niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25,
+		do.CI=is.ultrametric(phy)) {
+	#
 	if (any(phy$edge.length==0)){
 		if(!any(phy$edge[which(phy$edge.length==0),2] %in% phy$edge[,1])){
 		#if(any(phy$edge.length==0)){
@@ -79,9 +83,9 @@ summaryStatsLong<-function(phy, traits, niter.brown=25, niter.lambda=25, niter.d
 		names(traits) <- my.names
 	}
 
-#	if(is.null(names(traits)))
-#		names(traits) <- rownames(traits)
-#	traits<-as.data.frame(traits)
+	#	if(is.null(names(traits)))
+	#		names(traits) <- rownames(traits)
+	#	traits<-as.data.frame(traits)
 
 	#it actually runs faster without checking for cores. And we parallelize elsewhere
 	brown<-makeQuiet(fitContinuous(phy=phy, dat=traits, model="BM", ncores=1, control=list(niter=niter.brown))) 
@@ -118,8 +122,8 @@ summaryStatsLong<-function(phy, traits, niter.brown=25, niter.lambda=25, niter.d
 	raw.var<-as.numeric(var(traits))
 	raw.median<-as.numeric(median(traits))	#cat("summaryStatsLong")
 
-	pic<-as.vector(pic.ortho(as.matrix(traits), phy))  #independent contrasts
-	aceResults<-ace(traits, phy)
+	pic<-makeQuiet(as.vector(pic.ortho(as.matrix(traits), phy)))  #independent contrasts
+	aceResults<-makeQuiet(ace(traits, phy))
 	anc.states<-as.vector(aceResults$ace) #ancestral states
 
 	#combined summary stats
@@ -134,7 +138,7 @@ summaryStatsLong<-function(phy, traits, niter.brown=25, niter.lambda=25, niter.d
 
 
 	summarystats[which(is.finite(summarystats)==FALSE)]<-NA
-
+	#
 	while(sink.number()>0) {sink()}
 	summarystats
-}
+	}
