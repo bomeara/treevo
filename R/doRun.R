@@ -599,114 +599,29 @@ doRun_prc<-function(
 									newWeight=0
 									for (i in 1:length(oldParticleList)) {
 										lnTransitionProb=log(1)
-										for (j in 1:length(newparticleList[[1]]$startingValues)) {
-											newvalue<-newparticleList[[1]]$startingValues[j]
-											meantouse= oldParticleList[[i]]$startingValues[j]
-												if (startingPriorsFns[j]=="uniform") {
-													sdtouse<-standardDevFactor*((max(startingPriorsValues[,j])-min(startingPriorsValues[,j]))/sqrt(12))
-													#print(paste0("startingPriorFn is uniform and sdtouse =", sdtouse))
-												}
-												else if (startingPriorsFns[j]=="exponential") {
-													sdtouse<-standardDevFactor*(1/startingPriorsValues[,j])
-													#print(paste0("startingPriorFn is exponential and sdtouse =", sdtouse))
-												}
-												else {
-													sdtouse<-standardDevFactor*(startingPriorsValues[2,j])
-												}
-
-											lnlocalTransitionProb<-dnorm(newvalue, mean=meantouse, sd=sdtouse,log=TRUE
-												) - ((log(1)/pnorm(min(startingPriorsValues[, j]), mean=meantouse, sd=sdtouse, lower.tail=TRUE, log.p=TRUE))
-													* pnorm(max(startingPriorsValues[,j]), mean=meantouse , sd=sdtouse, lower.tail=FALSE, log.p=TRUE))
-
-											if(length(lnlocalTransitionProb)!=1){
-												print(lnlocalTransitionProb)
-												print("A")
-												stop("Somehow, multiple lnlocalTransitionProb values produced")
-												}
-											if (is.nan(lnlocalTransitionProb)) {  #to prevent lnlocalTransitionProb from being NaN (if pnorm=0)
-												lnlocalTransitionProb<-.Machine$double.xmin
+										LLTPstart<-sapply(length(newparticleList[[1]]$startingValues),
+											function(j) getlnTransitionProb(newvalue = newparticleList[[1]]$startingValues[j],
+												meantouse = oldParticleList[[i]]$startingValues[j], 
+												Fn=startingPriorsFns[j],
+												priorValues= startingPriorsValues[,j],
+												stdFactor = standardDevFactor))
+										LLTPintr<-sapply(length(newparticleList[[1]]$intrinsicValues),
+											function(j) getlnTransitionProb(newvalue = newparticleList[[1]]$intrinsicValues[j],
+												meantouse = oldParticleList[[i]]$intrinsicValues[j], 
+												Fn=intrinsicPriorsFns[j],
+												priorValues= intrinsicPriorsValues[,j],
+												stdFactor = standardDevFactor))
+										LLTPextr<-sapply(length(newparticleList[[1]]$extrinsicValues),
+											function(j) getlnTransitionProb(newvalue = newparticleList[[1]]$extrinsicValues[j],
+												meantouse = oldParticleList[[i]]$extrinsicValues[j], 
+												Fn=extrinsicPriorsFns[j],
+												priorValues= extrinsicPriorsValues[,j],
+												stdFactor = standardDevFactor))
+										lnTransitionProb<-lnTransitionProb+sum(LLTPstart)+sum(LLTPintr)+sum(LLTPextr)
+										if(!is.finite(lnTransitionProb) || is.na(lnlocalTransitionProb)) {
+											print(paste0("issue with lnTransitionProb: ",
+												" lnTransitionProb = ",lnTransitionProb))
 											}
-											if (min(startingPriorsValues[, j])==max(startingPriorsValues[, j])) {
-												lnlocalTransitionProb=log(1)
-											}
-											lnTransitionProb<-lnTransitionProb+lnlocalTransitionProb
-											if(!is.finite(lnTransitionProb) || is.na(lnlocalTransitionProb)) {
-												print(paste0("issue with lnTransitionProb: lnlocalTransitionProb = ",lnlocalTransitionProb,
-													" lnTransitionProb = ",lnTransitionProb))
-											}
-										}
-										for (j in 1:length(newparticleList[[1]]$intrinsicValues)) {
-											newvalue<-newparticleList[[1]]$intrinsicValues[j]
-											if(length(newvalue)!=1){
-												stop("more than one intrinsicValues newvalue per element??")}
-											meantouse= oldParticleList[[i]]$intrinsicValues[j]
-											if(length(meantouse)!=1){
-												stop("more than one intrinsicValues meantouse per element??")}
-											if (intrinsicPriorsFns[j]=="uniform") {
-												sdtouse<-standardDevFactor*((max(intrinsicPriorsValues[,j])-min(intrinsicPriorsValues[,j]))/sqrt(12))
-											}
-											else if (intrinsicPriorsFns[j]=="exponential") {
-												sdtouse<-standardDevFactor*(1/intrinsicPriorsValues[,j])
-											}
-											else {
-												sdtouse<-standardDevFactor*(intrinsicPriorsValues[2,j])
-											}
-											lnlocalTransitionProb <- dnorm(newvalue, mean= meantouse, sd= sdtouse,log=TRUE
-												)-((log(1)/pnorm(min(intrinsicPriorsValues[, j]), mean=meantouse , sd=sdtouse, lower.tail=TRUE, log.p=TRUE)) *
-												pnorm(max(intrinsicPriorsValues[,j]), mean=meantouse , sd=sdtouse, lower.tail=FALSE, log.p=TRUE))
-											#
-											if(length(lnlocalTransitionProb)!=1){
-												print(lnlocalTransitionProb)
-												print("B")
-												stop("Somehow, multiple lnlocalTransitionProb values produced")
-												}
-											if (is.nan(lnlocalTransitionProb)) {  #to prevent lnlocalTransitionProb from being NaN (if pnorm=0)
-												lnlocalTransitionProb<-.Machine$double.xmin
-											}
-											if (min(intrinsicPriorsValues[, j])==max(intrinsicPriorsValues[, j])) {
-												lnlocalTransitionProb=log(1)
-											}
-											lnTransitionProb<-lnTransitionProb+lnlocalTransitionProb
-											if(!is.finite(lnTransitionProb) || is.na(lnlocalTransitionProb)) {
-												print(paste0("issue with lnTransitionProb: lnlocalTransitionProb = ",lnlocalTransitionProb,
-													" lnTransitionProb = ",lnTransitionProb))
-											}
-
-										}
-										for (j in 1:length(newparticleList[[1]]$extrinsicValues)) {
-											newvalue<-newparticleList[[1]]$extrinsicValues[j]
-											meantouse= oldParticleList[[i]]$extrinsicValues[j]
-											if (extrinsicPriorsFns[j]=="uniform") {
-												sdtouse<-standardDevFactor*((max(extrinsicPriorsValues[,j])-min(extrinsicPriorsValues[,j]))/sqrt(12))
-											}
-											else if (extrinsicPriorsFns[j]=="exponential") {
-												sdtouse<-standardDevFactor*(1/extrinsicPriorsValues[,j])
-											}
-											else {
-												sdtouse<-standardDevFactor*(extrinsicPriorsValues[2,j])
-											}
-											lnlocalTransitionProb <- dnorm(newvalue, mean= meantouse, sd= sdtouse,log=TRUE
-												)-((log(1)/pnorm(min(extrinsicPriorsValues[,j]), mean=meantouse , sd=sdtouse, lower.tail=TRUE, log.p=TRUE))
-												* pnorm(max(extrinsicPriorsValues[,j]), mean=meantouse , sd=sdtouse, lower.tail=FALSE, log.p=TRUE))
-										
-											if(length(lnlocalTransitionProb)!=1){
-												print(lnlocalTransitionProb)
-												print("C")
-												stop("Somehow, multiple lnlocalTransitionProb values produced")
-												}			
-											if (is.nan(lnlocalTransitionProb)) {  #to prevent lnlocalTransitionProb from being NaN (if pnorm=0)
-												lnlocalTransitionProb<-.Machine$double.xmin
-											}
-											if (min(extrinsicPriorsValues[, j])==max(extrinsicPriorsValues[, j])) {
-												lnlocalTransitionProb=log(1)
-											}
-											lnTransitionProb<-lnTransitionProb+lnlocalTransitionProb
-											if(!is.finite(lnTransitionProb) || is.na(lnlocalTransitionProb)) {
-												print(paste0("issue with lnTransitionProb: lnlocalTransitionProb = ",lnlocalTransitionProb
-													," lnTransitionProb = ",lnTransitionProb))
-											}
-
-										}
 										newWeight<-newWeight+(oldParticleList[[i]]$weight)*exp(lnTransitionProb)
 									} #for (i in 1:length(oldParticleList)) bracket
 
@@ -847,6 +762,44 @@ doRun_prc<-function(
 		print(prcResults)
 
 }
+
+getlnTransitionProb<-function(newvalue,meantouse,Fn,priorValues,stdFactor){
+		#newvalue = newparticleList[[1]]$startingValues[j],
+		#meantouse = oldParticleList[[i]]$startingValues[j], 
+		#Fn=startingPriorsFns[j],
+		#priorValues= startingPriorsValues[,j],
+		#stdFactor = standardDevFactor
+										
+	if (Fn=="uniform") {
+		sdtouse<-stdFactor*((max(priorValues)-min(priorValues))/sqrt(12))
+		#print(paste0("Fn is uniform and sdtouse =", sdtouse))
+	}
+	else if (Fn=="exponential") {
+		sdtouse<-stdFactor*(1/priorValues[1])
+		#print(paste0("Fn is exponential and sdtouse =", sdtouse))
+	}
+	else {
+		sdtouse<-stdFactor*(startingPriorsValues[2,j])
+	}
+	#
+	lnlocalTransitionProb<-dnorm(newvalue, mean=meantouse, sd=sdtouse,log=TRUE
+		) - ((log(1)/pnorm(min(priorValues), mean=meantouse, sd=sdtouse, lower.tail=TRUE, log.p=TRUE))
+			* pnorm(max(priorValues), mean=meantouse , sd=sdtouse, lower.tail=FALSE, log.p=TRUE))
+	if(length(lnlocalTransitionProb)!=1){
+		print(lnlocalTransitionProb)
+		stop("Somehow, multiple lnlocalTransitionProb values produced")
+		}
+	if (is.nan(lnlocalTransitionProb)) {  #to prevent lnlocalTransitionProb from being NaN (if pnorm=0)
+		lnlocalTransitionProb<-.Machine$double.xmin
+	}
+	if (min(priorValues)==max(priorValues)) {
+		lnlocalTransitionProb=log(1)
+	}
+	if(!is.finite(lnlocalTransitionProb) || is.na(lnlocalTransitionProb)) {
+		print(paste0("issue with lnlocalTransitionProb = ",lnlocalTransitionProb))
+		}
+	return(lnlocalTransitionProb)
+	}
 
 
 #' @rdname doRun
