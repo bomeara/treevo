@@ -618,7 +618,7 @@ doRun_prc<-function(
 												priorValues= extrinsicPriorsValues[,j],
 												stdFactor = standardDevFactor))
 										lnTransitionProb<-lnTransitionProb+sum(LLTPstart)+sum(LLTPintr)+sum(LLTPextr)
-										if(!is.finite(lnTransitionProb) || is.na(lnlocalTransitionProb)) {
+										if(!is.finite(lnTransitionProb) || is.na(lnTransitionProb)) {
 											print(paste0("issue with lnTransitionProb: ",
 												" lnTransitionProb = ",lnTransitionProb))
 											}
@@ -779,7 +779,7 @@ getlnTransitionProb<-function(newvalue,meantouse,Fn,priorValues,stdFactor){
 		#print(paste0("Fn is exponential and sdtouse =", sdtouse))
 	}
 	else {
-		sdtouse<-stdFactor*(startingPriorsValues[2,j])
+		sdtouse<-stdFactor*(priorValues[2])
 	}
 	#
 	lnlocalTransitionProb<-dnorm(newvalue, mean=meantouse, sd=sdtouse,log=TRUE
