@@ -28,6 +28,7 @@
 #' 
 #' \donttest{
 #' 
+#' set.seed(1)
 #' data(simRun)
 #' 
 #' # example simulation
@@ -88,16 +89,17 @@ boxcoxTransformationMatrix<-function (summaryValuesMatrix) {
     if (lowValue <= 0) {
       boxcoxAddition[summaryValueIndex] <- 4 * abs(lowValue)
     }
-    summary <- summaryValuesMatrix[, summaryValueIndex] + boxcoxAddition[summaryValueIndex]
+    summaryVM <- summaryValuesMatrix[, summaryValueIndex] + boxcoxAddition[summaryValueIndex]
     boxcoxLambda[summaryValueIndex] <- 1
     if (sd(summaryValuesMatrix[, summaryValueIndex]) > 0) {
-      newLambda <- makeQuiet(as.numeric(try(powerTransform(summary, method = "Nelder-Mead")$lambda)))
+      newLambda <- makeQuiet(as.numeric(try(powerTransform(summaryVM, method = "Nelder-Mead")$lambda)))
       if (!is.na(newLambda)) {
         boxcoxLambda[summaryValueIndex] <- newLambda
       }
     }
-    summaryValuesMatrix[, summaryValueIndex] <- summary^boxcoxLambda[summaryValueIndex]
+    summaryValuesMatrix[, summaryValueIndex] <- summaryVM^boxcoxLambda[summaryValueIndex]
   }
-  return(list(boxcoxAddition = boxcoxAddition, boxcoxLambda = boxcoxLambda, 
-              boxcoxSummaryValuesMatrix = summaryValuesMatrix))
+  res<-list(boxcoxAddition = boxcoxAddition, boxcoxLambda = boxcoxLambda, 
+       boxcoxSummaryValuesMatrix = summaryValuesMatrix)
+  return(res)
 }

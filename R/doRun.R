@@ -919,11 +919,13 @@ doRun_rej<-function(
 		save(trueFreeValuesMatrix, summaryValuesMatrix, simTime, file=paste0("sims", jobName, ".Rdata", sep=""))
 		}
 
-		res<-PLSRejection(summaryValuesMatrix=summaryValuesMatrix, trueFreeValuesMatrix=trueFreeValuesMatrix,
-		phy=phy, traits=traits, abcTolerance=abcTolerance)
+	res<-makeQuiet(PLSRejection(summaryValuesMatrix=summaryValuesMatrix, trueFreeValuesMatrix=trueFreeValuesMatrix,
+		phy=phy, traits=traits, abcTolerance=abcTolerance))
+	
 	#save(abcDistancesRaw, abcDistancesRawTotal, abcDistances, abcResults, particleDataFrame, file="")
 	input.data<-rbind(jobName, length(phy[[3]]), timeStep, StartSims, standardDevFactor, abcTolerance)
-  print(res)
+	print(res)
+	
 	rejectionResults<-vector("list")
 	
 	#names(rejectionResults)<-c("input.data", "PriorMatrix", "phy", "traits")

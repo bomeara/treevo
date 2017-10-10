@@ -33,6 +33,7 @@ output of \code{boxcoxTransformationMatrix} needs to be provided as input for \c
 
 \donttest{
 
+set.seed(1)
 data(simRun)
 
 # example simulation
