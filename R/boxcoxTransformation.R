@@ -24,10 +24,7 @@
 # @keywords boxcoxEstimation Box-Cox
 
 #' @examples
-#' 
-#' 
 #' \donttest{
-#' 
 #' set.seed(1)
 #' data(simRun)
 #' 
@@ -60,9 +57,7 @@
 #' 
 #' boxcoxTransformation(summaryValuesVector=summaryValuesMat[,1],
 #'  boxcoxAddition=boxTranMat$boxcoxAddition, boxcoxLambda=boxTranMat$boxcoxLambda)
-#' 
 #' }
-#' 
 
 
 #' @name boxcoxTransformation

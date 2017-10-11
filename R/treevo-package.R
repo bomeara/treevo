@@ -20,9 +20,9 @@
 # @keywords treevo abc
 
 #' @examples
-#'
+#
 #' \donttest{
-#'
+#
 #' # let's simulate some data, and then try to infer the parameters using ABC
 #' 
 #' simPhy<-rcoal(30)
@@ -75,9 +75,7 @@
 #'   multicore=FALSE,
 #'   coreLimit=1
 #'   )
-#' 
 #' }
-#' 
 
 # NAMESPACE IMPORTING
 

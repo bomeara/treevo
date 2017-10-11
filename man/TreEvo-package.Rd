@@ -13,9 +13,7 @@ A package for applying Approximate Bayesian Computation to estimating parameters
 0.3.3\cr Date: \tab 2012-07-02\cr License: \tab GPL\cr }
 }
 \examples{
-
 \donttest{
-
 # let's simulate some data, and then try to infer the parameters using ABC
 
 simPhy<-rcoal(30)
@@ -68,9 +66,7 @@ results<-doRun_prc(
   multicore=FALSE,
   coreLimit=1
   )
-
 }
-
 }
 \author{
 Brian O'Meara, Barb L. Banbury, David W. Bapst

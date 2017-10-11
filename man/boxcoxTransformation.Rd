@@ -29,10 +29,7 @@ same dimensions as \code{summaryValuesMatrix}.
 output of \code{boxcoxTransformationMatrix} needs to be provided as input for \code{boxcoxTransformation}.
 }
 \examples{
-
-
 \donttest{
-
 set.seed(1)
 data(simRun)
 
@@ -65,9 +62,7 @@ boxTranMat
 
 boxcoxTransformation(summaryValuesVector=summaryValuesMat[,1],
  boxcoxAddition=boxTranMat$boxcoxAddition, boxcoxLambda=boxTranMat$boxcoxLambda)
-
 }
-
 }
 \author{
 Brian O'Meara and Barb Banbury

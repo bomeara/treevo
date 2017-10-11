@@ -90,9 +90,7 @@ In general, most users will just drive the car - they will just use \code{\link{
 want to use \code{\link{simulateWithPriors}} or \code{\link{doSimulation}} functions to do various simulations.
 }
 \examples{
-
 \donttest{
-
 tree<-rcoal(30)
 
 #Simple Brownian motion
@@ -155,7 +153,6 @@ char<-doSimulationWithPossibleExtinction(
 	extrinsicValues=c(0),
 	timeStep=0.0001,
 	saveHistory=FALSE)
-
 }
 }
 \author{

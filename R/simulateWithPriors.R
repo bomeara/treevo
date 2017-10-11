@@ -86,9 +86,9 @@
 # @references O'Meara and Banbury, unpublished
 
 #' @examples
-#'
+#
 #' \donttest{
-#' 
+# 
 #' simPhy<-rcoal(30)
 #' 
 #' # example simulation
@@ -131,9 +131,9 @@
 #'   niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) 
 #' 
 #' simDataParallel
-#' 
+# 
 #' }
-#' 
+ 
 
 
 #' @name simulateWithPriors
@@ -199,7 +199,7 @@ simulateWithPriors<-function(
 		trueInitial<-c(trueStarting, trueIntrinsic, trueExtrinsic)
 		trueFreeValues<-trueInitial[freevector]
 
-		cat(".")
+		message(".")
 		simTraits<-doSimulationWithPossibleExtinction(phy=phy, taxon.df=taxon.df, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, 
 			startingValues=trueStarting, intrinsicValues=trueIntrinsic, extrinsicValues=trueExtrinsic, timeStep=timeStep, verbose=verbose, checkTimeStep=FALSE)
 		simSumStats<-summaryStatsLong(phy=phy, traits=simTraits, 
@@ -274,12 +274,12 @@ parallelSimulateWithPriors<-function(
 			coreLimit->cores
 			}
 		}
-	cat(paste("Using", cores, "core(s) for simulations \n\n"))
+	message(paste("Using", cores, "core(s) for simulations \n\n"))
 	if (nrepSim %%cores != 0) {
 		warning("The simulation is most efficient if the number of nrepSim is a multiple of the number of cores")
 	}
 
-	cat("Doing simulations: ")
+	message("Doing simulations: ")
 	if (is.null(checkpointFile)) {
 		trueFreeValuesANDSummaryValues<-foreach(1:nrepSim, .combine=rbind) %dopar% simulateWithPriors(phy=phy, taxon.df=taxon.df,
 			startingPriorsValues=startingPriorsValues, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues,

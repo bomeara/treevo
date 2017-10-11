@@ -156,9 +156,7 @@
 # al. 2009
 
 #' @examples
-#'
 #' \donttest{
-#' 
 #' data(simRun)
 #'
 #' # NOTE: the example analyses below sample too few particles, 
@@ -215,9 +213,8 @@
 #' 	)
 #' 
 #' resultsRej
-#'
 #' }
-#'
+
 
 ##This seems to be working if partialResults does not exist.  If checkpoint=TRUE, then run fails.
 
@@ -323,17 +320,17 @@ doRun_prc<-function(
 	ou<-makeQuiet(fitContinuous(phy=phy, dat=traits, model="OU", ncores=1, control=list(niter=100)))
 	white<-makeQuiet(fitContinuous(phy=phy, dat=traits, model="white", ncores=1, control=list(niter=100)))
 
-	cat("Setting number of starting points for Geiger optimization to")
+	message("Setting number of starting points for Geiger optimization to")
 	niter.brown.g <- round(max(10, min(niter.goal/solnfreq(brown),100)))
-	cat(paste0("\n",niter.brown.g, "for Brownian motion"))
+	message(paste0("\n",niter.brown.g, "for Brownian motion"))
 	niter.lambda.g <- round(max(10, min(niter.goal/solnfreq(lambda),100)))
-	cat(paste0("\n",niter.lambda.g, "for lambda"))
+	message(paste0("\n",niter.lambda.g, "for lambda"))
 	niter.delta.g <- round(max(10, min(niter.goal/solnfreq(delta),100)))
-	cat(paste0("\n",niter.delta.g, "for delta"))
+	message(paste0("\n",niter.delta.g, "for delta"))
 	niter.OU.g <- round(max(10, min(niter.goal/solnfreq(ou),100)))
-	cat(paste0("\n",niter.OU.g, "for OU"))
+	message(paste0("\n",niter.OU.g, "for OU"))
 	niter.white.g <- round(max(10, min(niter.goal/solnfreq(white),100)))
-	cat(paste0("\n",niter.white.g, "for white noise"))
+	message(paste0("\n",niter.white.g, "for white noise"))
 
 
 		#---------------------- Initial Simulations (Start) ------------------------------
@@ -347,8 +344,8 @@ doRun_prc<-function(
 	nrepSim<-StartSims 
 
 	input.data<-rbind(jobName, length(phy[[3]]), nrepSim, TreeYears, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor)
-	cat(paste0("\nNumber of initial simulations set to", nrepSim, "\n"))
-	cat("Doing simulations:")
+	message(paste0("\nNumber of initial simulations set to", nrepSim, "\n"))
+	message("Doing simulations:")
 	Time<-proc.time()[[3]]
 	trueFreeValues<-matrix(nrow=0, ncol= numberParametersFree)
 	#set up initial sum stats as length of SSL of original data
@@ -359,14 +356,14 @@ doRun_prc<-function(
 		startingPriorsFns=startingPriorsFns, intrinsicPriorsFns=intrinsicPriorsFns, extrinsicPriorsFns=extrinsicPriorsFns, 
 		freevector=freevector, timeStep=timeStep, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, multicore=multicore, 
 		niter.brown=niter.brown.g, niter.lambda=niter.lambda.g, niter.delta=niter.delta.g, niter.OU=niter.OU.g, niter.white=niter.white.g)
-	cat("\n\n")
+	message("\n\n")
 
 	if(saveData){
 		save(trueFreeValues,summaryValues,file=paste0("CompletedSimulations",jobName,".Rdata",sep=""))
 		}
 	
 	simTime<-proc.time()[[3]]-Time
-	cat(paste0("Initial simulations took", round(simTime, digits=3), "seconds"), "\n")
+	message(paste0("Initial simulations took ", round(simTime, digits=3), " seconds"), "\n")
 
 	#separate the simulation results: true values and the summary values
 	trueFreeValuesMatrix<-trueFreeValuesANDSummaryValues[,1:numberParametersFree]
@@ -422,7 +419,7 @@ doRun_prc<-function(
 				particle<-1
 				attempts<-0
 				particleDataFrame<-data.frame()
-				cat("\n\n\nsuccesses", "attempts", "expected number of attempts required\n\n\n")
+				message("\n\n\nsuccesses", "attempts", "expected number of attempts required\n\n\n")
 				start.time<-proc.time()[[3]]
 				particleList<-list()
 
@@ -471,13 +468,13 @@ doRun_prc<-function(
 						newparticleList[[1]]$weight, newparticleList[[1]]$startingValues, newparticleList[[1]]$intrinsicValues,
 						newparticleList[[1]]$extrinsicValues)
 					
-					# cat("\n\nlength of vectorForDataFrame = ", length(vectorForDataFrame), "\n", "length of startingValues = ", 
+					# message("\n\nlength of vectorForDataFrame = ", length(vectorForDataFrame), "\n", "length of startingValues = ", 
 						# length(startingValues), "\nlength of intrinsicValues = ", length(intrinsicValues), 
 						# "\nlength of extrinsicValues = ", length(extrinsicValues), "\ndistance = ", newparticleList[[1]]$distance,
 						# "\nweight = ", newparticleList[[1]]$weight, "\n", vectorForDataFrame, "\n")
 					particleDataFrame<-rbind(particleDataFrame, vectorForDataFrame)
 					
-					cat(particle-1, attempts, floor(numParticles*attempts/particle), 
+					message(particle-1, attempts, floor(numParticles*attempts/particle), 
 						newparticleList[[1]]$startingValues, newparticleList[[1]]$intrinsicValues, 
 						newparticleList[[1]]$extrinsicValues, newparticleList[[1]]$distance, "\n")
 
@@ -519,10 +516,10 @@ doRun_prc<-function(
 
 						while (dataGenerationStep < nStepsPRC) {
 							dataGenerationStep<-dataGenerationStep+1
-							cat("\n\n\n", "STARTING DATA GENERATION STEP ", dataGenerationStep, "\n\n\n")
+							message("\n\n\n", "STARTING DATA GENERATION STEP ", dataGenerationStep, "\n\n\n")
 							start.time<-proc.time()[[3]]
 							particleWeights<-particleWeights/(sum(particleWeights,na.rm=TRUE)) #normalize to one
-							cat("particleWeights\n", particleWeights, "\n\n")
+							message("particleWeights\n", particleWeights, "\n\n")
 							oldParticleList<-particleList
 							oldParticleWeights<-particleWeights
 							#stores weights for each particle. 
@@ -534,23 +531,23 @@ doRun_prc<-function(
 							particleDistance=rep(NA, numParticles)
 							particle<-1
 							attempts<-0
-							cat("successes", "attempts", "expected number of attempts required\n")
+							message("successes", "attempts", "expected number of attempts required\n")
 							particleList<-list()
 							weightScaling=0;
 							while (particle<=numParticles) {
 								attempts<-attempts+1
 								particleToSelect<-which.max(as.vector(rmultinom(1, size = 1, prob=oldParticleWeights)))
-								#cat("particle to select = ", particleToSelect, "\n")
-								#cat("dput(oldParticleList)\n")
+								#message("particle to select = ", particleToSelect, "\n")
+								#message("dput(oldParticleList)\n")
 								#dput(oldParticleList)
-								#cat("dput(oldParticleList[particleToSelect])\n")
+								#message("dput(oldParticleList[particleToSelect])\n")
 								#dput(oldParticleList[particleToSelect])
-								#cat("dput(oldParticleList[[particleToSelect]])\n")
+								#message("dput(oldParticleList[[particleToSelect]])\n")
 								#dput(oldParticleList[[particleToSelect]])
 								newparticleList<-list(oldParticleList[[particleToSelect]])
-								#cat("dput(newparticleList[[1]])\n")
+								#message("dput(newparticleList[[1]])\n")
 								#dput(newparticleList[[1]])
-								#cat("mutateStates\n")
+								#message("mutateStates\n")
 
 								newparticleList[[1]]<-mutateStates(newparticleList[[1]], 
 									startingPriorsValues=startingPriorsValues, startingPriorsFns=startingPriorsFns, 
@@ -558,7 +555,7 @@ doRun_prc<-function(
 									extrinsicPriorsValues=extrinsicPriorsValues, extrinsicPriorsFns=extrinsicPriorsFns, 
 									standardDevFactor=standardDevFactor)
 									
-								#cat("dput(newparticleList[[1]]) AFTER MUTATE STATES\n")
+								#message("dput(newparticleList[[1]]) AFTER MUTATE STATES\n")
 								#dput(newparticleList[[1]])
 
 								newparticleList[[1]]$distance<-abcDistance(
@@ -581,11 +578,11 @@ doRun_prc<-function(
 									}
 									text(x=newparticleList[[1]]$intrinsicValues, y=newparticleList[[1]]$distance, labels= dataGenerationStep, col=plotcol)
 								}
-								#cat("dput(newparticleList[[1]]) AFTER computeABCDistance\n")
+								#message("dput(newparticleList[[1]]) AFTER computeABCDistance\n")
 								#dput(newparticleList[[1]])
 
 								if (is.na(newparticleList[[1]]$distance)) {
-									#cat("Error with Geiger?  newparticleList[[1]]$distance = NA\n")
+									#message("Error with Geiger?  newparticleList[[1]]$distance = NA\n")
 									#while(sink.number()>0) {sink()}
 									#warning("newparticleList[[1]]$distance = NA")
 									newparticleList[[1]]$id <- (-1)
@@ -642,13 +639,13 @@ doRun_prc<-function(
 									newparticleList[[1]]$distance, newparticleList[[1]]$weight, newparticleList[[1]]$startingValues, 
 									newparticleList[[1]]$intrinsicValues, newparticleList[[1]]$extrinsicValues)
 									
-					#cat("\n\nlength of vectorForDataFrame = ", length(vectorForDataFrame), "\n", "length of startingValues = ", 
+					#message("\n\nlength of vectorForDataFrame = ", length(vectorForDataFrame), "\n", "length of startingValues = ", 
 						# length(startingValues), "\nlength of intrinsicValues = ", length(intrinsicValues), "\nlength of extrinsicValues = ", 
 						# length(extrinsicValues), "\ndistance = ", newparticleList[[1]]$distance, "\nweight = ", newparticleList[[1]]$weight, 
 						# "\n", vectorForDataFrame, "\n")
 
 								particleDataFrame<-rbind(particleDataFrame, vectorForDataFrame) #NOTE THAT WEIGHTS AREN'T NORMALIZED IN THIS DATAFRAME
-								cat(particle-1, attempts, floor(numParticles*attempts/particle), newparticleList[[1]]$startingValues, 
+								message(particle-1, attempts, floor(numParticles*attempts/particle), newparticleList[[1]]$startingValues, 
 									newparticleList[[1]]$intrinsicValues, newparticleList[[1]]$extrinsicValues, newparticleList[[1]]$distance, "\n")
 
 							} #while (particle<=numParticles) bracket
@@ -693,7 +690,7 @@ doRun_prc<-function(
 									#print(FF)
 								}
 								if (sum(FF)==0){
-									cat("\n\n\nweightedMeanParam is < ", stopValue, "Analysis is being terminated at", dataGenerationStep
+									message("\n\n\nweightedMeanParam is < ", stopValue, "Analysis is being terminated at", dataGenerationStep
 										, "instead of continuing to ", nStepsPRC, "\n\n\n")
 									dataGenerationStep<-nStepsPRC
 								}
@@ -875,7 +872,7 @@ doRun_rej<-function(
 	#Used to be multiple tries where nrepSim = StartSims*((2^try)/2).  
 		#If initial simulations are not enough, and we need to try again then new analysis will double number of initial simulations
 	nrepSim<-StartSims 
-	cat(paste0("Number of simulations set to", nrepSim, "\n"))
+	message(paste0("Number of simulations set to ", nrepSim, "\n"))
 	if(!is.null(checkpointFile)) {
 		save(list=ls(),file=paste0(checkpointFile,".intialsettings.Rsave",sep=""))
 	}
@@ -888,17 +885,17 @@ doRun_rej<-function(
 	ou<-makeQuiet(fitContinuous(phy=phy, dat=traits, model="OU", ncores=1, control=list(niter=100)))
 	white<-makeQuiet(fitContinuous(phy=phy, dat=traits, model="white", ncores=1, control=list(niter=100)))
 
-	cat("Setting number of starting points for Geiger optimization to")
+	message("Setting number of starting points for Geiger optimization to")
 	niter.brown.g <- round(max(10, min(niter.goal/solnfreq(brown),100)))
-	cat(paste0("\n",niter.brown.g, "for Brownian motion"))
+	message(paste0("\n",niter.brown.g, "for Brownian motion"))
 	niter.lambda.g <- round(max(10, min(niter.goal/solnfreq(lambda),100)))
-	cat(paste0("\n",niter.lambda.g, "for lambda"))
+	message(paste0("\n",niter.lambda.g, "for lambda"))
 	niter.delta.g <- round(max(10, min(niter.goal/solnfreq(delta),100)))
-	cat(paste0("\n",niter.delta.g, "for delta"))
+	message(paste0("\n",niter.delta.g, "for delta"))
 	niter.OU.g <- round(max(10, min(niter.goal/solnfreq(ou),100)))
-	cat(paste0("\n",niter.OU.g, "for OU"))
+	message(paste0("\n",niter.OU.g, "for OU"))
 	niter.white.g <- round(max(10, min(niter.goal/solnfreq(white),100)))
-	cat(paste0("\n",niter.white.g, "for white noise"))
+	message(paste0("\n",niter.white.g, "for white noise"))
 
 	trueFreeValuesANDSummaryValues<-parallelSimulateWithPriors(nrepSim=nrepSim, coreLimit=coreLimit, phy=phy,  taxon.df=taxon.df,
 		startingPriorsValues=startingPriorsValues, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues, 
@@ -907,9 +904,9 @@ doRun_rej<-function(
 		multicore=multicore, checkpointFile=checkpointFile, checkpointFreq=checkpointFreq, 
 		niter.brown=niter.brown.g, niter.lambda=niter.lambda.g, niter.delta=niter.delta.g, niter.OU=niter.OU.g, niter.white=niter.white.g)
 
-	cat("\n\n")
+	message("\n\n")
 	simTime<-proc.time()[[3]]-startTime
-	cat(paste0("Simulations took", round(simTime, digits=3), "seconds"), "\n")
+	message(paste0("Simulations took", round(simTime, digits=3), "seconds"), "\n")
 
 	#separate the simulation results: true values and the summary values
 	trueFreeValuesMatrix<-trueFreeValuesANDSummaryValues[,1:numberParametersFree]

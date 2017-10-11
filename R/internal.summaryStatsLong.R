@@ -120,7 +120,7 @@ summaryStatsLong<-function(phy, traits,
 	raw.max<-as.numeric(max(traits))
 	raw.min<-as.numeric(min(traits))
 	raw.var<-as.numeric(var(traits))
-	raw.median<-as.numeric(median(traits))	#cat("summaryStatsLong")
+	raw.median<-as.numeric(median(traits))	#message("summaryStatsLong")
 
 	pic<-makeQuiet(as.vector(pic.ortho(as.matrix(traits), phy)))  #independent contrasts
 	aceResults<-makeQuiet(ace(traits, phy))

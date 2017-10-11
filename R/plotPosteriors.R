@@ -39,13 +39,12 @@
 #' prior and posterior distributions, including a visual comparison for single parameters.
 
 #' @examples
-#' 
 #' data(simRun)
 #' 
 #' plotPosteriors(particleDataFrame=results$particleDataFrame,
 #'    priorsMat=results$PriorMatrix,
 #'    realParam=TRUE, realParamValues=c(ancState,genRate))
-#' 
+ 
 
 #' @name plotPosteriors
 #' @rdname plotPosteriors

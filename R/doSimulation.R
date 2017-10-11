@@ -78,9 +78,9 @@
 # @keywords doSimulation
 
 #' @examples
-#' 
+# 
 #' \donttest{
-#'
+#
 #' tree<-rcoal(30)
 #'
 #' #Simple Brownian motion
@@ -143,7 +143,7 @@
 #' 	extrinsicValues=c(0),
 #' 	timeStep=0.0001,
 #' 	saveHistory=FALSE)
-#'
+#
 #' }
 
 
@@ -213,7 +213,7 @@ doSimulation<-function(phy=NULL, intrinsicFn, extrinsicFn, startingValues, intri
 					taxa[[originallength+2]]$timeSinceSpeciation<-0
 				}
 			}
-			#cat("taxontodelete = ", taxontodelete)
+			#message("taxontodelete = ", taxontodelete)
 			taxa<-taxa[-1*taxontodelete]
 			if(dim(taxon.df)[1]>1) {
 				taxon.df<-taxon.df[2:(dim(taxon.df)[1]), ] #pop off top value
@@ -332,7 +332,7 @@ doSimulationForPlotting<-function(phy=NULL, intrinsicFn, extrinsicFn, startingVa
 						taxa[[originallength+2]]$timeSinceSpeciation<-0
 					}
 				}
-	#cat("taxontodelete = ", taxontodelete)
+	#message("taxontodelete = ", taxontodelete)
 				taxa<-taxa[-1*taxontodelete]
 				if(dim(taxon.df)[1]>1) {
 					taxon.df<-taxon.df[2:(dim(taxon.df)[1]), ] #pop off top value

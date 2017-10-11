@@ -99,9 +99,9 @@
 
 
 #' @examples
-#'
+#
 #' \donttest{
-#' 
+# 
 #' # Examples of simulations with various intrinsic models (and null extrinsic model)
 #' tree<-rcoal(30)
 #'
@@ -141,9 +141,9 @@
 #' 	timeStep=0.0001,
 #' 	plot=TRUE,
 #' 	saveHistory=FALSE)
-#' 
+# 
 #' }
-#' 
+ 
 
 #' @name intrinsicModels
 #' @rdname intrinsicModels

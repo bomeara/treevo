@@ -143,7 +143,7 @@ plotABC_3D<-function(particleDataFrame, parameter, show.particles="none",
 		short.kept<-subset(kept[which(kept$generation>1),])[,]
 
 		if (show.particles=="none"){
-			cat("currently not plotting particles.  To plot particles modify the show.particles= argument.")
+			message("currently not plotting particles.  To plot particles modify the show.particles= argument.")
 			}
 		else if (show.particles=="weights") {
 			for (j in 1:nrow(kept)) {

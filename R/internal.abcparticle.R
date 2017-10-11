@@ -172,7 +172,7 @@ mutateState<-function(startingState, standardDevFactor, priorFn, priorValues) {
 			validNewState<-FALSE
 			}	
 #		if (!validNewState)	{
-			#cat("newState ",newState," does not fit into one of the bounds (", minBound, "--", maxBound, ")\n")
+			#message("newState ",newState," does not fit into one of the bounds (", minBound, "--", maxBound, ")\n")
 #		}	
 	}
 	

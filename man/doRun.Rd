@@ -185,9 +185,7 @@ particles from the final generation describe the posterior distributions of
 parameters.
 }
 \examples{
-
 \donttest{
-
 data(simRun)
 
 # NOTE: the example analyses below sample too few particles, 
@@ -244,9 +242,7 @@ resultsRej<-doRun_rej(
 	)
 
 resultsRej
-
 }
-
 }
 \references{
 Sisson et al. 2007, Wegmann et

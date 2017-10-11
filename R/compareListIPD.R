@@ -74,9 +74,9 @@ compareListIPD<-function(particleDataFrameList, verbose=FALSE){
 		}
 		#pdf(paste("compareListIPD", jobName, ".pdf", sep=""))
 		plot(genvector, IPDvector, xlab="generation", ylab="IPD", sub=names(data1[[1]][6+param]))
-		layout(1)
+		
 	}	
-	
+	layout(1)
 }
 
 #   Calculate interparticle distance

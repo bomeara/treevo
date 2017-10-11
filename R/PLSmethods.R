@@ -48,9 +48,7 @@
 #' @author Brian O'Meara and Barb Banbury
 
 #' @examples
-#' 
 #' \donttest{
-#' 
 #' set.seed(1)
 #' data(simRun)
 #' 
@@ -88,9 +86,7 @@
 #' PLSmodel
 #' 
 #' PLSTransform(summaryValuesMatrix=summaryValuesMat, pls.model=PLSmodel)
-#' 
-#' }
-#' 
+#' } 
 
 
 

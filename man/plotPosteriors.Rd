@@ -38,13 +38,11 @@ free parameter.
 the true values are known.
 }
 \examples{
-
 data(simRun)
 
 plotPosteriors(particleDataFrame=results$particleDataFrame,
    priorsMat=results$PriorMatrix,
    realParam=TRUE, realParamValues=c(ancState,genRate))
-
 }
 \seealso{
 \code{\link{plotPrior}} for a set of functions for visualizing and summarizing

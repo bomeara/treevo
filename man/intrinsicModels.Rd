@@ -119,9 +119,7 @@ attractor-1 (character mean-1), attraction-1 (alpha-1), time threshold-1,
 attractor-2 (character mean-2), attraction-2 (alpha-2), time threshold-2
 }
 \examples{
-
 \donttest{
-
 # Examples of simulations with various intrinsic models (and null extrinsic model)
 tree<-rcoal(30)
 
@@ -161,9 +159,7 @@ char<-doSimulationForPlotting(
 	timeStep=0.0001,
 	plot=TRUE,
 	saveHistory=FALSE)
-
 }
-
 }
 \author{
 Brian O'Meara and Barb Banbury
