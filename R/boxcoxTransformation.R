@@ -31,7 +31,7 @@
 #' # example simulation
 #' 
 #' simDataParallel<-parallelSimulateWithPriors( 
-#'   nrepSim=3, multicore=FALSE, coreLimit=1, 
+#'   nrepSim=5, multicore=FALSE, coreLimit=1, 
 #'   phy=simPhy,
 #'   intrinsicFn=brownianIntrinsic,
 #'   extrinsicFn=nullExtrinsic,
@@ -87,7 +87,11 @@ boxcoxTransformationMatrix<-function (summaryValuesMatrix) {
     summaryVM <- summaryValuesMatrix[, summaryValueIndex] + boxcoxAddition[summaryValueIndex]
     boxcoxLambda[summaryValueIndex] <- 1
     if (sd(summaryValuesMatrix[, summaryValueIndex]) > 0) {
-      newLambda <- makeQuiet(as.numeric(try(powerTransform(summaryVM, method = "Nelder-Mead")$lambda)))
+		# this alternative is thanks to https://stackoverflow.com/questions/33999512/how-to-use-the-box-cox-power-transformation-in-r/34002020
+      #newLambda <- makeQuiet(as.numeric(try(car::powerTransform(summaryVM, method = "Nelder-Mead")$lambda)))
+      bc <- MASS::boxcox(variable ~ 1, data=data.frame(variable=summaryVM),
+		 lambda=seq(-20, 20, 1/10000), plotit=FALSE)
+	  newLambda<-bc$x[which(max(bc$y)==bc$y)[1]]
       if (!is.na(newLambda)) {
         boxcoxLambda[summaryValueIndex] <- newLambda
       }

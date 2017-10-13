@@ -36,7 +36,7 @@ data(simRun)
 # example simulation
 
 simDataParallel<-parallelSimulateWithPriors( 
-  nrepSim=3, multicore=FALSE, coreLimit=1, 
+  nrepSim=5, multicore=FALSE, coreLimit=1, 
   phy=simPhy,
   intrinsicFn=brownianIntrinsic,
   extrinsicFn=nullExtrinsic,

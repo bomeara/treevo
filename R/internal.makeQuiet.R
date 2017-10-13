@@ -4,8 +4,8 @@
 # https://stackoverflow.com/questions/8797314/suppress-messages-displayed-by-print-instead-of-message-or-warning-in-r
 
 makeQuiet<-function(funToEval){
-	noise<-suppressWarnings(suppressMessages(capture.output(
-		result<-eval(funToEval))))
+	noise<-invisible(suppressWarnings(suppressMessages(capture.output(
+		result<-eval(funToEval)))))
 	return(invisible(eval(funToEval)))
 	}
 
@@ -18,6 +18,7 @@ makeQuiet<-function(funToEval){
 #   if(is(x, "numeric"))
 #     print("warning, x should be a character")
 #	warning("I can be so noisy!")
+#   cat("Oh my swirls!")
 #   return(x+1)
 #	}
 #
