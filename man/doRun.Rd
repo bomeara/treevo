@@ -13,7 +13,8 @@ doRun_prc(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
   variance.cutoff = 95, niter.goal = 5, generation.time = 1,
   numParticles = 300, standardDevFactor = 0.2, StartSims = 300,
   epsilonProportion = 0.7, epsilonMultiplier = 0.7, nStepsPRC = 5,
-  jobName = NA, stopRule = FALSE, stopValue = 0.05, plot = FALSE)
+  jobName = NA, stopRule = FALSE, stopValue = 0.05, saveData = FALSE,
+  plot = FALSE)
 
 doRun_rej(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
   startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns,
@@ -105,6 +106,8 @@ next falls below the \code{stopValue}.}
 \item{stopValue}{Threshold value for terminating an analysis prior to
 \code{nStepesPRC}.}
 
+\item{saveData}{Option to save various run information during the analysis, including summary statistics from analyses, output to external .Rdata and .txt files.}
+
 \item{plot}{If \code{TRUE}, plots distance of each simulation.}
 
 \item{abcTolerance}{Proportion of accepted simulations.}
@@ -113,7 +116,7 @@ next falls below the \code{stopValue}.}
 
 \item{checkpointFreq}{Saving frequency for checkpointing.}
 
-\item{savesims}{Option to save individual simulations.}
+\item{savesims}{Option to save individual simulations, output to a .Rdata file.}
 }
 \value{
 The output of these two functions are lists, composed of multiple objects,
@@ -182,9 +185,7 @@ particles from the final generation describe the posterior distributions of
 parameters.
 }
 \examples{
-
 \donttest{
-
 data(simRun)
 
 # NOTE: the example analyses below sample too few particles, 
@@ -241,9 +242,7 @@ resultsRej<-doRun_rej(
 	)
 
 resultsRej
-
 }
-
 }
 \references{
 Sisson et al. 2007, Wegmann et

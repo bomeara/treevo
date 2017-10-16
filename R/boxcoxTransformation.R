@@ -24,16 +24,14 @@
 # @keywords boxcoxEstimation Box-Cox
 
 #' @examples
-#' 
-#' 
 #' \donttest{
-#' 
+#' set.seed(1)
 #' data(simRun)
 #' 
 #' # example simulation
 #' 
 #' simDataParallel<-parallelSimulateWithPriors( 
-#'   nrepSim=3, multicore=FALSE, coreLimit=1, 
+#'   nrepSim=5, multicore=FALSE, coreLimit=1, 
 #'   phy=simPhy,
 #'   intrinsicFn=brownianIntrinsic,
 #'   extrinsicFn=nullExtrinsic,
@@ -59,9 +57,7 @@
 #' 
 #' boxcoxTransformation(summaryValuesVector=summaryValuesMat[,1],
 #'  boxcoxAddition=boxTranMat$boxcoxAddition, boxcoxLambda=boxTranMat$boxcoxLambda)
-#' 
 #' }
-#' 
 
 
 #' @name boxcoxTransformation
@@ -88,16 +84,21 @@ boxcoxTransformationMatrix<-function (summaryValuesMatrix) {
     if (lowValue <= 0) {
       boxcoxAddition[summaryValueIndex] <- 4 * abs(lowValue)
     }
-    summary <- summaryValuesMatrix[, summaryValueIndex] + boxcoxAddition[summaryValueIndex]
+    summaryVM <- summaryValuesMatrix[, summaryValueIndex] + boxcoxAddition[summaryValueIndex]
     boxcoxLambda[summaryValueIndex] <- 1
     if (sd(summaryValuesMatrix[, summaryValueIndex]) > 0) {
-      newLambda <- as.numeric(try(powerTransform(summary, method = "Nelder-Mead")$lambda))
+		# this alternative is thanks to https://stackoverflow.com/questions/33999512/how-to-use-the-box-cox-power-transformation-in-r/34002020
+      #newLambda <- makeQuiet(as.numeric(try(car::powerTransform(summaryVM, method = "Nelder-Mead")$lambda)))
+      bc <- MASS::boxcox(variable ~ 1, data=data.frame(variable=summaryVM),
+		 lambda=seq(-20, 20, 1/10000), plotit=FALSE)
+	  newLambda<-bc$x[which(max(bc$y)==bc$y)[1]]
       if (!is.na(newLambda)) {
         boxcoxLambda[summaryValueIndex] <- newLambda
       }
     }
-    summaryValuesMatrix[, summaryValueIndex] <- summary^boxcoxLambda[summaryValueIndex]
+    summaryValuesMatrix[, summaryValueIndex] <- summaryVM^boxcoxLambda[summaryValueIndex]
   }
-  return(list(boxcoxAddition = boxcoxAddition, boxcoxLambda = boxcoxLambda, 
-              boxcoxSummaryValuesMatrix = summaryValuesMatrix))
+  res<-list(boxcoxAddition = boxcoxAddition, boxcoxLambda = boxcoxLambda, 
+       boxcoxSummaryValuesMatrix = summaryValuesMatrix)
+  return(res)
 }

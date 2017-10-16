@@ -64,9 +64,7 @@ The input parameters for this model are:
 \code{ExponentiallyDecayingPushExtrinsic} params = sd, maximum force, half distance
 }
 \examples{
-
 \donttest{
-
 # Examples of simulations with various extrinsic models (and null intrinsic model)
 tree<-rcoal(30)
 
@@ -108,9 +106,7 @@ char<-doSimulationForPlotting(
 	timeStep=0.0001,
 	plot=TRUE,
 	saveHistory=FALSE)
-
 } 
-
 }
 \author{
 Brian O'Meara and Barb Banbury

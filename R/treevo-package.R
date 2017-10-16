@@ -20,9 +20,9 @@
 # @keywords treevo abc
 
 #' @examples
-#'
+#
 #' \donttest{
-#'
+#
 #' # let's simulate some data, and then try to infer the parameters using ABC
 #' 
 #' simPhy<-rcoal(30)
@@ -75,9 +75,7 @@
 #'   multicore=FALSE,
 #'   coreLimit=1
 #'   )
-#' 
 #' }
-#' 
 
 # NAMESPACE IMPORTING
 
@@ -92,11 +90,12 @@
 #' @importFrom foreach foreach getDoParWorkers '%dopar%' 
 #' @importFrom rgl plot3d title3d rgl.viewpoint open3d rgl.material triangles3d lines3d spheres3d 
 #' @importFrom partitions blockparts 
-#' @importFrom car powerTransform 
+#' @importFrom MASS boxcox 
 #' @importFrom mvtnorm dmvnorm 
-#' @importFrom graphics curve layout layout.show legend lines plot plot.new points polygon rect segments symbols text title 
-#' @importFrom grDevices dev.new dev.off gray pdf rgb 
+#' @importFrom graphics curve layout legend lines plot plot.new points polygon rect segments symbols text title 
+#' @importFrom grDevices dev.off gray pdf rgb 
 #' @importFrom methods as setAs
+#' @importFrom utils capture.output
 
 
 

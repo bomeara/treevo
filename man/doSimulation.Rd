@@ -19,7 +19,7 @@ doSimulationWithPossibleExtinction(phy = NULL, intrinsicFn, extrinsicFn,
   startingValues, intrinsicValues, extrinsicValues, timeStep,
   saveHistory = FALSE, saveRealParams = FALSE, jobName = "",
   returnAll = FALSE, verbose = FALSE, reject.NaN = TRUE,
-  taxon.df = NULL)
+  taxon.df = NULL, checkTimeStep = TRUE)
 }
 \arguments{
 \item{phy}{A phylogenetic tree, in package \code{ape}'s \code{phylo} format.}
@@ -64,6 +64,8 @@ throughout the history of the tree.}
 \item{verbose}{If \code{TRUE}, gives messages about how the simulation is progessing via \code{print}.}
 
 \item{reject.NaN}{If \code{TRUE}, stop run if any simulated value is \code{NaN}.}
+
+\item{checkTimeStep}{If \code{TRUE}, warnings will be issued if \code{TimeStep} is too short.}
 }
 \value{
 If \code{returnAll = FALSE} (the default), this function returns a data frame of species character (tip)
@@ -88,9 +90,7 @@ In general, most users will just drive the car - they will just use \code{\link{
 want to use \code{\link{simulateWithPriors}} or \code{\link{doSimulation}} functions to do various simulations.
 }
 \examples{
-
 \donttest{
-
 tree<-rcoal(30)
 
 #Simple Brownian motion
@@ -153,7 +153,6 @@ char<-doSimulationWithPossibleExtinction(
 	extrinsicValues=c(0),
 	timeStep=0.0001,
 	saveHistory=FALSE)
-
 }
 }
 \author{

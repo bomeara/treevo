@@ -1,11 +1,11 @@
 Package: TreEvo
 Type: Package
 Title: Using ABC to Understand Trait Evolution
-Version: 0.4.3
+Version: 0.4.4
 Date: 2017-10-03
-Authors@R: c(person("Brian", "O'Meara", role=c("aut", "cre"), email="omeara.brian@gmail.com"),
-  person("Barb", "Banbury", role=c("aut")),person("David","Bapst", role=c("aut")))
-Maintainer: Brian O'Meara <omeara.brian@gmail.com>
+Authors@R: c(person("Brian", "O'Meara", role=c("aut"), email="omeara.brian@gmail.com"),
+  person("Barb", "Banbury", role=c("aut")),person("David","Bapst", role=c("aut", "cre"), email="dwbapst@gmail.com"))
+Maintainer: David Bapst <dwbapst@gmail.com>
 Depends:
     R (>= 2.13.0),
     ape
@@ -17,7 +17,7 @@ Imports:
     coda,
     foreach,
     partitions,
-    car,
+	MASS,
     mvtnorm,
     methods,
     grDevices,

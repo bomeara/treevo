@@ -86,9 +86,9 @@
 # @references O'Meara and Banbury, unpublished
 
 #' @examples
-#'
+#
 #' \donttest{
-#' 
+# 
 #' simPhy<-rcoal(30)
 #' 
 #' # example simulation
@@ -131,9 +131,9 @@
 #'   niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) 
 #' 
 #' simDataParallel
-#' 
+# 
 #' }
-#' 
+ 
 
 
 #' @name simulateWithPriors
@@ -154,6 +154,21 @@ simulateWithPriors<-function(
 	if(checks){
 		checkNiter(niter.brown=niter.brown, niter.lambda=niter.lambda,
 			niter.delta=niter.delta, niter.OU=niter.OU, niter.white=niter.white)
+		# check TimeStep
+		numberofsteps<-max(taxon.df$endTime)/timeStep
+		mininterval<-min(taxon.df$endTime - taxon.df$startTime)
+		#
+		if (floor(mininterval/timeStep)<50 & floor(mininterval/timeStep)>=3) {
+			warning(paste0("You have only ", floor(mininterval/timeStep), 
+				" timeSteps on the shortest branch in this dataset but should probably have a lot more if you expect change on this branch. Please consider decreasing timeStep to no more than ",
+				signif(mininterval/50,2)))
+			}
+		if (floor(mininterval/timeStep)<3) {
+			warning(paste0("You have only ", floor(mininterval/timeStep), 
+				" timeSteps on the shortest branch in this dataset but should probably have a lot more if you expect change on this branch. Please consider decreasing timeStep to no more than ", 
+				signif(mininterval/50,2)," or at the very least ", signif(mininterval/3,2)))
+			#	timeStep <- mininterval/3
+			}
 		}
 		
 	if(is.null(freevector)){
@@ -173,27 +188,28 @@ simulateWithPriors<-function(
 		trueIntrinsic<-rep(NaN, dim(intrinsicPriorsValues)[2])
 		trueExtrinsic<-rep(NaN, dim(extrinsicPriorsValues)[2])
 		for (j in 1:dim(startingPriorsValues)[2]) {
-			trueStarting[j]=pullFromPrior(startingPriorsValues[,j],startingPriorsFns[j])
+			trueStarting[j]<-pullFromPrior(startingPriorsValues[,j],startingPriorsFns[j])
 		}
 		for (j in 1:dim(intrinsicPriorsValues)[2]) {
-			trueIntrinsic[j]=pullFromPrior(intrinsicPriorsValues[,j],intrinsicPriorsFns[j])
+			trueIntrinsic[j]<-pullFromPrior(intrinsicPriorsValues[,j],intrinsicPriorsFns[j])
 		}
 		for (j in 1:dim(extrinsicPriorsValues)[2]) {
-			trueExtrinsic[j]=pullFromPrior(extrinsicPriorsValues[,j],extrinsicPriorsFns[j])
+			trueExtrinsic[j]<-pullFromPrior(extrinsicPriorsValues[,j],extrinsicPriorsFns[j])
 		}
 		trueInitial<-c(trueStarting, trueIntrinsic, trueExtrinsic)
 		trueFreeValues<-trueInitial[freevector]
 
-		cat(".")
+		message(".")
 		simTraits<-doSimulationWithPossibleExtinction(phy=phy, taxon.df=taxon.df, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, 
-			startingValues=trueStarting, intrinsicValues=trueIntrinsic, extrinsicValues=trueExtrinsic, timeStep=timeStep, verbose=verbose)
+			startingValues=trueStarting, intrinsicValues=trueIntrinsic, extrinsicValues=trueExtrinsic, timeStep=timeStep, verbose=verbose, checkTimeStep=FALSE)
 		simSumStats<-summaryStatsLong(phy=phy, traits=simTraits, 
 			niter.brown=niter.brown, niter.lambda=niter.lambda, niter.delta=niter.delta,
 			niter.OU=niter.OU, niter.white=niter.white)
 		simTrueAndStats <-c(trueFreeValues, simSumStats)
 	}
 	if(n.attempts>1) {
-		warning(paste("Had to run simulateWithPriors()",n.attempts,"times to get results with no NA. This could bias results if runs with certain parameters failed more often and this happens in many attempted simulations"))
+		warning(paste("Had to run simulateWithPriors()",n.attempts,
+			"times to get results with no NA. This could bias results if runs with certain parameters failed more often and this happens in many attempted simulations"))
 	}
 	if(checks){
 		attr(simTrueAndStats,"freevector")<-freevector
@@ -221,7 +237,7 @@ parallelSimulateWithPriors<-function(
 	# checks
 	checkNiter(niter.brown=niter.brown, niter.lambda=niter.lambda,
 		niter.delta=niter.delta, niter.OU=niter.OU, niter.white=niter.white)
-
+		
 	if(is.null(freevector)){
 		freevector<-getFreeVector(startingPriorsFns=startingPriorsFns, startingPriorsValues=startingPriorsValues, 
 					intrinsicPriorsFns=intrinsicPriorsFns, intrinsicPriorsValues=intrinsicPriorsValues,
@@ -232,6 +248,22 @@ parallelSimulateWithPriors<-function(
 		taxon.df <- getTaxonDFWithPossibleExtinction(phy)
 		}
 
+	# check TimeStep
+	numberofsteps<-max(taxon.df$endTime)/timeStep
+	mininterval<-min(taxon.df$endTime - taxon.df$startTime)
+	#
+	if (floor(mininterval/timeStep)<50 & floor(mininterval/timeStep)>=3) {
+		message(paste0("You have only ", floor(mininterval/timeStep), " timeSteps on the shortest branch in this dataset but should probably have a lot more if you expect change on this branch. Please consider decreasing timeStep to no more than ",
+			signif(mininterval/50,2)))
+		}
+	if (floor(mininterval/timeStep)<3) {
+		message(paste0("You have only ", floor(mininterval/timeStep), " timeSteps on the shortest branch in this dataset but should probably have a lot more if you expect change on this branch. Please consider decreasing timeStep to no more than ",
+			signif(mininterval/50,2)," or at the very least ", signif(mininterval/3,2)))
+	#	timeStep <- mininterval/3
+		}
+
+		
+	# multicore
 	cores=1
 	if (multicore) {
 		if (is.na(coreLimit)){
@@ -242,12 +274,12 @@ parallelSimulateWithPriors<-function(
 			coreLimit->cores
 			}
 		}
-	cat(paste("Using", cores, "core(s) for simulations \n\n"))
+	message(paste("Using", cores, "core(s) for simulations \n\n"))
 	if (nrepSim %%cores != 0) {
 		warning("The simulation is most efficient if the number of nrepSim is a multiple of the number of cores")
 	}
 
-	cat("Doing simulations: ")
+	message("Doing simulations: ")
 	if (is.null(checkpointFile)) {
 		trueFreeValuesANDSummaryValues<-foreach(1:nrepSim, .combine=rbind) %dopar% simulateWithPriors(phy=phy, taxon.df=taxon.df,
 			startingPriorsValues=startingPriorsValues, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues,

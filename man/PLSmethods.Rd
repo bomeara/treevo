@@ -51,9 +51,7 @@ better results, without one parameter dominating the combined variance.
 Function \code{PLSTransform} uses results from a Partial Least Squares (PLS) model fit with \code{returnPLSModel} to transform summary values.
 }
 \examples{
-
 \donttest{
-
 set.seed(1)
 data(simRun)
 
@@ -91,9 +89,7 @@ PLSmodel<-returnPLSModel(trueFreeValuesMatrix=trueFreeValuesMat,
 PLSmodel
 
 PLSTransform(summaryValuesMatrix=summaryValuesMat, pls.model=PLSmodel)
-
-}
-
+} 
 }
 \seealso{
 Function \code{returnPLSModel} effectively wraps function \code{\link{plsr}} from package \code{mvr}.

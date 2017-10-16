@@ -114,9 +114,7 @@ In general, most users will just drive the car - they will just use \code{\link{
 want to use \code{\link{simulateWithPriors}} or \code{\link{doSimulation}} functions to do various simulations.
 }
 \examples{
-
 \donttest{
-
 simPhy<-rcoal(30)
 
 # example simulation
@@ -159,9 +157,7 @@ simDataParallel<-parallelSimulateWithPriors(
   niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) 
 
 simDataParallel
-
 }
-
 }
 \author{
 Brian O'Meara and Barb Banbury

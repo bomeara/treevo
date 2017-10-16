@@ -29,16 +29,14 @@ same dimensions as \code{summaryValuesMatrix}.
 output of \code{boxcoxTransformationMatrix} needs to be provided as input for \code{boxcoxTransformation}.
 }
 \examples{
-
-
 \donttest{
-
+set.seed(1)
 data(simRun)
 
 # example simulation
 
 simDataParallel<-parallelSimulateWithPriors( 
-  nrepSim=3, multicore=FALSE, coreLimit=1, 
+  nrepSim=5, multicore=FALSE, coreLimit=1, 
   phy=simPhy,
   intrinsicFn=brownianIntrinsic,
   extrinsicFn=nullExtrinsic,
@@ -64,9 +62,7 @@ boxTranMat
 
 boxcoxTransformation(summaryValuesVector=summaryValuesMat[,1],
  boxcoxAddition=boxTranMat$boxcoxAddition, boxcoxLambda=boxTranMat$boxcoxLambda)
-
 }
-
 }
 \author{
 Brian O'Meara and Barb Banbury

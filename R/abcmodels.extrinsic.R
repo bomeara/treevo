@@ -55,9 +55,9 @@
 #' @author Brian O'Meara and Barb Banbury
 
 #' @examples
-#'
+#
 #' \donttest{
-#' 
+# 
 #' # Examples of simulations with various extrinsic models (and null intrinsic model)
 #' tree<-rcoal(30)
 #'
@@ -99,9 +99,9 @@
 #' 	timeStep=0.0001,
 #' 	plot=TRUE,
 #' 	saveHistory=FALSE)
-#'
+#
 #' } 
-#' 
+# 
 
 #' @name extrinsicModels
 #' @rdname extrinsicModels

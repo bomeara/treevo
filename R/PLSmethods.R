@@ -48,9 +48,7 @@
 #' @author Brian O'Meara and Barb Banbury
 
 #' @examples
-#' 
 #' \donttest{
-#' 
 #' set.seed(1)
 #' data(simRun)
 #' 
@@ -88,9 +86,7 @@
 #' PLSmodel
 #' 
 #' PLSTransform(summaryValuesMatrix=summaryValuesMat, pls.model=PLSmodel)
-#' 
-#' }
-#' 
+#' } 
 
 
 
@@ -102,21 +98,21 @@ returnPLSModel<-function(trueFreeValuesMatrix, summaryValuesMatrix, validation="
   
   trueFreeValuesMatrix<-trueFreeValuesMatrix
   if (dim(summaryValuesMatrix)[2]>1) {
-    warning("in practice, doing PLS works best if you do each free parameter separately, so one does not dominate")
+    warning("in practice, doing PLS works best if you do each free parameter separately, so one parameter does not dominate")
   }
   if (class(trueFreeValuesMatrix)!="matrix") {
     trueFreeValuesMatrix<-matrix(trueFreeValuesMatrix,nrow=max(c(1,length(trueFreeValuesMatrix)),na.rm=TRUE)) 
   }
   #
   #scaling is important
-  pls.model <- plsr(trueFreeValuesMatrix~summaryValuesMatrix,validation=validation,scale=scale,...) 
+  pls.model <- makeQuiet(plsr(trueFreeValuesMatrix~summaryValuesMatrix,validation=validation,scale=scale,...)) 
   explained.variance <-cumsum(sort(attr(scores(pls.model),"explvar"),decreasing=TRUE))
   ncomp.final<-min(c(as.numeric(which(explained.variance>=variance.cutoff)[1]),
 	length(explained.variance)),na.rm=TRUE) #min is to deal with case of never explaining >95%
   #
   # now rerun with the ideal number of components
-  pls.model.final <- plsr(trueFreeValuesMatrix~summaryValuesMatrix,
-	ncomp=ncomp.final, validation="none",scale=scale,...) 
+  pls.model.final <- makeQuiet(plsr(trueFreeValuesMatrix~summaryValuesMatrix,
+	ncomp=ncomp.final, validation="none",scale=scale,...)) 
   return(pls.model.final)
 }
 

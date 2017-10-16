@@ -12,10 +12,11 @@
 # @rdname solnfreq
 # @export
 solnfreq <- function(fitContResult, tol = .Machine$double.eps^0.5){
-			ll=logLik(fitContResult)
-			aa=abs(fitContResult$res[,"lnL"]-ll)<=tol
-			max(1,sum(aa[!is.na(aa)]))/length(aa)
-}
+	ll=logLik(fitContResult)
+	aa=abs(fitContResult$res[,"lnL"]-ll)<=tol
+	result<-max(1,sum(aa[!is.na(aa)]))/length(aa)
+	return(result)
+	}
 
 
 
@@ -32,6 +33,8 @@ solnfreq <- function(fitContResult, tol = .Machine$double.eps^0.5){
 #  contrasts, ancestral state reconstruction values, and the range of ancestral
 #  state reconstruction confidence interval.
 #  
+
+# actually the above isn't true - isn't clear it uses fitContinuous.hacked at all!
 
 # @inheritParams doSimulation
 # @inheritParams doRun
@@ -64,7 +67,10 @@ solnfreq <- function(fitContResult, tol = .Machine$double.eps^0.5){
 # @name summaryStatsLong
 # @rdname summaryStatsLong
 # @export
-summaryStatsLong<-function(phy, traits, niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25, do.CI=is.ultrametric(phy)) {
+summaryStatsLong<-function(phy, traits,
+		niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25,
+		do.CI=is.ultrametric(phy)) {
+	#
 	if (any(phy$edge.length==0)){
 		if(!any(phy$edge[which(phy$edge.length==0),2] %in% phy$edge[,1])){
 		#if(any(phy$edge.length==0)){
@@ -77,33 +83,35 @@ summaryStatsLong<-function(phy, traits, niter.brown=25, niter.lambda=25, niter.d
 		names(traits) <- my.names
 	}
 
-#	if(is.null(names(traits)))
-#		names(traits) <- rownames(traits)
-#	traits<-as.data.frame(traits)
-	brown<-fitContinuous(phy=phy, dat=traits, model="BM", ncores=1, control=list(niter=niter.brown)) #it actually runs faster without checking for cores. And we parallelize elsewhere
+	#	if(is.null(names(traits)))
+	#		names(traits) <- rownames(traits)
+	#	traits<-as.data.frame(traits)
+
+	#it actually runs faster without checking for cores. And we parallelize elsewhere
+	brown<-makeQuiet(fitContinuous(phy=phy, dat=traits, model="BM", ncores=1, control=list(niter=niter.brown))) 
 	brown.lnl<-as.numeric(brown$opt$lnL)
 	brown.beta <-as.numeric(brown$opt$sigsq)
 	brown.aic <-as.numeric(brown$opt$aic)
 
-	lambda<-fitContinuous(phy=phy, dat=traits, model="lambda", ncores=1, control=list(niter=niter.lambda))
+	lambda<-makeQuiet(fitContinuous(phy=phy, dat=traits, model="lambda", ncores=1, control=list(niter=niter.lambda)))
 	lambda.lnl <-as.numeric(lambda$opt$lnL)
 	lambda.beta <-as.numeric(lambda$opt$sigsq)
 	lambda.lambda <-as.numeric(lambda$opt$lambda)
 	lambda.aic <-as.numeric(lambda$opt$aic)
 
-	delta<-fitContinuous(phy=phy, dat=traits, model="delta", ncores=1, control=list(niter=niter.delta))
+	delta<-makeQuiet(fitContinuous(phy=phy, dat=traits, model="delta", ncores=1, control=list(niter=niter.delta)))
 	delta.lnl <-as.numeric(delta$opt$lnL)
 	delta.beta <-as.numeric(delta$opt$sigsq)
 	delta.delta <-as.numeric(delta$opt$delta)
 	delta.aic <-as.numeric(delta$opt$aic)
 
-	ou<-fitContinuous(phy=phy, dat=traits, model="OU", ncores=1, control=list(niter=niter.OU))
+	ou<-makeQuiet(fitContinuous(phy=phy, dat=traits, model="OU", ncores=1, control=list(niter=niter.OU)))
 	ou.lnl <-as.numeric(ou$opt$lnL)
 	ou.beta <-as.numeric(ou$opt$sigsq)
 	ou.alpha <-as.numeric(ou$opt$alpha)
 	ou.aic <-as.numeric(ou$opt$aic)
 
-	white<-fitContinuous(phy=phy, dat=traits, model="white", ncores=1, control=list(niter=niter.white))
+	white<-makeQuiet(fitContinuous(phy=phy, dat=traits, model="white", ncores=1, control=list(niter=niter.white)))
 	white.lnl<-as.numeric(white$opt$lnL)
 	white.aic<-as.numeric(white$opt$aic)
 
@@ -112,14 +120,16 @@ summaryStatsLong<-function(phy, traits, niter.brown=25, niter.lambda=25, niter.d
 	raw.max<-as.numeric(max(traits))
 	raw.min<-as.numeric(min(traits))
 	raw.var<-as.numeric(var(traits))
-	raw.median<-as.numeric(median(traits))	#cat("summaryStatsLong")
+	raw.median<-as.numeric(median(traits))	#message("summaryStatsLong")
 
-	pic<-as.vector(pic.ortho(as.matrix(traits), phy))  #independent contrasts
-	aceResults<-ace(traits, phy)
+	pic<-makeQuiet(as.vector(pic.ortho(as.matrix(traits), phy)))  #independent contrasts
+	aceResults<-makeQuiet(ace(traits, phy))
 	anc.states<-as.vector(aceResults$ace) #ancestral states
 
 	#combined summary stats
-	summarystats<-c(brown.lnl, brown.beta, brown.aic, lambda.lnl, lambda.beta, lambda.lambda, lambda.aic, delta.lnl, delta.beta, delta.delta, delta.aic, ou.lnl, ou.beta, ou.alpha, ou.aic, white.lnl, white.aic, raw.mean, raw.max, raw.min, raw.var, raw.median, traits[[1]], pic, anc.states)
+	summarystats<-c(brown.lnl, brown.beta, brown.aic, lambda.lnl, lambda.beta, lambda.lambda, lambda.aic,
+		delta.lnl, delta.beta, delta.delta, delta.aic, ou.lnl, ou.beta, ou.alpha, ou.aic, white.lnl, white.aic,
+		raw.mean, raw.max, raw.min, raw.var, raw.median, traits[[1]], pic, anc.states)
 
 	if(do.CI) {
 		anc.CIrange<-as.vector(aceResults$CI95[,2]-aceResults$CI95[,1]) #range between upper and lower 95% CI
@@ -128,7 +138,7 @@ summaryStatsLong<-function(phy, traits, niter.brown=25, niter.lambda=25, niter.d
 
 
 	summarystats[which(is.finite(summarystats)==FALSE)]<-NA
-
+	#
 	while(sink.number()>0) {sink()}
 	summarystats
-}
+	}
