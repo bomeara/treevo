@@ -30,7 +30,8 @@ Suggests:
 	doParallel,
 	gpclib,
     testthat,
-    knitr,
+    paleotree,
+	knitr,
     rmarkdown
 LazyData: yes
 Description: Various functions for estimating parameters of trait evolution in comparative analyses
