@@ -77,7 +77,7 @@
 
 #' @examples
 #' 
-#' data(simRun)
+#' data(simRunExample)
 #' 
 #' # examples with plotPrior
 #' 

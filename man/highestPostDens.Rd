@@ -22,7 +22,7 @@ This function calculates the highest posterior density (HPD) for each freely var
 }
 \examples{
 
-data(simRun)
+data(simRunExample)
 
 highestPostDens(results$particleDataFrame, percent=0.95, returnData=FALSE)
 

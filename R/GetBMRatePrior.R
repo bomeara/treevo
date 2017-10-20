@@ -21,7 +21,7 @@
 
 #' @examples
 #' 
-#' data(simRun)
+#' data(simRunExample)
 #' 
 #' GetBMRatePrior(phy=simPhy, traits=simChar, timeStep=1)
 #' 

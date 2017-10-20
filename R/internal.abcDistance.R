@@ -28,7 +28,7 @@
 #  
 #  \donttest{
 #  
-#  data(simRun)
+#  data(simRunExample)
 #  
 #  # example simulation
 #  

@@ -97,7 +97,7 @@ simulateTips <- function(particle, taxon.df, phy, intrinsicFn, extrinsicFn, time
 
 #  @examples
 #  
-#  data(simRun)
+#  data(simRunExample)
 #  
 #  mutateState(startingState, standardDevFactor, priorValues, priorFn)
 #  

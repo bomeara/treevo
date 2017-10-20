@@ -20,7 +20,7 @@ This function calculates credible interval for each free parameter.
 }
 \examples{
 
-data(simRun)
+data(simRunExample)
 credibleInt(results$particleDataFrame)
 
 }

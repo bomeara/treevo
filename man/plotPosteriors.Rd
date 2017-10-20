@@ -38,7 +38,7 @@ free parameter.
 the true values are known.
 }
 \examples{
-data(simRun)
+data(simRunExample)
 
 plotPosteriors(particleDataFrame=results$particleDataFrame,
    priorsMat=results$PriorMatrix,

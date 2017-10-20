@@ -53,7 +53,7 @@ Function \code{PLSTransform} uses results from a Partial Least Squares (PLS) mod
 \examples{
 \donttest{
 set.seed(1)
-data(simRun)
+data(simRunExample)
 
 # example simulation
 

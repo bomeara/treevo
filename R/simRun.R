@@ -6,14 +6,14 @@
 #' Also includes results from an example analysis.
 #'
 #'
-#' @name simRun
+#' @name simRunExample
 
-#' @aliases simRun simPhy simChar results resultsBound genRate ancState simCharOut 
+#' @aliases simRunExample simPhy simChar results resultsBound genRate ancState simCharOut 
 
 #' @docType data
 
 #' @format 
-#' Loading the \code{simRun} example dataset adds seven new objects to the namespace:
+#' Loading the \code{simRunExample} example dataset adds seven new objects to the namespace:
 #' 
 #' \describe{
 
@@ -46,7 +46,7 @@
 
 #' @examples
 #'
-#' data(simRun)
+#' data(simRunExample)
 #'
 #' # ...things to do with this data?
 #' 
@@ -130,7 +130,7 @@
 #'   coreLimit=1
 #'   )
 #' 
-#' save.image(file="simRun.rdata")
+#' save.image(file="simRunExample.rdata")
 #' 
 #' }
 #' 

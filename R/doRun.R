@@ -157,7 +157,7 @@
 
 #' @examples
 #' \donttest{
-#' data(simRun)
+#' data(simRunExample)
 #'
 #' # NOTE: the example analyses below sample too few particles, 
 #' 	# over too few steps, with too few starting simulations

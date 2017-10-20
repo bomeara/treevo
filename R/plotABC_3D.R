@@ -41,7 +41,7 @@
 #' @examples
 #' 
 #' 
-#'  data(simRun)
+#'  data(simRunExample)
 #'  plotABC_3D(particleDataFrame=results$particleDataFrame, parameter=7,
 #'      show.particles="none", plot.parent=FALSE, realParam=FALSE, realParamValues=NA) 
 #' 

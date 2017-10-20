@@ -26,7 +26,7 @@ Builds on functions in \code{geiger} to estimate distribution.
 }
 \examples{
 
-data(simRun)
+data(simRunExample)
 
 GetBMRatePrior(phy=simPhy, traits=simChar, timeStep=1)
 
