@@ -1,6 +1,6 @@
 ---
-title: "Vignette Title"
-author: "Vignette Author"
+title: "Analyzing Trait Evolution with Approximate Bayesian Computation in TreEvo"
+author: "David W. Bapst"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
@@ -8,6 +8,62 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
+
+```{r,echo=FALSE}
+library(paleotree)
+data(RaiaCopesRule)
+
+```
+
+ Let's read in the trees from Raia et al 2015, AmNat
+ following is taken from their supplemental appendix, available at AmNat
+
+ they all appear to be trees dated to the last appearance times
+ *and* specifically the end-boundary of the interval containing the last appearance
+
+
+ ammonite genera
+
+
+# now let's plot the tree
+
+```{r}
+plot(ladderize(ammoniteTreeRaia));axisPhylo()
+```
+
+plot with traits
+
+# maybe use phytools rather than mine?
+
+```{r}
+plotTraitgram(tree=multi2di(ammoniteTreeRaia), trait=sutureComplexity,
+	 conf.int=FALSE, main="Ammonite Suture Complexity")
+
+plotTraitgram(tree=multi2di(ammoniteTreeRaia), trait=shellSize,
+	 conf.int=FALSE, main="Ammonite Shell Diameter")
+```
+
+this tree has polytomies - will have to deal with that
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 Vignettes are long form documentation commonly included in packages. Because they are part of the distribution of the package, they need to be as compact as possible. The `html_vignette` output type provides a custom style sheet (and tweaks some options) to ensure that the resulting html is as small as possible. The `html_vignette` format:
 
