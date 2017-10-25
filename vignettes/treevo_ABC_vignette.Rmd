@@ -9,9 +9,14 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+```{r}
+plot(rnorm(100))
+```
+
 ```{r,echo=FALSE}
 library(paleotree)
 data(RaiaCopesRule)
+set.seed(2)
 
 ```
 
@@ -25,28 +30,106 @@ data(RaiaCopesRule)
  ammonite genera
 
 
-# now let's plot the tree
+ now let's plot the tree
 
 ```{r}
 plot(ladderize(ammoniteTreeRaia));axisPhylo()
 ```
 
-plot with traits
 
-# maybe use phytools rather than mine?
-
-```{r}
-plotTraitgram(tree=multi2di(ammoniteTreeRaia), trait=sutureComplexity,
-	 conf.int=FALSE, main="Ammonite Suture Complexity")
-
-plotTraitgram(tree=multi2di(ammoniteTreeRaia), trait=shellSize,
-	 conf.int=FALSE, main="Ammonite Shell Diameter")
-```
 
 this tree has polytomies - will have to deal with that
 
+```{r}
+tree<-multi2di(ammoniteTreeRaia) #randomly resolve tree
+plot(ladderize(tree));axisPhylo()
+```
 
 
+plot with traits
+
+ maybe use phytools rather than mine?
+
+
+```{r}
+plotTraitgram(tree=tree, trait=sutureComplexity,
+	 conf.int=FALSE, main="Ammonite Suture Complexity")
+
+plotTraitgram(tree=tree, trait=shellSize,
+	 conf.int=FALSE, main="Ammonite Shell Diameter")
+```
+
+Let's use TreEvo!
+
+```{r}
+
+library(TreEvo)
+
+# character data for doRun must be in matrix form
+  # with rows labeled with taxon names
+
+charData<-matrix(sutureComplexity,ncol=1)
+rownames(charData)<-names(sutureComplexity)
+```
+
+Let's analyze it with ordinary BM
+
+```{r}
+results<-doRun_prc(
+  phy = tree,
+  traits = charData,
+  intrinsicFn=brownianIntrinsic,
+  extrinsicFn=nullExtrinsic,
+  startingPriorsFns="normal",
+  startingPriorsValues=matrix(c(mean(charData[,1]), sd(charData[,1]))),
+  intrinsicPriorsFns=c("exponential"),
+  intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
+  extrinsicPriorsFns=c("fixed"),
+  extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
+  TreeYears=1000,
+  standardDevFactor=0.2,
+  plot=FALSE,
+  StartSims=10,
+  epsilonProportion=0.7,
+  epsilonMultiplier=0.7,
+  nStepsPRC=3,
+  numParticles=20,
+  jobName="examplerun_prc",
+  stopRule=FALSE,
+  multicore=FALSE,
+  coreLimit=1
+  )
+```
+
+Let's analyze it with ordinary BM with a bound
+
+```{r}
+resultsBound<-doRun_prc(
+  phy = tree,
+  traits = charData,
+  intrinsicFn=boundaryMinIntrinsic,
+  extrinsicFn=nullExtrinsic,
+  startingPriorsFns="normal",
+  startingPriorsValues=matrix(c(mean(charData[,1]), sd(charData[,1]))),
+  intrinsicPriorsFns=c("exponential","normal"),
+  intrinsicPriorsValues=matrix(c(10, 10, -10, 1), nrow=2, byrow=FALSE),
+  extrinsicPriorsFns=c("fixed"),
+  extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
+  TreeYears=1000,
+  standardDevFactor=0.2,
+  plot=FALSE,
+  StartSims=10,
+  epsilonProportion=0.7,
+  epsilonMultiplier=0.7,
+  nStepsPRC=3,
+  numParticles=20,
+  jobName="examplerun_prc",
+  stopRule=FALSE,
+  multicore=FALSE,
+  coreLimit=1
+  )
+
+```
 
 
 
