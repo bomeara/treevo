@@ -265,14 +265,14 @@ doRun_prc<-function(
 	namesForPriorMatrix<-c()
 	PriorMatrix<-matrix(c(startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns), nrow=1, ncol=numberParametersTotal)
 	for (a in 1:dim(startingPriorsValues)[2]) {
-		namesForPriorMatrix<-c(paste0("StartingStates", a, sep=""))
+		namesForPriorMatrix<-c(paste0("StartingStates ", a, sep=""))
 	}
 	for (b in 1:dim(intrinsicPriorsValues)[2]) {
-		namesForPriorMatrix<-append(namesForPriorMatrix, paste0("IntrinsicValue", b, sep=""))
+		namesForPriorMatrix<-append(namesForPriorMatrix, paste0("IntrinsicValue ", b, sep=""))
 	}
 	#print(extrinsicPriorsValues)
 	for (c in 1:dim(extrinsicPriorsValues)[2]) {
-		namesForPriorMatrix <-append(namesForPriorMatrix, paste0("ExtrinsicValue", c, sep=""))
+		namesForPriorMatrix <-append(namesForPriorMatrix, paste0("ExtrinsicValue ", c, sep=""))
 	}
 	PriorMatrix<-rbind(PriorMatrix, cbind(startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues))
 	colnames(PriorMatrix)<-namesForPriorMatrix
@@ -282,10 +282,10 @@ doRun_prc<-function(
 	#initialize weighted mean sd matrices
 	weightedMeanParam<-matrix(nrow=nStepsPRC, ncol=numberParametersTotal)
 	colnames(weightedMeanParam)<-namesForPriorMatrix
-	rownames(weightedMeanParam)<-paste0("Gen", c(1: nStepsPRC), sep="")
+	rownames(weightedMeanParam)<-paste0("Gen ", c(1: nStepsPRC), sep="")
 	param.stdev<-matrix(nrow=nStepsPRC, ncol=numberParametersTotal)
 	colnames(param.stdev)<-namesForPriorMatrix
-	rownames(param.stdev)<-paste0("Gen", c(1: nStepsPRC), sep="")
+	rownames(param.stdev)<-paste0("Gen ", c(1: nStepsPRC), sep="")
 
 	#initialize guesses, if needed
 	#if (length(startingValuesGuess)==0) { #if no user guesses, try pulling a value from the prior
@@ -320,17 +320,17 @@ doRun_prc<-function(
 	ou<-makeQuiet(fitContinuous(phy=phy, dat=traits, model="OU", ncores=1, control=list(niter=100)))
 	white<-makeQuiet(fitContinuous(phy=phy, dat=traits, model="white", ncores=1, control=list(niter=100)))
 
-	message("Setting number of starting points for Geiger optimization to")
+	message("Setting number of starting points for Geiger optimization to ")
 	niter.brown.g <- round(max(10, min(niter.goal/solnfreq(brown),100)))
-	message(paste0("\n",niter.brown.g, "for Brownian motion"))
+	message(paste0("\n",niter.brown.g, " for Brownian motion"))
 	niter.lambda.g <- round(max(10, min(niter.goal/solnfreq(lambda),100)))
-	message(paste0("\n",niter.lambda.g, "for lambda"))
+	message(paste0("\n",niter.lambda.g, " for lambda"))
 	niter.delta.g <- round(max(10, min(niter.goal/solnfreq(delta),100)))
-	message(paste0("\n",niter.delta.g, "for delta"))
+	message(paste0("\n",niter.delta.g, " for delta"))
 	niter.OU.g <- round(max(10, min(niter.goal/solnfreq(ou),100)))
-	message(paste0("\n",niter.OU.g, "for OU"))
+	message(paste0("\n",niter.OU.g, " for OU"))
 	niter.white.g <- round(max(10, min(niter.goal/solnfreq(white),100)))
-	message(paste0("\n",niter.white.g, "for white noise"))
+	message(paste0("\n",niter.white.g, " for white noise"))
 
 
 		#---------------------- Initial Simulations (Start) ------------------------------
@@ -344,7 +344,7 @@ doRun_prc<-function(
 	nrepSim<-StartSims 
 
 	input.data<-rbind(jobName, length(phy[[3]]), nrepSim, TreeYears, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor)
-	message(paste0("\nNumber of initial simulations set to", nrepSim, "\n"))
+	message(paste0("\nNumber of initial simulations set to ", nrepSim, "\n"))
 	message("Doing simulations:")
 	Time<-proc.time()[[3]]
 	trueFreeValues<-matrix(nrow=0, ncol= numberParametersFree)
@@ -401,13 +401,13 @@ doRun_prc<-function(
 			plot(x=c(min(intrinsicPriorsValues), max(intrinsicPriorsValues)), y=c(0, 5*max(toleranceVector)), type="n")
 		}
 		for (i in 1:dim(startingPriorsValues)[2]) {
-			nameVector<-append(nameVector, paste0("StartingStates", i, sep=""))
+			nameVector<-append(nameVector, paste0("StartingStates ", i, sep=""))
 		}
 		for (i in 1:dim(intrinsicPriorsValues)[2]) {
-			nameVector<-append(nameVector, paste0("IntrinsicValue", i, sep=""))
+			nameVector<-append(nameVector, paste0("IntrinsicValue ", i, sep=""))
 		}
 		for (i in 1:dim(extrinsicPriorsValues)[2]) {
-			nameVector<-append(nameVector, paste0("ExtrinsicValue", i, sep=""))
+			nameVector<-append(nameVector, paste0("ExtrinsicValue ", i, sep=""))
 		}
 		
 		#stores weights for each particle. Initially, assume infinite number of possible particles (so might not apply in discrete case)
@@ -769,11 +769,11 @@ getlnTransitionProb<-function(newvalue,meantouse,Fn,priorValues,stdFactor){
 										
 	if (Fn=="uniform") {
 		sdtouse<-stdFactor*((max(priorValues)-min(priorValues))/sqrt(12))
-		#print(paste0("Fn is uniform and sdtouse =", sdtouse))
+		#print(paste0("Fn is uniform and sdtouse = ", sdtouse))
 	}
 	else if (Fn=="exponential") {
 		sdtouse<-stdFactor*(1/priorValues[1])
-		#print(paste0("Fn is exponential and sdtouse =", sdtouse))
+		#print(paste0("Fn is exponential and sdtouse = ", sdtouse))
 	}
 	else {
 		sdtouse<-stdFactor*(priorValues[2])
@@ -832,14 +832,14 @@ doRun_rej<-function(
 	namesForPriorMatrix<-c()
 	PriorMatrix<-matrix(c(startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns), nrow=1, ncol=numberParametersTotal)
 	for (a in 1:dim(startingPriorsValues)[2]) {
-		namesForPriorMatrix<-c(paste0("StartingStates", a, sep=""))
+		namesForPriorMatrix<-c(paste0("StartingStates ", a, sep=""))
 	}
 	for (b in 1:dim(intrinsicPriorsValues)[2]) {
-		namesForPriorMatrix<-append(namesForPriorMatrix, paste0("IntrinsicValue", b, sep=""))
+		namesForPriorMatrix<-append(namesForPriorMatrix, paste0("IntrinsicValue ", b, sep=""))
 	}
 	#print(extrinsicPriorsValues)
 	for (c in 1:dim(extrinsicPriorsValues)[2]) {
-		namesForPriorMatrix <-append(namesForPriorMatrix, paste0("ExtrinsicValue", c, sep=""))
+		namesForPriorMatrix <-append(namesForPriorMatrix, paste0("ExtrinsicValue ", c, sep=""))
 	}
 	PriorMatrix<-rbind(PriorMatrix, cbind(startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues))
 	colnames(PriorMatrix)<-namesForPriorMatrix
@@ -887,15 +887,15 @@ doRun_rej<-function(
 
 	message("Setting number of starting points for Geiger optimization to")
 	niter.brown.g <- round(max(10, min(niter.goal/solnfreq(brown),100)))
-	message(paste0("\n",niter.brown.g, "for Brownian motion"))
+	message(paste0("\n",niter.brown.g, " for Brownian motion"))
 	niter.lambda.g <- round(max(10, min(niter.goal/solnfreq(lambda),100)))
-	message(paste0("\n",niter.lambda.g, "for lambda"))
+	message(paste0("\n",niter.lambda.g, " for lambda"))
 	niter.delta.g <- round(max(10, min(niter.goal/solnfreq(delta),100)))
-	message(paste0("\n",niter.delta.g, "for delta"))
+	message(paste0("\n",niter.delta.g, " for delta"))
 	niter.OU.g <- round(max(10, min(niter.goal/solnfreq(ou),100)))
-	message(paste0("\n",niter.OU.g, "for OU"))
+	message(paste0("\n",niter.OU.g, " for OU"))
 	niter.white.g <- round(max(10, min(niter.goal/solnfreq(white),100)))
-	message(paste0("\n",niter.white.g, "for white noise"))
+	message(paste0("\n",niter.white.g, " for white noise"))
 
 	trueFreeValuesANDSummaryValues<-parallelSimulateWithPriors(nrepSim=nrepSim, coreLimit=coreLimit, phy=phy,  taxon.df=taxon.df,
 		startingPriorsValues=startingPriorsValues, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues, 
@@ -906,7 +906,7 @@ doRun_rej<-function(
 
 	message("\n\n")
 	simTime<-proc.time()[[3]]-startTime
-	message(paste0("Simulations took", round(simTime, digits=3), "seconds"), "\n")
+	message(paste0("Simulations took ", round(simTime, digits=3), " seconds"), "\n")
 
 	#separate the simulation results: true values and the summary values
 	trueFreeValuesMatrix<-trueFreeValuesANDSummaryValues[,1:numberParametersFree]
