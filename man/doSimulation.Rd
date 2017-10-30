@@ -18,8 +18,8 @@ doSimulationForPlotting(phy = NULL, intrinsicFn, extrinsicFn, startingValues,
 doSimulationWithPossibleExtinction(phy = NULL, intrinsicFn, extrinsicFn,
   startingValues, intrinsicValues, extrinsicValues, timeStep,
   saveHistory = FALSE, saveRealParams = FALSE, jobName = "",
-  returnAll = FALSE, verbose = FALSE, reject.NaN = TRUE,
-  taxon.df = NULL, checkTimeStep = TRUE)
+  maxAttempts = 100, returnAll = FALSE, verbose = FALSE,
+  reject.NaN = TRUE, taxon.df = NULL, checkTimeStep = TRUE)
 }
 \arguments{
 \item{phy}{A phylogenetic tree, in package \code{ape}'s \code{phylo} format.}
@@ -58,6 +58,9 @@ Can be supplied as input to spead up repeated calculations, but by default is
 throughout the history of the tree.}
 
 \item{savePlot}{Saves the character tree using \code{jobName}.}
+
+\item{maxAttempts}{How many attempts should be tried if a run produces an \code{NA} result? If \code{maxAttempts}
+is reached without producing a non-\code{NA} result, the simulation is terminated.}
 
 \item{returnAll}{If \code{TRUE}, the output returned is a \code{data.frame} containing the values at each node from the simulation.}
 

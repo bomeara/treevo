@@ -37,6 +37,9 @@
 #' @param extrinsicValues Vector of values corresponding to the parameters of the
 #' extrinsic model.
 
+#' @param maxAttempts How many attempts should be tried if a run produces an \code{NA} result? If \code{maxAttempts}
+#' is reached without producing a non-\code{NA} result, the simulation is terminated.
+
 
 #' @param timeStep This value corresponds to the number of discrete time steps
 #' on the shortest branch.
@@ -409,7 +412,8 @@ doSimulationForPlotting<-function(phy=NULL, intrinsicFn, extrinsicFn, startingVa
 #' @rdname doSimulation
 #' @export
 doSimulationWithPossibleExtinction<-function(phy=NULL, intrinsicFn, extrinsicFn, startingValues, intrinsicValues, extrinsicValues,
-	timeStep, saveHistory=FALSE, saveRealParams=FALSE, jobName="", returnAll = FALSE, verbose=FALSE, reject.NaN=TRUE, taxon.df=NULL, checkTimeStep=TRUE) {
+	timeStep, saveHistory=FALSE, saveRealParams=FALSE, jobName="", maxAttempts = 100,
+	returnAll = FALSE, verbose=FALSE, reject.NaN=TRUE, taxon.df=NULL, checkTimeStep=TRUE) {
 	
 	if(is.null(taxon.df)){
 		taxon.df <- getTaxonDFWithPossibleExtinction(phy)
@@ -480,24 +484,34 @@ doSimulationWithPossibleExtinction<-function(phy=NULL, intrinsicFn, extrinsicFn,
 			new.state <- taxon.df$states[alive.rows[taxon.index]] + intrinsicFn(params=intrinsicValues, states=current.states[taxon.index],
 				timefrompresent =depthfrompresent)+extrinsicFn(params=extrinsicValues, selfstates=current.states[taxon.index], otherstates=current.states[-taxon.index], timefrompresent =depthfrompresent)
 			if(is.na(new.state)) {
-				warning("got bad sim")
+				warning("A simulation run produced a state of NA - something is probably very wrong")
 				attempt.count=0
-				while(is.na(new.state) & attempt.count < 100) {
+				while(is.na(new.state) & attempt.count <= maxAttempts) {
 					old = taxon.df$states[alive.rows[taxon.index]]
 					intrinsic.displacement = intrinsicFn(params=intrinsicValues, states=current.states[taxon.index], timefrompresent =depthfrompresent)
 					extrinsic.displacement = extrinsicFn(params=extrinsicValues, selfstates=current.states[taxon.index], otherstates=current.states[-taxon.index], timefrompresent =depthfrompresent)
+					#if(is.na(intrinsic.displacement)){
+					#	stop("The intrinsicFn is returning NAs; something terrible has happened")
+					#	}
+					#if(is.na(extrinsic.displacement)){
+					#	stop("The extrinsicFn is returning NAs; something terrible has happened")
+					#	}
 					new.state <- old + intrinsic.displacement + extrinsic.displacement
-					warning(paste0("Attempt ", attempt.count, "led to using old value of", old, "intrinsicFn return of ",intrinsic.displacement, "and extrinsicFn return of ", extrinsic.displacement))
-					print("IntrinsicValues")
-					print(intrinsicValues)
-				}
-				if(is.na(new.state) & attempt.count==100) {
+					warning(paste0("Attempt ", attempt.count, " led to using old value of ", old, " intrinsicFn return of ",intrinsic.displacement, " and extrinsicFn return of ", extrinsic.displacement))
+					#message(paste0("For diagnostic purposes: IntrinsicValues ",intrinsicValues)) 
+					attempt.count<-attempt.count+1
+					}
+				if(is.na(new.state) & attempt.count>maxAttempts) {
 					stop(paste0(
-						"Simulating with these parameters resulted in problematic results; for one example, taxon.df$states[alive.rows[taxon.index]] was ",
-						taxon.df$states[alive.rows[taxon.index]], "intrinsicFn returned ",
-						intrinsicFn(params=intrinsicValues, states=current.states[taxon.index],
-						timefrompresent =depthfrompresent), "and extrinsicFn returned", extrinsicFn(params=extrinsicValues,
-						selfstates=current.states[taxon.index], otherstates=current.states[-taxon.index], timefrompresent =depthfrompresent)))
+						"Simulating with these parameters resulted in problematic results despite", maxAttempts, " attempts",
+						"\nFor one example, taxon.df$states[alive.rows[taxon.index]] was ",
+						taxon.df$states[alive.rows[taxon.index]], ", for which intrinsicFn returned ",
+						intrinsicFn(params=intrinsicValues, states=current.states[taxon.index], 
+							timefrompresent =depthfrompresent)
+						, "\nand extrinsicFn returned ", 
+						extrinsicFn(params=extrinsicValues, 
+							selfstates=current.states[taxon.index], otherstates=current.states[-taxon.index], 
+							timefrompresent =depthfrompresent)))
 				}
 			}
 			taxon.df$states[alive.rows[taxon.index]] <- new.state
