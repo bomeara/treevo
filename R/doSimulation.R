@@ -481,15 +481,18 @@ doSimulationWithPossibleExtinction<-function(phy=NULL, intrinsicFn, extrinsicFn,
 			if(is.na(taxon.df$states[alive.rows[taxon.index]])) {
 				taxon.df$states[alive.rows[taxon.index]] <- taxon.df$states[which(taxon.df$id==taxon.df$ancestorId[alive.rows[taxon.index]])]
 			}
-			new.state <- taxon.df$states[alive.rows[taxon.index]] + intrinsicFn(params=intrinsicValues, states=current.states[taxon.index],
-				timefrompresent =depthfrompresent)+extrinsicFn(params=extrinsicValues, selfstates=current.states[taxon.index], otherstates=current.states[-taxon.index], timefrompresent =depthfrompresent)
+			new.state <- taxon.df$states[alive.rows[taxon.index]] + intrinsicFn(params=intrinsicValues,
+				states=current.states[taxon.index], timefrompresent =depthfrompresent)+extrinsicFn(params=extrinsicValues,
+				selfstates=current.states[taxon.index], otherstates=current.states[-taxon.index], timefrompresent =depthfrompresent)
 			if(is.na(new.state)) {
 				warning("A simulation run produced a state of NA - something is probably very wrong")
 				attempt.count=0
 				while(is.na(new.state) & attempt.count <= maxAttempts) {
 					old = taxon.df$states[alive.rows[taxon.index]]
-					intrinsic.displacement = intrinsicFn(params=intrinsicValues, states=current.states[taxon.index], timefrompresent =depthfrompresent)
-					extrinsic.displacement = extrinsicFn(params=extrinsicValues, selfstates=current.states[taxon.index], otherstates=current.states[-taxon.index], timefrompresent =depthfrompresent)
+					intrinsic.displacement = intrinsicFn(params=intrinsicValues, states=current.states[taxon.index],
+						timefrompresent =depthfrompresent)
+					extrinsic.displacement = extrinsicFn(params=extrinsicValues, selfstates=current.states[taxon.index],
+						otherstates=current.states[-taxon.index], timefrompresent =depthfrompresent)
 					#if(is.na(intrinsic.displacement)){
 					#	stop("The intrinsicFn is returning NAs; something terrible has happened")
 					#	}
@@ -503,7 +506,7 @@ doSimulationWithPossibleExtinction<-function(phy=NULL, intrinsicFn, extrinsicFn,
 					}
 				if(is.na(new.state) & attempt.count>maxAttempts) {
 					stop(paste0(
-						"Simulating with these parameters resulted in problematic results despite", maxAttempts, " attempts",
+						"Simulating with these parameters resulted in problematic results despite ", maxAttempts, " attempts",
 						"\nFor one example, taxon.df$states[alive.rows[taxon.index]] was ",
 						taxon.df$states[alive.rows[taxon.index]], ", for which intrinsicFn returned ",
 						intrinsicFn(params=intrinsicValues, states=current.states[taxon.index], 
