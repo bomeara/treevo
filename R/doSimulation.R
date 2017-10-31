@@ -480,6 +480,9 @@ doSimulationWithPossibleExtinction<-function(phy=NULL, intrinsicFn, extrinsicFn,
 		ids.speciating <- c(taxon.df$id[which((taxon.df$id %in% ids.changing.status) & (!taxon.df$terminal))], ids.only.alive.in.interval)
 		alive.rows <- which(taxon.df$id %in% ids.alive.at.start)
 		current.states <- taxon.df$states[alive.rows]
+		if(is.na(current.states)) {
+			stop("there are NAs in current.states! How?? Something is very wrong")
+			}
 		#first evolve in this interval, then speciate
 		for (taxon.index in sequence(length(alive.rows))) {
 			if(is.na(taxon.df$states[alive.rows[taxon.index]])) {
@@ -511,7 +514,9 @@ doSimulationWithPossibleExtinction<-function(phy=NULL, intrinsicFn, extrinsicFn,
 					}
 				if(is.na(new.state) & attempt.count>maxAttempts) {
 					if(is.na(extrinsic.displacement)){
+						message(ls())
 						message(paste0("taxon.index ",taxon.index,"\n",
+										"alive.rows ",alive.rows,"\n",
 										"sequence(length(alive.rows))", paste(sequence(length(alive.rows)),collapse=" "), "\n",
 										"current.states ",paste(current.states,collapse=" "),"\n",
 										"params ",extrinsicValues,"\n",
@@ -532,6 +537,9 @@ doSimulationWithPossibleExtinction<-function(phy=NULL, intrinsicFn, extrinsicFn,
 							timefrompresent =depthfrompresent)))
 				}
 			}
+			if(is.na(new.state)) {
+				stop("where are these NA new.states coming from?? Something is very wrong")
+				}
 			taxon.df$states[alive.rows[taxon.index]] <- new.state
 		}
 		if(length(ids.speciating)>0) {
