@@ -414,11 +414,11 @@ doSimulationForPlotting<-function(phy=NULL, intrinsicFn, extrinsicFn, startingVa
 doSimulationWithPossibleExtinction<-function(phy=NULL, intrinsicFn, extrinsicFn, startingValues, intrinsicValues, extrinsicValues,
 	timeStep, saveHistory=FALSE, saveRealParams=FALSE, jobName="", maxAttempts = 100,
 	returnAll = FALSE, verbose=FALSE, reject.NaN=TRUE, taxon.df=NULL, checkTimeStep=TRUE) {
-	
+	#
 	if(is.null(taxon.df)){
 		taxon.df <- getTaxonDFWithPossibleExtinction(phy)
 		}
-	
+	#
 	if (saveRealParams){
 		RealParams<-vector("list", 2)
 		names(RealParams)<-c("matrix", "vector")
@@ -430,13 +430,15 @@ doSimulationWithPossibleExtinction<-function(phy=NULL, intrinsicFn, extrinsicFn,
 		RealParams$matrix[2,]<-c(intrinsicValues, rep(NA, maxLength-length(intrinsicValues)))
 		RealParams$matrix[3,]<-c(extrinsicValues, rep(NA, maxLength-length(extrinsicValues)))
 		save(RealParams, file=paste0("RealParams", jobName, ".Rdata", sep=""))
-	}
+		}
+	#
 	if (saveHistory) {
 		startVector<-c()
 		endVector<-c()
 		startTime<-c()
 		endTime<-c()
-	}
+		}
+	#
 	numberofsteps<-max(taxon.df$endTime)/timeStep
 	mininterval<-min(taxon.df$endTime - taxon.df$startTime)
 	#
@@ -456,6 +458,7 @@ doSimulationWithPossibleExtinction<-function(phy=NULL, intrinsicFn, extrinsicFn,
 		#	timeStep <- mininterval/3
 			}
 		}
+	#
 	#initial setup
 	depthfrompresent = max(taxon.df$endTime)
 	heightfromroot = 0
@@ -464,7 +467,8 @@ doSimulationWithPossibleExtinction<-function(phy=NULL, intrinsicFn, extrinsicFn,
 	while(depthfrompresent>0) {
 		if(reject.NaN) {
 			taxon.df.previous <- taxon.df
-		}
+			}
+		#
 		depth.start <- depthfrompresent
 		depth.end <- depthfrompresent - timeStep
 		height.start <- heightfromroot
@@ -480,7 +484,8 @@ doSimulationWithPossibleExtinction<-function(phy=NULL, intrinsicFn, extrinsicFn,
 		for (taxon.index in sequence(length(alive.rows))) {
 			if(is.na(taxon.df$states[alive.rows[taxon.index]])) {
 				taxon.df$states[alive.rows[taxon.index]] <- taxon.df$states[which(taxon.df$id==taxon.df$ancestorId[alive.rows[taxon.index]])]
-			}
+				}
+			#
 			new.state <- taxon.df$states[alive.rows[taxon.index]] + intrinsicFn(params=intrinsicValues,
 				states=current.states[taxon.index], timefrompresent =depthfrompresent)+extrinsicFn(params=extrinsicValues,
 				selfstates=current.states[taxon.index], otherstates=current.states[-taxon.index], timefrompresent =depthfrompresent)
@@ -505,6 +510,16 @@ doSimulationWithPossibleExtinction<-function(phy=NULL, intrinsicFn, extrinsicFn,
 					attempt.count<-attempt.count+1
 					}
 				if(is.na(new.state) & attempt.count>maxAttempts) {
+					if(is.na(extrinsic.displacement)){
+						message(paste0("taxon.index ",taxon.index,"\n",
+										"sequence(length(alive.rows))", paste(sequence(length(alive.rows)),collapse=" "), "\n",
+										"current.states ",paste(current.states,collapse=" "),"\n",
+										"params ",extrinsicValues,"\n",
+										"selfstates ",current.states[taxon.index],"\n",
+										"otherstates ",paste(
+											current.states[-taxon.index],collapse=" "),"\n",
+										"timefrompresent ",depthfrompresent,"\n"))
+						}
 					stop(paste0(
 						"Simulating with these parameters resulted in problematic results despite ", maxAttempts, " attempts",
 						"\nFor one example, taxon.df$states[alive.rows[taxon.index]] was ",
