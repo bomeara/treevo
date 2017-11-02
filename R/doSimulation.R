@@ -480,12 +480,16 @@ doSimulationWithPossibleExtinction<-function(phy=NULL, intrinsicFn, extrinsicFn,
 		ids.speciating <- c(taxon.df$id[which((taxon.df$id %in% ids.changing.status) & (!taxon.df$terminal))], ids.only.alive.in.interval)
 		alive.rows <- which(taxon.df$id %in% ids.alive.at.start)
 		current.states <- taxon.df$states[alive.rows]
-		if(is.na(current.states)) {
-			stop("there are NAs in current.states! How?? Something is very wrong")
-			}
+		#if(any(is.na(current.states))) {
+		#	#message(paste0("current.states ",current.states))
+		#	#message(paste0("taxon.df$id %in% ids.alive.at.start ",paste0(taxon.df$id %in% ids.alive.at.start,collapse=" ")))
+		#	print(c(height.start,height.end))
+		#	print(taxon.df[taxon.df$id %in% ids.alive.at.start,])
+		#	stop("there are NAs in current.states! How?? Something is very wrong")
+		#	}
 		#first evolve in this interval, then speciate
 		for (taxon.index in sequence(length(alive.rows))) {
-			if(is.na(taxon.df$states[alive.rows[taxon.index]])) {
+			while(is.na(taxon.df$states[alive.rows[taxon.index]])) {
 				taxon.df$states[alive.rows[taxon.index]] <- taxon.df$states[which(taxon.df$id==taxon.df$ancestorId[alive.rows[taxon.index]])]
 				}
 			#
@@ -515,8 +519,10 @@ doSimulationWithPossibleExtinction<-function(phy=NULL, intrinsicFn, extrinsicFn,
 				if(is.na(new.state) & attempt.count>maxAttempts) {
 					if(is.na(extrinsic.displacement)){
 						message(ls())
+						message(str(alive.rows))
 						message(paste0("taxon.index ",taxon.index,"\n",
 										"alive.rows ",alive.rows,"\n",
+										"length(alive.rows) ",length(alive.rows),"\n",
 										"sequence(length(alive.rows))", paste(sequence(length(alive.rows)),collapse=" "), "\n",
 										"current.states ",paste(current.states,collapse=" "),"\n",
 										"params ",extrinsicValues,"\n",
@@ -534,9 +540,12 @@ doSimulationWithPossibleExtinction<-function(phy=NULL, intrinsicFn, extrinsicFn,
 						, "\nand extrinsicFn returned ", 
 						extrinsicFn(params=extrinsicValues, 
 							selfstates=current.states[taxon.index], otherstates=current.states[-taxon.index], 
-							timefrompresent =depthfrompresent)))
+							timefrompresent =depthfrompresent
+							)
+						," with current.states[taxon.index] = ", current.states[taxon.index])
+						)
+					}
 				}
-			}
 			if(is.na(new.state)) {
 				stop("where are these NA new.states coming from?? Something is very wrong")
 				}
