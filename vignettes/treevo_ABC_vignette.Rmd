@@ -42,6 +42,8 @@ this tree has polytomies - will have to deal with that
 
 ```{r}
 tree<-multi2di(ammoniteTreeRaia) #randomly resolve tree
+tree<-addTermBranchLength(tree,0.01)
+
 plot(ladderize(tree));axisPhylo()
 ```
 
@@ -70,6 +72,7 @@ library(TreEvo)
 
 charData<-matrix(sutureComplexity,ncol=1)
 rownames(charData)<-names(sutureComplexity)
+
 ```
 
 Let's analyze it with ordinary BM

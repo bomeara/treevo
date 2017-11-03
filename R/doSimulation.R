@@ -489,13 +489,18 @@ doSimulationWithPossibleExtinction<-function(phy=NULL, intrinsicFn, extrinsicFn,
 		#	}
 		#first evolve in this interval, then speciate
 		for (taxon.index in sequence(length(alive.rows))) {
-			while(is.na(taxon.df$states[alive.rows[taxon.index]])) {
+			if(is.na(taxon.df$states[alive.rows[taxon.index]])) {
 				taxon.df$states[alive.rows[taxon.index]] <- taxon.df$states[which(taxon.df$id==taxon.df$ancestorId[alive.rows[taxon.index]])]
+				if(is.na(taxon.df$states[alive.rows[taxon.index]])){
+					stop("A taxon's ancestor has an NA character")
+					}
+				current.states[taxon.index]<-taxon.df$states[alive.rows[taxon.index]]
 				}
 			#
 			new.state <- taxon.df$states[alive.rows[taxon.index]] + intrinsicFn(params=intrinsicValues,
 				states=current.states[taxon.index], timefrompresent =depthfrompresent)+extrinsicFn(params=extrinsicValues,
 				selfstates=current.states[taxon.index], otherstates=current.states[-taxon.index], timefrompresent =depthfrompresent)
+			#
 			if(is.na(new.state)) {
 				warning("A simulation run produced a state of NA - something is probably very wrong")
 				attempt.count=0
@@ -518,13 +523,13 @@ doSimulationWithPossibleExtinction<-function(phy=NULL, intrinsicFn, extrinsicFn,
 					}
 				if(is.na(new.state) & attempt.count>maxAttempts) {
 					if(is.na(extrinsic.displacement)){
-						message(ls())
-						message(str(alive.rows))
+						message(paste0(ls(),collapse=", "))
+						#message(str(alive.rows))
 						message(paste0("taxon.index ",taxon.index,"\n",
-										"alive.rows ",alive.rows,"\n",
+										"alive.rows ",paste0(alive.rows, collapse=", "),"\n",
 										"length(alive.rows) ",length(alive.rows),"\n",
-										"sequence(length(alive.rows))", paste(sequence(length(alive.rows)),collapse=" "), "\n",
-										"current.states ",paste(current.states,collapse=" "),"\n",
+										"sequence(length(alive.rows))", paste(sequence(length(alive.rows)),collapse=", "), "\n",
+										"current.states ",paste(current.states,collapse=", "),"\n",
 										"params ",extrinsicValues,"\n",
 										"selfstates ",current.states[taxon.index],"\n",
 										"otherstates ",paste(
