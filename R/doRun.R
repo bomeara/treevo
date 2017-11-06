@@ -239,12 +239,12 @@ doRun_prc<-function(
 
 	
 	if (!is.binary.tree(phy)) {
-		print("Warning: Tree is not fully dichotomous")
+		warning("Tree is not fully dichotomous, this may cause issues")
 	}
 
 	if(min(phy$edge.length) < 0.00001) {
-		warning("Tree has zero or nearly zero length branches")
-		print("Tree has zero or nearly zero length branches")
+		warning("Tree has zero or nearly zero length branches; little or no evol change will be assigned to these, also geiger functions may fail")
+		#print("Tree has zero or nearly zero length branches")
 	}
 
 	timeStep<-generation.time/TreeYears
@@ -419,7 +419,7 @@ doRun_prc<-function(
 		particle<-1
 		attempts<-0
 		particleDataFrame<-data.frame()
-		message("\n\n\nsuccesses", "attempts", "expected number of attempts required\n\n\n")
+		message("\n\n\nsuccesses ", "  attempts ", "  expected number of attempts required\n\n\n")
 		start.time<-proc.time()[[3]]
 		particleList<-list()
 
@@ -531,7 +531,7 @@ doRun_prc<-function(
 						particleDistance=rep(NA, numParticles)
 						particle<-1
 						attempts<-0
-						message("successes", "attempts", "expected number of attempts required\n")
+						message("successes ", "  attempts ", "  expected number of attempts required\n")
 						particleList<-list()
 						weightScaling=0;
 						while (particle<=numParticles) {
@@ -616,14 +616,14 @@ doRun_prc<-function(
 											stdFactor = standardDevFactor))
 									lnTransitionProb<-lnTransitionProb+sum(LLTPstart)+sum(LLTPintr)+sum(LLTPextr)
 									if(!is.finite(lnTransitionProb) || is.na(lnTransitionProb)) {
-										print(paste0("issue with lnTransitionProb: ",
+										warning(paste0("Issue with lnTransitionProb: ",
 											" lnTransitionProb = ",lnTransitionProb))
 										}
 									newWeight<-newWeight+(oldParticleList[[i]]$weight)*exp(lnTransitionProb)
 								} #for (i in 1:length(oldParticleList)) bracket
 
 								if (!is.finite(newWeight)) {
-									print(paste0("warning: newWeight is ",newWeight))
+									warning(paste0("newWeight is ",newWeight))
 								}
 								newparticleList[[1]]$weight<- newWeight
 								particleWeights[particle-1]<-newWeight
@@ -756,8 +756,8 @@ doRun_prc<-function(
 			registerMulticoreEnv(nCore=1)
 			}
 			
-		print(prcResults)
-
+		#print(prcResults)
+		return(prcResults)
 }
 
 getlnTransitionProb<-function(newvalue,meantouse,Fn,priorValues,stdFactor){
@@ -783,7 +783,7 @@ getlnTransitionProb<-function(newvalue,meantouse,Fn,priorValues,stdFactor){
 		) - ((log(1)/pnorm(min(priorValues), mean=meantouse, sd=sdtouse, lower.tail=TRUE, log.p=TRUE))
 			* pnorm(max(priorValues), mean=meantouse , sd=sdtouse, lower.tail=FALSE, log.p=TRUE))
 	if(length(lnlocalTransitionProb)!=1){
-		print(lnlocalTransitionProb)
+		#print(lnlocalTransitionProb)
 		stop("Somehow, multiple lnlocalTransitionProb values produced")
 		}
 	if (is.nan(lnlocalTransitionProb)) {  #to prevent lnlocalTransitionProb from being NaN (if pnorm=0)
@@ -793,7 +793,7 @@ getlnTransitionProb<-function(newvalue,meantouse,Fn,priorValues,stdFactor){
 		lnlocalTransitionProb=log(1)
 	}
 	if(!is.finite(lnlocalTransitionProb) || is.na(lnlocalTransitionProb)) {
-		print(paste0("issue with lnlocalTransitionProb = ",lnlocalTransitionProb))
+		message(paste0("issue with lnlocalTransitionProb = ",lnlocalTransitionProb))
 		}
 	return(lnlocalTransitionProb)
 	}
@@ -814,7 +814,7 @@ doRun_rej<-function(
 	#library(geiger)
 	#library(pls)
 	if (!is.binary.tree(phy)) {
-		print("Warning: Tree is not fully dichotomous")
+		warning("Tree is not fully dichotomous, this may lead to issues")
 	}
 	startTime<-proc.time()[[3]]
 	timeStep<-generation.time/TreeYears
@@ -921,7 +921,7 @@ doRun_rej<-function(
 	
 	#save(abcDistancesRaw, abcDistancesRawTotal, abcDistances, abcResults, particleDataFrame, file="")
 	input.data<-rbind(jobName, length(phy[[3]]), timeStep, StartSims, standardDevFactor, abcTolerance)
-	print(res)
+	#print(res)
 	
 	rejectionResults<-vector("list")
 	
