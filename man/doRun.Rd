@@ -14,7 +14,7 @@ doRun_prc(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
   numParticles = 300, standardDevFactor = 0.2, StartSims = 300,
   epsilonProportion = 0.7, epsilonMultiplier = 0.7, nStepsPRC = 5,
   jobName = NA, stopRule = FALSE, stopValue = 0.05, saveData = FALSE,
-  plot = FALSE)
+  verboseParticles, plot = FALSE)
 
 doRun_rej(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
   startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns,
@@ -107,6 +107,9 @@ next falls below the \code{stopValue}.}
 \code{nStepesPRC}.}
 
 \item{saveData}{Option to save various run information during the analysis, including summary statistics from analyses, output to external .Rdata and .txt files.}
+
+\item{verboseParticles}{If \code{TRUE} (the default), a large amount of information about parameter estimates
+and acceptance of particles is output to console via \code{message} as \code{doRun_prc} runs.}
 
 \item{plot}{If \code{TRUE}, plots distance of each simulation.}
 

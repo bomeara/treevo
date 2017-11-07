@@ -89,6 +89,9 @@
 #' @param generation.time The number of years per generation. This sets the coarseness of the simulation; if it's set to 1000, 
 #' for example, the population moves every 1000 years.
 
+#' @param verboseParticles If \code{TRUE} (the default), a large amount of information about parameter estimates
+#' and acceptance of particles is output to console via \code{message} as \code{doRun_prc} runs. 
+
 #' @return 
 #' The output of these two functions are lists, composed of multiple objects,
 #' which differ slightly in their content among the two functions. For \code{doRun_prc}, the output is:
@@ -319,52 +322,52 @@ doRun_prc<-function(
 	delta<-makeQuiet(fitContinuous(phy=phy, dat=traits, model="delta", ncores=1, control=list(niter=100)))
 	ou<-makeQuiet(fitContinuous(phy=phy, dat=traits, model="OU", ncores=1, control=list(niter=100)))
 	white<-makeQuiet(fitContinuous(phy=phy, dat=traits, model="white", ncores=1, control=list(niter=100)))
-
-	message("Setting number of starting points for Geiger optimization to ")
+	#
 	niter.brown.g <- round(max(10, min(niter.goal/solnfreq(brown),100)))
-	message(paste0("\n",niter.brown.g, " for Brownian motion"))
 	niter.lambda.g <- round(max(10, min(niter.goal/solnfreq(lambda),100)))
-	message(paste0("\n",niter.lambda.g, " for lambda"))
 	niter.delta.g <- round(max(10, min(niter.goal/solnfreq(delta),100)))
-	message(paste0("\n",niter.delta.g, " for delta"))
 	niter.OU.g <- round(max(10, min(niter.goal/solnfreq(ou),100)))
-	message(paste0("\n",niter.OU.g, " for OU"))
 	niter.white.g <- round(max(10, min(niter.goal/solnfreq(white),100)))
-	message(paste0("\n",niter.white.g, " for white noise"))
-
-
-		#---------------------- Initial Simulations (Start) ------------------------------
-		# See Wegmann et al. Efficient Approximate Bayesian Computation Coupled With Markov Chain Monte Carlo Without Likelihood. 
-			# Genetics (2009) vol. 182 (4) pp. 1207-1218 for more on the method.
-		 # We are doing pls and scaling built into pls. Unlike Wegmann et al., we are doing PLS for each parameter separately. 
-		 # Otherwise, the PLS tends to optimize for just one parameter, and estimates for the less-favored one are quite bad
-		 # because the summary stats tend to be used for the other.
-
+	#
+	message(paste0("Setting number of starting points for Geiger optimization to",
+		paste0("\n",niter.brown.g, " for Brownian motion"),
+		paste0("\n",niter.lambda.g, " for lambda"),
+		paste0("\n",niter.delta.g, " for delta"),
+		paste0("\n",niter.OU.g, " for OU"),
+		paste0("\n",niter.white.g, " for white noise")))
+	#
+	#---------------------- Initial Simulations (Start) ------------------------------
+	# See Wegmann et al. Efficient Approximate Bayesian Computation Coupled With Markov Chain Monte Carlo Without Likelihood. 
+		# Genetics (2009) vol. 182 (4) pp. 1207-1218 for more on the method.
+	# We are doing pls and scaling built into pls. Unlike Wegmann et al., we are doing PLS for each parameter separately. 
+	# Otherwise, the PLS tends to optimize for just one parameter, and estimates for the less-favored one are quite bad
+	# because the summary stats tend to be used for the other.
+	#
 	#Used to be = StartSims*((2^try)/2), If initial simulations are not enough, and we need to try again then new analysis will double number of initial simulations
 	nrepSim<-StartSims 
-
+	#
 	input.data<-rbind(jobName, length(phy[[3]]), nrepSim, TreeYears, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor)
-	message(paste0("\nNumber of initial simulations set to ", nrepSim, "\n"))
-	message("Doing simulations:")
+	message(paste0("Number of initial simulations set to ", nrepSim)) #, "\n"
+	message("Doing initial simulations...")
 	Time<-proc.time()[[3]]
 	trueFreeValues<-matrix(nrow=0, ncol= numberParametersFree)
 	#set up initial sum stats as length of SSL of original data
 	summaryValues<-matrix(nrow=0, ncol=length(summaryStatsLong(phy=phy, traits=traits, 
 		niter.brown=200, niter.lambda=200, niter.delta=200, niter.OU=200, niter.white=200))) 
-	trueFreeValuesANDSummaryValues<-parallelSimulateWithPriors(nrepSim=nrepSim, coreLimit=coreLimit, phy=phy,  taxon.df=taxon.df,
+	trueFreeValuesANDSummaryValues<-makeQuiet(parallelSimulateWithPriors(nrepSim=nrepSim, coreLimit=coreLimit, phy=phy,  taxon.df=taxon.df,
 		startingPriorsValues=startingPriorsValues, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues, 
 		startingPriorsFns=startingPriorsFns, intrinsicPriorsFns=intrinsicPriorsFns, extrinsicPriorsFns=extrinsicPriorsFns, 
 		freevector=freevector, timeStep=timeStep, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, multicore=multicore, 
-		niter.brown=niter.brown.g, niter.lambda=niter.lambda.g, niter.delta=niter.delta.g, niter.OU=niter.OU.g, niter.white=niter.white.g)
-	message("\n\n")
-
+		niter.brown=niter.brown.g, niter.lambda=niter.lambda.g, niter.delta=niter.delta.g, niter.OU=niter.OU.g, niter.white=niter.white.g))
+	#message("\n\n")
+	#
 	if(saveData){
 		save(trueFreeValues,summaryValues,file=paste0("CompletedSimulations",jobName,".Rdata",sep=""))
 		}
-	
+	#
 	simTime<-proc.time()[[3]]-Time
-	message(paste0("Initial simulations took ", round(simTime, digits=3), " seconds"), "\n")
-
+	message(paste0("Initial simulations took ", round(simTime, digits=3), " seconds")) #, "\n"
+	#
 	#separate the simulation results: true values and the summary values
 	trueFreeValuesMatrix<-trueFreeValuesANDSummaryValues[,1:numberParametersFree]
 	summaryValuesMatrix<-trueFreeValuesANDSummaryValues[,-1:-numberParametersFree]
@@ -379,6 +382,7 @@ doRun_prc<-function(
 	distanceVector<-abcDistance(summaryValuesMatrix, originalSummaryValues, pls.model.list)
 	#
 	#----------------- Find distribution of distances (Start) ----------------------
+	message("Finding distribution of distances...") #\n
 	#this gives the distance such that epsilonProportion of the simulations starting from a given set of values will be rejected
 	epsilonDistance<-quantile(distanceVector, probs=epsilonProportion) 
 	toleranceVector<-rep(epsilonDistance, nStepsPRC)
@@ -391,7 +395,8 @@ doRun_prc<-function(
 	#----------------- Find distribution of distances (End) ---------------------
 	#
 	#------------------ ABC-PRC (Start) ------------------
-
+	message("Beginning partial rejection control algorithm...")
+	#
 	nameVector<-c("generation", "attempt", "id", "parentid", "distance", "weight")
 	if (plot) {
 		plot(x=c(min(intrinsicPriorsValues), max(intrinsicPriorsValues)), y=c(0, 5*max(toleranceVector)), type="n")
@@ -406,7 +411,7 @@ doRun_prc<-function(
 	for (i in 1:dim(extrinsicPriorsValues)[2]) {
 		nameVector<-append(nameVector, paste0("ExtrinsicValue ", i, sep=""))
 		}
-		
+	#
 	#stores weights for each particle. Initially, assume infinite number of possible particles (so might not apply in discrete case)
 	particleWeights=rep(0, numParticles) 
 	#stores parameters in model for each particle
@@ -536,7 +541,7 @@ doRun_prc<-function(
 		particle<-1
 		attempts<-0
 		if(verboseParticles){
-			message("successes ", "  attempts ", "  expected number of attempts required\n")
+			message("successes ", "  attempts ", "  expected number of attempts required") #\n
 			}
 		particleList<-list()
 		weightScaling=0;
@@ -747,6 +752,7 @@ doRun_prc<-function(
 			}
 		lines(density(subset(particleDataFrame, particleDataFrame$generation==length(toleranceVector))[, 8]), col= "red")
 		}
+	message("Collection of simulation particles under PRC completed...")
 	#---------------------- ABC-PRC (End) --------------------------------
 	#
 	input.data<-rbind(jobName, length(phy[[3]]), nrepSim, TreeYears, epsilonProportion,
@@ -887,7 +893,7 @@ doRun_rej<-function(
 	#Used to be multiple tries where nrepSim = StartSims*((2^try)/2).  
 		#If initial simulations are not enough, and we need to try again then new analysis will double number of initial simulations
 	nrepSim<-StartSims 
-	message(paste0("Number of simulations set to ", nrepSim, "\n"))
+	message(paste0("Number of initial simulations set to ", nrepSim)) 	#, "\n"
 	if(!is.null(checkpointFile)) {
 		save(list=ls(),file=paste0(checkpointFile,".intialsettings.Rsave",sep=""))
 	}
@@ -900,18 +906,20 @@ doRun_rej<-function(
 	ou<-makeQuiet(fitContinuous(phy=phy, dat=traits, model="OU", ncores=1, control=list(niter=100)))
 	white<-makeQuiet(fitContinuous(phy=phy, dat=traits, model="white", ncores=1, control=list(niter=100)))
 
-	message("Setting number of starting points for Geiger optimization to")
-	niter.brown.g <- round(max(10, min(niter.goal/solnfreq(brown),100)))
-	message(paste0("\n",niter.brown.g, " for Brownian motion"))
-	niter.lambda.g <- round(max(10, min(niter.goal/solnfreq(lambda),100)))
-	message(paste0("\n",niter.lambda.g, " for lambda"))
-	niter.delta.g <- round(max(10, min(niter.goal/solnfreq(delta),100)))
-	message(paste0("\n",niter.delta.g, " for delta"))
-	niter.OU.g <- round(max(10, min(niter.goal/solnfreq(ou),100)))
-	message(paste0("\n",niter.OU.g, " for OU"))
-	niter.white.g <- round(max(10, min(niter.goal/solnfreq(white),100)))
-	message(paste0("\n",niter.white.g, " for white noise"))
 
+	niter.brown.g <- round(max(10, min(niter.goal/solnfreq(brown),100)))
+	niter.lambda.g <- round(max(10, min(niter.goal/solnfreq(lambda),100)))
+	niter.delta.g <- round(max(10, min(niter.goal/solnfreq(delta),100)))
+	niter.OU.g <- round(max(10, min(niter.goal/solnfreq(ou),100)))
+	niter.white.g <- round(max(10, min(niter.goal/solnfreq(white),100)))
+	#
+	message(paste0("Setting number of starting points for Geiger optimization to ",
+		paste0("\n",niter.brown.g, " for Brownian motion"),
+		paste0("\n",niter.lambda.g, " for lambda"),
+		paste0("\n",niter.delta.g, " for delta"),
+		paste0("\n",niter.OU.g, " for OU"),
+		paste0("\n",niter.white.g, " for white noise")))
+	
 	trueFreeValuesANDSummaryValues<-parallelSimulateWithPriors(nrepSim=nrepSim, coreLimit=coreLimit, phy=phy,  taxon.df=taxon.df,
 		startingPriorsValues=startingPriorsValues, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues, 
 		startingPriorsFns=startingPriorsFns, intrinsicPriorsFns=intrinsicPriorsFns, extrinsicPriorsFns=extrinsicPriorsFns, 
@@ -919,9 +927,9 @@ doRun_rej<-function(
 		multicore=multicore, checkpointFile=checkpointFile, checkpointFreq=checkpointFreq, 
 		niter.brown=niter.brown.g, niter.lambda=niter.lambda.g, niter.delta=niter.delta.g, niter.OU=niter.OU.g, niter.white=niter.white.g)
 
-	message("\n\n")
+	#message("\n\n")
 	simTime<-proc.time()[[3]]-startTime
-	message(paste0("Simulations took ", round(simTime, digits=3), " seconds"), "\n")
+	message(paste0("Initial simulations took ", round(simTime, digits=3), " seconds")) #, "\n"
 
 	#separate the simulation results: true values and the summary values
 	trueFreeValuesMatrix<-trueFreeValuesANDSummaryValues[,1:numberParametersFree]
