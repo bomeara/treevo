@@ -46,10 +46,17 @@
 
 # @param extrinsicValuesGuess Optional guess of extrinsic values.
 
-#' @param TreeYears Absolute scale of time-units for \code{phy}, from the root
-#' to the furthest tip (sometimes referred to as 'unit-length'). For ultrametric
-#' trees where all tips are at time zero (i.e., the modern day), this would be
-#' the root age of the tree. By default, this is set to 10000 time-units.
+#' @param generation.time The number of years per generation. This sets the coarseness of the simulation; if it's set to 1000, 
+#' for example, the population's trait values change every 1000 years. Note that this is in calender years (see description
+#' for argument \code{TreeYears}), and not in millions of years (as is typical for dated trees in macroevolutionary studies).
+#' Thus, if a branch is 1 million-year time-unit long, then by default 1000 evolutionary changes occur along that branch.
+
+#' @param TreeYears The amount of calender time from the root to the furthest tip. Most trees in macroevolutionary studies are dated with
+#' branch lengths in units of millions of years, and thus the default for this argument is \code{max(branching.times(phy)) * 1e6}.
+#' If your tree has the most recent tip at time zero (i.e., the modern day), this would be the same as the root age of the tree. If your
+#' branch lengths are not in millions of years, you should alter this argument. Otherwise, leave this argument alone.
+
+# TreeYears = 1000000 if tree length is 1 million of years, 1000 if 1 thousand years, etc.
 
 #' @param numParticles Number of accepted particles per generation.
 
@@ -86,8 +93,6 @@
 
 #' @param niter.goal Adjust number of starting points for package \code{geiger} to return the best parameter estimates this number of times on average.
 
-#' @param generation.time The number of years per generation. This sets the coarseness of the simulation; if it's set to 1000, 
-#' for example, the population moves every 1000 years.
 
 #' @param verboseParticles If \code{TRUE} (the default), a large amount of information about parameter estimates
 #' and acceptance of particles is output to console via \code{message} as \code{doRun_prc} runs. 
@@ -97,7 +102,7 @@
 #' which differ slightly in their content among the two functions. For \code{doRun_prc}, the output is:
 
 #' \describe{
-#' \item{input.data}{Input variables: jobName, number of taxa, nrepSim,
+#' \item{input.data}{Input variables: jobName, number of taxa, nrepSim, generation.times,
 #' treeYears, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor} 
 
 #' \item{PriorMatrix}{Matrix of prior distributions}
@@ -123,7 +128,7 @@
 #' For \code{doRun_rej}, the output is:
 
 #' \describe{
-#' \item{input.data}{Input variables: jobName, number of taxa, nrepSim,
+#' \item{input.data}{Input variables: jobName, number of taxa, nrepSim, generation.times,
 #' treeYears, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor} 
 
 #' \item{PriorMatrix}{Matrix of prior distributions}
@@ -179,7 +184,7 @@
 #'   intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
 #'   extrinsicPriorsFns=c("fixed"),
 #'   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
-#'   TreeYears=1000,
+#'   generation.times=1000,
 #'   standardDevFactor=0.2,
 #'   plot=FALSE,
 #'   StartSims=10,
@@ -221,7 +226,6 @@
 
 ##This seems to be working if partialResults does not exist.  If checkpoint=TRUE, then run fails.
 
-#TreeYears = 1000000 if tree length is in in millions of years, 1000 if in thousand, etc.
 #the doRun_prc function takes input from the user and then automatically guesses optimal parameters, though user overriding is also possible.
 #the guesses are used to do simulations near the expected region. If omitted, they are set to the midpoint of the input parameter matrices
 
@@ -233,12 +237,12 @@ doRun_prc<-function(
 	phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues, startingPriorsFns, 
 	intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, 
 	#startingValuesGuess=c(), intrinsicValuesGuess=c(), extrinsicValuesGuess=c(), 
-	TreeYears=1e+04, 
+	generation.time=1, TreeYears=max(branching.times(phy)) * 1e6, 
 	multicore=FALSE, coreLimit=NA, validation="CV", scale=TRUE, variance.cutoff=95,
-	niter.goal=5, generation.time=1,
+	niter.goal=5, 
 	numParticles=300, standardDevFactor=0.20, 
 	StartSims=300, epsilonProportion=0.7, epsilonMultiplier=0.7, nStepsPRC=5, 
-	jobName=NA, stopRule=FALSE, stopValue=0.05, saveData=FALSE, verboseParticles, plot=FALSE) {	
+	jobName=NA, stopRule=FALSE, stopValue=0.05, saveData=FALSE, verboseParticles=TRUE, plot=FALSE) {	
 
 	
 	if (!is.binary.tree(phy)) {
@@ -755,7 +759,7 @@ doRun_prc<-function(
 	message("Collection of simulation particles under PRC completed...")
 	#---------------------- ABC-PRC (End) --------------------------------
 	#
-	input.data<-rbind(jobName, length(phy[[3]]), nrepSim, TreeYears, epsilonProportion,
+	input.data<-rbind(jobName, length(phy[[3]]), nrepSim, generation.times, TreeYears, epsilonProportion,
 		epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor)
 	#
 	time3<-proc.time()[[3]]
@@ -826,9 +830,9 @@ doRun_rej<-function(
 	phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues, startingPriorsFns, 
 	intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, 
 	#startingValuesGuess=c(), intrinsicValuesGuess=c(), extrinsicValuesGuess=c(), 
-	TreeYears=1e+04, 
-	multicore=FALSE, coreLimit=NA, validation="CV", scale=TRUE, variance.cutoff=95,
-	niter.goal=5, generation.time=1,
+	TreeYears=max(branching.times(phy)) * 1e6, 
+	generation.time=1, multicore=FALSE, coreLimit=NA, validation="CV", scale=TRUE, variance.cutoff=95,
+	niter.goal=5, 
 	standardDevFactor=0.20, StartSims=NA, jobName=NA, abcTolerance=0.1, 
 	checkpointFile=NULL, checkpointFreq=24, savesims=FALSE) {	
 	
@@ -943,7 +947,7 @@ doRun_rej<-function(
 		phy=phy, traits=traits, abcTolerance=abcTolerance))
 	
 	#save(abcDistancesRaw, abcDistancesRawTotal, abcDistances, abcResults, particleDataFrame, file="")
-	input.data<-rbind(jobName, length(phy[[3]]), timeStep, StartSims, standardDevFactor, abcTolerance)
+	input.data<-rbind(jobName, length(phy[[3]]), generation.times, TreeYears, StartSims, standardDevFactor, abcTolerance)
 	#print(res)
 	
 	rejectionResults<-vector("list")

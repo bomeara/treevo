@@ -62,7 +62,7 @@
 #'   intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
 #'   extrinsicPriorsFns=c("fixed"),
 #'   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
-#'   TreeYears=1000,
+#'   generation.time=1000,
 #'   standardDevFactor=0.2,
 #'   plot=FALSE,
 #'   StartSims=10,

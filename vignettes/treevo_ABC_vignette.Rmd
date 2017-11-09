@@ -3,7 +3,7 @@ title: "Analyzing Trait Evolution with Approximate Bayesian Computation in TreEv
 author: "David W. Bapst"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
-          fig_caption: yes
+#          fig_caption:: yes
 
 vignette: >
   %\VignetteIndexEntry{Analyzing Trait Evolution with Approximate Bayesian Computation in TreEvo}
@@ -11,14 +11,10 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r}
-set.seed(444)
-```
-
 ```{r,echo=FALSE}
-#library(paleotree)
-data(paleotree::RaiaCopesRule)
-set.seed(2)
+library(paleotree)
+data(RaiaCopesRule)
+set.seed(444)
 
 ```
 
@@ -91,7 +87,7 @@ results<-doRun_prc(
   intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
   extrinsicPriorsFns=c("fixed"),
   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
-  TreeYears=1,
+  generation.times=10000,
   standardDevFactor=0.2,
   plot=FALSE,
   StartSims=10,
@@ -102,7 +98,8 @@ results<-doRun_prc(
   jobName="examplerun_prc",
   stopRule=FALSE,
   multicore=FALSE,
-  coreLimit=1
+  coreLimit=1,
+  verboseParticles=FALSE
   )
 ```
 
@@ -120,7 +117,7 @@ resultsBound<-doRun_prc(
   intrinsicPriorsValues=matrix(c(10, 10, -10, 1), nrow=2, byrow=FALSE),
   extrinsicPriorsFns=c("fixed"),
   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
-  TreeYears=1,
+  generation.times=10000,
   standardDevFactor=0.2,
   plot=FALSE,
   StartSims=10,
@@ -131,16 +128,18 @@ resultsBound<-doRun_prc(
   jobName="examplerun_prc",
   stopRule=FALSE,
   multicore=FALSE,
-  coreLimit=1
+  coreLimit=1,
+  verboseParticles=FALSE
   )
 
 ```
 
 
+```{r}
 
+save.image(file="treevo_vignette_workspace.Rdata")
 
-
-
+```
 
 
 
@@ -159,10 +158,4 @@ The figure sizes have been customised so that you can easily put two images side
 plot(1:10)
 plot(10:1)
 ```
-
-```{r, fig.cap='My awesome figure caption'}
-plot(10:1)
-```
-
-
 
