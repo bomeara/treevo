@@ -127,7 +127,7 @@ and acceptance of particles is output to console via \code{message} as \code{doR
 The output of these two functions are lists, composed of multiple objects,
 which differ slightly in their content among the two functions. For \code{doRun_prc}, the output is:
 \describe{
-\item{input.data}{Input variables: jobName, number of taxa, nrepSim, generation.times,
+\item{input.data}{Input variables: jobName, number of taxa, nrepSim, generation.time,
 treeYears, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor} 
 \item{PriorMatrix}{Matrix of prior distributions}
 \item{particleDataFrame}{DataFrame with information from each simulation,
@@ -141,7 +141,7 @@ including generation, attempt, id, parentid, distance, weight, and parameter sta
 }
 For \code{doRun_rej}, the output is:
 \describe{
-\item{input.data}{Input variables: jobName, number of taxa, nrepSim, generation.times,
+\item{input.data}{Input variables: jobName, number of taxa, nrepSim, generation.time,
 treeYears, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor} 
 \item{PriorMatrix}{Matrix of prior distributions}
 \item{phy}{Input phylogeny} 
@@ -210,7 +210,7 @@ resultsPRC<-doRun_prc(
   intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
   extrinsicPriorsFns=c("fixed"),
   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
-  generation.times=1000,
+  generation.time=1000,
   standardDevFactor=0.2,
   plot=FALSE,
   StartSims=10,

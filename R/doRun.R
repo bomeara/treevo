@@ -102,7 +102,7 @@
 #' which differ slightly in their content among the two functions. For \code{doRun_prc}, the output is:
 
 #' \describe{
-#' \item{input.data}{Input variables: jobName, number of taxa, nrepSim, generation.times,
+#' \item{input.data}{Input variables: jobName, number of taxa, nrepSim, generation.time,
 #' treeYears, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor} 
 
 #' \item{PriorMatrix}{Matrix of prior distributions}
@@ -128,7 +128,7 @@
 #' For \code{doRun_rej}, the output is:
 
 #' \describe{
-#' \item{input.data}{Input variables: jobName, number of taxa, nrepSim, generation.times,
+#' \item{input.data}{Input variables: jobName, number of taxa, nrepSim, generation.time,
 #' treeYears, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor} 
 
 #' \item{PriorMatrix}{Matrix of prior distributions}
@@ -184,7 +184,7 @@
 #'   intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
 #'   extrinsicPriorsFns=c("fixed"),
 #'   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
-#'   generation.times=1000,
+#'   generation.time=1000,
 #'   standardDevFactor=0.2,
 #'   plot=FALSE,
 #'   StartSims=10,
@@ -759,7 +759,7 @@ doRun_prc<-function(
 	message("Collection of simulation particles under PRC completed...")
 	#---------------------- ABC-PRC (End) --------------------------------
 	#
-	input.data<-rbind(jobName, length(phy[[3]]), nrepSim, generation.times, TreeYears, epsilonProportion,
+	input.data<-rbind(jobName, length(phy[[3]]), nrepSim, generation.time, TreeYears, epsilonProportion,
 		epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor)
 	#
 	time3<-proc.time()[[3]]
@@ -947,7 +947,7 @@ doRun_rej<-function(
 		phy=phy, traits=traits, abcTolerance=abcTolerance))
 	
 	#save(abcDistancesRaw, abcDistancesRawTotal, abcDistances, abcResults, particleDataFrame, file="")
-	input.data<-rbind(jobName, length(phy[[3]]), generation.times, TreeYears, StartSims, standardDevFactor, abcTolerance)
+	input.data<-rbind(jobName, length(phy[[3]]), generation.time, TreeYears, StartSims, standardDevFactor, abcTolerance)
 	#print(res)
 	
 	rejectionResults<-vector("list")
