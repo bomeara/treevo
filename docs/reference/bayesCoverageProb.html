@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Plot Interparticle Distance between Runs — compareListIPD â€¢ TreEvo</title>
+<title>Bayesian Coverage Probability — bayesCoverageProb â€¢ TreEvo</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -95,109 +95,59 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Plot Interparticle Distance between Runs</h1>
+    <h1>Bayesian Coverage Probability</h1>
     </div>
 
     
-    <p>This function plots interparticle distance (IPD) between runs for each free
-parameter.</p>
+    <p>This function calculates coverage probability for a list of highest posterior densities (HPDs) for a set of parameters.</p>
     
 
-    <pre class="usage"><span class='fu'>compareListIPD</span>(<span class='no'>particleDataFrameList</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>bayesCoverageProb</span>(<span class='no'>RealParam</span>, <span class='no'>HPD</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>particleDataFrameList</th>
-      <td><p>A list composed of multiple <code>particleDataFrame</code> objects, as output by <code><a href='doRun.html'>doRun</a></code> functions.</p></td>
+      <th>RealParam</th>
+      <td><p>Real parameter values.</p></td>
+    </tr>
+    <tr>
+      <th>HPD</th>
+      <td><p>List of highest posterior density from <code><a href='doRun.html'>doRun</a></code> results.</p></td>
     </tr>
     <tr>
       <th>verbose</th>
-      <td><p>Commented screen output.</p></td>
+      <td><p>If <code>TRUE</code>, commented screen output is produced.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Produces a plot with IPD between runs per generation.</p>
+    <p>Returns a value for each free parameter that describes the
+percentage that the real value falls within the HPD.</p>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>Only for use with simulated data to test models.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
 <span class='fu'>data</span>(<span class='no'>simRunExample</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: data set ‘simRunExample’ not found</span></div><div class='input'>
-<span class='no'>pdfList</span><span class='kw'>&lt;-</span><span class='fu'>list</span>(<span class='no'>results</span>$<span class='no'>particleDataFrame</span>,<span class='no'>resultsBound</span>$<span class='no'>particleDataFrame</span>)
+<span class='co'># real (generating) parameters</span>
+<span class='no'>genPar</span><span class='kw'>&lt;-</span><span class='fu'>c</span>(<span class='no'>ancState</span>,<span class='no'>genRate</span>)
 
-<span class='fu'>compareListIPD</span>(<span class='kw'>particleDataFrameList</span><span class='kw'>=</span><span class='no'>pdfList</span>, <span class='kw'>verbose</span><span class='kw'>=</span><span class='fl'>TRUE</span>)</div><div class='img'><img src='compareListIPD-1.png' alt='' width='700' height='432.632880098887' /></div><div class='output co'>#&gt; [1] "param= StartingStates1"
-#&gt;      genvector IPDvector
-#&gt; [1,]         1 1.1356387
-#&gt; [2,]         1 1.0701276
-#&gt; [3,]         1 0.9806428
-#&gt; [1] "param= StartingStates1"
-#&gt;      genvector IPDvector
-#&gt; [1,]         1 1.1356387
-#&gt; [2,]         1 1.0701276
-#&gt; [3,]         1 0.9806428
-#&gt; [4,]         2 1.2695369
-#&gt; [5,]         2 1.0975795
-#&gt; [6,]         2 0.6642100
-#&gt; [1] "param= StartingStates1"
-#&gt;       genvector IPDvector
-#&gt;  [1,]         1 1.1356387
-#&gt;  [2,]         1 1.0701276
-#&gt;  [3,]         1 0.9806428
-#&gt;  [4,]         2 1.2695369
-#&gt;  [5,]         2 1.0975795
-#&gt;  [6,]         2 0.6642100
-#&gt;  [7,]         3 0.8512918
-#&gt;  [8,]         3 1.0911743
-#&gt;  [9,]         3 0.5755941</div><div class='output co'>#&gt; [1] "param= IntrinsicValue1"
-#&gt;      genvector  IPDvector
-#&gt; [1,]         1 0.07966274
-#&gt; [2,]         1 0.07273062
-#&gt; [3,]         1 0.05531329
-#&gt; [1] "param= IntrinsicValue1"
-#&gt;      genvector  IPDvector
-#&gt; [1,]         1 0.07966274
-#&gt; [2,]         1 0.07273062
-#&gt; [3,]         1 0.05531329
-#&gt; [4,]         2 0.05735066
-#&gt; [5,]         2 0.04901710
-#&gt; [6,]         2 0.04185083
-#&gt; [1] "param= IntrinsicValue1"
-#&gt;       genvector  IPDvector
-#&gt;  [1,]         1 0.07966274
-#&gt;  [2,]         1 0.07273062
-#&gt;  [3,]         1 0.05531329
-#&gt;  [4,]         2 0.05735066
-#&gt;  [5,]         2 0.04901710
-#&gt;  [6,]         2 0.04185083
-#&gt;  [7,]         3 0.04714160
-#&gt;  [8,]         3 0.04087727
-#&gt;  [9,]         3 0.03723394</div><div class='output co'>#&gt; [1] "param= ExtrinsicValue1"
-#&gt;      genvector IPDvector
-#&gt; [1,]         1   0.00000
-#&gt; [2,]         1  20.39713
-#&gt; [3,]         1   2.02392
-#&gt; [1] "param= ExtrinsicValue1"
-#&gt;      genvector IPDvector
-#&gt; [1,]         1  0.000000
-#&gt; [2,]         1 20.397135
-#&gt; [3,]         1  2.023920
-#&gt; [4,]         2  0.000000
-#&gt; [5,]         2 20.745322
-#&gt; [6,]         2  2.161226
-#&gt; [1] "param= ExtrinsicValue1"
-#&gt;       genvector IPDvector
-#&gt;  [1,]         1  0.000000
-#&gt;  [2,]         1 20.397135
-#&gt;  [3,]         1  2.023920
-#&gt;  [4,]         2  0.000000
-#&gt;  [5,]         2 20.745322
-#&gt;  [6,]         2  2.161226
-#&gt;  [7,]         3  0.000000
-#&gt;  [8,]         3 21.259415
-#&gt;  [9,]         3  2.109978</div><div class='img'><img src='compareListIPD-2.png' alt='' width='700' height='432.632880098887' /></div><div class='input'>
+<span class='no'>HPDs</span><span class='kw'>&lt;-</span><span class='fu'>list</span>(<span class='no'>results</span>$<span class='no'>HPD</span>,<span class='no'>resultsBound</span>$<span class='no'>HPD</span>)
+
+<span class='fu'>bayesCoverageProb</span>(<span class='kw'>RealParam</span><span class='kw'>=</span><span class='no'>genPar</span>, <span class='kw'>HPD</span><span class='kw'>=</span><span class='no'>HPDs</span>, <span class='kw'>verbose</span><span class='kw'>=</span><span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; $byRun
+#&gt;      StartingStates1 IntrinsicValue1
+#&gt; [1,]               1               1
+#&gt; [2,]               1               1
+#&gt; 
+#&gt; $BCP
+#&gt; StartingStates1 IntrinsicValue1 
+#&gt;               1               1 
+#&gt; </div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -206,6 +156,8 @@ parameter.</p>
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
+
+      <li><a href="#details">Details</a></li>
       
       <li><a href="#examples">Examples</a></li>
     </ul>

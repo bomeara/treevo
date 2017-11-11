@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>TreEvo--abc for comparative methods — TreEvo-package â€¢ TreEvo</title>
+<title>Example Analysis Output of a Simulated Dataset — simRunExample â€¢ TreEvo</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -95,32 +95,50 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>TreEvo--abc for comparative methods</h1>
+    <h1>Example Analysis Output of a Simulated Dataset</h1>
     </div>
 
     
-    <p>A package for applying Approximate Bayesian Computation to estimating parameters of trait evolution in comparative analyses.</p>
+    <p>Simulated 30-taxon coalescent tree and simulated character data from a Brownian Motion
+intrinsic model (<code><a href='intrinsicModels.html'>brownianIntrinsic</a></code>), with saved generating parameters. 
+Character data was generated under this model using <code>doSimulation</code>.
+Also includes results from an example analysis.</p>
     
 
         
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+    <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
 
-    <table><tr><td> Package: </td>
-<td> TreEvo</td>
-</tr><tr><td> Type: </td>
-<td> Package</td>
-</tr><tr><td> Version: </td>
-<td>
-0.3.3</td>
-</tr><tr><td> Date: </td>
-<td> 2012-07-02</td>
-</tr><tr><td> License: </td>
-<td> GPL</td>
-</tr></table>
+    <p>Loading the <code>simRunExample</code> example dataset adds seven new objects to the namespace:</p><dl class='dl-horizontal'>
+<dt><code>simPhy</code></dt><dd><p>A simulated 30-tip coalescent phylogeny in typical <code>phylo</code> format.</p></dd>
+<dt><code>ancState</code></dt><dd><p>The starting ancestral value,
+used for generating the simulated continuous trait data.</p></dd>
+<dt><code>genRate</code></dt><dd><p>The true rate of trait change under Brownian Motion,
+used for generating the simulated continuous trait data.</p></dd>
+<dt><code>simCharOut</code></dt><dd><p>The raw output of <code><a href='doSimulation.html'>doSimulation</a></code> on <code>simPhy</code>,
+under the model <code><a href='intrinsicModels.html'>brownianIntrinsic</a></code>.</p></dd>
+<dt><code>simChar</code></dt><dd><p>A modified version of <code>simCharOut</code>, composed of just the simulated
+trait values as a one-column matrix with row names indicating tip labels, as desired by <code>doRun</code> functions.</p></dd>
+<dt><code>results</code></dt><dd><p>The results of <code><a href='doRun.html'>doRun_prc</a></code>, under the generating model of <code><a href='intrinsicModels.html'>brownianIntrinsic</a></code></p></dd>
+<dt><code>resultsBound</code></dt><dd><p>The results of <code><a href='doRun.html'>doRun_prc</a></code>, under the incorrect model of <code><a href='intrinsicModels.html'>boundaryMinIntrinsic</a></code></p></dd>
+</dl>
+    <p>The objects <code>results</code> and <code>resultsBound</code> are lists composed of a number
+of elements (see the documentation for the <code><a href='doRun.html'>doRun_prc</a></code> function for more detail). These elements are
+respectively <code>input.data</code>, <code>PriorMatrix</code>, <code>particleDataFrame</code>, <code>toleranceVector</code>, <code>phy</code>, 
+<code>traits</code>, <code>simTime</code>, <code>time.per.gen</code>, <code>credibleInt</code>, and <code>HPD</code>.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># let's simulate some data, and then try to infer the parameters using ABC</span>
+    <pre class="examples"><div class='input'>
+<span class='fu'>data</span>(<span class='no'>simRunExample</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: data set ‘simRunExample’ not found</span></div><div class='input'>
+# ...things to do with this data?
+
+###################
+
+# This data was generated using this process:
+
+</div><span class='co'># NOT RUN {</span>
+
+<span class='fu'>set.seed</span>(<span class='fl'>2</span>)
 
 <span class='no'>simPhy</span><span class='kw'>&lt;-</span><span class='fu'>rcoal</span>(<span class='fl'>30</span>)
 
@@ -141,12 +159,6 @@
 <span class='co'># clean for use with doRun</span>
 <span class='no'>simChar</span><span class='kw'>&lt;-</span><span class='no'>simCharOut</span>[,<span class='st'>"statesmatrix"</span>,<span class='kw'>drop</span><span class='kw'>=</span><span class='fl'>FALSE</span>]
 <span class='fu'>rownames</span>(<span class='no'>simChar</span>)<span class='kw'>&lt;-</span><span class='no'>simPhy</span>$<span class='no'>tip.label</span>[<span class='no'>simCharOut</span>$<span class='no'>taxonid</span>]
-
-<span class='co'># NOTE: the example analyses below sample too few particles, </span>
-        <span class='co'># over too few steps, with too few starting simulations</span>
-        <span class='co'># - all for the sake of examples that reasonably test the functions</span>
-
-<span class='co'># Please set these values to more realistic levels for your analyses!</span>
 
 <span class='no'>results</span><span class='kw'>&lt;-</span><span class='fu'><a href='doRun.html'>doRun_prc</a></span>(
   <span class='kw'>phy</span> <span class='kw'>=</span> <span class='no'>simPhy</span>,
@@ -171,22 +183,46 @@
   <span class='kw'>stopRule</span><span class='kw'>=</span><span class='fl'>FALSE</span>,
   <span class='kw'>multicore</span><span class='kw'>=</span><span class='fl'>FALSE</span>,
   <span class='kw'>coreLimit</span><span class='kw'>=</span><span class='fl'>1</span>
-  )</div><div class='output co'>#&gt; <span class='error'>Error in proc.time[[3]]: object of type 'builtin' is not subsettable</span></div></pre>
+  )
+
+<span class='no'>resultsBound</span><span class='kw'>&lt;-</span><span class='fu'><a href='doRun.html'>doRun_prc</a></span>(
+  <span class='kw'>phy</span> <span class='kw'>=</span> <span class='no'>simPhy</span>,
+  <span class='kw'>traits</span> <span class='kw'>=</span> <span class='no'>simChar</span>,
+  <span class='kw'>intrinsicFn</span><span class='kw'>=</span><span class='no'>boundaryMinIntrinsic</span>,
+  <span class='kw'>extrinsicFn</span><span class='kw'>=</span><span class='no'>nullExtrinsic</span>,
+  <span class='kw'>startingPriorsFns</span><span class='kw'>=</span><span class='st'>"normal"</span>,
+  <span class='kw'>startingPriorsValues</span><span class='kw'>=</span><span class='fu'>matrix</span>(<span class='fu'>c</span>(<span class='fu'>mean</span>(<span class='no'>simChar</span>[,<span class='fl'>1</span>]), <span class='fu'>sd</span>(<span class='no'>simChar</span>[,<span class='fl'>1</span>]))),
+  <span class='kw'>intrinsicPriorsFns</span><span class='kw'>=</span><span class='fu'>c</span>(<span class='st'>"exponential"</span>,<span class='st'>"normal"</span>),
+  <span class='kw'>intrinsicPriorsValues</span><span class='kw'>=</span><span class='fu'>matrix</span>(<span class='fu'>c</span>(<span class='fl'>10</span>, <span class='fl'>10</span>, -<span class='fl'>10</span>, <span class='fl'>1</span>), <span class='kw'>nrow</span><span class='kw'>=</span><span class='fl'>2</span>, <span class='kw'>byrow</span><span class='kw'>=</span><span class='fl'>FALSE</span>),
+  <span class='kw'>extrinsicPriorsFns</span><span class='kw'>=</span><span class='fu'>c</span>(<span class='st'>"fixed"</span>),
+  <span class='kw'>extrinsicPriorsValues</span><span class='kw'>=</span><span class='fu'>matrix</span>(<span class='fu'>c</span>(<span class='fl'>0</span>, <span class='fl'>0</span>), <span class='kw'>nrow</span><span class='kw'>=</span><span class='fl'>2</span>, <span class='kw'>byrow</span><span class='kw'>=</span><span class='fl'>FALSE</span>),
+  <span class='kw'>generation.time</span><span class='kw'>=</span><span class='fl'>1000</span>,
+  <span class='kw'>standardDevFactor</span><span class='kw'>=</span><span class='fl'>0.2</span>,
+  <span class='kw'>plot</span><span class='kw'>=</span><span class='fl'>FALSE</span>,
+  <span class='kw'>StartSims</span><span class='kw'>=</span><span class='fl'>10</span>,
+  <span class='kw'>epsilonProportion</span><span class='kw'>=</span><span class='fl'>0.7</span>,
+  <span class='kw'>epsilonMultiplier</span><span class='kw'>=</span><span class='fl'>0.7</span>,
+  <span class='kw'>nStepsPRC</span><span class='kw'>=</span><span class='fl'>3</span>,
+  <span class='kw'>numParticles</span><span class='kw'>=</span><span class='fl'>20</span>,
+  <span class='kw'>jobName</span><span class='kw'>=</span><span class='st'>"examplerun_prc"</span>,
+  <span class='kw'>stopRule</span><span class='kw'>=</span><span class='fl'>FALSE</span>,
+  <span class='kw'>multicore</span><span class='kw'>=</span><span class='fl'>FALSE</span>,
+  <span class='kw'>coreLimit</span><span class='kw'>=</span><span class='fl'>1</span>
+  )
+
+<span class='fu'>save.image</span>(<span class='kw'>file</span><span class='kw'>=</span><span class='st'>"simRunExample.rdata"</span>)
+
+<span class='co'># }</span><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       
-      <li><a href="#details">Details</a></li>
+      <li><a href="#format">Format</a></li>
       
       <li><a href="#examples">Examples</a></li>
     </ul>
-
-    <h2>Author</h2>
-    
-Brian O'Meara, Barb L. Banbury, David W. Bapst
-
-Maintainer: David Bapst &lt;dwbapst@gmail.com&gt;
 
   </div>
 </div>

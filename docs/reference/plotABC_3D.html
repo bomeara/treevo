@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Plotting Parent-Offspring Particles — parentOffspringPlots â€¢ TreEvo</title>
+<title>3D ABCplots — plotABC_3D â€¢ TreEvo</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -95,43 +95,71 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Plotting Parent-Offspring Particles</h1>
+    <h1>3D ABCplots</h1>
     </div>
 
     
-    <p>This function uses the <code>particleDataFrame</code> output by TreEvo ABC analyses and plots
-parent-offspring particles from generation to generation.</p>
+    <p>Plot posterior density distribution for each generation in 3d plot window</p>
     
 
-    <pre class="usage"><span class='fu'>parentOffspringPlots</span>(<span class='no'>particleDataFrame</span>)</pre>
+    <pre class="usage"><span class='fu'>plotABC_3D</span>(<span class='no'>particleDataFrame</span>, <span class='no'>parameter</span>, <span class='kw'>show.particles</span> <span class='kw'>=</span> <span class='st'>"none"</span>,
+  <span class='kw'>plot.parent</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>realParam</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>realParamValues</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>particleDataFrame</th>
-      <td><p><code>particleDataFrame</code> output by TreEvo ABC analyses.</p></td>
+      <td><p>A <code>particleDataFrame</code> object, as found among the output from <code><a href='doRun.html'>doRun</a></code> functions.</p></td>
+    </tr>
+    <tr>
+      <th>parameter</th>
+      <td><p>Column number of parameter of interest from
+<code>particleDataFrame</code>.</p></td>
+    </tr>
+    <tr>
+      <th>show.particles</th>
+      <td><p>Option to show particles on 3d plot as "none" or as a
+function of "weights" or "distance".</p></td>
+    </tr>
+    <tr>
+      <th>plot.parent</th>
+      <td><p>Option to plot lines on the floor of the 3d plot to show
+particle parantage.</p></td>
+    </tr>
+    <tr>
+      <th>realParam</th>
+      <td><p>Option to display real parameter value as a solid line,
+also must give actual value for this (realParamValues).  Note: this should
+only be done with simulated data where real param values are recorded.</p></td>
+    </tr>
+    <tr>
+      <th>realParamValues</th>
+      <td><p>Value for <code>realParam</code>.</p></td>
     </tr>
     </table>
     
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>Creates a set of parent-offspring plots.</p>
-    
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Each parameter is plotted twice for parent-offspring relationships through
-the generations.  In the top row, particles are plotted as a measure of
-distance to the observed data; the farther away the particle the bigger the
-circle.  Gray circles indicate rejected particles.  In the bottom row,
-particles are plotted as a measure of their weights; larger circles are
-closer to observed data and therefore carry more weight in the analysis.
-Grayed out stars represent rejected particles.</p>
+    <p>This opens a new interactive 3d plotting window and plots the posterior
+density distribution of accepted particles from each generation.  Several
+options are available to add to the plot: plotting particles by weight or
+distance, plotting particle parantage, and plotting the real parameter
+values (if known).</p>
+    
+    <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
+
+    <p>This function requires access functions <code>triangulate</code> and the <code>as</code> method for
+class <code>gpc.poly</code> from package <code>gpclib</code>. As of 09-12-17, this package
+was not available from CRAN as a Windows binary, and thus this function is likely
+unavailable to many (if not all) Windows users.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='fu'>data</span>(<span class='no'>simRunExample</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: data set ‘simRunExample’ not found</span></div><div class='input'><span class='fu'>parentOffspringPlots</span>(<span class='no'>results</span>$<span class='no'>particleDataFrame</span>)</div><div class='img'><img src='parentOffspringPlots-1.png' alt='' width='700' height='432.632880098887' /></div><div class='input'>
+
+ <span class='fu'>data</span>(<span class='no'>simRunExample</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: data set ‘simRunExample’ not found</span></div><div class='input'> <span class='fu'>plotABC_3D</span>(<span class='kw'>particleDataFrame</span><span class='kw'>=</span><span class='no'>results</span>$<span class='no'>particleDataFrame</span>, <span class='kw'>parameter</span><span class='kw'>=</span><span class='fl'>7</span>,
+     <span class='kw'>show.particles</span><span class='kw'>=</span><span class='st'>"none"</span>, <span class='kw'>plot.parent</span><span class='kw'>=</span><span class='fl'>FALSE</span>, <span class='kw'>realParam</span><span class='kw'>=</span><span class='fl'>FALSE</span>, <span class='kw'>realParamValues</span><span class='kw'>=</span><span class='fl'>NA</span>)</div><div class='output co'>#&gt; <span class='error'>Error in plotABC_3D(particleDataFrame = results$particleDataFrame, parameter = 7,     show.particles = "none", plot.parent = FALSE, realParam = FALSE,     realParamValues = NA): This function cannot be run without package gpclib available (Note: Windows binaries of gpclib were not unavailable as of 09-12-17).</span></div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -139,16 +167,16 @@ Grayed out stars represent rejected particles.</p>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       
-      <li><a href="#value">Value</a></li>
-
       <li><a href="#details">Details</a></li>
+
+      <li><a href="#note">Note</a></li>
       
       <li><a href="#examples">Examples</a></li>
     </ul>
 
     <h2>Author</h2>
     
-Brian O'Meara and Barb Banbury
+Barb Banbury
 
   </div>
 </div>

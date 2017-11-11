@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Plot Interparticle Distance between Runs — compareListIPD â€¢ TreEvo</title>
+<title>Bayesian Credible Interval — credibleInt â€¢ TreEvo</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -95,109 +95,40 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Plot Interparticle Distance between Runs</h1>
+    <h1>Bayesian Credible Interval</h1>
     </div>
 
     
-    <p>This function plots interparticle distance (IPD) between runs for each free
-parameter.</p>
+    <p>This function calculates credible interval for each free parameter.</p>
     
 
-    <pre class="usage"><span class='fu'>compareListIPD</span>(<span class='no'>particleDataFrameList</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>credibleInt</span>(<span class='no'>particleDataFrame</span>, <span class='kw'>percent</span> <span class='kw'>=</span> <span class='fl'>0.95</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>particleDataFrameList</th>
-      <td><p>A list composed of multiple <code>particleDataFrame</code> objects, as output by <code><a href='doRun.html'>doRun</a></code> functions.</p></td>
+      <th>particleDataFrame</th>
+      <td><p>A <code>particleDataFrame</code> object, as found among the output from <code><a href='doRun.html'>doRun</a></code> functions.</p></td>
     </tr>
     <tr>
-      <th>verbose</th>
-      <td><p>Commented screen output.</p></td>
+      <th>percent</th>
+      <td><p>Probability content of the highest probability density.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Produces a plot with IPD between runs per generation.</p>
+    <p>Returns a matrix with weighted mean, standard deviation, upper and lower credible
+intervals for each free parameter.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='fu'>data</span>(<span class='no'>simRunExample</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: data set ‘simRunExample’ not found</span></div><div class='input'>
-<span class='no'>pdfList</span><span class='kw'>&lt;-</span><span class='fu'>list</span>(<span class='no'>results</span>$<span class='no'>particleDataFrame</span>,<span class='no'>resultsBound</span>$<span class='no'>particleDataFrame</span>)
-
-<span class='fu'>compareListIPD</span>(<span class='kw'>particleDataFrameList</span><span class='kw'>=</span><span class='no'>pdfList</span>, <span class='kw'>verbose</span><span class='kw'>=</span><span class='fl'>TRUE</span>)</div><div class='img'><img src='compareListIPD-1.png' alt='' width='700' height='432.632880098887' /></div><div class='output co'>#&gt; [1] "param= StartingStates1"
-#&gt;      genvector IPDvector
-#&gt; [1,]         1 1.1356387
-#&gt; [2,]         1 1.0701276
-#&gt; [3,]         1 0.9806428
-#&gt; [1] "param= StartingStates1"
-#&gt;      genvector IPDvector
-#&gt; [1,]         1 1.1356387
-#&gt; [2,]         1 1.0701276
-#&gt; [3,]         1 0.9806428
-#&gt; [4,]         2 1.2695369
-#&gt; [5,]         2 1.0975795
-#&gt; [6,]         2 0.6642100
-#&gt; [1] "param= StartingStates1"
-#&gt;       genvector IPDvector
-#&gt;  [1,]         1 1.1356387
-#&gt;  [2,]         1 1.0701276
-#&gt;  [3,]         1 0.9806428
-#&gt;  [4,]         2 1.2695369
-#&gt;  [5,]         2 1.0975795
-#&gt;  [6,]         2 0.6642100
-#&gt;  [7,]         3 0.8512918
-#&gt;  [8,]         3 1.0911743
-#&gt;  [9,]         3 0.5755941</div><div class='output co'>#&gt; [1] "param= IntrinsicValue1"
-#&gt;      genvector  IPDvector
-#&gt; [1,]         1 0.07966274
-#&gt; [2,]         1 0.07273062
-#&gt; [3,]         1 0.05531329
-#&gt; [1] "param= IntrinsicValue1"
-#&gt;      genvector  IPDvector
-#&gt; [1,]         1 0.07966274
-#&gt; [2,]         1 0.07273062
-#&gt; [3,]         1 0.05531329
-#&gt; [4,]         2 0.05735066
-#&gt; [5,]         2 0.04901710
-#&gt; [6,]         2 0.04185083
-#&gt; [1] "param= IntrinsicValue1"
-#&gt;       genvector  IPDvector
-#&gt;  [1,]         1 0.07966274
-#&gt;  [2,]         1 0.07273062
-#&gt;  [3,]         1 0.05531329
-#&gt;  [4,]         2 0.05735066
-#&gt;  [5,]         2 0.04901710
-#&gt;  [6,]         2 0.04185083
-#&gt;  [7,]         3 0.04714160
-#&gt;  [8,]         3 0.04087727
-#&gt;  [9,]         3 0.03723394</div><div class='output co'>#&gt; [1] "param= ExtrinsicValue1"
-#&gt;      genvector IPDvector
-#&gt; [1,]         1   0.00000
-#&gt; [2,]         1  20.39713
-#&gt; [3,]         1   2.02392
-#&gt; [1] "param= ExtrinsicValue1"
-#&gt;      genvector IPDvector
-#&gt; [1,]         1  0.000000
-#&gt; [2,]         1 20.397135
-#&gt; [3,]         1  2.023920
-#&gt; [4,]         2  0.000000
-#&gt; [5,]         2 20.745322
-#&gt; [6,]         2  2.161226
-#&gt; [1] "param= ExtrinsicValue1"
-#&gt;       genvector IPDvector
-#&gt;  [1,]         1  0.000000
-#&gt;  [2,]         1 20.397135
-#&gt;  [3,]         1  2.023920
-#&gt;  [4,]         2  0.000000
-#&gt;  [5,]         2 20.745322
-#&gt;  [6,]         2  2.161226
-#&gt;  [7,]         3  0.000000
-#&gt;  [8,]         3 21.259415
-#&gt;  [9,]         3  2.109978</div><div class='img'><img src='compareListIPD-2.png' alt='' width='700' height='432.632880098887' /></div><div class='input'>
+<span class='fu'>data</span>(<span class='no'>simRunExample</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: data set ‘simRunExample’ not found</span></div><div class='input'><span class='fu'>credibleInt</span>(<span class='no'>results</span>$<span class='no'>particleDataFrame</span>)</div><div class='output co'>#&gt;                       mean         sd     LowerCI     UpperCI
+#&gt; StartingStates1 9.68908337 0.50993165 8.904992600 10.75040039
+#&gt; IntrinsicValue1 0.04257449 0.02300035 0.006919904  0.07864254
+#&gt; ExtrinsicValue1         NA         NA          NA          NA</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

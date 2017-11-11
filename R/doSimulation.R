@@ -440,7 +440,6 @@ doSimulationWithPossibleExtinction<-function(phy=NULL, intrinsicFn, extrinsicFn,
 		timeStep<-generation.time/TreeYears
 		}
 	
-	
 	if(is.null(taxon.df)){
 		taxon.df <- getTaxonDFWithPossibleExtinction(phy)
 		}

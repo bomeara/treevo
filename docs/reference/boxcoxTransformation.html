@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Box-Cox Transformation â€” boxcoxTransformation â€¢ TreEvo</title>
+<title>Box-Cox Transformation for Simulation Summary Values — boxcoxTransformation â€¢ TreEvo</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -23,9 +23,10 @@
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-
+  
+  
 <!-- mathjax -->
-<script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
+<script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
 <!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -51,7 +52,28 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
+  <a href="../index.html">
+    <span class="fa fa-home fa-lg"></span>
+     
+  </a>
+</li>
+<li>
   <a href="../reference/index.html">Reference</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/treevo_ABC_vignette.html">Analyzing Trait Evolution with Approximate Bayesian Computation in TreEvo</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="../news/index.html">News</a>
 </li>
       </ul>
       
@@ -73,42 +95,249 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Box-Cox Transformation</h1>
+    <h1>Box-Cox Transformation for Simulation Summary Values</h1>
     </div>
 
     
-    <p>This function Box-Cox transforms summary values from a single simulation</p>
+    <p><code>boxcoxTransformation</code> Box-Cox transforms summary values from a single simulation, while
+<code>boxcoxTransformationMatrix</code> Box-Cox transforms summary values from multiple simulations. The
+output of <code>boxcoxTransformationMatrix</code> needs to be provided as input for <code>boxcoxTransformation</code>.</p>
     
 
-    <pre><span class='fu'>boxcoxTransformation</span>(<span class='no'>summaryValues</span>, <span class='no'>boxcoxAddition</span>, <span class='no'>boxcoxLambda</span>)</pre>
+    <pre class="usage"><span class='fu'>boxcoxTransformation</span>(<span class='no'>summaryValuesVector</span>, <span class='no'>boxcoxAddition</span>, <span class='no'>boxcoxLambda</span>)
+
+<span class='fu'>boxcoxTransformationMatrix</span>(<span class='no'>summaryValuesMatrix</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>summaryValues</th>
-      <td><p>Vector of summary statistics</p></td>
+      <th>summaryValuesVector</th>
+      <td><p>Vector of summary statistics from a single simulation</p></td>
     </tr>
     <tr>
       <th>boxcoxAddition</th>
-      <td><p>Vector of boxcox additions from boxcoxEstimation</p></td>
+      <td><p>Vector of boxcox additions from <code>boxcoxTransformationMatrix</code></p></td>
     </tr>
     <tr>
       <th>boxcoxLambda</th>
-      <td><p>Vector of boxcox lambda values from boxcoxEstimation</p></td>
+      <td><p>Vector of boxcox lambda values from <code>boxcoxTransformationMatrix</code></p></td>
+    </tr>
+    <tr>
+      <th>summaryValuesMatrix</th>
+      <td><p>Matrix of summary statistics from simulations</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Returns a vector of Box-Cox transformed summary statistics from a
-single observation.</p>
-    
-    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
-
-    <p>O'Meara and Banbury, unpublished; Bates et al. 2009</p>
+    <p><code>boxcoxTransformation</code> returns a vector of Box-Cox transformed summary statistics from a
+single observation. <code>boxcoxTransformationMatrix</code> returns a matrix of Box-Cox transformed summary statistics with the
+same dimensions as <code>summaryValuesMatrix</code>.</p>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'>set.seed</span>(<span class='fl'>1</span>)
+<span class='fu'>data</span>(<span class='no'>simRunExample</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: data set ‘simRunExample’ not found</span></div><div class='input'>
+<span class='co'># example simulation</span>
+
+<span class='no'>simDataParallel</span><span class='kw'>&lt;-</span><span class='fu'><a href='simulateWithPriors.html'>parallelSimulateWithPriors</a></span>(
+  <span class='kw'>nrepSim</span><span class='kw'>=</span><span class='fl'>5</span>, <span class='kw'>multicore</span><span class='kw'>=</span><span class='fl'>FALSE</span>, <span class='kw'>coreLimit</span><span class='kw'>=</span><span class='fl'>1</span>,
+  <span class='kw'>phy</span><span class='kw'>=</span><span class='no'>simPhy</span>,
+  <span class='kw'>intrinsicFn</span><span class='kw'>=</span><span class='no'>brownianIntrinsic</span>,
+  <span class='kw'>extrinsicFn</span><span class='kw'>=</span><span class='no'>nullExtrinsic</span>,
+  <span class='kw'>startingPriorsFns</span><span class='kw'>=</span><span class='st'>"normal"</span>,
+  <span class='kw'>startingPriorsValues</span><span class='kw'>=</span><span class='fu'>matrix</span>(<span class='fu'>c</span>(<span class='fu'>mean</span>(<span class='no'>simChar</span>[,<span class='fl'>1</span>]), <span class='fu'>sd</span>(<span class='no'>simChar</span>[,<span class='fl'>1</span>]))),
+  <span class='kw'>intrinsicPriorsFns</span><span class='kw'>=</span><span class='fu'>c</span>(<span class='st'>"exponential"</span>),
+  <span class='kw'>intrinsicPriorsValues</span><span class='kw'>=</span><span class='fu'>matrix</span>(<span class='fu'>c</span>(<span class='fl'>10</span>, <span class='fl'>10</span>), <span class='kw'>nrow</span><span class='kw'>=</span><span class='fl'>2</span>, <span class='kw'>byrow</span><span class='kw'>=</span><span class='fl'>FALSE</span>),
+  <span class='kw'>extrinsicPriorsFns</span><span class='kw'>=</span><span class='fu'>c</span>(<span class='st'>"fixed"</span>),
+  <span class='kw'>extrinsicPriorsValues</span><span class='kw'>=</span><span class='fu'>matrix</span>(<span class='fu'>c</span>(<span class='fl'>0</span>, <span class='fl'>0</span>), <span class='kw'>nrow</span><span class='kw'>=</span><span class='fl'>2</span>, <span class='kw'>byrow</span><span class='kw'>=</span><span class='fl'>FALSE</span>),
+  <span class='kw'>timeStep</span><span class='kw'>=</span><span class='fl'>1e-04</span>,
+  <span class='kw'>checkpointFile</span><span class='kw'>=</span><span class='kw'>NULL</span>, <span class='kw'>checkpointFreq</span><span class='kw'>=</span><span class='fl'>24</span>,
+  <span class='kw'>verbose</span><span class='kw'>=</span><span class='fl'>FALSE</span>,
+  <span class='kw'>freevector</span><span class='kw'>=</span><span class='kw'>NULL</span>, <span class='kw'>taxon.df</span><span class='kw'>=</span><span class='kw'>NULL</span>,
+  <span class='kw'>niter.brown</span><span class='kw'>=</span><span class='fl'>25</span>, <span class='kw'>niter.lambda</span><span class='kw'>=</span><span class='fl'>25</span>, <span class='kw'>niter.delta</span><span class='kw'>=</span><span class='fl'>25</span>, <span class='kw'>niter.OU</span><span class='kw'>=</span><span class='fl'>25</span>, <span class='kw'>niter.white</span><span class='kw'>=</span><span class='fl'>25</span>)</div><div class='output co'>#&gt; <span class='message'>You have only 2 timeSteps on the shortest branch in this dataset but should probably have a lot more if you expect change on this branch. Please consider decreasing timeStep to no more than 5.5e-06 or at the very least 9.2e-05</span></div><div class='output co'>#&gt; <span class='message'>Using 1 core(s) for simulations </span>
+#&gt; <span class='message'></span></div><div class='output co'>#&gt; <span class='message'>Doing simulations: </span></div><div class='output co'>#&gt; <span class='warning'>Warning: executing %dopar% sequentially: no parallel backend registered</span></div><div class='output co'>#&gt; <span class='message'>.</span></div><div class='output co'>#&gt; <span class='message'>.</span></div><div class='output co'>#&gt; <span class='message'>.</span></div><div class='output co'>#&gt; <span class='message'>.</span></div><div class='output co'>#&gt; <span class='message'>.</span></div><div class='input'>
+<span class='no'>nParFree</span><span class='kw'>&lt;-</span><span class='fu'>sum</span>(<span class='fu'>attr</span>(<span class='no'>simDataParallel</span>,<span class='st'>"freevector"</span>))
+
+<span class='co'>#separate the simulation results: 'true' generating parameter values from the summary values</span>
+<span class='no'>summaryValuesMat</span><span class='kw'>&lt;-</span><span class='no'>simDataParallel</span>[,-<span class='fl'>1</span>:-<span class='no'>nParFree</span>]
+
+<span class='no'>boxTranMat</span><span class='kw'>&lt;-</span><span class='fu'>boxcoxTransformationMatrix</span>(<span class='kw'>summaryValuesMatrix</span> <span class='kw'>=</span> <span class='no'>summaryValuesMat</span>)
+<span class='no'>boxTranMat</span></div><div class='output co'>#&gt; $boxcoxAddition
+#&gt;   [1]  1232.90885 14301.67743  1323.99592  1229.85543 13805.11130     0.00000
+#&gt;   [7]  1309.88909  1224.30113 22338.97487    15.93607  1306.17038  1227.17845
+#&gt;  [13] 15476.11391    21.07100  1305.35041  1454.59186  1232.21590   260.94793
+#&gt;  [19]   515.77866  1029.70403 27175.26676   309.17379   320.50155  1496.57115
+#&gt;  [25]   885.81774   340.20917   983.80155   239.77303    75.35340   453.69558
+#&gt;  [31]   272.92770    81.07047   176.84483   258.75078   199.26156   208.16331
+#&gt;  [37]    49.17276   117.77922    95.65004    65.48960   124.98025    52.25284
+#&gt;  [43]   109.04284   131.99671   134.38468    60.71032   109.03574    47.15994
+#&gt;  [49]    63.14437    22.61343    12.46296    37.60781    53.76557    50.28323
+#&gt;  [55]   204.00282   544.20623   234.56811   303.91822   327.63201   839.15368
+#&gt;  [61]   859.55117   161.93536   879.00546   911.69980   860.85116   347.95603
+#&gt;  [67]   290.99921   114.57009   495.80806   494.21650   321.05800   939.93125
+#&gt;  [73]   996.91325    81.44061   871.43579   302.81211   907.51998   908.07875
+#&gt;  [79]   896.41464   261.69608   900.89583   414.30378   412.95410   315.76407
+#&gt;  [85]   308.97385   291.67823   274.94765   266.55175   199.85094   183.17313
+#&gt;  [91]   255.89794   174.94378   181.37147   163.82244   167.42751   149.14303
+#&gt;  [97]   141.09002   114.58075   109.48863   109.82543   105.96695   108.05785
+#&gt; [103]    93.15472    79.25338    73.26999    55.86373    55.19128    41.68944
+#&gt; [109]    47.55069    36.98185
+#&gt; 
+#&gt; $boxcoxLambda
+#&gt;   [1]  -4.0979 -14.1214   3.4802  -4.0971 -17.3818  20.0000   3.4714  -3.2824
+#&gt;   [9] -20.0000   2.6923   2.9803  -2.7477 -11.4985  -7.4552   2.6434   8.8043
+#&gt;  [17]  -3.6287  20.0000 -16.4172  20.0000 -20.0000  20.0000 -14.5400 -20.0000
+#&gt;  [25] -20.0000  -9.6605  12.9329 -20.0000  16.4589  20.0000 -19.7622  -4.3329
+#&gt;  [33]  -6.0429   8.5723   1.3463   9.7017   7.9689 -20.0000  -2.0192  -2.2063
+#&gt;  [41]  -8.6521 -20.0000 -12.6798  -4.5642  11.9354  20.0000  20.0000 -13.1698
+#&gt;  [49] -12.8858 -12.4122  -8.0638 -12.1341   1.0438   0.3629 -19.2369  20.0000
+#&gt;  [57] -20.0000 -17.0545 -16.9993  20.0000  20.0000  -0.9319  20.0000  20.0000
+#&gt;  [65]  20.0000  20.0000 -13.5385   0.6365 -18.6909 -18.9158 -14.2050  20.0000
+#&gt;  [73]  20.0000  -3.1611  20.0000  18.4647  20.0000  20.0000  20.0000  -2.3121
+#&gt;  [81]  20.0000  12.8333  12.8333  12.8334  12.8332  12.8334  12.8334  12.8334
+#&gt;  [89]  12.8334  12.8335  12.8334  12.8335  12.8335  12.8334  12.8334  12.8334
+#&gt;  [97]  12.8334  12.8334  12.8334  12.8334  12.8333  12.8334  12.8334  12.8334
+#&gt; [105]  12.8334  12.8334  12.8334  12.8334  12.8334  12.8334
+#&gt; 
+#&gt; $boxcoxSummaryValuesMatrix
+#&gt;                  [,1]         [,2]         [,3]         [,4]         [,5]
+#&gt; result.1 2.279908e-13 2.086632e-59  80695747564 2.316638e-13 1.090930e-72
+#&gt; result.2 3.222136e-13 7.264506e-60 129128826510 3.266007e-13 4.195792e-73
+#&gt; result.3 2.837779e-13 1.882180e-59 109943016654 2.885004e-13 9.565261e-73
+#&gt; result.4 2.491405e-13 2.071582e-59  91961512017 2.532069e-13 1.080906e-72
+#&gt; result.5 3.329631e-13 3.253284e-60 134344745274 3.386402e-13 1.025452e-73
+#&gt;               [,6]         [,7]         [,8]         [,9]    [,10]      [,11]
+#&gt; result.1 1.0000000  73418286453 7.645317e-11 1.043234e-87 2372.723 2109922693
+#&gt; result.2 0.7401493 117332131212 1.006958e-10 6.993365e-88 2746.927 3155594444
+#&gt; result.3 1.0000000 100214711796 9.057236e-11 1.007541e-87 2746.927 2730828157
+#&gt; result.4 1.0000000  83736472927 8.221555e-11 1.035706e-87 2029.482 2367047664
+#&gt; result.5 1.0000000 122590400725 1.037359e-10 7.069940e-89 1888.402 3279630038
+#&gt;                 [,12]        [,13]        [,14]     [,15]        [,16]
+#&gt; result.1 3.379401e-09 6.677373e-49 1.109733e-10 186228053 5.427141e+27
+#&gt; result.2 4.251151e-09 2.209721e-49 6.109507e-11 265940891 3.157228e+27
+#&gt; result.3 3.881659e-09 6.047787e-49 5.480270e-11 233056890 4.182782e+27
+#&gt; result.4 3.588366e-09 6.642029e-49 1.354137e-10 205992576 4.636733e+27
+#&gt; result.5 4.362874e-09 1.638339e-49 1.354137e-10 275610720 2.412958e+27
+#&gt;                 [,17]        [,18]        [,19]        [,20]        [,21]
+#&gt; result.1 4.752162e-12 4.643272e+48 2.013291e-45 2.127438e+60 2.071153e-89
+#&gt; result.2 3.071629e-12 7.759384e+48 7.684096e-46 1.368617e+60 1.701819e-89
+#&gt; result.3 3.814804e-12 5.029867e+48 1.682098e-45 1.936264e+60 2.049621e-89
+#&gt; result.4 4.151445e-12 4.766427e+48 1.859613e-45 2.034874e+60 2.064764e-89
+#&gt; result.5 2.540620e-12 6.583010e+47 1.804225e-46 2.877767e+59 1.452725e-90
+#&gt;                 [,22]        [,23]        [,24]        [,25]        [,26]
+#&gt; result.1 1.207958e+50 2.348967e-37 3.197038e-64 1.095813e-59 3.525422e-25
+#&gt; result.2 1.952899e+50 8.484064e-38 2.129422e-64 1.748988e-59 1.104346e-25
+#&gt; result.3 1.310756e+50 1.984644e-37 2.844254e-64 1.099610e-59 3.886338e-25
+#&gt; result.4 1.267811e+50 2.122983e-37 3.128556e-64 1.370889e-59 3.015653e-25
+#&gt; result.5 1.765679e+49 2.688654e-38 2.127853e-65 1.196607e-60 1.606476e-25
+#&gt;                 [,27]        [,28]        [,29]        [,30]        [,31]
+#&gt; result.1 5.279471e+38 2.257886e-48 6.910409e+30 1.378512e+53 7.158672e-49
+#&gt; result.2 8.067737e+38 3.021025e-49 1.737746e+30 1.538324e+53 6.429293e-50
+#&gt; result.3 4.980772e+38 3.962715e-48 8.546542e+30 1.173073e+53 3.973781e-49
+#&gt; result.4 4.907888e+38 2.714592e-48 7.978682e+30 1.720903e+53 9.465543e-49
+#&gt; result.5 1.742015e+38 4.123155e-48 3.122708e+30 2.208457e+52 7.829042e-49
+#&gt;                 [,32]        [,33]        [,34]    [,35]        [,36]
+#&gt; result.1 4.779927e-09 2.549809e-14 4.970733e+20 1248.639 3.195143e+22
+#&gt; result.2 5.808125e-09 1.582519e-14 2.630636e+20 1136.843 4.991651e+22
+#&gt; result.3 4.077114e-09 2.475501e-14 5.820053e+20 1240.720 3.529720e+22
+#&gt; result.4 5.970499e-09 2.785338e-14 4.974451e+20 1249.015 3.198409e+22
+#&gt; result.5 3.431829e-09 3.576745e-14 7.688035e+20 1354.682 1.502443e+22
+#&gt;                 [,37]        [,38]        [,39]        [,40]        [,41]
+#&gt; result.1 3.099917e+13 3.848414e-42 1.001510e-04 9.915192e-05 7.255537e-19
+#&gt; result.2 8.502139e+13 4.339093e-42 1.062255e-04 7.725346e-05 1.052707e-18
+#&gt; result.3 6.911779e+13 5.471178e-42 1.150793e-04 8.842947e-05 6.595287e-19
+#&gt; result.4 3.456824e+13 4.491285e-42 1.006630e-04 9.786501e-05 7.101609e-19
+#&gt; result.5 7.619679e+13 3.908667e-43 8.923056e-05 7.542055e-05 3.200251e-19
+#&gt;                 [,42]        [,43]        [,44]        [,45]        [,46]
+#&gt; result.1 4.283404e-35 1.495176e-26 2.108074e-10 2.458441e+25 4.527123e+35
+#&gt; result.2 7.710667e-35 3.250104e-27 2.715075e-10 3.736792e+25 1.853985e+35
+#&gt; result.3 5.445943e-36 1.405988e-26 2.091280e-10 2.105858e+25 3.655168e+35
+#&gt; result.4 4.353836e-35 1.679107e-26 2.099459e-10 2.640698e+25 4.131260e+35
+#&gt; result.5 6.260064e-35 5.851412e-27 1.468408e-10 9.234533e+24 6.411145e+34
+#&gt;                 [,47]        [,48]        [,49]        [,50]        [,51]
+#&gt; result.1 5.538263e+40 9.301486e-23 6.599643e-24 1.536618e-17 1.342404e-09
+#&gt; result.2 4.787844e+40 2.264333e-23 2.380217e-24 5.426096e-18 4.855092e-10
+#&gt; result.3 5.719870e+40 6.838374e-23 7.234838e-24 1.822781e-17 1.093150e-09
+#&gt; result.4 5.531141e+40 9.469605e-23 6.575268e-24 1.870749e-17 1.510347e-09
+#&gt; result.5 8.380666e+39 1.381124e-22 1.443036e-24 2.805693e-17 7.504981e-10
+#&gt;                 [,52]    [,53]    [,54]        [,55]        [,56]        [,57]
+#&gt; result.1 7.679910e-20 76.43823 4.424980 1.468870e-45 7.527283e+54 1.685619e-48
+#&gt; result.2 2.217863e-20 85.58412 4.613619 8.011276e-46 7.705667e+54 1.511949e-48
+#&gt; result.3 6.428337e-20 79.66546 4.493139 1.079870e-45 7.713950e+54 1.217365e-48
+#&gt; result.4 7.843135e-20 77.27080 4.442720 1.592830e-45 7.613260e+54 1.960509e-48
+#&gt; result.5 1.180992e-19 69.86738 4.292082 7.804178e-47 1.042606e+54 9.399462e-50
+#&gt;                 [,58]        [,59]        [,60]        [,61]       [,62]
+#&gt; result.1 2.633985e-43 1.043292e-43 3.871956e+58 6.228405e+58 0.008285272
+#&gt; result.2 4.041106e-43 4.149084e-44 4.433930e+58 6.866368e+58 0.007567653
+#&gt; result.3 1.923986e-43 9.100629e-44 3.817274e+58 6.062029e+58 0.008120861
+#&gt; result.4 2.932348e-43 1.030987e-43 3.794053e+58 6.121515e+58 0.008112062
+#&gt; result.5 3.197565e-44 8.459708e-45 5.610224e+57 8.947265e+57 0.008771726
+#&gt;                 [,63]        [,64]        [,65]        [,66]        [,67]
+#&gt; result.1 9.674089e+58 1.984726e+59 6.423201e+58 1.144097e+51 2.775244e-34
+#&gt; result.2 1.042992e+59 2.185826e+59 5.839450e+58 5.387487e+50 9.619365e-35
+#&gt; result.3 9.301107e+58 1.874126e+59 6.228990e+58 1.268087e+51 2.634188e-34
+#&gt; result.4 9.574603e+58 1.974375e+59 6.439072e+58 1.299503e+51 2.486227e-34
+#&gt; result.5 1.385005e+58 2.859114e+58 8.934092e+57 1.546780e+50 3.834525e-35
+#&gt;             [,68]        [,69]        [,70]        [,71]        [,72]
+#&gt; result.1 21.45962 2.898226e-51 7.580009e-52 1.601953e-36 3.671446e+59
+#&gt; result.2 22.91787 1.261290e-51 3.321741e-52 5.726370e-37 3.470280e+59
+#&gt; result.3 21.84876 2.516967e-51 6.630927e-52 1.582344e-36 3.655010e+59
+#&gt; result.4 22.02840 3.034845e-51 7.958282e-52 1.447121e-36 3.697705e+59
+#&gt; result.5 20.63917 2.035061e-52 5.169402e-53 2.043694e-37 5.187332e+58
+#&gt;                 [,73]        [,74]        [,75]        [,76]        [,77]
+#&gt; result.1 1.171769e+60 6.542088e-07 8.382438e+58 1.134672e+46 1.802530e+59
+#&gt; result.2 1.956162e+60 4.447805e-07 8.107326e+58 5.790107e+45 1.806277e+59
+#&gt; result.3 1.253173e+60 6.332819e-07 8.152656e+58 1.496608e+46 1.596081e+59
+#&gt; result.4 1.098283e+60 5.468918e-07 7.935844e+58 1.341934e+46 1.817245e+59
+#&gt; result.5 1.932375e+59 7.728641e-07 1.158732e+58 1.875726e+45 2.533691e+58
+#&gt;                 [,78]        [,79]        [,80]        [,81]        [,82]
+#&gt; result.1 1.824528e+59 1.464465e+59 2.361916e-06 1.616034e+59 4.163760e+33
+#&gt; result.2 1.832442e+59 1.376289e+59 1.911768e-06 1.528018e+59 2.068931e+34
+#&gt; result.3 1.616348e+59 1.416674e+59 2.277626e-06 1.560877e+59 2.067561e+34
+#&gt; result.4 1.839394e+59 1.383063e+59 2.301297e-06 1.523986e+59 6.880836e+33
+#&gt; result.5 2.566010e+58 2.016075e+58 2.709130e-06 2.226648e+58 2.069138e+34
+#&gt;                 [,83]        [,84]        [,85]        [,86]        [,87]
+#&gt; result.1 3.993001e+33 1.276349e+32 9.645150e+31 4.610494e+31 2.160326e+31
+#&gt; result.2 1.984083e+34 6.342298e+32 4.792192e+32 2.291007e+32 1.073490e+32
+#&gt; result.3 1.982769e+34 6.338186e+32 4.789003e+32 2.289517e+32 1.072795e+32
+#&gt; result.4 6.598649e+33 2.109269e+32 1.593869e+32 7.619213e+31 3.570118e+31
+#&gt; result.5 1.984280e+34 6.342427e+32 4.793546e+32 2.291031e+32 1.073502e+32
+#&gt;                 [,88]        [,89]        [,90]        [,91]        [,92]
+#&gt; result.1 1.451019e+31 3.601897e+29 1.177840e+29 8.596712e+30 6.529626e+28
+#&gt; result.2 7.210303e+31 1.789867e+30 5.853286e+29 4.271802e+31 3.245007e+29
+#&gt; result.3 7.205581e+31 1.788689e+30 5.849438e+29 4.268993e+31 3.242881e+29
+#&gt; result.4 2.397927e+31 5.952459e+29 1.946521e+29 1.420673e+31 1.079110e+29
+#&gt; result.5 7.210339e+31 1.789782e+30 5.852340e+29 4.271876e+31 3.244202e+29
+#&gt;                 [,93]        [,94]        [,95]        [,96]        [,97]
+#&gt; result.1 1.037515e+29 2.809235e+28 3.714563e+28 8.421018e+27 4.130420e+27
+#&gt; result.2 5.155929e+29 1.395972e+29 1.845962e+29 4.184525e+28 2.052492e+28
+#&gt; result.3 5.152550e+29 1.395056e+29 1.844650e+29 4.181774e+28 2.051143e+28
+#&gt; result.4 1.714618e+29 4.642515e+28 6.138665e+28 1.391642e+28 6.825885e+27
+#&gt; result.5 5.155123e+29 1.395911e+29 1.845650e+29 4.184527e+28 2.052422e+28
+#&gt;                 [,98]        [,99]       [,100]       [,101]       [,102]
+#&gt; result.1 2.857933e+26 1.594728e+26 1.658842e+26 1.047773e+26 1.347018e+26
+#&gt; result.2 1.420148e+27 7.924432e+26 8.243023e+26 5.206368e+26 6.693581e+26
+#&gt; result.3 1.419214e+27 7.919219e+26 8.237605e+26 5.202950e+26 6.689181e+26
+#&gt; result.4 4.722968e+26 2.635418e+26 2.741372e+26 1.731513e+26 2.226063e+26
+#&gt; result.5 1.420149e+27 7.924437e+26 8.243026e+26 5.206634e+26 6.693437e+26
+#&gt;                [,103]       [,104]       [,105]       [,106]       [,107]
+#&gt; result.1 2.005589e+25 2.520596e+24 9.204307e+23 2.833120e+22 2.425317e+22
+#&gt; result.2 9.966089e+25 1.252518e+25 4.573737e+24 1.407809e+23 1.205167e+23
+#&gt; result.3 9.959535e+25 1.251695e+25 4.570754e+24 1.406883e+23 1.204375e+23
+#&gt; result.4 3.314403e+25 4.165488e+24 1.521088e+24 4.681952e+22 4.008026e+22
+#&gt; result.5 9.966017e+25 1.252524e+25 4.573765e+24 1.407834e+23 1.205189e+23
+#&gt;                [,108]       [,109]       [,110]
+#&gt; result.1 6.623543e+20 3.583217e+21 1.423224e+20
+#&gt; result.2 3.291346e+21 1.780544e+22 7.072226e+20
+#&gt; result.3 3.289181e+21 1.779374e+22 7.067575e+20
+#&gt; result.4 1.094596e+21 5.921551e+21 2.351996e+20
+#&gt; result.5 3.291316e+21 1.780566e+22 7.072173e+20
+#&gt; </div><div class='input'>
+<span class='fu'>boxcoxTransformation</span>(<span class='kw'>summaryValuesVector</span><span class='kw'>=</span><span class='no'>summaryValuesMat</span>[,<span class='fl'>1</span>],
+ <span class='kw'>boxcoxAddition</span><span class='kw'>=</span><span class='no'>boxTranMat</span>$<span class='no'>boxcoxAddition</span>, <span class='kw'>boxcoxLambda</span><span class='kw'>=</span><span class='no'>boxTranMat</span>$<span class='no'>boxcoxLambda</span>)</div><div class='output co'>#&gt;     result.1     result.2     result.3     result.4     result.5 
+#&gt; 2.279908e-13 2.342548e-59 5.897409e+10 2.532069e-13 1.278766e-72 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -116,9 +345,9 @@ single observation.</p>
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
-
-      <li><a href="#references">References</a></li>
-          </ul>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
     <h2>Author</h2>
     
@@ -129,7 +358,7 @@ Brian O'Meara and Barb Banbury
 
       <footer>
       <div class="copyright">
-  <p>Developed by Brian O'Meara, Barb Banbury.</p>
+  <p>Developed by Brian O'Meara, Barb Banbury, David Bapst.</p>
 </div>
 
 <div class="pkgdown">

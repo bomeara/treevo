@@ -154,7 +154,6 @@ simulateWithPriors<-function(
 		timeStep<-generation.time/TreeYears
 		}
 	
-	
 	# checks
 	if(checks){
 		checkNiter(niter.brown=niter.brown, niter.lambda=niter.lambda,
