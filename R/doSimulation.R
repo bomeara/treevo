@@ -41,8 +41,11 @@
 #' is reached without producing a non-\code{NA} result, the simulation is terminated.
 
 
-#' @param timeStep This value corresponds to the number of discrete time steps
-#' on the shortest branch.
+#' @param timeStep This value corresponds to the number of discrete evolutionary events ('generations')
+#' simulated per time-unit along branches. Typically \code{NULL} by default and
+#' determined internally as follows: \code{timeStep = generation.time / TreeYears}.
+#' Can be provided a value as an alternative to using arguments \code{generation.time}
+#' and \code{TreeYears}, which would then be overridden. 
 
 #' @param checkTimeStep If \code{TRUE}, warnings will be issued if \code{TimeStep} is too short.
 
@@ -94,7 +97,7 @@
 #' 	startingValues=c(10), #root state
 #' 	intrinsicValues=c(0.01),
 #' 	extrinsicValues=c(0),
-#' 	timeStep=0.0001,
+# 	timeStep=0.0001,
 #' 	saveHistory=FALSE)
 #'
 #' #Character displacement model with minimum bound
@@ -105,7 +108,7 @@
 #' 	startingValues=c(10), #root state
 #' 	intrinsicValues=c(0.05, 10, 0.01),
 #' 	extrinsicValues=c(0, .1, .25),
-#' 	timeStep=0.001,
+# 	timeStep=0.001,
 #' 	saveHistory=FALSE)
 #'
 #' #Simple Brownian motion
@@ -116,7 +119,7 @@
 #' 	startingValues=c(10), #root state
 #' 	intrinsicValues=c(0.01),
 #' 	extrinsicValues=c(0),
-#' 	timeStep=0.0001,
+# 	timeStep=0.0001,
 #' 	plot=FALSE,
 #' 	saveHistory=FALSE)
 #' 
@@ -129,7 +132,6 @@
 #' 	startingValues=c(10), #root state
 #' 	intrinsicValues=c(0.05, 10, 0.01),
 #' 	extrinsicValues=c(0, .1, .25),
-#' 	timeStep=0.001,
 #' 	plot=TRUE,
 #' 	saveHistory=FALSE)
 #' 
@@ -144,7 +146,6 @@
 #' 	startingValues=c(10), #root state
 #' 	intrinsicValues=c(0.01),
 #' 	extrinsicValues=c(0),
-#' 	timeStep=0.0001,
 #' 	saveHistory=FALSE)
 #
 #' }
@@ -154,7 +155,16 @@
 #' @rdname doSimulation
 #' @export
 doSimulation<-function(phy=NULL, intrinsicFn, extrinsicFn, startingValues, intrinsicValues, extrinsicValues, 
-	timeStep, saveHistory=FALSE, saveRealParams=FALSE, jobName="", taxon.df = NULL) {
+	generation.time=1000, TreeYears=max(branching.times(phy)) * 1e6, 
+	timeStep=NULL, saveHistory=FALSE, saveRealParams=FALSE, jobName="", taxon.df = NULL) {
+
+	if(!is.ultrametric(phy)){
+		stop("phy must be ultrametric for function doSimulation")
+		}
+	
+	if(is.null(timeStep)){
+		timeStep<-generation.time/TreeYears
+		}
 	
 	if(is.null(taxon.df)){
 		taxon.df<-getSimulationSplits(phy)
@@ -280,8 +290,17 @@ doSimulation<-function(phy=NULL, intrinsicFn, extrinsicFn, startingValues, intri
 #' @rdname doSimulation
 #' @export
 doSimulationForPlotting<-function(phy=NULL, intrinsicFn, extrinsicFn, startingValues, intrinsicValues, 
-	extrinsicValues, timeStep, plot=FALSE, savePlot=FALSE, saveHistory=FALSE, saveRealParams=FALSE, jobName="", taxon.df=NULL) {
+	extrinsicValues, 	generation.time=1000, TreeYears=max(branching.times(phy)) * 1e6, 
+	timeStep=NULL, plot=FALSE, savePlot=FALSE, saveHistory=FALSE, saveRealParams=FALSE, jobName="", taxon.df=NULL) {
 
+	if(!is.ultrametric(phy)){
+		stop("phy must be ultrametric for function doSimulationForPlotting")
+		}	
+	
+	if(is.null(timeStep)){
+		timeStep<-generation.time/TreeYears
+		}	
+	
 	if(is.null(taxon.df)){
 		taxon.df<-getSimulationSplits(phy)
 		}
@@ -412,9 +431,16 @@ doSimulationForPlotting<-function(phy=NULL, intrinsicFn, extrinsicFn, startingVa
 #' @rdname doSimulation
 #' @export
 doSimulationWithPossibleExtinction<-function(phy=NULL, intrinsicFn, extrinsicFn, startingValues, intrinsicValues, extrinsicValues,
-	timeStep, saveHistory=FALSE, saveRealParams=FALSE, jobName="", maxAttempts = 100,
+	generation.time=1000, TreeYears=max(branching.times(phy)) * 1e6, 
+	timeStep=NULL, saveHistory=FALSE, saveRealParams=FALSE, jobName="", maxAttempts = 100,
 	returnAll = FALSE, verbose=FALSE, reject.NaN=TRUE, taxon.df=NULL, checkTimeStep=TRUE) {
 	#
+	
+	if(is.null(timeStep)){
+		timeStep<-generation.time/TreeYears
+		}
+	
+	
 	if(is.null(taxon.df)){
 		taxon.df <- getTaxonDFWithPossibleExtinction(phy)
 		}

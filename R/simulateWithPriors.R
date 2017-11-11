@@ -105,7 +105,7 @@
 #'   intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
 #'   extrinsicPriorsFns=c("fixed"),
 #'   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
-#'   timeStep=1e-04,
+#   timeStep=1e-04,
 #' 	 freevector=NULL, 	
 #' 	 giveUpAttempts=10, 
 #' 	 verbose=FALSE,
@@ -124,7 +124,7 @@
 #'   intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
 #'   extrinsicPriorsFns=c("fixed"),
 #'   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE), 
-#'   timeStep=1e-04,
+#   timeStep=1e-04,
 #'   checkpointFile=NULL, checkpointFreq=24,
 #'   verbose=FALSE,
 #'   freevector=NULL, taxon.df=NULL,
@@ -142,11 +142,16 @@
 simulateWithPriors<-function(
 	phy=NULL, intrinsicFn, extrinsicFn, startingPriorsFns, startingPriorsValues, 
 	intrinsicPriorsFns, intrinsicPriorsValues, extrinsicPriorsFns, extrinsicPriorsValues, 
-	timeStep=1e-04, giveUpAttempts=10, verbose=FALSE, checks=TRUE, taxon.df=NULL, freevector=NULL, 
+	generation.time=1000, TreeYears=max(branching.times(phy)) * 1e6, timeStep=NULL, 
+	giveUpAttempts=10, verbose=FALSE, checks=TRUE, taxon.df=NULL, freevector=NULL, 
 	niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) {
 
 	if(is.null(taxon.df)){
 		taxon.df <- getTaxonDFWithPossibleExtinction(phy)
+		}
+		
+	if(is.null(timeStep)){
+		timeStep<-generation.time/TreeYears
 		}
 	
 	
@@ -227,12 +232,16 @@ parallelSimulateWithPriors<-function(
 	phy, 
 	intrinsicFn, extrinsicFn, startingPriorsFns, startingPriorsValues,
 	intrinsicPriorsFns, intrinsicPriorsValues, extrinsicPriorsFns, extrinsicPriorsValues, 
-	timeStep=1e-04,
+	generation.time=1000, TreeYears=max(branching.times(phy)) * 1e6, timeStep=NULL, #timeStep=1e-04,
 	checkpointFile=NULL, checkpointFreq=24, verbose=FALSE, freevector=NULL, taxon.df=NULL, giveUpAttempts=10, 
 	niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) {
 	
 	#library(doMC, quietly=TRUE)
 	#library(foreach, quietly=TRUE)
+	
+	if(is.null(timeStep)){
+		timeStep<-generation.time/TreeYears
+		}
 	
 	# checks
 	checkNiter(niter.brown=niter.brown, niter.lambda=niter.lambda,

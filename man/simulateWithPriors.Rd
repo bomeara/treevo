@@ -7,7 +7,8 @@
 \usage{
 simulateWithPriors(phy = NULL, intrinsicFn, extrinsicFn, startingPriorsFns,
   startingPriorsValues, intrinsicPriorsFns, intrinsicPriorsValues,
-  extrinsicPriorsFns, extrinsicPriorsValues, timeStep = 1e-04,
+  extrinsicPriorsFns, extrinsicPriorsValues, generation.time = 1000,
+  TreeYears = max(branching.times(phy)) * 1e+06, timeStep = NULL,
   giveUpAttempts = 10, verbose = FALSE, checks = TRUE, taxon.df = NULL,
   freevector = NULL, niter.brown = 25, niter.lambda = 25,
   niter.delta = 25, niter.OU = 25, niter.white = 25)
@@ -15,7 +16,8 @@ simulateWithPriors(phy = NULL, intrinsicFn, extrinsicFn, startingPriorsFns,
 parallelSimulateWithPriors(nrepSim, multicore, coreLimit, phy, intrinsicFn,
   extrinsicFn, startingPriorsFns, startingPriorsValues, intrinsicPriorsFns,
   intrinsicPriorsValues, extrinsicPriorsFns, extrinsicPriorsValues,
-  timeStep = 1e-04, checkpointFile = NULL, checkpointFreq = 24,
+  generation.time = 1000, TreeYears = max(branching.times(phy)) * 1e+06,
+  timeStep = NULL, checkpointFile = NULL, checkpointFreq = 24,
   verbose = FALSE, freevector = NULL, taxon.df = NULL,
   giveUpAttempts = 10, niter.brown = 25, niter.lambda = 25,
   niter.delta = 25, niter.OU = 25, niter.white = 25)
@@ -48,8 +50,11 @@ use for extrinsic function parameters: can be one of \code{"fixed"}, \code{"unif
 \item{extrinsicPriorsValues}{Matrix with number of columns equal to the number of parameters to pass
 to the extrinsic function and number of rows equal to two (representing two parameters to pass to prior distribution).}
 
-\item{timeStep}{This value corresponds to the number of discrete time steps
-on the shortest branch.}
+\item{timeStep}{This value corresponds to the number of discrete evolutionary events ('generations')
+simulated per time-unit along branches. Typically \code{NULL} by default and
+determined internally as follows: \code{timeStep = generation.time / TreeYears}.
+Can be provided a value as an alternative to using arguments \code{generation.time}
+and \code{TreeYears}, which would then be overridden.}
 
 \item{giveUpAttempts}{Value for when to stop the analysis if \code{NA} values are present.}
 
@@ -131,7 +136,6 @@ simData<-simulateWithPriors(phy=simPhy,
   intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
   extrinsicPriorsFns=c("fixed"),
   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
-  timeStep=1e-04,
 	 freevector=NULL, 	
 	 giveUpAttempts=10, 
 	 verbose=FALSE,
@@ -150,7 +154,6 @@ simDataParallel<-parallelSimulateWithPriors(
   intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
   extrinsicPriorsFns=c("fixed"),
   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE), 
-  timeStep=1e-04,
   checkpointFile=NULL, checkpointFreq=24,
   verbose=FALSE,
   freevector=NULL, taxon.df=NULL,

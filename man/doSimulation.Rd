@@ -7,16 +7,20 @@
 \title{Discrete-Time Character Simulation}
 \usage{
 doSimulation(phy = NULL, intrinsicFn, extrinsicFn, startingValues,
-  intrinsicValues, extrinsicValues, timeStep, saveHistory = FALSE,
-  saveRealParams = FALSE, jobName = "", taxon.df = NULL)
+  intrinsicValues, extrinsicValues, generation.time = 1000,
+  TreeYears = max(branching.times(phy)) * 1e+06, timeStep = NULL,
+  saveHistory = FALSE, saveRealParams = FALSE, jobName = "",
+  taxon.df = NULL)
 
 doSimulationForPlotting(phy = NULL, intrinsicFn, extrinsicFn, startingValues,
-  intrinsicValues, extrinsicValues, timeStep, plot = FALSE,
-  savePlot = FALSE, saveHistory = FALSE, saveRealParams = FALSE,
-  jobName = "", taxon.df = NULL)
+  intrinsicValues, extrinsicValues, generation.time = 1000,
+  TreeYears = max(branching.times(phy)) * 1e+06, timeStep = NULL,
+  plot = FALSE, savePlot = FALSE, saveHistory = FALSE,
+  saveRealParams = FALSE, jobName = "", taxon.df = NULL)
 
 doSimulationWithPossibleExtinction(phy = NULL, intrinsicFn, extrinsicFn,
-  startingValues, intrinsicValues, extrinsicValues, timeStep,
+  startingValues, intrinsicValues, extrinsicValues, generation.time = 1000,
+  TreeYears = max(branching.times(phy)) * 1e+06, timeStep = NULL,
   saveHistory = FALSE, saveRealParams = FALSE, jobName = "",
   maxAttempts = 100, returnAll = FALSE, verbose = FALSE,
   reject.NaN = TRUE, taxon.df = NULL, checkTimeStep = TRUE)
@@ -39,8 +43,11 @@ intrinsic model.}
 \item{extrinsicValues}{Vector of values corresponding to the parameters of the
 extrinsic model.}
 
-\item{timeStep}{This value corresponds to the number of discrete time steps
-on the shortest branch.}
+\item{timeStep}{This value corresponds to the number of discrete evolutionary events ('generations')
+simulated per time-unit along branches. Typically \code{NULL} by default and
+determined internally as follows: \code{timeStep = generation.time / TreeYears}.
+Can be provided a value as an alternative to using arguments \code{generation.time}
+and \code{TreeYears}, which would then be overridden.}
 
 \item{saveHistory}{If \code{TRUE}, saves the character history throughout the simulation.
 When \code{saveHistory} is \code{TRUE}, processor time will increase quite a bit.}
@@ -104,7 +111,6 @@ char<-doSimulation(
 	startingValues=c(10), #root state
 	intrinsicValues=c(0.01),
 	extrinsicValues=c(0),
-	timeStep=0.0001,
 	saveHistory=FALSE)
 
 #Character displacement model with minimum bound
@@ -115,7 +121,6 @@ char<-doSimulation(
 	startingValues=c(10), #root state
 	intrinsicValues=c(0.05, 10, 0.01),
 	extrinsicValues=c(0, .1, .25),
-	timeStep=0.001,
 	saveHistory=FALSE)
 
 #Simple Brownian motion
@@ -126,7 +131,6 @@ char<-doSimulationForPlotting(
 	startingValues=c(10), #root state
 	intrinsicValues=c(0.01),
 	extrinsicValues=c(0),
-	timeStep=0.0001,
 	plot=FALSE,
 	saveHistory=FALSE)
 
@@ -139,7 +143,6 @@ char<-doSimulationForPlotting(
 	startingValues=c(10), #root state
 	intrinsicValues=c(0.05, 10, 0.01),
 	extrinsicValues=c(0, .1, .25),
-	timeStep=0.001,
 	plot=TRUE,
 	saveHistory=FALSE)
 
@@ -154,7 +157,6 @@ char<-doSimulationWithPossibleExtinction(
 	startingValues=c(10), #root state
 	intrinsicValues=c(0.01),
 	extrinsicValues=c(0),
-	timeStep=0.0001,
 	saveHistory=FALSE)
 }
 }

@@ -237,13 +237,14 @@ doRun_prc<-function(
 	phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues, startingPriorsFns, 
 	intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, 
 	#startingValuesGuess=c(), intrinsicValuesGuess=c(), extrinsicValuesGuess=c(), 
-	generation.time=1, TreeYears=max(branching.times(phy)) * 1e6, 
+	generation.time=1000, TreeYears=max(branching.times(phy)) * 1e6, 
 	multicore=FALSE, coreLimit=NA, validation="CV", scale=TRUE, variance.cutoff=95,
 	niter.goal=5, 
 	numParticles=300, standardDevFactor=0.20, 
 	StartSims=300, epsilonProportion=0.7, epsilonMultiplier=0.7, nStepsPRC=5, 
 	jobName=NA, stopRule=FALSE, stopValue=0.05, saveData=FALSE, verboseParticles=TRUE, plot=FALSE) {	
 
+	functionStartTime<-proc.time[[3]]
 	
 	if (!is.binary.tree(phy)) {
 		warning("Tree is not fully dichotomous, this may cause issues")
@@ -523,6 +524,7 @@ doRun_prc<-function(
 		save(prcResults, file=paste0("partialResults", jobName, ".txt", sep=""))
 		}
 
+	particleStartTime<-proc.time[[3]]
 	while (dataGenerationStep < nStepsPRC) {
 		dataGenerationStep<-dataGenerationStep+1
 		if(verboseParticles){
@@ -756,7 +758,8 @@ doRun_prc<-function(
 			}
 		lines(density(subset(particleDataFrame, particleDataFrame$generation==length(toleranceVector))[, 8]), col= "red")
 		}
-	message("Collection of simulation particles under PRC completed...")
+	particleTime<-proc.time[[3]]-particleStartTime
+	message(paste0("Collection of simulation particles under PRC completed in ",particleTime," seconds..."))
 	#---------------------- ABC-PRC (End) --------------------------------
 	#
 	input.data<-rbind(jobName, length(phy[[3]]), nrepSim, generation.time, TreeYears, epsilonProportion,
@@ -780,6 +783,9 @@ doRun_prc<-function(
 	if(multicore){
 		registerMulticoreEnv(nCore=1)
 		}
+	#
+	functionTime<-proc.time[[3]]-functionStartTime
+	message(paste0("Function completed in ",functionTime," seconds."))
 	#
 	#print(prcResults)
 	return(prcResults)
@@ -831,7 +837,7 @@ doRun_rej<-function(
 	intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, 
 	#startingValuesGuess=c(), intrinsicValuesGuess=c(), extrinsicValuesGuess=c(), 
 	TreeYears=max(branching.times(phy)) * 1e6, 
-	generation.time=1, multicore=FALSE, coreLimit=NA, validation="CV", scale=TRUE, variance.cutoff=95,
+	generation.time=1000, multicore=FALSE, coreLimit=NA, validation="CV", scale=TRUE, variance.cutoff=95,
 	niter.goal=5, 
 	standardDevFactor=0.20, StartSims=NA, jobName=NA, abcTolerance=0.1, 
 	checkpointFile=NULL, checkpointFreq=24, savesims=FALSE) {	
