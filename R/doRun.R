@@ -244,7 +244,7 @@ doRun_prc<-function(
 	StartSims=300, epsilonProportion=0.7, epsilonMultiplier=0.7, nStepsPRC=5, 
 	jobName=NA, stopRule=FALSE, stopValue=0.05, saveData=FALSE, verboseParticles=TRUE, plot=FALSE) {	
 
-	functionStartTime<-proc.time[[3]]
+	functionStartTime<-proc.time()[[3]]
 	
 	if (!is.binary.tree(phy)) {
 		warning("Tree is not fully dichotomous, this may cause issues")
@@ -533,7 +533,7 @@ doRun_prc<-function(
 		save(prcResults, file=paste0("partialResults", jobName, ".txt", sep=""))
 		}
 
-	particleStartTime<-proc.time[[3]]
+	particleStartTime<-proc.time()[[3]]
 	while (dataGenerationStep < nStepsPRC) {
 		dataGenerationStep<-dataGenerationStep+1
 		if(verboseParticles){
@@ -767,7 +767,7 @@ doRun_prc<-function(
 			}
 		lines(density(subset(particleDataFrame, particleDataFrame$generation==length(toleranceVector))[, 8]), col= "red")
 		}
-	particleTime<-proc.time[[3]]-particleStartTime
+	particleTime<-proc.time()[[3]]-particleStartTime
 	message(paste0("Collection of simulation particles under PRC completed in ",particleTime," seconds..."))
 	#---------------------- ABC-PRC (End) --------------------------------
 	#
@@ -793,7 +793,7 @@ doRun_prc<-function(
 		registerMulticoreEnv(nCore=1)
 		}
 	#
-	functionTime<-proc.time[[3]]-functionStartTime
+	functionTime<-proc.time()[[3]]-functionStartTime
 	message(paste0("Function completed in ",functionTime," seconds."))
 	#
 	#print(prcResults)
