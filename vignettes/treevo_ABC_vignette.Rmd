@@ -127,8 +127,8 @@ resultsBound<-doRun_prc(
   numParticles=20,
   jobName="examplerun_prc",
   stopRule=FALSE,
-  multicore=FALSE,
-  coreLimit=1,
+  multicore=TRUE,
+  coreLimit=3,
   verboseParticles=FALSE
   )
 
