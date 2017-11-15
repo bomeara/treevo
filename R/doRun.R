@@ -250,12 +250,21 @@ doRun_prc<-function(
 		warning("Tree is not fully dichotomous, this may cause issues")
 	}
 
-	if(min(phy$edge.length) < 0.00001) {
+	timeStep<-generation.time/TreeYears
+	message(paste0("The effective timeStep for this tree will be ",timeStep,", as a proportion of tree height (root to furthest tip)"))
+
+	if(max(phy$edge.length) < 0.00001) {
 		warning("Tree has zero or nearly zero length branches; little or no evol change will be assigned to these, also geiger functions may fail")
 		#print("Tree has zero or nearly zero length branches")
 	}
+	
+	if(min(phy$edge.length) < t) {
+		warning("Tree has zero or nearly zero length branches; little or no evol change will be assigned to these, also geiger functions may fail")
+		#print("Tree has zero or nearly zero length branches")
+	}
+	
+	
 
-	timeStep<-generation.time/TreeYears
 
 	#splits<-getSimulationSplits(phy) #initialize this info
 	taxon.df <- getTaxonDFWithPossibleExtinction(phy)
