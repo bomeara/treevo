@@ -247,28 +247,29 @@ doRun_prc<-function(
 	functionStartTime<-proc.time()[[3]]
 	
 	if (!is.binary.tree(phy)) {
-		warning("Tree is not fully dichotomous, this may cause issues")
+		warning("Tree is not fully dichotomous, this may cause issues!")
 	}
 
 	timeStep<-generation.time/TreeYears
-	message(paste0("The effective timeStep for this tree will be ",timeStep,", as a proportion of tree height (root to furthest tip)"))
+	message(paste0("The effective timeStep for this tree will be ",round(timeStep),
+		", as a proportion of tree height (root to furthest tip)..."))
 
-	if(max(phy$edge.length) < 0.00001) {
-		warning("Tree has zero or nearly zero length branches; little or no evol change will be assigned to these, also geiger functions may fail")
+	edgesRescaled<-tree$edge.length/max(node.depth.edgelength(tree))
+	message("Rescaling edge lengths relative to maximum tip-to-root distance...")
+	
+	if(max(edgesRescaled) < timeStep) {
+		stop("Tree has *NO* rescaled branches longer than generation.time/TreeYears, no simulated evol change can occur!")
+	}
+	if(min(edgesRescaled) < timeStep) {
+		warning("Tree has rescaled branches shorter than generation.time/TreeYears; no evol change can be assigned to these, and geiger functions may fail!")
 		#print("Tree has zero or nearly zero length branches")
 	}
 	
-	if(min(phy$edge.length) < t) {
-		warning("Tree has zero or nearly zero length branches; little or no evol change will be assigned to these, also geiger functions may fail")
-		#print("Tree has zero or nearly zero length branches")
-	}
+	totalGenerations<-sum(sapply(edgesRescaled,function(x) floor(x/timeStep)))
+	message("Given generation time, a total of ",round(totalGenerations)," generations will occur over this tree")
 	
-	
-
-
 	#splits<-getSimulationSplits(phy) #initialize this info
 	taxon.df <- getTaxonDFWithPossibleExtinction(phy)
-
 	
 	# get freevector
 	freevector<-getFreeVector(startingPriorsFns=startingPriorsFns, startingPriorsValues=startingPriorsValues, 
@@ -276,7 +277,6 @@ doRun_prc<-function(
 						extrinsicPriorsFns=extrinsicPriorsFns, extrinsicPriorsValues=extrinsicPriorsValues)
 	numberParametersTotal<-length(freevector)
 	numberParametersFree<-sum(freevector)
-
 
 	#create PriorMatrix
 	namesForPriorMatrix<-c()
