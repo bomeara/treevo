@@ -102,8 +102,8 @@
 #' which differ slightly in their content among the two functions. For \code{doRun_prc}, the output is:
 
 #' \describe{
-#' \item{input.data}{Input variables: jobName, number of taxa, nrepSim, generation.time,
-#' treeYears, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor} 
+#' \item{input.data}{Input variables: jobName, number of taxa, nrepSim, 
+#' generation.time, TreeYears, timeStep, totalGenerations, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor} 
 
 #' \item{PriorMatrix}{Matrix of prior distributions}
 
@@ -128,8 +128,8 @@
 #' For \code{doRun_rej}, the output is:
 
 #' \describe{
-#' \item{input.data}{Input variables: jobName, number of taxa, nrepSim, generation.time,
-#' treeYears, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor} 
+#' \item{input.data}{Input variables: jobName, number of taxa, nrepSim, 
+#' generation.time, TreeYears, timeStep, totalGenerations, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor} 
 
 #' \item{PriorMatrix}{Matrix of prior distributions}
 
@@ -360,7 +360,8 @@ doRun_prc<-function(
 	#Used to be = StartSims*((2^try)/2), If initial simulations are not enough, and we need to try again then new analysis will double number of initial simulations
 	nrepSim<-StartSims 
 	#
-	input.data<-rbind(jobName, length(phy[[3]]), nrepSim, TreeYears, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor)
+	input.data<-rbind(jobName, length(phy[[3]]), nrepSim, generation.time, TreeYears, timeStep, totalGenerations,
+		epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor)
 	message(paste0("Number of initial simulations set to ", nrepSim)) #, "\n"
 	message("Doing initial simulations...")
 	Time<-proc.time()[[3]]
@@ -771,7 +772,7 @@ doRun_prc<-function(
 	message(paste0("Collection of simulation particles under PRC completed in ",particleTime," seconds..."))
 	#---------------------- ABC-PRC (End) --------------------------------
 	#
-	input.data<-rbind(jobName, length(phy[[3]]), nrepSim, generation.time, TreeYears, epsilonProportion,
+	input.data<-rbind(jobName, length(phy[[3]]), nrepSim, generation.time, TreeYears, timeStep, totalGenerations, epsilonProportion,
 		epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor)
 	#
 	time3<-proc.time()[[3]]
@@ -962,7 +963,7 @@ doRun_rej<-function(
 		phy=phy, traits=traits, abcTolerance=abcTolerance))
 	
 	#save(abcDistancesRaw, abcDistancesRawTotal, abcDistances, abcResults, particleDataFrame, file="")
-	input.data<-rbind(jobName, length(phy[[3]]), generation.time, TreeYears, StartSims, standardDevFactor, abcTolerance)
+	input.data<-rbind(jobName, length(phy[[3]]), generation.time, TreeYears, timeStep, totalGenerations, StartSims, standardDevFactor, abcTolerance)
 	#print(res)
 	
 	rejectionResults<-vector("list")
