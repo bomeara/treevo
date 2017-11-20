@@ -75,7 +75,7 @@ rownames(charData)<-names(sutureComplexity)
 
 Let's analyze it with ordinary BM
 
-```{r}
+```{r, eval=FALSE}
 results<-doRun_prc(
   phy = tree,
   traits = charData,
@@ -105,7 +105,7 @@ results<-doRun_prc(
 
 Let's analyze it with ordinary BM with a bound
 
-```{r}
+```{r, eval=FALSE}
 resultsBound<-doRun_prc(
   phy = tree,
   traits = charData,
@@ -135,7 +135,7 @@ resultsBound<-doRun_prc(
 ```
 
 
-```{r}
+```{r, eval=FALSE, echo=FALSE}
 
 save.image(file="treevo_vignette_workspace.Rdata")
 
