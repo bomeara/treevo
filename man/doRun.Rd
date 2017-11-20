@@ -56,14 +56,17 @@ to the extrinsic function and number of rows equal to two (representing two para
 use for extrinsic function parameters: can be one of \code{"fixed"}, \code{"uniform"}, \code{"normal"},}
 
 \item{generation.time}{The number of years per generation. This sets the coarseness of the simulation; if it's set to 1000, 
-for example, the population's trait values change every 1000 years. Note that this is in calender years (see description
+for example, the population's trait values change every 1000 calender years. Note that this is in calender years (see description
 for argument \code{TreeYears}), and not in millions of years (as is typical for dated trees in macroevolutionary studies).
-Thus, if a branch is 1 million-year time-unit long, then by default 1000 evolutionary changes occur along that branch.}
+Thus, if a branch is 1 million-year time-unit long, and a user applies the default \code{generation.time = 1000},
+then 1000 evolutionary changes will be simulated along that branch.
+See documentation for \code{\link{doSimulation}} for further details.}
 
 \item{TreeYears}{The amount of calender time from the root to the furthest tip. Most trees in macroevolutionary studies are dated with
 branch lengths in units of millions of years, and thus the default for this argument is \code{max(branching.times(phy)) * 1e6}.
 If your tree has the most recent tip at time zero (i.e., the modern day), this would be the same as the root age of the tree. If your
-branch lengths are not in millions of years, you should alter this argument. Otherwise, leave this argument alone.}
+branch lengths are not in millions of years, you should alter this argument. Otherwise, leave this argument alone.
+See documentation for \code{\link{doSimulation}} for further details.}
 
 \item{multicore}{Whether to use multicore, default is \code{FALSE}. If \code{TRUE}, one of
 two suggested packages must be installed, either \code{doMC} (for UNIX systems) or

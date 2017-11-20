@@ -46,16 +46,6 @@
 
 # @param extrinsicValuesGuess Optional guess of extrinsic values.
 
-#' @param generation.time The number of years per generation. This sets the coarseness of the simulation; if it's set to 1000, 
-#' for example, the population's trait values change every 1000 years. Note that this is in calender years (see description
-#' for argument \code{TreeYears}), and not in millions of years (as is typical for dated trees in macroevolutionary studies).
-#' Thus, if a branch is 1 million-year time-unit long, then by default 1000 evolutionary changes occur along that branch.
-
-#' @param TreeYears The amount of calender time from the root to the furthest tip. Most trees in macroevolutionary studies are dated with
-#' branch lengths in units of millions of years, and thus the default for this argument is \code{max(branching.times(phy)) * 1e6}.
-#' If your tree has the most recent tip at time zero (i.e., the modern day), this would be the same as the root age of the tree. If your
-#' branch lengths are not in millions of years, you should alter this argument. Otherwise, leave this argument alone.
-
 # TreeYears = 1000000 if tree length is 1 million of years, 1000 if 1 thousand years, etc.
 
 #' @param numParticles Number of accepted particles per generation.
@@ -254,7 +244,7 @@ doRun_prc<-function(
 	message(paste0("The effective timeStep for this tree will be ",round(timeStep),
 		", as a proportion of tree height (root to furthest tip)..."))
 
-	edgesRescaled<-tree$edge.length/max(node.depth.edgelength(tree))
+	edgesRescaled<-phy$edge.length/max(node.depth.edgelength(phy))
 	message("Rescaling edge lengths relative to maximum tip-to-root distance...")
 	
 	if(max(edgesRescaled) < timeStep) {
@@ -858,7 +848,25 @@ doRun_rej<-function(
 		warning("Tree is not fully dichotomous, this may lead to issues")
 	}
 	startTime<-proc.time()[[3]]
+
 	timeStep<-generation.time/TreeYears
+	message(paste0("The effective timeStep for this tree will be ",round(timeStep),
+		", as a proportion of tree height (root to furthest tip)..."))
+
+	edgesRescaled<-phy$edge.length/max(node.depth.edgelength(phy))
+	message("Rescaling edge lengths relative to maximum tip-to-root distance...")
+	
+	if(max(edgesRescaled) < timeStep) {
+		stop("Tree has *NO* rescaled branches longer than generation.time/TreeYears, no simulated evol change can occur!")
+	}
+	if(min(edgesRescaled) < timeStep) {
+		warning("Tree has rescaled branches shorter than generation.time/TreeYears; no evol change can be assigned to these, and geiger functions may fail!")
+		#print("Tree has zero or nearly zero length branches")
+	}
+	
+	totalGenerations<-sum(sapply(edgesRescaled,function(x) floor(x/timeStep)))
+	message("Given generation time, a total of ",round(totalGenerations)," generations will occur over this tree")
+		
 	#splits<-getSimulationSplits(phy) #initialize this info
 	taxon.df <- getTaxonDFWithPossibleExtinction(phy=phy)
 

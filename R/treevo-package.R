@@ -88,7 +88,6 @@
 #' @importFrom corpcor pseudoinverse 
 #' @importFrom coda effectiveSize HPDinterval as.mcmc 
 #' @importFrom foreach foreach getDoParWorkers '%dopar%' 
-#' @importFrom rgl plot3d title3d rgl.viewpoint open3d rgl.material triangles3d lines3d spheres3d 
 #' @importFrom partitions blockparts 
 #' @importFrom MASS boxcox 
 #' @importFrom mvtnorm dmvnorm 
@@ -97,6 +96,7 @@
 #' @importFrom methods as setAs
 #' @importFrom utils capture.output
 
+# @importFrom rgl plot3d title3d rgl.viewpoint open3d rgl.material triangles3d lines3d spheres3d 
 
 
 #'
