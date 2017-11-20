@@ -28,7 +28,7 @@ test_that("doPRC runs correctly", {
 	  intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
 	  extrinsicPriorsFns=c("fixed"),
 	  extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
-	  timeStep=0.0001,
+	  generation.time=10000,
 	  standardDevFactor=0.2,
 	  plot=FALSE,
 	  StartSims=10,
