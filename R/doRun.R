@@ -241,7 +241,7 @@ doRun_prc<-function(
 	}
 
 	timeStep<-generation.time/TreeYears
-	message(paste0("The effective timeStep for this tree will be ",round(timeStep),
+	message(paste0("The effective timeStep for this tree will be ",signif(timeStep),
 		", as a proportion of tree height (root to furthest tip)..."))
 
 	edgesRescaled<-phy$edge.length/max(node.depth.edgelength(phy))
@@ -850,7 +850,7 @@ doRun_rej<-function(
 	startTime<-proc.time()[[3]]
 
 	timeStep<-generation.time/TreeYears
-	message(paste0("The effective timeStep for this tree will be ",round(timeStep),
+	message(paste0("The effective timeStep for this tree will be ",signif(timeStep),
 		", as a proportion of tree height (root to furthest tip)..."))
 
 	edgesRescaled<-phy$edge.length/max(node.depth.edgelength(phy))

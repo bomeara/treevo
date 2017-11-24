@@ -61,8 +61,14 @@
 #' set.seed(2)
 #' 
 #' simPhy<-rcoal(30)
+#' # get realistic edge lengths
+#' simPhy$edge.length<-simPhy$edge.length*20
 #' 
-#' genRate<-c(0.01)
+#' # plot with time axis (root is about ~15 Ma)
+#' plot(simPhy)
+#' axisPhylo()
+#' 
+#' genRate<-c(0.001)
 #' ancState<-c(10)
 #' 
 #' #Simple Brownian motion
@@ -73,7 +79,7 @@
 #' 	startingValues=ancState, #root state
 #' 	intrinsicValues=genRate,
 #' 	extrinsicValues=c(0),
-#' 	timeStep=0.0001,
+#'  generation.time=10000,
 #' 	saveHistory=FALSE)
 #' 
 #' # clean for use with doRun
@@ -91,7 +97,7 @@
 #'   intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
 #'   extrinsicPriorsFns=c("fixed"),
 #'   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
-#'   generation.time=1000,
+#'   generation.time=10000,
 #'   standardDevFactor=0.2,
 #'   plot=FALSE,
 #'   StartSims=10,
@@ -102,6 +108,7 @@
 #'   jobName="examplerun_prc",
 #'   stopRule=FALSE,
 #'   multicore=FALSE,
+#'   verboseParticles=TRUE,  
 #'   coreLimit=1
 #'   )
 #' 
@@ -116,7 +123,7 @@
 #'   intrinsicPriorsValues=matrix(c(10, 10, -10, 1), nrow=2, byrow=FALSE),
 #'   extrinsicPriorsFns=c("fixed"),
 #'   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
-#'   generation.time=1000,
+#'   generation.time=10000,
 #'   standardDevFactor=0.2,
 #'   plot=FALSE,
 #'   StartSims=10,
@@ -127,10 +134,12 @@
 #'   jobName="examplerun_prc",
 #'   stopRule=FALSE,
 #'   multicore=FALSE,
+#'   verboseParticles=TRUE,  
 #'   coreLimit=1
 #'   )
 #' 
 #' save.image(file="simRunExample.rdata")
+#' 
 #' 
 #' }
 #' 
