@@ -1,5 +1,5 @@
 test_that("simulation ran", {
-	data(simRun)
+	data(simRunExample)
 	charDoSim<-doSimulationWithPossibleExtinction(
 		phy=simPhy,
 		intrinsicFn=brownianIntrinsic,
@@ -16,7 +16,7 @@ test_that("simulation ran", {
 
 
 test_that("doPRC runs correctly", {
-	data(simRun)
+	data(simRunExample)
 	results <- doRun_prc(
 	  phy = simPhy,
 	  traits = simChar,
@@ -47,6 +47,6 @@ test_that("doPRC runs correctly", {
 
 
 test_that("plotting works", {
-	data(simRun)
+	data(simRunExample)
 	expect_error(plotPosteriors(results$particleDataFrame, results$PriorMatrix), NA)
 })
