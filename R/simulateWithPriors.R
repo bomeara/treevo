@@ -205,7 +205,8 @@ simulateWithPriors<-function(
 
 		message(".")
 		simTraits<-doSimulationWithPossibleExtinction(phy=phy, taxon.df=taxon.df, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, 
-			startingValues=trueStarting, intrinsicValues=trueIntrinsic, extrinsicValues=trueExtrinsic, timeStep=timeStep, verbose=verbose, checkTimeStep=FALSE)
+			startingValues=trueStarting, intrinsicValues=trueIntrinsic, extrinsicValues=trueExtrinsic,
+			timeStep=timeStep, verbose=verbose, checkTimeStep=FALSE)
 		simSumStats<-summaryStatsLong(phy=phy, traits=simTraits, 
 			niter.brown=niter.brown, niter.lambda=niter.lambda, niter.delta=niter.delta,
 			niter.OU=niter.OU, niter.white=niter.white)

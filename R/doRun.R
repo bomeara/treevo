@@ -438,7 +438,7 @@ doRun_prc<-function(
 	attempts<-0
 	particleDataFrame<-data.frame()
 	if(verboseParticles){
-		message("\nsuccesses ", "  attempts ", "  expected number of attempts required")
+		message("successes ", "  attempts ", "  expected number of attempts req. ", "Params.") #\n
 		}
 	
 	#**
@@ -503,8 +503,8 @@ doRun_prc<-function(
 		particleDataFrame<-rbind(particleDataFrame, vectorForDataFrame)
 		#	
 		if(verboseParticles){
-			message(paste(particle-1,"          ", attempts,"         ",
-				floor(numParticles*attempts/particle),"         ", 
+			message(paste(particle-1,"         ", attempts,"        ",
+				floor(numParticles*attempts/particle),"                             ",
 				signif(newparticleList[[1]]$startingValues,2),"  ", signif(newparticleList[[1]]$intrinsicValues,2),"  ", 
 				signif(newparticleList[[1]]$extrinsicValues,2),"  ", signif(newparticleList[[1]]$distance,2)))
 			}
@@ -555,7 +555,7 @@ doRun_prc<-function(
 	while (dataGenerationStep < nStepsPRC) {
 		dataGenerationStep<-dataGenerationStep+1
 		if(verboseParticles){
-			message("\n", "STARTING DATA GENERATION STEP ", dataGenerationStep, "\n\n\n")
+			message("\n", "STARTING DATA GENERATION STEP ", dataGenerationStep, "\n")
 			}
 			
 			
@@ -563,7 +563,7 @@ doRun_prc<-function(
 		start.time<-proc.time()[[3]]
 		particleWeights<-particleWeights/(sum(particleWeights,na.rm=TRUE)) #normalize to one
 		if(verboseParticles){
-			message("particleWeights\n", particleWeights, "\n\n")
+			message("particleWeights\n", paste0(signif(particleWeights,2),collapse=" "), "\n")
 			}
 		oldParticleList<-particleList
 		oldParticleWeights<-particleWeights
@@ -577,7 +577,7 @@ doRun_prc<-function(
 		particle<-1
 		attempts<-0
 		if(verboseParticles){
-			message("successes ", "  attempts ", "  expected number of attempts required") #\n
+			message("successes ", "  attempts ", "  expected number of attempts req. ", "Params.") #\n
 			}
 		particleList<-list()
 		weightScaling=0;
@@ -706,12 +706,13 @@ doRun_prc<-function(
 			particleDataFrame<-rbind(particleDataFrame, vectorForDataFrame) 
 			#
 			if(verboseParticles){
-				message(paste(particle-1,"          ", attempts,"         ",
-					floor(numParticles*attempts/particle),"         ", 
+				message(paste(particle-1,"         ", attempts,"        ",
+					floor(numParticles*attempts/particle),"                             ",
 					signif(newparticleList[[1]]$startingValues,2),"  ", signif(newparticleList[[1]]$intrinsicValues,2),"  ", 
 					signif(newparticleList[[1]]$extrinsicValues,2),"  ", signif(newparticleList[[1]]$distance,2)))
 				}
 			#
+			
 			
 			} #while (particle<=numParticles) bracket
 		#
