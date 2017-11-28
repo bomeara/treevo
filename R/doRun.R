@@ -669,7 +669,7 @@ doRun_prc<-function(
 						if(!is.finite(lnTransitionProb) || is.na(lnTransitionProb)) {
 							warning(paste0("Issue with lnTransitionProb: ",
 								" lnTransitionProb = ",lnTransitionProb))
-							}
+								}
 						newWeight<-newWeight+(oldParticleList[[i]]$weight)*exp(lnTransitionProb)
 						} #for (i in 1:length(oldParticleList)) bracket
 					#

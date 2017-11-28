@@ -79,7 +79,7 @@
 #' 	startingValues=ancState, #root state
 #' 	intrinsicValues=genRate,
 #' 	extrinsicValues=c(0),
-#'  generation.time=10000,
+#' 	generation.time=10000,
 #' 	saveHistory=FALSE)
 #' 
 #' # clean for use with doRun
@@ -131,7 +131,7 @@
 #'   epsilonMultiplier=0.7,
 #'   nStepsPRC=3,
 #'   numParticles=20,
-#'   jobName="examplerun_prc",
+#'   jobName="examplerun_prc_bound",
 #'   stopRule=FALSE,
 #'   multicore=FALSE,
 #'   verboseParticles=TRUE,  

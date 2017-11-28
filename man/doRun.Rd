@@ -13,8 +13,9 @@ doRun_prc(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
   coreLimit = NA, validation = "CV", scale = TRUE, variance.cutoff = 95,
   niter.goal = 5, numParticles = 300, standardDevFactor = 0.2,
   StartSims = 300, epsilonProportion = 0.7, epsilonMultiplier = 0.7,
-  nStepsPRC = 5, jobName = NA, stopRule = FALSE, stopValue = 0.05,
-  saveData = FALSE, verboseParticles = TRUE, plot = FALSE)
+  nStepsPRC = 5, stopRule = FALSE, stopValue = 0.05, maxAttempts = Inf,
+  diagnosticPRCmode = FALSE, jobName = NA, saveData = FALSE,
+  verboseParticles = TRUE, plot = FALSE)
 
 doRun_rej(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
   startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns,
@@ -102,14 +103,21 @@ percentage and must be between 0 and 100. Default is 95 percent.}
 
 \item{nStepsPRC}{Number of generations to run.}
 
-\item{jobName}{Optional job name.}
-
 \item{stopRule}{If \code{TRUE}, an analysis will be terminated prior to set number
 of generations if the ratio of all parameters from one generation to the
 next falls below the \code{stopValue}.}
 
 \item{stopValue}{Threshold value for terminating an analysis prior to
 \code{nStepesPRC}.}
+
+\item{maxAttempts}{Maximum number attempts made in \code{while} loop within the PRC algorithm. 
+If reached, the algorithm will terminate with an error message.
+By default, this is infinite, and thus there is no effective limit without user intervention.}
+
+\item{diagnosticPRCmode}{If \code{TRUE} (\emph{not} the default), the function will be very noisy about characteristics of 
+the PRC algorithm as it runs.}
+
+\item{jobName}{Optional job name.}
 
 \item{saveData}{Option to save various run information during the analysis, including summary statistics from analyses, output to external .Rdata and .txt files.}
 
