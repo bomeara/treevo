@@ -71,6 +71,10 @@
 #' @param stopValue Threshold value for terminating an analysis prior to
 #' \code{nStepesPRC}.
 
+#' @param maxAttempts Maximum number attempts made in \code{while} loop within the PRC algorithm. 
+#' If reached, the algorithm will terminate with an error message.
+#' By default, this is infinite, and thus there is no effective limit without user intervention.
+
 #' @param abcTolerance Proportion of accepted simulations.
 
 #' @param checkpointFile Optional file name for checkpointing simulations.
@@ -86,6 +90,9 @@
 
 #' @param verboseParticles If \code{TRUE} (the default), a large amount of information about parameter estimates
 #' and acceptance of particles is output to console via \code{message} as \code{doRun_prc} runs. 
+
+#' @param diagnosticPRCmode If \code{TRUE} (\emph{not} the default), the function will be very noisy about characteristics of 
+#' the PRC algorithm as it runs.
 
 #' @return 
 #' The output of these two functions are lists, composed of multiple objects,
@@ -220,6 +227,7 @@
 #the guesses are used to do simulations near the expected region. If omitted, they are set to the midpoint of the input parameter matrices
 
 
+
 #' @name doRun
 #' @rdname doRun
 #' @export
@@ -232,13 +240,16 @@ doRun_prc<-function(
 	niter.goal=5, 
 	numParticles=300, standardDevFactor=0.20, 
 	StartSims=300, epsilonProportion=0.7, epsilonMultiplier=0.7, nStepsPRC=5, 
-	jobName=NA, stopRule=FALSE, stopValue=0.05, saveData=FALSE, verboseParticles=TRUE, plot=FALSE) {	
+	stopRule=FALSE, stopValue=0.05, maxAttempts=Inf, diagnosticPRCmode=FALSE,
+	jobName=NA, saveData=FALSE, verboseParticles=TRUE, plot=FALSE) {	
 
 	functionStartTime<-proc.time()[[3]]
 	
 	if (!is.binary.tree(phy)) {
 		warning("Tree is not fully dichotomous, this may cause issues!")
 	}
+	if(!is.numeric(maxAttempts)){
+		stop("maxAttempts must be numeric")}
 
 	timeStep<-generation.time/TreeYears
 	message(paste0("The effective timeStep for this tree will be ",signif(timeStep),
@@ -334,11 +345,11 @@ doRun_prc<-function(
 	niter.white.g <- round(max(10, min(niter.goal/solnfreq(white),100)))
 	#
 	message(paste0("Setting number of starting points for Geiger optimization to",
-		paste0("\n",niter.brown.g, " for Brownian motion"),
-		paste0("\n",niter.lambda.g, " for lambda"),
-		paste0("\n",niter.delta.g, " for delta"),
-		paste0("\n",niter.OU.g, " for OU"),
-		paste0("\n",niter.white.g, " for white noise")))
+		paste0("\n   ",niter.brown.g, " for Brownian motion"),
+		paste0("\n   ",niter.lambda.g, " for lambda"),
+		paste0("\n   ",niter.delta.g, " for delta"),
+		paste0("\n   ",niter.OU.g, " for OU"),
+		paste0("\n   ",niter.white.g, " for white noise")))
 	#
 	#---------------------- Initial Simulations (Start) ------------------------------
 	# See Wegmann et al. Efficient Approximate Bayesian Computation Coupled With Markov Chain Monte Carlo Without Likelihood. 
@@ -427,27 +438,33 @@ doRun_prc<-function(
 	attempts<-0
 	particleDataFrame<-data.frame()
 	if(verboseParticles){
-		message("\n\n\nsuccesses ", "  attempts ", "  expected number of attempts required\n\n\n")
+		message("\nsuccesses ", "  attempts ", "  expected number of attempts required")
 		}
+	
+	#**
+	
 	start.time<-proc.time()[[3]]
 	particleList<-list()
-
+	#message("Beginning partial rejection control algorithm...")
 	while (particle<=numParticles) {
 		attempts<-attempts+1
+		if(attempts>maxAttempts){
+			stop("maxAttempts exceeded in while() loop of PRC algorithm")
+			}
 		#
 		newparticleList<-list(abcparticle(id=particle, generation=1, weight=0))
-		newparticleList[[1]]<-initializeStatesFromMatrices(newparticleList[[1]], 
+		newparticleList[[1]]<-initializeStatesFromMatrices(particle=newparticleList[[1]], 
 			startingPriorsValues=startingPriorsValues, startingPriorsFns=startingPriorsFns, intrinsicPriorsValues=intrinsicPriorsValues, 
 			intrinsicPriorsFns=intrinsicPriorsFns, extrinsicPriorsValues=extrinsicPriorsValues, extrinsicPriorsFns=extrinsicPriorsFns)
 
-		newparticleList[[1]]$distance<-abcDistance(summaryStatsLong
-			(phy, 
-				doSimulationWithPossibleExtinction(phy=phy,  taxon.df=taxon.df, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, 
-					newparticleList[[1]]$startingValues, newparticleList[[1]]$intrinsicValues, 
-					newparticleList[[1]]$extrinsicValues, timeStep, checkTimeStep=FALSE), 
+		newparticleList[[1]]$distance<-abcDistance(
+			summaryValuesMatrix=summaryStatsLong(phy=phy, 
+				traits=doSimulationWithPossibleExtinction(phy=NULL,  taxon.df=taxon.df, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, 
+					startingValues=newparticleList[[1]]$startingValues, intrinsicValues=newparticleList[[1]]$intrinsicValues, 
+					extrinsicValues=newparticleList[[1]]$extrinsicValues, timeStep=timeStep, checkTimeStep=FALSE), 
 					niter.brown=niter.brown.g, niter.lambda=niter.lambda.g, niter.delta=niter.delta.g, 
 					niter.OU=niter.OU.g, niter.white=niter.white.g)
-			, originalSummaryValues, pls.model.list )
+			, originalSummaryValues=originalSummaryValues, pls.model.list=pls.model.list )
 
 		if (is.na(newparticleList[[1]]$distance)) {
 			warning("newparticleList[[1]]$distance = NA, likely an underflow/overflow problem")
@@ -475,18 +492,24 @@ doRun_prc<-function(
 		vectorForDataFrame<-c(1, attempts, newparticleList[[1]]$id, 0, newparticleList[[1]]$distance, 
 			newparticleList[[1]]$weight, newparticleList[[1]]$startingValues, newparticleList[[1]]$intrinsicValues,
 			newparticleList[[1]]$extrinsicValues)
+		
+		if(diagnosticPRCmode){
+			message("\n\nlength of vectorForDataFrame = ", length(vectorForDataFrame), "\n", "length of startingValues = ", 
+				length(newparticleList[[1]]$startingValues), "\nlength of intrinsicValues = ", length(newparticleList[[1]]$intrinsicValues), 
+				"\nlength of extrinsicValues = ", length(newparticleList[[1]]$extrinsicValues), "\ndistance = ", newparticleList[[1]]$distance,
+				"\nweight = ", newparticleList[[1]]$weight, "\n", vectorForDataFrame, "\n")
+			}
 			
-		# message("\n\nlength of vectorForDataFrame = ", length(vectorForDataFrame), "\n", "length of startingValues = ", 
-			# length(startingValues), "\nlength of intrinsicValues = ", length(intrinsicValues), 
-			# "\nlength of extrinsicValues = ", length(extrinsicValues), "\ndistance = ", newparticleList[[1]]$distance,
-			# "\nweight = ", newparticleList[[1]]$weight, "\n", vectorForDataFrame, "\n")
 		particleDataFrame<-rbind(particleDataFrame, vectorForDataFrame)
 		#	
 		if(verboseParticles){
-			message(particle-1, attempts, floor(numParticles*attempts/particle), 
-				newparticleList[[1]]$startingValues, newparticleList[[1]]$intrinsicValues, 
-				newparticleList[[1]]$extrinsicValues, newparticleList[[1]]$distance, "\n")
+			message(paste(particle-1,"          ", attempts,"         ",
+				floor(numParticles*attempts/particle),"         ", 
+				signif(newparticleList[[1]]$startingValues,2),"  ", signif(newparticleList[[1]]$intrinsicValues,2),"  ", 
+				signif(newparticleList[[1]]$extrinsicValues,2),"  ", signif(newparticleList[[1]]$distance,2)))
 			}
+		#
+
 		#
 		} #while (particle<=numParticles) bracket
 	#
@@ -525,11 +548,18 @@ doRun_prc<-function(
 		}
 
 	particleStartTime<-proc.time()[[3]]
+	
+	#**
+	
+	
 	while (dataGenerationStep < nStepsPRC) {
 		dataGenerationStep<-dataGenerationStep+1
 		if(verboseParticles){
-			message("\n\n\n", "STARTING DATA GENERATION STEP ", dataGenerationStep, "\n\n\n")
+			message("\n", "STARTING DATA GENERATION STEP ", dataGenerationStep, "\n\n\n")
 			}
+			
+			
+			
 		start.time<-proc.time()[[3]]
 		particleWeights<-particleWeights/(sum(particleWeights,na.rm=TRUE)) #normalize to one
 		if(verboseParticles){
@@ -569,7 +599,7 @@ doRun_prc<-function(
 			#dput(newparticleList[[1]])
 			#message("mutateStates\n")
 
-			newparticleList[[1]]<-mutateStates(newparticleList[[1]], 
+			newparticleList[[1]]<-mutateStates(particle=newparticleList[[1]], 
 				startingPriorsValues=startingPriorsValues, startingPriorsFns=startingPriorsFns, 
 				intrinsicPriorsValues=intrinsicPriorsValues, intrinsicPriorsFns=intrinsicPriorsFns, 
 				extrinsicPriorsValues=extrinsicPriorsValues, extrinsicPriorsFns=extrinsicPriorsFns, 
@@ -579,14 +609,14 @@ doRun_prc<-function(
 			#dput(newparticleList[[1]])
 			#
 			newparticleList[[1]]$distance<-abcDistance(
-				summaryStatsLong(phy=phy, 
-					doSimulationWithPossibleExtinction(phy=phy,  taxon.df=taxon.df,
+				summaryValuesMatrix=summaryStatsLong(phy=phy, 
+					traits=doSimulationWithPossibleExtinction(phy=NULL,  taxon.df=taxon.df,
 						intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, 
-						newparticleList[[1]]$startingValues, newparticleList[[1]]$intrinsicValues, 
-						newparticleList[[1]]$extrinsicValues, timeStep, checkTimeStep=FALSE), 
+						startingValues=newparticleList[[1]]$startingValues, intrinsicValues=newparticleList[[1]]$intrinsicValues, 
+						extrinsicValues=newparticleList[[1]]$extrinsicValues, timeStep=timeStep, checkTimeStep=FALSE), 
 					niter.brown=niter.brown.g, niter.lambda=niter.lambda.g, niter.delta=niter.delta.g, 
 					niter.OU=niter.OU.g, niter.white=niter.white.g)
-				, originalSummaryValues, pls.model.list)
+				, originalSummaryValues=originalSummaryValues, pls.model.list=pls.model.list )
 			#
 			if (plot) {
 				plotcol="grey"
@@ -664,18 +694,25 @@ doRun_prc<-function(
 				newparticleList[[1]]$distance, newparticleList[[1]]$weight, newparticleList[[1]]$startingValues, 
 				newparticleList[[1]]$intrinsicValues, newparticleList[[1]]$extrinsicValues)
 			#	
-			#message("\n\nlength of vectorForDataFrame = ", length(vectorForDataFrame), "\n", "length of startingValues = ", 
-				# length(startingValues), "\nlength of intrinsicValues = ", length(intrinsicValues), "\nlength of extrinsicValues = ", 
-				# length(extrinsicValues), "\ndistance = ", newparticleList[[1]]$distance, "\nweight = ", newparticleList[[1]]$weight, 
-				# "\n", vectorForDataFrame, "\n")
-			#
+			if(diagnosticPRCmode){
+				message("\n\nlength of vectorForDataFrame = ", length(vectorForDataFrame), "\n", "length of startingValues = ", 
+					length(newparticleList[[1]]$startingValues), "\nlength of intrinsicValues = ", length(newparticleList[[1]]$intrinsicValues), 
+					"\nlength of extrinsicValues = ", length(newparticleList[[1]]$extrinsicValues), "\ndistance = ", newparticleList[[1]]$distance,
+					"\nweight = ", newparticleList[[1]]$weight, "\n", vectorForDataFrame, "\n")
+				}
+			
+				
 			#NOTE THAT WEIGHTS AREN'T NORMALIZED IN THIS DATAFRAME
 			particleDataFrame<-rbind(particleDataFrame, vectorForDataFrame) 
 			#
 			if(verboseParticles){
-				message(particle-1, attempts, floor(numParticles*attempts/particle), newparticleList[[1]]$startingValues, 
-					newparticleList[[1]]$intrinsicValues, newparticleList[[1]]$extrinsicValues, newparticleList[[1]]$distance, "\n")
+				message(paste(particle-1,"          ", attempts,"         ",
+					floor(numParticles*attempts/particle),"         ", 
+					signif(newparticleList[[1]]$startingValues,2),"  ", signif(newparticleList[[1]]$intrinsicValues,2),"  ", 
+					signif(newparticleList[[1]]$extrinsicValues,2),"  ", signif(newparticleList[[1]]$distance,2)))
 				}
+			#
+			
 			} #while (particle<=numParticles) bracket
 		#
 		#
@@ -745,6 +782,9 @@ doRun_prc<-function(
 		if(saveData){
 			save(prcResults, file=paste0("partialResults", jobName, ".txt", sep=""))
 			}
+			
+			
+			
 		#
 		} #while (dataGenerationStep < nStepsPRC) bracket
 	#

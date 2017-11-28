@@ -472,6 +472,10 @@ doSimulationWithPossibleExtinction<-function(phy=NULL, intrinsicFn, extrinsicFn,
 	if(is.null(taxon.df)){
 		taxon.df <- getTaxonDFWithPossibleExtinction(phy)
 		}
+		
+	if(is.null(taxon.df) & is.null(phy)){
+		stop("phy or taxon.df must be provided as input")
+		}
 	#
 	if (saveRealParams){
 		RealParams<-vector("list", 2)
