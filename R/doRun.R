@@ -283,14 +283,14 @@ doRun_prc<-function(
 	namesForPriorMatrix<-c()
 	PriorMatrix<-matrix(c(startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns), nrow=1, ncol=numberParametersTotal)
 	for (a in 1:dim(startingPriorsValues)[2]) {
-		namesForPriorMatrix<-c(paste0("StartingStates ", a, sep=""))
+		namesForPriorMatrix<-c(paste0("StartingStates", a, sep=""))
 	}
 	for (b in 1:dim(intrinsicPriorsValues)[2]) {
-		namesForPriorMatrix<-append(namesForPriorMatrix, paste0("IntrinsicValue ", b, sep=""))
+		namesForPriorMatrix<-append(namesForPriorMatrix, paste0("IntrinsicValue", b, sep=""))
 	}
 	#print(extrinsicPriorsValues)
 	for (c in 1:dim(extrinsicPriorsValues)[2]) {
-		namesForPriorMatrix <-append(namesForPriorMatrix, paste0("ExtrinsicValue ", c, sep=""))
+		namesForPriorMatrix <-append(namesForPriorMatrix, paste0("ExtrinsicValue", c, sep=""))
 	}
 	PriorMatrix<-rbind(PriorMatrix, cbind(startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues))
 	colnames(PriorMatrix)<-namesForPriorMatrix
@@ -419,13 +419,13 @@ doRun_prc<-function(
 		}
 	#
 	for (i in 1:dim(startingPriorsValues)[2]) {
-		nameVector<-append(nameVector, paste0("StartingStates ", i, sep=""))
+		nameVector<-append(nameVector, paste0("StartingStates", i, sep=""))
 		}
 	for (i in 1:dim(intrinsicPriorsValues)[2]) {
-		nameVector<-append(nameVector, paste0("IntrinsicValue ", i, sep=""))
+		nameVector<-append(nameVector, paste0("IntrinsicValue", i, sep=""))
 		}
 	for (i in 1:dim(extrinsicPriorsValues)[2]) {
-		nameVector<-append(nameVector, paste0("ExtrinsicValue ", i, sep=""))
+		nameVector<-append(nameVector, paste0("ExtrinsicValue", i, sep=""))
 		}
 	#
 	#stores weights for each particle. Initially, assume infinite number of possible particles (so might not apply in discrete case)
@@ -922,14 +922,14 @@ doRun_rej<-function(
 	namesForPriorMatrix<-c()
 	PriorMatrix<-matrix(c(startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns), nrow=1, ncol=numberParametersTotal)
 	for (a in 1:dim(startingPriorsValues)[2]) {
-		namesForPriorMatrix<-c(paste0("StartingStates ", a, sep=""))
+		namesForPriorMatrix<-c(paste0("StartingStates", a, sep=""))
 	}
 	for (b in 1:dim(intrinsicPriorsValues)[2]) {
-		namesForPriorMatrix<-append(namesForPriorMatrix, paste0("IntrinsicValue ", b, sep=""))
+		namesForPriorMatrix<-append(namesForPriorMatrix, paste0("IntrinsicValue", b, sep=""))
 	}
 	#print(extrinsicPriorsValues)
 	for (c in 1:dim(extrinsicPriorsValues)[2]) {
-		namesForPriorMatrix <-append(namesForPriorMatrix, paste0("ExtrinsicValue ", c, sep=""))
+		namesForPriorMatrix <-append(namesForPriorMatrix, paste0("ExtrinsicValue", c, sep=""))
 	}
 	PriorMatrix<-rbind(PriorMatrix, cbind(startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues))
 	colnames(PriorMatrix)<-namesForPriorMatrix

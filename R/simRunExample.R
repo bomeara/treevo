@@ -56,7 +56,7 @@
 #' 
 #' \dontrun{
 #' 
-#  library(TreEvo)
+#' library(TreEvo)
 #' 
 #' set.seed(2)
 #' 

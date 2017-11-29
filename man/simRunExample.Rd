@@ -49,6 +49,7 @@ data(simRunExample)
 
 \dontrun{
 
+library(TreEvo)
 
 set.seed(2)
 
