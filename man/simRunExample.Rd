@@ -130,6 +130,7 @@ resultsBound<-doRun_prc(
   coreLimit=1
   )
 
+rm(.Random.seed)
 save.image(file="simRunExample.rdata")
 
 
