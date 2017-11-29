@@ -44,11 +44,14 @@
 
 #' @examples
 #' 
+#' # need to check for required suggested packages
+#' if(requireNamespace("gpclib", quietly = TRUE) & requireNamespace("rgl", quietly = TRUE)){
 #' 
 #'  data(simRunExample)
 #'  plotABC_3D(particleDataFrame=results$particleDataFrame, parameter=7,
 #'      show.particles="none", plot.parent=FALSE, realParam=FALSE, realParamValues=NA) 
 #' 
+#' }
 
 #' @name plotABC_3D
 #' @rdname plotABC_3D
