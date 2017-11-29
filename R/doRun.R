@@ -219,6 +219,7 @@
 #' 
 #' resultsRej
 #' }
+#' 
 
 
 ##This seems to be working if partialResults does not exist.  If checkpoint=TRUE, then run fails.

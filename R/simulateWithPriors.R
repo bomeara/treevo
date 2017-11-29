@@ -90,6 +90,8 @@
 #' \donttest{
 # 
 #' simPhy<-rcoal(30)
+#' # get realistic edge lengths
+#' simPhy$edge.length<-simPhy$edge.length*20
 #' 
 #' # example simulation
 #' 
@@ -105,7 +107,6 @@
 #'   intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
 #'   extrinsicPriorsFns=c("fixed"),
 #'   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
-#   timeStep=1e-04,
 #' 	 freevector=NULL, 	
 #' 	 giveUpAttempts=10, 
 #' 	 verbose=FALSE,
@@ -124,15 +125,15 @@
 #'   intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
 #'   extrinsicPriorsFns=c("fixed"),
 #'   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE), 
-#   timeStep=1e-04,
 #'   checkpointFile=NULL, checkpointFreq=24,
 #'   verbose=FALSE,
 #'   freevector=NULL, taxon.df=NULL,
 #'   niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) 
 #' 
 #' simDataParallel
-# 
+#'  
 #' }
+#' 
  
 
 

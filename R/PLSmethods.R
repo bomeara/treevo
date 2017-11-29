@@ -87,6 +87,7 @@
 #' 
 #' PLSTransform(summaryValuesMatrix=summaryValuesMat, pls.model=PLSmodel)
 #' } 
+#' 
 
 
 

@@ -122,6 +122,8 @@ attractor-2 (character mean-2), attraction-2 (alpha-2), time threshold-2
 \donttest{
 # Examples of simulations with various intrinsic models (and null extrinsic model)
 tree<-rcoal(30)
+# get realistic edge lengths
+simPhy$edge.length<-simPhy$edge.length*20
 
 #Simple Brownian motion Intrinsic Model
 char<-doSimulationForPlotting(

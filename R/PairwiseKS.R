@@ -18,13 +18,13 @@
 #'
 #' pdfList<-list(Brownian=results$particleDataFrame,Bounded=resultsBound$particleDataFrame)
 #' 
-#' PairwiseKS(particleDataFrameList = pdfList)
+#' pairwiseKS(particleDataFrameList = pdfList)
 
 
-#' @name PairwiseKS
-#' @rdname PairwiseKS
+#' @name pairwiseKS
+#' @rdname pairwiseKS
 #' @export
-PairwiseKS<-function(particleDataFrameList) {
+pairwiseKS<-function(particleDataFrameList) {
 	#Combine doRun$particleDataFrame results and performs Kolmogorov-Smirnov tests
 	# particleDataFrame should be a list of particleDataFrames (1:n)
 

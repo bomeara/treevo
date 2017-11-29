@@ -104,6 +104,8 @@
 # 
 #' # Examples of simulations with various intrinsic models (and null extrinsic model)
 #' tree<-rcoal(30)
+#' # get realistic edge lengths
+#' simPhy$edge.length<-simPhy$edge.length*20
 #'
 #' #Simple Brownian motion Intrinsic Model
 #' char<-doSimulationForPlotting(
@@ -478,7 +480,7 @@ genomeDuplicationPartialDoublingLogScale<-function(params, states, timefromprese
 GetGenomeDuplicationPriors <- function(numSteps, phy, data) {
 	#returns a matrix with 3 priors for genome duplication (genomeDuplicationPartialDoublingLogScale)
 	timeStep<-1/numSteps  #out of doRun_rej code
-	sd <- GetBMRatePrior(phy, data, timeStep)  #new TreEvo function
+	sd <- getBMRatePrior(phy, data, timeStep)  #new TreEvo function
 	beta.shape1 <- 1 #for(i in 1:10) {lines(density(1+rbeta(10000, 10^runif(1,0,2), 1)), xlim=c(1,2))}  seems to produce nice distributions, but how to justify using 3?
 	duplication.prob <- 2 #exponential, but which rate?
 

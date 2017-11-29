@@ -60,6 +60,8 @@
 # 
 #' # Examples of simulations with various extrinsic models (and null intrinsic model)
 #' tree<-rcoal(30)
+#' # get realistic edge lengths
+#' simPhy$edge.length<-simPhy$edge.length*20
 #'
 #' #No trait evolution except due to
 #'		# character displacement due to nearest neighbor taxon
@@ -174,7 +176,7 @@ ExponentiallyDecayingPushExtrinsic<-function(params,selfstates,otherstates, time
 GetExpPushPriors<-function(numSteps, phy, data) {
   #returns a matrix with exponential rates for the three Exponential push priors
   timeStep<-1/numSteps  #out of doRun_rej code
-  sd<-GetBMRatePrior(phy, data, timeStep)  #new TreEvo function
+  sd<-getBMRatePrior(phy, data, timeStep)  #new TreEvo function
   data.sort<-sort(data[,1])
   data.min.diff<-min(abs(data.sort[1:(length(data.sort)-1)]-data.sort[2:(length(data.sort))]))
   data.max.diff<-abs(max(data.sort)-min(data.sort))

@@ -18,12 +18,12 @@
 #'
 #' data(simRunExample)
 #' 
-#' PairwiseESS(results$particleDataFrame)
+#' pairwiseESS(results$particleDataFrame)
 
-#' @name PairwiseESS
-#' @rdname PairwiseESS
+#' @name pairwiseESS
+#' @rdname pairwiseESS
 #' @export
-PairwiseESS<-function(particleDataFrame) {
+pairwiseESS<-function(particleDataFrame) {
 #Combine doRun$particleDataFrame results and test effective sample size
   ESSmatrix <- NA
 	#library(coda)

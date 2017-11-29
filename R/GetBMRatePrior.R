@@ -17,20 +17,20 @@
 #' @author Brian O'Meara and Barb Banbury
 
 # @references O'Meara and Banbury, unpublished
-# @keywords GetBMRatePrior
+# @keywords getBMRatePrior
 
 #' @examples
 #' 
 #' data(simRunExample)
 #' 
-#' GetBMRatePrior(phy=simPhy, traits=simChar, timeStep=1)
+#' getBMRatePrior(phy=simPhy, traits=simChar, timeStep=1)
 #' 
 #' 
 
-#' @name GetBMRatePrior
-#' @rdname GetBMRatePrior
+#' @name getBMRatePrior
+#' @rdname getBMRatePrior
 #' @export
-GetBMRatePrior<-function(phy, traits, timeStep) {
+getBMRatePrior<-function(phy, traits, timeStep) {
   print("BM rate prior is an exponential distribution with a mean value approximately equal to the likelihood estimation")
   GetBrownianSDRate<-function(phy, traits, timeStep) { #conversion from continuous rate to discrete
     if(is.null(names(traits))){

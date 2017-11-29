@@ -15,8 +15,10 @@ A package for applying Approximate Bayesian Computation to estimating parameters
 \examples{
 \donttest{
 # let's simulate some data, and then try to infer the parameters using ABC
-
+# get a 30-taxon coalescent tree
 simPhy<-rcoal(30)
+# get realistic edge lengths
+simPhy$edge.length<-simPhy$edge.length*20
 
 genRate<-c(0.01)
 ancState<-c(10)
@@ -67,6 +69,7 @@ results<-doRun_prc(
   coreLimit=1
   )
 }
+
 }
 \author{
 Brian O'Meara, Barb L. Banbury, David W. Bapst

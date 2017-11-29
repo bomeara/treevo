@@ -140,6 +140,8 @@ want to use \code{\link{simulateWithPriors}} or \code{\link{doSimulation}} funct
 \examples{
 \donttest{
 simPhy<-rcoal(30)
+# get realistic edge lengths
+simPhy$edge.length<-simPhy$edge.length*20
 
 # example simulation
 
@@ -179,7 +181,9 @@ simDataParallel<-parallelSimulateWithPriors(
   niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) 
 
 simDataParallel
+ 
 }
+
 }
 \author{
 Brian O'Meara and Barb Banbury

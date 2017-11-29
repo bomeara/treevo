@@ -131,6 +131,8 @@ want to use \code{\link{simulateWithPriors}} or \code{\link{doSimulation}} funct
 \examples{
 \donttest{
 tree<-rcoal(30)
+# get realistic edge lengths
+simPhy$edge.length<-simPhy$edge.length*20
 
 #Simple Brownian motion
 char<-doSimulation(

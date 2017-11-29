@@ -259,6 +259,7 @@ resultsRej<-doRun_rej(
 
 resultsRej
 }
+
 }
 \references{
 Sisson et al. 2007, Wegmann et

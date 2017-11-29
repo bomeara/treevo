@@ -67,6 +67,8 @@ The input parameters for this model are:
 \donttest{
 # Examples of simulations with various extrinsic models (and null intrinsic model)
 tree<-rcoal(30)
+# get realistic edge lengths
+simPhy$edge.length<-simPhy$edge.length*20
 
 #No trait evolution except due to
 	# character displacement due to nearest neighbor taxon
