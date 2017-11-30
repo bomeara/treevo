@@ -1,10 +1,10 @@
 #' TreEvo--abc for comparative methods
-#'
+#' 
 #' A package for applying Approximate Bayesian Computation to estimating parameters of trait evolution in comparative analyses.
-#'
+#' 
 #' \tabular{ll}{ Package: \tab TreEvo\cr Type: \tab Package\cr Version: \tab
 #' 0.3.3\cr Date: \tab 2012-07-02\cr License: \tab GPL\cr }
-#'
+#' 
 
 #' @name TreEvo-package
 
@@ -13,7 +13,7 @@
 #' @docType package
 
 #' @author Brian O'Meara, Barb L. Banbury, David W. Bapst
-#'
+#' 
 
 #' Maintainer: David Bapst <dwbapst@gmail.com>
 
@@ -102,5 +102,5 @@
 # @importFrom rgl plot3d title3d rgl.viewpoint open3d rgl.material triangles3d lines3d spheres3d 
 
 
-#'
+#' 
 NULL

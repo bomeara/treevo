@@ -16,11 +16,11 @@
 #' between each each initial simulation's most informative summary statistics and the input observed data.
 #' 
 #' Following that step, the approach of the two functions diverge drastically.
-#'
+#' 
 #' For function \code{doRun_rej}, those simulations whose most informative summary statistics fall below
 #' \code{abcTolerance} are kept as accepted 'particles' (simulations runs), describing the
 #' posterior distribution of parameters. No additional generations of simulations are performed.
-#'
+#' 
 #' Coversely, function \code{doRun_prc} performs an ABC-PRC analysis,
 #' which follows a much more complicated algorithm with additional generations. In PRC, tolerance is set based on
 #' \code{epsilonProportion} and \code{epsilonMultiplier}, and the analysis
@@ -31,7 +31,7 @@
 #' particles make up the distribution for the next generation. The accepted
 #' particles from the final generation describe the posterior distributions of
 #' parameters.
-#'
+#' 
 
 
 #' @inheritParams doSimulation
@@ -150,7 +150,7 @@
 #' \item{HPD}{Highest Posterior Density calculation each free parameter of the final generation}
 #' }
 #' 
-#'
+#' 
 
 #' @author Brian O'Meara and Barb Banbury
 
@@ -161,9 +161,10 @@
 # al. 2009
 
 #' @examples
+#' 
 #' \donttest{
 #' data(simRunExample)
-#'
+#' 
 #' # NOTE: the example analyses below sample too few particles, 
 #' 	# over too few steps, with too few starting simulations
 #' 	# - all for the sake of examples that reasonably test the functions
@@ -196,9 +197,9 @@
 #' )
 #' 
 #' resultsPRC
-#'
+#' 
 #' #one should make sure priors are uniform with doRun_rej!
-#'
+#' 
 #' resultsRej<-doRun_rej( 
 #' 	phy=simPhy,
 #' 	traits=simChar,

@@ -1,9 +1,9 @@
 #' Pairwise Effective Sample Size
-#'
+#' 
 #' This function calculates Effective Sample Size (ESS) on results.  Performs the best when results are
 #' from multiple runs.
-#'
-#'
+#' 
+#' 
 
 #' @param particleDataFrame particleDataFrame can be a single data frame or a
 #' list of data frames
@@ -15,7 +15,7 @@
 # @references O'Meara and Banbury, unpublished
 
 #' @examples
-#'
+#' 
 #' data(simRunExample)
 #' 
 #' pairwiseESS(results$particleDataFrame)

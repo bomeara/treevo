@@ -201,6 +201,7 @@ particles from the final generation describe the posterior distributions of
 parameters.
 }
 \examples{
+
 \donttest{
 data(simRunExample)
 

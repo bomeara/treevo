@@ -1,9 +1,9 @@
 #' Discrete-Time Character Simulation
-#'
+#' 
 #' The \code{doSimulation} family of functions evolve continuous characters under a discrete time process.
 #' These functions are mainly used as internal components, generating simulations
 #' within ABC analyses using the \code{\link{doRun}} functions. See \emph{Note} below.
-#'
+#' 
 #' The phylogenetic tree used is rescaled such that the distance from the root to the furthest tip is rescaled to equal 1 time-unit,
 #' and it is this rescaled edge lengths to with arguments \code{timeStep} refers to. Typically, this will be determined though
 #' as a ratio of \code{TreeYears} (which is the number of calender years constituing the root-to-furthest-tip distance, and
@@ -18,7 +18,7 @@
 #' When \code{saveHistory} is \code{TRUE}, processor time will increase quite a bit.
 #' \code{SaveRealParams} is useful for tracking the \emph{real} true values if simulating
 #' data to test the performance of ABC analyses.  It is not useful for ABC analyses of empirical data.
-#'
+#' 
 
 #' @note 
 #' The \code{\link{simulateWithPriors}} functions are effectively the engine that powers the \code{\link{doRun}}
@@ -119,7 +119,7 @@
 #' tree<-rcoal(30)
 #' # get realistic edge lengths
 #' simPhy$edge.length<-simPhy$edge.length*20
-#'
+#' 
 #' #Simple Brownian motion
 #' char<-doSimulation(
 #' 	phy=tree,
@@ -130,7 +130,7 @@
 #' 	extrinsicValues=c(0),
 # 	timeStep=0.0001,
 #' 	saveHistory=FALSE)
-#'
+#' 
 #' #Character displacement model with minimum bound
 #' char<-doSimulation(
 #' 	phy=tree,
@@ -141,7 +141,7 @@
 #' 	extrinsicValues=c(0, .1, .25),
 # 	timeStep=0.001,
 #' 	saveHistory=FALSE)
-#'
+#' 
 #' #Simple Brownian motion
 #' char<-doSimulationForPlotting(
 #' 	phy=tree,
@@ -168,7 +168,7 @@
 #' 
 #' 
 #' # with extinction
-#'
+#' 
 #' #Simple Brownian motion
 #' char<-doSimulationWithPossibleExtinction(
 #' 	phy=tree,

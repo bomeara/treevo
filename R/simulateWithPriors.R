@@ -1,11 +1,11 @@
 #' Simulate data for initial TreEvo analysis
-#'
+#' 
 #' The \code{simulateWithPriors} function pulls parameters from prior distributions and conducts a single simulation of
 #' continuous trait evolution (using \code{\link{doSimulation}} functions), returning useful summary statistics for ABC.
 #' \code{parallelSimulateWithPriors} is a wrapper function for \code{simulateWithPriors} that allows for multithreading
 #' and checkpointing. This family of functions is mostly used as internal components, generating simulations
 #' within ABC analyses using the \code{\link{doRun}} functions. See \emph{Note} below.
-#'
+#' 
 
 #' @note 
 #' The \code{\link{simulateWithPriors}} functions are effectively the engine that powers the \code{\link{doRun}}
@@ -113,7 +113,7 @@
 #' 	 niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) 
 #' 
 #' simData
-#'
+#' 
 #' simDataParallel<-parallelSimulateWithPriors( 
 #'   nrepSim=2, multicore=FALSE, coreLimit=1, 
 #'   phy=simPhy,

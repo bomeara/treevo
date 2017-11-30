@@ -54,7 +54,7 @@
 
 #' @return 
 #' \code{plotPrior} and \code{plotUnivariatePosteriorVsPrior} produce plots of the respective distributions (see above).
-#'
+#' 
 #' \code{getUnivariatePriorCurve} and \code{getUnivariatePosteriorCurve} returns a list of x and y density coordinates, mean, and lower and
 #' upper highest posterior density (HPD), for their respective distribution.
 #' 

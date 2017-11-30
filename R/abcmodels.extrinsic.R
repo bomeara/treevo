@@ -8,12 +8,12 @@
 #' Functions describing various models of 'extrinsive' evolution (i.e. evolutionary processes
 #' dependent on factors extrinsic to the evolving lineage, such as environmental change, or
 #' other evolving lineages that interact with the lineage in question (competitors, predators, etc).
-#'
+#' 
 #' The following extrinsic models are:
-#'
+#' 
 #' 
 #' \code{nullExtrinsic} describes a model of no extrinsic character change.
-#'
+#' 
 #' It has no parameters, really.
 #' 
 #' 
@@ -62,7 +62,7 @@
 #' tree<-rcoal(30)
 #' # get realistic edge lengths
 #' simPhy$edge.length<-simPhy$edge.length*20
-#'
+#' 
 #' #No trait evolution except due to
 #'		# character displacement due to nearest neighbor taxon
 #' char<-doSimulationForPlotting(

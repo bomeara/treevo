@@ -13,9 +13,9 @@
 # @references O'Meara and Banbury, unpublished
 
 #' @examples
-#'
+#' 
 #' data(simRunExample)
-#'
+#' 
 #' pdfList<-list(Brownian=results$particleDataFrame,Bounded=resultsBound$particleDataFrame)
 #' 
 #' pairwiseKS(particleDataFrameList = pdfList)

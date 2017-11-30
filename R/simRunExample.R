@@ -1,11 +1,11 @@
 #' Example Analysis Output of a Simulated Dataset
-#'
+#' 
 #' Simulated 30-taxon coalescent tree and simulated character data from a Brownian Motion
 #' intrinsic model (\code{\link{brownianIntrinsic}}), with saved generating parameters. 
 #' Character data was generated under this model using \code{doSimulation}.
 #' Also includes results from an example analysis.
-#'
-#'
+#' 
+#' 
 #' @name simRunExample
 
 #' @aliases simRunExample simPhy simChar results resultsBound genRate ancState simCharOut 
@@ -41,13 +41,13 @@
 #' of elements (see the documentation for the \code{\link{doRun_prc}} function for more detail). These elements are
 #' respectively \code{input.data}, \code{PriorMatrix}, \code{particleDataFrame}, \code{toleranceVector}, \code{phy}, 
 #' \code{traits}, \code{simTime}, \code{time.per.gen}, \code{credibleInt}, and \code{HPD}.
-#'
+#' 
 
 
 #' @examples
-#'
+#' 
 #' data(simRunExample)
-#'
+#' 
 #' # ...things to do with this data?
 #' 
 #' ###################
@@ -144,7 +144,7 @@
 #' 
 #' }
 #' 
-#'
+#' 
 
 # @keywords datasets
 NULL
