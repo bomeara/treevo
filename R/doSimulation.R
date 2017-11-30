@@ -128,7 +128,7 @@
 #' 	startingValues=c(10), #root state
 #' 	intrinsicValues=c(0.01),
 #' 	extrinsicValues=c(0),
-# 	timeStep=0.0001,
+# 	timeStep=0.01,
 #' 	saveHistory=FALSE)
 #' 
 #' #Character displacement model with minimum bound
@@ -150,7 +150,7 @@
 #' 	startingValues=c(10), #root state
 #' 	intrinsicValues=c(0.01),
 #' 	extrinsicValues=c(0),
-# 	timeStep=0.0001,
+# 	timeStep=0.01,
 #' 	plot=FALSE,
 #' 	saveHistory=FALSE)
 #' 

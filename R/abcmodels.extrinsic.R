@@ -72,7 +72,7 @@
 #' 	startingValues=c(10), #root state
 #' 	intrinsicValues=c(0),
 #' 	extrinsicValues=c(0.1,0.1,0.1),
-#' 	timeStep=0.0001,
+#'  generation.time=100000,
 #' 	plot=TRUE,
 #' 	saveHistory=FALSE)
 #' 
@@ -85,7 +85,7 @@
 #' 	startingValues=c(10), #root state
 #' 	intrinsicValues=c(0),
 #' 	extrinsicValues=c(0.1,0.1,0.1),
-#' 	timeStep=0.0001,
+#' 	generation.time=100000,
 #' 	plot=TRUE,
 #' 	saveHistory=FALSE)
 #' 
@@ -98,7 +98,7 @@
 #' 	startingValues=c(10), #root state
 #' 	intrinsicValues=c(0),
 #' 	extrinsicValues=c(0.1,0.1,2),
-#' 	timeStep=0.0001,
+#' 	generation.time=100000,
 #' 	plot=TRUE,
 #' 	saveHistory=FALSE)
 #

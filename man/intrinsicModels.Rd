@@ -133,7 +133,7 @@ char<-doSimulationForPlotting(
 	startingValues=c(10), #root state
 	intrinsicValues=c(0.01),
 	extrinsicValues=c(0),
-	timeStep=0.0001,
+	generation.time=100000,
 	plot=TRUE,
 	saveHistory=FALSE)
 
@@ -145,7 +145,7 @@ char<-doSimulationForPlotting(
 	startingValues=c(10), #root state
 	intrinsicValues=c(0.01,0,15),
 	extrinsicValues=c(0),
-	timeStep=0.0001,
+	generation.time=100000,
 	plot=TRUE,
 	saveHistory=FALSE)
 
@@ -158,7 +158,7 @@ char<-doSimulationForPlotting(
 	startingValues=c(10), #root state
 	intrinsicValues=c(0.01,3,0.1,0),
 	extrinsicValues=c(0),
-	timeStep=0.0001,
+	generation.time=100000,
 	plot=TRUE,
 	saveHistory=FALSE)
 }
