@@ -15,5 +15,4 @@ registerMulticoreEnv<-function(nCore){
 			}
 		}
 	}	
-	
-	
+

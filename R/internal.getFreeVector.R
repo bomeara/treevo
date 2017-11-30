@@ -79,5 +79,4 @@ getFreeVector<-function(startingPriorsFns, startingPriorsValues,
 	res<-freevector
 	return(res)
 	}
-	
-	
+

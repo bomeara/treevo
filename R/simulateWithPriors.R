@@ -333,3 +333,5 @@ checkNiter<-function(niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=2
 	if(niter.OU<2){stop("niter.OU must be at least 2")}
 	if(niter.white<2){stop("niter.white must be at least 2")}
 	}
+
+
