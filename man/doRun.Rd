@@ -8,22 +8,23 @@
 \usage{
 doRun_prc(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
   startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns,
-  extrinsicPriorsValues, extrinsicPriorsFns, TreeYears = 10000,
-  multicore = FALSE, coreLimit = NA, validation = "CV", scale = TRUE,
-  variance.cutoff = 95, niter.goal = 5, generation.time = 1,
-  numParticles = 300, standardDevFactor = 0.2, StartSims = 300,
-  epsilonProportion = 0.7, epsilonMultiplier = 0.7, nStepsPRC = 5,
-  jobName = NA, stopRule = FALSE, stopValue = 0.05, saveData = FALSE,
-  plot = FALSE)
+  extrinsicPriorsValues, extrinsicPriorsFns, generation.time = 1000,
+  TreeYears = max(branching.times(phy)) * 1e+06, multicore = FALSE,
+  coreLimit = NA, validation = "CV", scale = TRUE, variance.cutoff = 95,
+  niter.goal = 5, numParticles = 300, standardDevFactor = 0.2,
+  StartSims = 300, epsilonProportion = 0.7, epsilonMultiplier = 0.7,
+  nStepsPRC = 5, stopRule = FALSE, stopValue = 0.05, maxAttempts = Inf,
+  diagnosticPRCmode = FALSE, jobName = NA, saveData = FALSE,
+  verboseParticles = TRUE, plot = FALSE)
 
 doRun_rej(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
   startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns,
-  extrinsicPriorsValues, extrinsicPriorsFns, TreeYears = 10000,
+  extrinsicPriorsValues, extrinsicPriorsFns,
+  TreeYears = max(branching.times(phy)) * 1e+06, generation.time = 1000,
   multicore = FALSE, coreLimit = NA, validation = "CV", scale = TRUE,
-  variance.cutoff = 95, niter.goal = 5, generation.time = 1,
-  standardDevFactor = 0.2, StartSims = NA, jobName = NA,
-  abcTolerance = 0.1, checkpointFile = NULL, checkpointFreq = 24,
-  savesims = FALSE)
+  variance.cutoff = 95, niter.goal = 5, standardDevFactor = 0.2,
+  StartSims = NA, jobName = NA, abcTolerance = 0.1,
+  checkpointFile = NULL, checkpointFreq = 24, savesims = FALSE)
 }
 \arguments{
 \item{phy}{A phylogenetic tree, in package \code{ape}'s \code{phylo} format.}
@@ -55,10 +56,18 @@ to the extrinsic function and number of rows equal to two (representing two para
 \item{extrinsicPriorsFns}{Vector containing names of prior distributions to
 use for extrinsic function parameters: can be one of \code{"fixed"}, \code{"uniform"}, \code{"normal"},}
 
-\item{TreeYears}{Absolute scale of time-units for \code{phy}, from the root
-to the furthest tip (sometimes referred to as 'unit-length'). For ultrametric
-trees where all tips are at time zero (i.e., the modern day), this would be
-the root age of the tree. By default, this is set to 10000 time-units.}
+\item{generation.time}{The number of years per generation. This sets the coarseness of the simulation; if it's set to 1000, 
+for example, the population's trait values change every 1000 calender years. Note that this is in calender years (see description
+for argument \code{TreeYears}), and not in millions of years (as is typical for dated trees in macroevolutionary studies).
+Thus, if a branch is 1 million-year time-unit long, and a user applies the default \code{generation.time = 1000},
+then 1000 evolutionary changes will be simulated along that branch.
+See documentation for \code{\link{doSimulation}} for further details.}
+
+\item{TreeYears}{The amount of calender time from the root to the furthest tip. Most trees in macroevolutionary studies are dated with
+branch lengths in units of millions of years, and thus the default for this argument is \code{max(branching.times(phy)) * 1e6}.
+If your tree has the most recent tip at time zero (i.e., the modern day), this would be the same as the root age of the tree. If your
+branch lengths are not in millions of years, you should alter this argument. Otherwise, leave this argument alone.
+See documentation for \code{\link{doSimulation}} for further details.}
 
 \item{multicore}{Whether to use multicore, default is \code{FALSE}. If \code{TRUE}, one of
 two suggested packages must be installed, either \code{doMC} (for UNIX systems) or
@@ -82,9 +91,6 @@ percentage and must be between 0 and 100. Default is 95 percent.}
 
 \item{niter.goal}{Adjust number of starting points for package \code{geiger} to return the best parameter estimates this number of times on average.}
 
-\item{generation.time}{The number of years per generation. This sets the coarseness of the simulation; if it's set to 1000, 
-for example, the population moves every 1000 years.}
-
 \item{numParticles}{Number of accepted particles per generation.}
 
 \item{standardDevFactor}{Standard deviation for mutating states.}
@@ -97,8 +103,6 @@ for example, the population moves every 1000 years.}
 
 \item{nStepsPRC}{Number of generations to run.}
 
-\item{jobName}{Optional job name.}
-
 \item{stopRule}{If \code{TRUE}, an analysis will be terminated prior to set number
 of generations if the ratio of all parameters from one generation to the
 next falls below the \code{stopValue}.}
@@ -106,7 +110,19 @@ next falls below the \code{stopValue}.}
 \item{stopValue}{Threshold value for terminating an analysis prior to
 \code{nStepesPRC}.}
 
+\item{maxAttempts}{Maximum number attempts made in \code{while} loop within the PRC algorithm. 
+If reached, the algorithm will terminate with an error message.
+By default, this is infinite, and thus there is no effective limit without user intervention.}
+
+\item{diagnosticPRCmode}{If \code{TRUE} (\emph{not} the default), the function will be very noisy about characteristics of 
+the PRC algorithm as it runs.}
+
+\item{jobName}{Optional job name.}
+
 \item{saveData}{Option to save various run information during the analysis, including summary statistics from analyses, output to external .Rdata and .txt files.}
+
+\item{verboseParticles}{If \code{TRUE} (the default), a large amount of information about parameter estimates
+and acceptance of particles is output to console via \code{message} as \code{doRun_prc} runs.}
 
 \item{plot}{If \code{TRUE}, plots distance of each simulation.}
 
@@ -122,8 +138,8 @@ next falls below the \code{stopValue}.}
 The output of these two functions are lists, composed of multiple objects,
 which differ slightly in their content among the two functions. For \code{doRun_prc}, the output is:
 \describe{
-\item{input.data}{Input variables: jobName, number of taxa, nrepSim,
-treeYears, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor} 
+\item{input.data}{Input variables: jobName, number of taxa, nrepSim, 
+generation.time, TreeYears, timeStep, totalGenerations, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor} 
 \item{PriorMatrix}{Matrix of prior distributions}
 \item{particleDataFrame}{DataFrame with information from each simulation,
 including generation, attempt, id, parentid, distance, weight, and parameter states}
@@ -136,8 +152,8 @@ including generation, attempt, id, parentid, distance, weight, and parameter sta
 }
 For \code{doRun_rej}, the output is:
 \describe{
-\item{input.data}{Input variables: jobName, number of taxa, nrepSim,
-treeYears, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor} 
+\item{input.data}{Input variables: jobName, number of taxa, nrepSim, 
+generation.time, TreeYears, timeStep, totalGenerations, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor} 
 \item{PriorMatrix}{Matrix of prior distributions}
 \item{phy}{Input phylogeny} 
 \item{traits}{Input traits}
@@ -185,8 +201,9 @@ particles from the final generation describe the posterior distributions of
 parameters.
 }
 \examples{
+
 \donttest{
-data(simRun)
+data(simRunExample)
 
 # NOTE: the example analyses below sample too few particles, 
 	# over too few steps, with too few starting simulations
@@ -205,7 +222,7 @@ resultsPRC<-doRun_prc(
   intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
   extrinsicPriorsFns=c("fixed"),
   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
-  TreeYears=1000,
+  generation.time=100000,
   standardDevFactor=0.2,
   plot=FALSE,
   StartSims=10,
@@ -243,6 +260,7 @@ resultsRej<-doRun_rej(
 
 resultsRej
 }
+
 }
 \references{
 Sisson et al. 2007, Wegmann et

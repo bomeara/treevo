@@ -17,7 +17,7 @@
 
 #' @examples
 #' 
-#' data(simRun)
+#' data(simRunExample)
 #' credibleInt(results$particleDataFrame)
 #' 
 

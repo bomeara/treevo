@@ -1,19 +1,19 @@
 #' Example Analysis Output of a Simulated Dataset
-#'
+#' 
 #' Simulated 30-taxon coalescent tree and simulated character data from a Brownian Motion
 #' intrinsic model (\code{\link{brownianIntrinsic}}), with saved generating parameters. 
 #' Character data was generated under this model using \code{doSimulation}.
 #' Also includes results from an example analysis.
-#'
-#'
-#' @name simRun
+#' 
+#' 
+#' @name simRunExample
 
-#' @aliases simRun simPhy simChar results resultsBound genRate ancState simCharOut 
+#' @aliases simRunExample simPhy simChar results resultsBound genRate ancState simCharOut 
 
 #' @docType data
 
 #' @format 
-#' Loading the \code{simRun} example dataset adds seven new objects to the namespace:
+#' Loading the \code{simRunExample} example dataset adds seven new objects to the namespace:
 #' 
 #' \describe{
 
@@ -41,13 +41,13 @@
 #' of elements (see the documentation for the \code{\link{doRun_prc}} function for more detail). These elements are
 #' respectively \code{input.data}, \code{PriorMatrix}, \code{particleDataFrame}, \code{toleranceVector}, \code{phy}, 
 #' \code{traits}, \code{simTime}, \code{time.per.gen}, \code{credibleInt}, and \code{HPD}.
-#'
+#' 
 
 
 #' @examples
-#'
-#' data(simRun)
-#'
+#' 
+#' data(simRunExample)
+#' 
 #' # ...things to do with this data?
 #' 
 #' ###################
@@ -56,13 +56,19 @@
 #' 
 #' \dontrun{
 #' 
-#  library(TreEvo)
+#' library(TreEvo)
 #' 
 #' set.seed(2)
 #' 
 #' simPhy<-rcoal(30)
+#' # get realistic edge lengths
+#' simPhy$edge.length<-simPhy$edge.length*20
 #' 
-#' genRate<-c(0.01)
+#' # plot with time axis (root is about ~15 Ma)
+#' plot(simPhy)
+#' axisPhylo()
+#' 
+#' genRate<-c(0.001)
 #' ancState<-c(10)
 #' 
 #' #Simple Brownian motion
@@ -73,7 +79,7 @@
 #' 	startingValues=ancState, #root state
 #' 	intrinsicValues=genRate,
 #' 	extrinsicValues=c(0),
-#' 	timeStep=0.0001,
+#' 	generation.time=10000,
 #' 	saveHistory=FALSE)
 #' 
 #' # clean for use with doRun
@@ -91,7 +97,7 @@
 #'   intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
 #'   extrinsicPriorsFns=c("fixed"),
 #'   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
-#'   TreeYears=1000,
+#'   generation.time=100000,
 #'   standardDevFactor=0.2,
 #'   plot=FALSE,
 #'   StartSims=10,
@@ -102,6 +108,7 @@
 #'   jobName="examplerun_prc",
 #'   stopRule=FALSE,
 #'   multicore=FALSE,
+#'   verboseParticles=TRUE,  
 #'   coreLimit=1
 #'   )
 #' 
@@ -116,7 +123,7 @@
 #'   intrinsicPriorsValues=matrix(c(10, 10, -10, 1), nrow=2, byrow=FALSE),
 #'   extrinsicPriorsFns=c("fixed"),
 #'   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
-#'   TreeYears=1000,
+#'   generation.time=100000,
 #'   standardDevFactor=0.2,
 #'   plot=FALSE,
 #'   StartSims=10,
@@ -124,15 +131,19 @@
 #'   epsilonMultiplier=0.7,
 #'   nStepsPRC=3,
 #'   numParticles=20,
-#'   jobName="examplerun_prc",
+#'   jobName="examplerun_prc_bound",
 #'   stopRule=FALSE,
 #'   multicore=FALSE,
+#'   verboseParticles=TRUE,  
 #'   coreLimit=1
 #'   )
 #' 
-#' save.image(file="simRun.rdata")
+#' rm(.Random.seed)
+#' save.image(file="simRunExample.rdata")
+#' 
 #' 
 #' }
+#' 
 #' 
 
 # @keywords datasets

@@ -25,7 +25,7 @@ Only for use with simulated data to test models.
 }
 \examples{
 
-data(simRun)
+data(simRunExample)
 
 # real (generating) parameters
 genPar<-c(ancState,genRate)

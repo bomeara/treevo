@@ -1,10 +1,10 @@
 #' TreEvo--abc for comparative methods
-#'
+#' 
 #' A package for applying Approximate Bayesian Computation to estimating parameters of trait evolution in comparative analyses.
-#'
+#' 
 #' \tabular{ll}{ Package: \tab TreEvo\cr Type: \tab Package\cr Version: \tab
 #' 0.3.3\cr Date: \tab 2012-07-02\cr License: \tab GPL\cr }
-#'
+#' 
 
 #' @name TreEvo-package
 
@@ -13,7 +13,7 @@
 #' @docType package
 
 #' @author Brian O'Meara, Barb L. Banbury, David W. Bapst
-#'
+#' 
 
 #' Maintainer: David Bapst <dwbapst@gmail.com>
 
@@ -24,8 +24,10 @@
 #' \donttest{
 #
 #' # let's simulate some data, and then try to infer the parameters using ABC
-#' 
+#' # get a 30-taxon coalescent tree
 #' simPhy<-rcoal(30)
+#' # get realistic edge lengths
+#' simPhy$edge.length<-simPhy$edge.length*20
 #' 
 #' genRate<-c(0.01)
 #' ancState<-c(10)
@@ -38,7 +40,7 @@
 #' 	startingValues=ancState, #root state
 #' 	intrinsicValues=genRate,
 #' 	extrinsicValues=c(0),
-#' 	timeStep=0.0001,
+#' 	generation.time=100000,
 #' 	saveHistory=FALSE)
 #' 
 #' # clean for use with doRun
@@ -62,7 +64,7 @@
 #'   intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
 #'   extrinsicPriorsFns=c("fixed"),
 #'   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
-#'   TreeYears=1000,
+#'   generation.time=100000,
 #'   standardDevFactor=0.2,
 #'   plot=FALSE,
 #'   StartSims=10,
@@ -76,6 +78,7 @@
 #'   coreLimit=1
 #'   )
 #' }
+#' 
 
 # NAMESPACE IMPORTING
 
@@ -88,7 +91,6 @@
 #' @importFrom corpcor pseudoinverse 
 #' @importFrom coda effectiveSize HPDinterval as.mcmc 
 #' @importFrom foreach foreach getDoParWorkers '%dopar%' 
-#' @importFrom rgl plot3d title3d rgl.viewpoint open3d rgl.material triangles3d lines3d spheres3d 
 #' @importFrom partitions blockparts 
 #' @importFrom MASS boxcox 
 #' @importFrom mvtnorm dmvnorm 
@@ -97,7 +99,9 @@
 #' @importFrom methods as setAs
 #' @importFrom utils capture.output
 
+# @importFrom rgl plot3d title3d rgl.viewpoint open3d rgl.material triangles3d lines3d spheres3d 
 
 
-#'
+#' 
 NULL
+

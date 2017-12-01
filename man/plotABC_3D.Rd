@@ -40,14 +40,20 @@ This function requires access functions \code{triangulate} and the \code{as} met
 class \code{gpc.poly} from package \code{gpclib}. As of 09-12-17, this package
 was not available from CRAN as a Windows binary, and thus this function is likely
 unavailable to many (if not all) Windows users.
+
+This function also requires the package \code{rgl}, which is usually easier to
+obtain than package \code{gpclib}, but may not be buildable on some UNIX workstations.
 }
 \examples{
 
+# need to check for required suggested packages
+if(requireNamespace("gpclib", quietly = TRUE) & requireNamespace("rgl", quietly = TRUE)){
 
- data(simRun)
+ data(simRunExample)
  plotABC_3D(particleDataFrame=results$particleDataFrame, parameter=7,
      show.particles="none", plot.parent=FALSE, realParam=FALSE, realParamValues=NA) 
 
+}
 }
 \author{
 Barb Banbury

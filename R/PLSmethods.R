@@ -1,12 +1,14 @@
 #' Fitting Univariate Partial Least Squares Models to Free Parameters in ABC
 #' 
-#' Function \code{returnPLSModel} fits a PLS regression (using \code{\link{plsr}}) individually to each freely varying parameter of a model, unlike
+#' Function \code{returnPLSModel} fits a PLS regression (using 
+#' \code{\link{plsr}}) individually to each freely varying parameter of a model, unlike
 #' a true multivariate PLS regression. A secondary step than limits the number
 #' of components to those that explain some minimum cumulative percentage
 #' of variance (see argument \code{variance.cutoff}).  For ABC, this seems to result in much
 #' better results, without one parameter dominating the combined variance.
 #' 
-#' Function \code{PLSTransform} uses results from a Partial Least Squares (PLS) model fit with \code{returnPLSModel} to transform summary values.
+#' Function \code{PLSTransform} uses results from a Partial Least Squares (PLS)
+#' model fit with \code{returnPLSModel} to transform summary values.
 #' 
 
 #' @param trueFreeValuesMatrix Matrix of true free values from simulations.
@@ -50,7 +52,7 @@
 #' @examples
 #' \donttest{
 #' set.seed(1)
-#' data(simRun)
+#' data(simRunExample)
 #' 
 #' # example simulation
 #' 
@@ -81,12 +83,13 @@
 #' 
 #' PLSmodel<-returnPLSModel(trueFreeValuesMatrix=trueFreeValuesMat,
 #' 	  	summaryValuesMatrix=summaryValuesMat,
-#'    		validation="CV", scale=TRUE, variance.cutoff=95 , segments = nSimulations)
+#'    	validation="CV", scale=TRUE, variance.cutoff=95 , segments = nSimulations)
 #' 
 #' PLSmodel
 #' 
 #' PLSTransform(summaryValuesMatrix=summaryValuesMat, pls.model=PLSmodel)
 #' } 
+#' 
 
 
 

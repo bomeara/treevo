@@ -8,12 +8,12 @@
 #' Functions describing various models of 'extrinsive' evolution (i.e. evolutionary processes
 #' dependent on factors extrinsic to the evolving lineage, such as environmental change, or
 #' other evolving lineages that interact with the lineage in question (competitors, predators, etc).
-#'
+#' 
 #' The following extrinsic models are:
-#'
+#' 
 #' 
 #' \code{nullExtrinsic} describes a model of no extrinsic character change.
-#'
+#' 
 #' It has no parameters, really.
 #' 
 #' 
@@ -60,7 +60,9 @@
 # 
 #' # Examples of simulations with various extrinsic models (and null intrinsic model)
 #' tree<-rcoal(30)
-#'
+#' # get realistic edge lengths
+#' simPhy$edge.length<-simPhy$edge.length*20
+#' 
 #' #No trait evolution except due to
 #'		# character displacement due to nearest neighbor taxon
 #' char<-doSimulationForPlotting(
@@ -70,7 +72,7 @@
 #' 	startingValues=c(10), #root state
 #' 	intrinsicValues=c(0),
 #' 	extrinsicValues=c(0.1,0.1,0.1),
-#' 	timeStep=0.0001,
+#'  generation.time=100000,
 #' 	plot=TRUE,
 #' 	saveHistory=FALSE)
 #' 
@@ -83,7 +85,7 @@
 #' 	startingValues=c(10), #root state
 #' 	intrinsicValues=c(0),
 #' 	extrinsicValues=c(0.1,0.1,0.1),
-#' 	timeStep=0.0001,
+#' 	generation.time=100000,
 #' 	plot=TRUE,
 #' 	saveHistory=FALSE)
 #' 
@@ -96,7 +98,7 @@
 #' 	startingValues=c(10), #root state
 #' 	intrinsicValues=c(0),
 #' 	extrinsicValues=c(0.1,0.1,2),
-#' 	timeStep=0.0001,
+#' 	generation.time=100000,
 #' 	plot=TRUE,
 #' 	saveHistory=FALSE)
 #
@@ -174,7 +176,7 @@ ExponentiallyDecayingPushExtrinsic<-function(params,selfstates,otherstates, time
 GetExpPushPriors<-function(numSteps, phy, data) {
   #returns a matrix with exponential rates for the three Exponential push priors
   timeStep<-1/numSteps  #out of doRun_rej code
-  sd<-GetBMRatePrior(phy, data, timeStep)  #new TreEvo function
+  sd<-getBMRatePrior(phy, data, timeStep)  #new TreEvo function
   data.sort<-sort(data[,1])
   data.min.diff<-min(abs(data.sort[1:(length(data.sort)-1)]-data.sort[2:(length(data.sort))]))
   data.max.diff<-abs(max(data.sort)-min(data.sort))

@@ -67,6 +67,8 @@ The input parameters for this model are:
 \donttest{
 # Examples of simulations with various extrinsic models (and null intrinsic model)
 tree<-rcoal(30)
+# get realistic edge lengths
+simPhy$edge.length<-simPhy$edge.length*20
 
 #No trait evolution except due to
 	# character displacement due to nearest neighbor taxon
@@ -77,7 +79,7 @@ char<-doSimulationForPlotting(
 	startingValues=c(10), #root state
 	intrinsicValues=c(0),
 	extrinsicValues=c(0.1,0.1,0.1),
-	timeStep=0.0001,
+ generation.time=100000,
 	plot=TRUE,
 	saveHistory=FALSE)
 
@@ -90,7 +92,7 @@ char<-doSimulationForPlotting(
 	startingValues=c(10), #root state
 	intrinsicValues=c(0),
 	extrinsicValues=c(0.1,0.1,0.1),
-	timeStep=0.0001,
+	generation.time=100000,
 	plot=TRUE,
 	saveHistory=FALSE)
 
@@ -103,7 +105,7 @@ char<-doSimulationForPlotting(
 	startingValues=c(10), #root state
 	intrinsicValues=c(0),
 	extrinsicValues=c(0.1,0.1,2),
-	timeStep=0.0001,
+	generation.time=100000,
 	plot=TRUE,
 	saveHistory=FALSE)
 } 

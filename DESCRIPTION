@@ -4,7 +4,8 @@ Title: Using ABC to Understand Trait Evolution
 Version: 0.4.4
 Date: 2017-10-03
 Authors@R: c(person("Brian", "O'Meara", role=c("aut"), email="omeara.brian@gmail.com"),
-  person("Barb", "Banbury", role=c("aut")),person("David","Bapst", role=c("aut", "cre"), email="dwbapst@gmail.com"))
+    person("Barb", "Banbury", role=c("aut")),
+    person("David","Bapst", role=c("aut", "cre"), email="dwbapst@gmail.com"))
 Maintainer: David Bapst <dwbapst@gmail.com>
 Depends:
     R (>= 2.13.0),
@@ -17,25 +18,28 @@ Imports:
     coda,
     foreach,
     partitions,
-	MASS,
+    MASS,
     mvtnorm,
     methods,
     grDevices,
     graphics,
-	rgl,	
     phytools
 Suggests:
     covr,
     doMC,
-	doParallel,
-	gpclib,
-    testthat
+    doParallel,
+    gpclib,
+    rgl, 
+    testthat,
+    paleotree,
+    knitr,
+    rmarkdown
 LazyData: yes
-Description: Various functions for estimating parameters of trait evolution in comparative analyses
-    using Approximate Bayesian Computation.
+Description: Various functions for estimating parameters of trait evolution in comparative analyses using Approximate Bayesian Computation.
 License: GPL
 URL: https://github.com/bomeara/treevo
 Repository: CRAN
 Packaged: 2012-07-02 16:00:00; BCO
 Date/Publication: 2012-07-02 16:00:00
 RoxygenNote: 6.0.1
+VignetteBuilder: knitr

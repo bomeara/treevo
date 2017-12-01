@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Pairwise Kolmogorov-Smirnov test â€” PairwiseKS â€¢ TreEvo</title>
+<title>Pairwise Kolmogorov-Smirnov test — PairwiseKS â€¢ TreEvo</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -23,9 +23,10 @@
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-
+  
+  
 <!-- mathjax -->
-<script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
+<script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
 <!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -51,7 +52,28 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
+  <a href="../index.html">
+    <span class="fa fa-home fa-lg"></span>
+     
+  </a>
+</li>
+<li>
   <a href="../reference/index.html">Reference</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/treevo_ABC_vignette.html">Analyzing Trait Evolution with Approximate Bayesian Computation in TreEvo</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="../news/index.html">News</a>
 </li>
       </ul>
       
@@ -77,29 +99,45 @@
     </div>
 
     
-    <p>This function calculates KS on results.</p>
+    <p>This function calculates Kolmogorov-Smirnov on results.</p>
     
 
-    <pre><span class='fu'>PairwiseKS</span>(<span class='no'>particleDataFrame</span>)</pre>
+    <pre class="usage"><span class='fu'>PairwiseKS</span>(<span class='no'>particleDataFrameList</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>particleDataFrame</th>
-      <td><p>List of particleDataFrames from separate runs</p></td>
+      <th>particleDataFrameList</th>
+      <td><p>An object of type list, composed of particleDataFrames from separate analyses.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Returns a matrix with KS values of all pairwise runs</p>
-    
-    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
-
-    <p>O'Meara and Banbury, unpublished</p>
+    <p>Returns a matrix with Kolmogorov-Smirnov values of all pairwise runs</p>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'>
+<span class='fu'>data</span>(<span class='no'>simRunExample</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: data set ‘simRunExample’ not found</span></div><div class='input'>
+<span class='no'>pdfList</span><span class='kw'>&lt;-</span><span class='fu'>list</span>(<span class='no'>results</span>$<span class='no'>particleDataFrame</span>,<span class='no'>results</span>$<span class='no'>particleDataFrame</span>)
+
+<span class='fu'>PairwiseKS</span>(<span class='kw'>particleDataFrameList</span> <span class='kw'>=</span> <span class='no'>pdfList</span>)</div><div class='output co'>#&gt; $StartingStates1
+#&gt;      run1 run2
+#&gt; run1    1    1
+#&gt; run2    1    1
+#&gt; 
+#&gt; $IntrinsicValue1
+#&gt;      run1 run2
+#&gt; run1    1    1
+#&gt; run2    1    1
+#&gt; 
+#&gt; $ExtrinsicValue1
+#&gt;      run1 run2
+#&gt; run1    1    1
+#&gt; run2    1    1
+#&gt; </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -107,9 +145,9 @@
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
-
-      <li><a href="#references">References</a></li>
-          </ul>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
     <h2>Author</h2>
     
@@ -120,7 +158,7 @@ Brian O'Meara and Barb Banbury
 
       <footer>
       <div class="copyright">
-  <p>Developed by Brian O'Meara, Barb Banbury.</p>
+  <p>Developed by Brian O'Meara, Barb Banbury, David Bapst.</p>
 </div>
 
 <div class="pkgdown">

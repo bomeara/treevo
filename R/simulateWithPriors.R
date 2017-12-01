@@ -1,11 +1,11 @@
 #' Simulate data for initial TreEvo analysis
-#'
+#' 
 #' The \code{simulateWithPriors} function pulls parameters from prior distributions and conducts a single simulation of
 #' continuous trait evolution (using \code{\link{doSimulation}} functions), returning useful summary statistics for ABC.
 #' \code{parallelSimulateWithPriors} is a wrapper function for \code{simulateWithPriors} that allows for multithreading
 #' and checkpointing. This family of functions is mostly used as internal components, generating simulations
 #' within ABC analyses using the \code{\link{doRun}} functions. See \emph{Note} below.
-#'
+#' 
 
 #' @note 
 #' The \code{\link{simulateWithPriors}} functions are effectively the engine that powers the \code{\link{doRun}}
@@ -90,6 +90,8 @@
 #' \donttest{
 # 
 #' simPhy<-rcoal(30)
+#' # get realistic edge lengths
+#' simPhy$edge.length<-simPhy$edge.length*20
 #' 
 #' # example simulation
 #' 
@@ -105,14 +107,14 @@
 #'   intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
 #'   extrinsicPriorsFns=c("fixed"),
 #'   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
-#'   timeStep=1e-04,
+#'   generation.time=100000,
 #' 	 freevector=NULL, 	
 #' 	 giveUpAttempts=10, 
 #' 	 verbose=FALSE,
 #' 	 niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) 
 #' 
 #' simData
-#'
+#' 
 #' simDataParallel<-parallelSimulateWithPriors( 
 #'   nrepSim=2, multicore=FALSE, coreLimit=1, 
 #'   phy=simPhy,
@@ -124,15 +126,16 @@
 #'   intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
 #'   extrinsicPriorsFns=c("fixed"),
 #'   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE), 
-#'   timeStep=1e-04,
+#'   generation.time=100000,
 #'   checkpointFile=NULL, checkpointFreq=24,
 #'   verbose=FALSE,
 #'   freevector=NULL, taxon.df=NULL,
 #'   niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) 
 #' 
 #' simDataParallel
-# 
+#'  
 #' }
+#' 
  
 
 
@@ -142,13 +145,17 @@
 simulateWithPriors<-function(
 	phy=NULL, intrinsicFn, extrinsicFn, startingPriorsFns, startingPriorsValues, 
 	intrinsicPriorsFns, intrinsicPriorsValues, extrinsicPriorsFns, extrinsicPriorsValues, 
-	timeStep=1e-04, giveUpAttempts=10, verbose=FALSE, checks=TRUE, taxon.df=NULL, freevector=NULL, 
+	generation.time=1000, TreeYears=max(branching.times(phy)) * 1e6, timeStep=NULL, 
+	giveUpAttempts=10, verbose=FALSE, checks=TRUE, taxon.df=NULL, freevector=NULL, 
 	niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) {
 
 	if(is.null(taxon.df)){
 		taxon.df <- getTaxonDFWithPossibleExtinction(phy)
 		}
-	
+		
+	if(is.null(timeStep)){
+		timeStep<-generation.time/TreeYears
+		}
 	
 	# checks
 	if(checks){
@@ -201,7 +208,8 @@ simulateWithPriors<-function(
 
 		message(".")
 		simTraits<-doSimulationWithPossibleExtinction(phy=phy, taxon.df=taxon.df, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, 
-			startingValues=trueStarting, intrinsicValues=trueIntrinsic, extrinsicValues=trueExtrinsic, timeStep=timeStep, verbose=verbose, checkTimeStep=FALSE)
+			startingValues=trueStarting, intrinsicValues=trueIntrinsic, extrinsicValues=trueExtrinsic,
+			timeStep=timeStep, verbose=verbose, checkTimeStep=FALSE)
 		simSumStats<-summaryStatsLong(phy=phy, traits=simTraits, 
 			niter.brown=niter.brown, niter.lambda=niter.lambda, niter.delta=niter.delta,
 			niter.OU=niter.OU, niter.white=niter.white)
@@ -227,12 +235,16 @@ parallelSimulateWithPriors<-function(
 	phy, 
 	intrinsicFn, extrinsicFn, startingPriorsFns, startingPriorsValues,
 	intrinsicPriorsFns, intrinsicPriorsValues, extrinsicPriorsFns, extrinsicPriorsValues, 
-	timeStep=1e-04,
+	generation.time=1000, TreeYears=max(branching.times(phy)) * 1e6, timeStep=NULL, #timeStep=1e-04,
 	checkpointFile=NULL, checkpointFreq=24, verbose=FALSE, freevector=NULL, taxon.df=NULL, giveUpAttempts=10, 
 	niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) {
 	
 	#library(doMC, quietly=TRUE)
 	#library(foreach, quietly=TRUE)
+	
+	if(is.null(timeStep)){
+		timeStep<-generation.time/TreeYears
+		}
 	
 	# checks
 	checkNiter(niter.brown=niter.brown, niter.lambda=niter.lambda,
@@ -323,3 +335,5 @@ checkNiter<-function(niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=2
 	if(niter.OU<2){stop("niter.OU must be at least 2")}
 	if(niter.white<2){stop("niter.white must be at least 2")}
 	}
+
+

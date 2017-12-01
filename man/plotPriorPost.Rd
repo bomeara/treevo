@@ -75,7 +75,7 @@ The summaries from \code{getUnivariatePriorCurve} and \code{getUnivariatePosteri
 }
 \examples{
 
-data(simRun)
+data(simRunExample)
 
 # examples with plotPrior
 

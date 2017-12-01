@@ -41,19 +41,21 @@ should often be much greater than 10.}
 Function \code{returnPLSModel} returns a PLS model, and function \code{PLSTransform} returns transformed summary statistics.
 }
 \description{
-Function \code{returnPLSModel} fits a PLS regression (using \code{\link{plsr}}) individually to each freely varying parameter of a model, unlike
+Function \code{returnPLSModel} fits a PLS regression (using 
+\code{\link{plsr}}) individually to each freely varying parameter of a model, unlike
 a true multivariate PLS regression. A secondary step than limits the number
 of components to those that explain some minimum cumulative percentage
 of variance (see argument \code{variance.cutoff}).  For ABC, this seems to result in much
 better results, without one parameter dominating the combined variance.
 }
 \details{
-Function \code{PLSTransform} uses results from a Partial Least Squares (PLS) model fit with \code{returnPLSModel} to transform summary values.
+Function \code{PLSTransform} uses results from a Partial Least Squares (PLS)
+model fit with \code{returnPLSModel} to transform summary values.
 }
 \examples{
 \donttest{
 set.seed(1)
-data(simRun)
+data(simRunExample)
 
 # example simulation
 
@@ -84,12 +86,13 @@ summaryValuesMat<-simDataParallel[,-1:-nParFree]
 
 PLSmodel<-returnPLSModel(trueFreeValuesMatrix=trueFreeValuesMat,
 	  	summaryValuesMatrix=summaryValuesMat,
-   		validation="CV", scale=TRUE, variance.cutoff=95 , segments = nSimulations)
+   	validation="CV", scale=TRUE, variance.cutoff=95 , segments = nSimulations)
 
 PLSmodel
 
 PLSTransform(summaryValuesMatrix=summaryValuesMat, pls.model=PLSmodel)
 } 
+
 }
 \seealso{
 Function \code{returnPLSModel} effectively wraps function \code{\link{plsr}} from package \code{mvr}.

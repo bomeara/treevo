@@ -6,14 +6,14 @@
 
 
 #' Intrinsic Character Evolution Models
-#'
+#' 
 #' Functions describing various models of 'intrinsic' evolution (i.e. evolutionary processes intrinsic to the evolving
 #' lineage, independent of other evolving lineages (competitors, predators, etc).
-#'
+#' 
 #' The following intrinsic models are:
-#'
+#' 
 #' \code{nullIntrinsic} describes a model of no intrinsic character change.
-#'
+#' 
 #' It has no parameters, really.
 #' 
 #' \code{brownianIntrinsic} describes a model of intrinsic character evolution via
@@ -24,16 +24,16 @@
 #' 
 #' \code{boundaryIntrinsic} describes a model of intrinsic character evolution where character
 #' change is restricted above a minimum and below a maximum threshold.
-#'
+#' 
 #' The input parameters for this model are:
 #' \code{boundaryMinIntrinsic} params = sd, minimum, maximum
 #' 
 #' \code{boundaryMinIntrinsic} describes a model of intrinsic character evolution where character
 #' change is restricted above a minimum threshold.
-#'
+#' 
 #' The input parameters for this model are:
 #' \code{boundaryMinIntrinsic} params = sd, minimum
-#'
+#' 
 #' \code{autoregressiveIntrinsic} describes a model of intrinsic character evolution. New
 #' character values are generated after one time step via a discrete-time OU
 #' process.
@@ -45,28 +45,28 @@
 #' \code{minBoundaryAutoregressiveIntrinsic} describes a model of intrinsic character evolution. New
 #' character values are generated after one time step via a discrete-time OU
 #' process with a minimum bound.
-#'
+#' 
 #' The input parameters for this model are:
 #' \code{MinBoundaryAutoregressiveIntrinsic} params = sd (sigma), attractor
 #' (character mean), attraction (alpha), minimum
-#'
+#' 
 #' \code{autoregressiveIntrinsicTimeSlices} describes a model of intrinsic character evolution. New
 #' character values are generated after one time step via a discrete-time OU
 #' process with differing means, sigma, and attraction over time
-#'
+#' 
 #' In the various TimeSlices models, time threshold units are in time before present
 #' (i.e., 65 could be 65 MYA). The last time threshold should be 0.
-#'
+#' 
 #' The input parameters for this model are:
 #' \code{autoregressiveIntrinsicTimeSlices} params = sd-1 (sigma-1),
 #' attractor-1 (character mean-1), attraction-1 (alpha-1), time threshold-1,
 #' sd-2 (sigma-2), attractor-2 (character mean-2), attraction-2 (alpha-2), time
 #' threshold-2
-#'
+#' 
 #' \code{autoregressiveIntrinsicTimeSlicesConstantMean} describes a model of intrinsic character evolution. New
 #' character values are generated after one time step via a discrete-time OU
 #' process with differing sigma and attraction over time
-#'
+#' 
 #' The input parameters for this model are:
 #' \code{autoregressiveIntrinsicTimeSlicesConstantMean} params = sd-1
 #' (sigma-1), attraction-1 (alpha-1), time threshold-1, sd-2 (sigma-2),
@@ -75,12 +75,12 @@
 #' \code{autoregressiveIntrinsicTimeSlicesConstantSigma} describes a model of intrinsic character evolution. New
 #' character values are generated after one time step via a discrete-time OU
 #' process with differing means and attraction over time.
-#'
+#' 
 #' The input parameters for this model are:
 #' \code{autoregressiveIntrinsicTimeSlicesConstantSigma} params = sd (sigma),
 #' attractor-1 (character mean-1), attraction-1 (alpha-1), time threshold-1,
 #' attractor-2 (character mean-2), attraction-2 (alpha-2), time threshold-2
-#'
+#' 
 
 #' @param params describes input paramaters for the model (see Description)
 
@@ -104,7 +104,9 @@
 # 
 #' # Examples of simulations with various intrinsic models (and null extrinsic model)
 #' tree<-rcoal(30)
-#'
+#' # get realistic edge lengths
+#' simPhy$edge.length<-simPhy$edge.length*20
+#' 
 #' #Simple Brownian motion Intrinsic Model
 #' char<-doSimulationForPlotting(
 #' 	phy=tree,
@@ -113,7 +115,7 @@
 #' 	startingValues=c(10), #root state
 #' 	intrinsicValues=c(0.01),
 #' 	extrinsicValues=c(0),
-#' 	timeStep=0.0001,
+#' 	generation.time=100000,
 #' 	plot=TRUE,
 #' 	saveHistory=FALSE)
 #' 
@@ -125,7 +127,7 @@
 #' 	startingValues=c(10), #root state
 #' 	intrinsicValues=c(0.01,0,15),
 #' 	extrinsicValues=c(0),
-#' 	timeStep=0.0001,
+#' 	generation.time=100000,
 #' 	plot=TRUE,
 #' 	saveHistory=FALSE)
 #' 
@@ -138,7 +140,7 @@
 #' 	startingValues=c(10), #root state
 #' 	intrinsicValues=c(0.01,3,0.1,0),
 #' 	extrinsicValues=c(0),
-#' 	timeStep=0.0001,
+#' 	generation.time=100000,
 #' 	plot=TRUE,
 #' 	saveHistory=FALSE)
 # 
@@ -478,7 +480,7 @@ genomeDuplicationPartialDoublingLogScale<-function(params, states, timefromprese
 GetGenomeDuplicationPriors <- function(numSteps, phy, data) {
 	#returns a matrix with 3 priors for genome duplication (genomeDuplicationPartialDoublingLogScale)
 	timeStep<-1/numSteps  #out of doRun_rej code
-	sd <- GetBMRatePrior(phy, data, timeStep)  #new TreEvo function
+	sd <- getBMRatePrior(phy, data, timeStep)  #new TreEvo function
 	beta.shape1 <- 1 #for(i in 1:10) {lines(density(1+rbeta(10000, 10^runif(1,0,2), 1)), xlim=c(1,2))}  seems to produce nice distributions, but how to justify using 3?
 	duplication.prob <- 2 #exponential, but which rate?
 

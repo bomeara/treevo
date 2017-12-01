@@ -21,7 +21,7 @@
 
 #' @examples
 #' 
-#' data(simRun)
+#' data(simRunExample)
 #' 
 #' # real (generating) parameters
 #' genPar<-c(ancState,genRate)

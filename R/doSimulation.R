@@ -1,13 +1,24 @@
 #' Discrete-Time Character Simulation
-#'
+#' 
 #' The \code{doSimulation} family of functions evolve continuous characters under a discrete time process.
 #' These functions are mainly used as internal components, generating simulations
 #' within ABC analyses using the \code{\link{doRun}} functions. See \emph{Note} below.
-#'
+#' 
+#' The phylogenetic tree used is rescaled such that the distance from the root to the furthest tip is rescaled to equal 1 time-unit,
+#' and it is this rescaled edge lengths to with arguments \code{timeStep} refers to. Typically, this will be determined though
+#' as a ratio of \code{TreeYears} (which is the number of calender years constituing the root-to-furthest-tip distance, and
+#' is determined by default as if the user had supplied a tree with edge lengths in time-units of 1 time-unit = 1 million years), and
+#' \code{generation.time}, which gives the length of \code{timeSteps} in calender years (e.g. \code{generation.time = 1000} means
+#' an evolutionary change in trait values every 1000 years). Note that the real number of trait change events simulated may be less
+#' less, because simulations start ver at each branching node, but intervals between changes should be so fine that this
+#' should be negligible (related, the results should be independent of your choice for \code{generation.time} or \code{timeStep}).
+#' We recommend that the effective \code{timeStep} should be  as short as is computationally possible.
+
+#' 
 #' When \code{saveHistory} is \code{TRUE}, processor time will increase quite a bit.
 #' \code{SaveRealParams} is useful for tracking the \emph{real} true values if simulating
 #' data to test the performance of ABC analyses.  It is not useful for ABC analyses of empirical data.
-#'
+#' 
 
 #' @note 
 #' The \code{\link{simulateWithPriors}} functions are effectively the engine that powers the \code{\link{doRun}}
@@ -37,9 +48,33 @@
 #' @param extrinsicValues Vector of values corresponding to the parameters of the
 #' extrinsic model.
 
+#' @param maxAttempts How many attempts should be tried if a run produces an \code{NA} result? If \code{maxAttempts}
+#' is reached without producing a non-\code{NA} result, the simulation is terminated.
 
-#' @param timeStep This value corresponds to the number of discrete time steps
-#' on the shortest branch.
+#' @param generation.time The number of years per generation. This sets the coarseness of the simulation; if it's set to 1000, 
+#' for example, the population's trait values change every 1000 calender years. Note that this is in calender years (see description
+#' for argument \code{TreeYears}), and not in millions of years (as is typical for dated trees in macroevolutionary studies).
+#' Thus, if a branch is 1 million-year time-unit long, and a user applies the default \code{generation.time = 1000},
+#' then 1000 evolutionary changes will be simulated along that branch.
+#' See documentation for \code{\link{doSimulation}} for further details.
+
+#' @param TreeYears The amount of calender time from the root to the furthest tip. Most trees in macroevolutionary studies are dated with
+#' branch lengths in units of millions of years, and thus the default for this argument is \code{max(branching.times(phy)) * 1e6}.
+#' If your tree has the most recent tip at time zero (i.e., the modern day), this would be the same as the root age of the tree. If your
+#' branch lengths are not in millions of years, you should alter this argument. Otherwise, leave this argument alone.
+#' See documentation for \code{\link{doSimulation}} for further details.
+
+#' @param timeStep This value corresponds to the lenght of intervals between discrete evolutionary events ('generations')
+#' simulated along branches, relative to a rescaled tree where the root to furthest tip distance is 1. For example,
+#' \code{timeStep = 0.01} of would mean 100 (i.e., 1 / 0.01) evolutionary changes would be expected to occur from
+#' the root to the furthest tip. (Note that the real number simulated will be much less, because simulations start
+#' over at each branching node.) Ideally, \code{timeStep} (or its effective value, via other arguments) should be 
+#' as short as is computationally possible.
+#' Typically \code{NULL} by default and
+#' determined internally as follows: \code{timeStep = generation.time / TreeYears}.
+#' Can be provided a value as an alternative to using arguments \code{generation.time}
+#' and \code{TreeYears}, which would then be overridden. 
+#' See documentation for \code{\link{doSimulation}} for further details.
 
 #' @param checkTimeStep If \code{TRUE}, warnings will be issued if \code{TimeStep} is too short.
 
@@ -82,7 +117,9 @@
 #' \donttest{
 #
 #' tree<-rcoal(30)
-#'
+#' # get realistic edge lengths
+#' simPhy$edge.length<-simPhy$edge.length*20
+#' 
 #' #Simple Brownian motion
 #' char<-doSimulation(
 #' 	phy=tree,
@@ -91,9 +128,9 @@
 #' 	startingValues=c(10), #root state
 #' 	intrinsicValues=c(0.01),
 #' 	extrinsicValues=c(0),
-#' 	timeStep=0.0001,
+# 	timeStep=0.01,
 #' 	saveHistory=FALSE)
-#'
+#' 
 #' #Character displacement model with minimum bound
 #' char<-doSimulation(
 #' 	phy=tree,
@@ -102,9 +139,9 @@
 #' 	startingValues=c(10), #root state
 #' 	intrinsicValues=c(0.05, 10, 0.01),
 #' 	extrinsicValues=c(0, .1, .25),
-#' 	timeStep=0.001,
+# 	timeStep=0.001,
 #' 	saveHistory=FALSE)
-#'
+#' 
 #' #Simple Brownian motion
 #' char<-doSimulationForPlotting(
 #' 	phy=tree,
@@ -113,7 +150,7 @@
 #' 	startingValues=c(10), #root state
 #' 	intrinsicValues=c(0.01),
 #' 	extrinsicValues=c(0),
-#' 	timeStep=0.0001,
+# 	timeStep=0.01,
 #' 	plot=FALSE,
 #' 	saveHistory=FALSE)
 #' 
@@ -126,13 +163,12 @@
 #' 	startingValues=c(10), #root state
 #' 	intrinsicValues=c(0.05, 10, 0.01),
 #' 	extrinsicValues=c(0, .1, .25),
-#' 	timeStep=0.001,
 #' 	plot=TRUE,
 #' 	saveHistory=FALSE)
 #' 
 #' 
 #' # with extinction
-#'
+#' 
 #' #Simple Brownian motion
 #' char<-doSimulationWithPossibleExtinction(
 #' 	phy=tree,
@@ -141,7 +177,6 @@
 #' 	startingValues=c(10), #root state
 #' 	intrinsicValues=c(0.01),
 #' 	extrinsicValues=c(0),
-#' 	timeStep=0.0001,
 #' 	saveHistory=FALSE)
 #
 #' }
@@ -151,7 +186,16 @@
 #' @rdname doSimulation
 #' @export
 doSimulation<-function(phy=NULL, intrinsicFn, extrinsicFn, startingValues, intrinsicValues, extrinsicValues, 
-	timeStep, saveHistory=FALSE, saveRealParams=FALSE, jobName="", taxon.df = NULL) {
+	generation.time=1000, TreeYears=max(branching.times(phy)) * 1e6, 
+	timeStep=NULL, saveHistory=FALSE, saveRealParams=FALSE, jobName="", taxon.df = NULL) {
+
+	if(!is.ultrametric(phy)){
+		stop("phy must be ultrametric for function doSimulation")
+		}
+	
+	if(is.null(timeStep)){
+		timeStep<-generation.time/TreeYears
+		}
 	
 	if(is.null(taxon.df)){
 		taxon.df<-getSimulationSplits(phy)
@@ -277,8 +321,17 @@ doSimulation<-function(phy=NULL, intrinsicFn, extrinsicFn, startingValues, intri
 #' @rdname doSimulation
 #' @export
 doSimulationForPlotting<-function(phy=NULL, intrinsicFn, extrinsicFn, startingValues, intrinsicValues, 
-	extrinsicValues, timeStep, plot=FALSE, savePlot=FALSE, saveHistory=FALSE, saveRealParams=FALSE, jobName="", taxon.df=NULL) {
+	extrinsicValues, 	generation.time=1000, TreeYears=max(branching.times(phy)) * 1e6, 
+	timeStep=NULL, plot=FALSE, savePlot=FALSE, saveHistory=FALSE, saveRealParams=FALSE, jobName="", taxon.df=NULL) {
 
+	if(!is.ultrametric(phy)){
+		stop("phy must be ultrametric for function doSimulationForPlotting")
+		}	
+	
+	if(is.null(timeStep)){
+		timeStep<-generation.time/TreeYears
+		}	
+	
 	if(is.null(taxon.df)){
 		taxon.df<-getSimulationSplits(phy)
 		}
@@ -409,12 +462,23 @@ doSimulationForPlotting<-function(phy=NULL, intrinsicFn, extrinsicFn, startingVa
 #' @rdname doSimulation
 #' @export
 doSimulationWithPossibleExtinction<-function(phy=NULL, intrinsicFn, extrinsicFn, startingValues, intrinsicValues, extrinsicValues,
-	timeStep, saveHistory=FALSE, saveRealParams=FALSE, jobName="", returnAll = FALSE, verbose=FALSE, reject.NaN=TRUE, taxon.df=NULL, checkTimeStep=TRUE) {
+	generation.time=1000, TreeYears=max(branching.times(phy)) * 1e6, 
+	timeStep=NULL, saveHistory=FALSE, saveRealParams=FALSE, jobName="", maxAttempts = 100,
+	returnAll = FALSE, verbose=FALSE, reject.NaN=TRUE, taxon.df=NULL, checkTimeStep=TRUE) {
+	#
+	
+	if(is.null(timeStep)){
+		timeStep<-generation.time/TreeYears
+		}
 	
 	if(is.null(taxon.df)){
 		taxon.df <- getTaxonDFWithPossibleExtinction(phy)
 		}
-	
+		
+	if(is.null(taxon.df) & is.null(phy)){
+		stop("phy or taxon.df must be provided as input")
+		}
+	#
 	if (saveRealParams){
 		RealParams<-vector("list", 2)
 		names(RealParams)<-c("matrix", "vector")
@@ -426,13 +490,15 @@ doSimulationWithPossibleExtinction<-function(phy=NULL, intrinsicFn, extrinsicFn,
 		RealParams$matrix[2,]<-c(intrinsicValues, rep(NA, maxLength-length(intrinsicValues)))
 		RealParams$matrix[3,]<-c(extrinsicValues, rep(NA, maxLength-length(extrinsicValues)))
 		save(RealParams, file=paste0("RealParams", jobName, ".Rdata", sep=""))
-	}
+		}
+	#
 	if (saveHistory) {
 		startVector<-c()
 		endVector<-c()
 		startTime<-c()
 		endTime<-c()
-	}
+		}
+	#
 	numberofsteps<-max(taxon.df$endTime)/timeStep
 	mininterval<-min(taxon.df$endTime - taxon.df$startTime)
 	#
@@ -452,6 +518,7 @@ doSimulationWithPossibleExtinction<-function(phy=NULL, intrinsicFn, extrinsicFn,
 		#	timeStep <- mininterval/3
 			}
 		}
+	#
 	#initial setup
 	depthfrompresent = max(taxon.df$endTime)
 	heightfromroot = 0
@@ -460,7 +527,8 @@ doSimulationWithPossibleExtinction<-function(phy=NULL, intrinsicFn, extrinsicFn,
 	while(depthfrompresent>0) {
 		if(reject.NaN) {
 			taxon.df.previous <- taxon.df
-		}
+			}
+		#
 		depth.start <- depthfrompresent
 		depth.end <- depthfrompresent - timeStep
 		height.start <- heightfromroot
@@ -472,34 +540,80 @@ doSimulationWithPossibleExtinction<-function(phy=NULL, intrinsicFn, extrinsicFn,
 		ids.speciating <- c(taxon.df$id[which((taxon.df$id %in% ids.changing.status) & (!taxon.df$terminal))], ids.only.alive.in.interval)
 		alive.rows <- which(taxon.df$id %in% ids.alive.at.start)
 		current.states <- taxon.df$states[alive.rows]
+		#if(any(is.na(current.states))) {
+		#	#message(paste0("current.states ",current.states))
+		#	#message(paste0("taxon.df$id %in% ids.alive.at.start ",paste0(taxon.df$id %in% ids.alive.at.start,collapse=" ")))
+		#	print(c(height.start,height.end))
+		#	print(taxon.df[taxon.df$id %in% ids.alive.at.start,])
+		#	stop("there are NAs in current.states! How?? Something is very wrong")
+		#	}
 		#first evolve in this interval, then speciate
 		for (taxon.index in sequence(length(alive.rows))) {
 			if(is.na(taxon.df$states[alive.rows[taxon.index]])) {
 				taxon.df$states[alive.rows[taxon.index]] <- taxon.df$states[which(taxon.df$id==taxon.df$ancestorId[alive.rows[taxon.index]])]
-			}
-			new.state <- taxon.df$states[alive.rows[taxon.index]] + intrinsicFn(params=intrinsicValues, states=current.states[taxon.index],
-				timefrompresent =depthfrompresent)+extrinsicFn(params=extrinsicValues, selfstates=current.states[taxon.index], otherstates=current.states[-taxon.index], timefrompresent =depthfrompresent)
+				if(is.na(taxon.df$states[alive.rows[taxon.index]])){
+					stop("A taxon's ancestor has an NA character")
+					}
+				current.states[taxon.index]<-taxon.df$states[alive.rows[taxon.index]]
+				}
+			#
+			new.state <- taxon.df$states[alive.rows[taxon.index]] + intrinsicFn(params=intrinsicValues,
+				states=current.states[taxon.index], timefrompresent =depthfrompresent)+extrinsicFn(params=extrinsicValues,
+				selfstates=current.states[taxon.index], otherstates=current.states[-taxon.index], timefrompresent =depthfrompresent)
+			#
 			if(is.na(new.state)) {
-				warning("got bad sim")
+				warning("A simulation run produced a state of NA - something is probably very wrong")
 				attempt.count=0
-				while(is.na(new.state) & attempt.count < 100) {
+				while(is.na(new.state) & attempt.count <= maxAttempts) {
 					old = taxon.df$states[alive.rows[taxon.index]]
-					intrinsic.displacement = intrinsicFn(params=intrinsicValues, states=current.states[taxon.index], timefrompresent =depthfrompresent)
-					extrinsic.displacement = extrinsicFn(params=extrinsicValues, selfstates=current.states[taxon.index], otherstates=current.states[-taxon.index], timefrompresent =depthfrompresent)
+					intrinsic.displacement = intrinsicFn(params=intrinsicValues, states=current.states[taxon.index],
+						timefrompresent =depthfrompresent)
+					extrinsic.displacement = extrinsicFn(params=extrinsicValues, selfstates=current.states[taxon.index],
+						otherstates=current.states[-taxon.index], timefrompresent =depthfrompresent)
+					#if(is.na(intrinsic.displacement)){
+					#	stop("The intrinsicFn is returning NAs; something terrible has happened")
+					#	}
+					#if(is.na(extrinsic.displacement)){
+					#	stop("The extrinsicFn is returning NAs; something terrible has happened")
+					#	}
 					new.state <- old + intrinsic.displacement + extrinsic.displacement
-					warning(paste0("Attempt ", attempt.count, "led to using old value of", old, "intrinsicFn return of ",intrinsic.displacement, "and extrinsicFn return of ", extrinsic.displacement))
-					print("IntrinsicValues")
-					print(intrinsicValues)
-				}
-				if(is.na(new.state) & attempt.count==100) {
+					warning(paste0("Attempt ", attempt.count, " led to using old value of ", old, " intrinsicFn return of ",intrinsic.displacement, " and extrinsicFn return of ", extrinsic.displacement))
+					#message(paste0("For diagnostic purposes: IntrinsicValues ",intrinsicValues)) 
+					attempt.count<-attempt.count+1
+					}
+				if(is.na(new.state) & attempt.count>maxAttempts) {
+					if(is.na(extrinsic.displacement)){
+						message(paste0(ls(),collapse=", "))
+						#message(str(alive.rows))
+						message(paste0("taxon.index ",taxon.index,"\n",
+										"alive.rows ",paste0(alive.rows, collapse=", "),"\n",
+										"length(alive.rows) ",length(alive.rows),"\n",
+										"sequence(length(alive.rows))", paste(sequence(length(alive.rows)),collapse=", "), "\n",
+										"current.states ",paste(current.states,collapse=", "),"\n",
+										"params ",extrinsicValues,"\n",
+										"selfstates ",current.states[taxon.index],"\n",
+										"otherstates ",paste(
+											current.states[-taxon.index],collapse=" "),"\n",
+										"timefrompresent ",depthfrompresent,"\n"))
+						}
 					stop(paste0(
-						"Simulating with these parameters resulted in problematic results; for one example, taxon.df$states[alive.rows[taxon.index]] was ",
-						taxon.df$states[alive.rows[taxon.index]], "intrinsicFn returned ",
-						intrinsicFn(params=intrinsicValues, states=current.states[taxon.index],
-						timefrompresent =depthfrompresent), "and extrinsicFn returned", extrinsicFn(params=extrinsicValues,
-						selfstates=current.states[taxon.index], otherstates=current.states[-taxon.index], timefrompresent =depthfrompresent)))
+						"Simulating with these parameters resulted in problematic results despite ", maxAttempts, " attempts",
+						"\nFor one example, taxon.df$states[alive.rows[taxon.index]] was ",
+						taxon.df$states[alive.rows[taxon.index]], ", for which intrinsicFn returned ",
+						intrinsicFn(params=intrinsicValues, states=current.states[taxon.index], 
+							timefrompresent =depthfrompresent)
+						, "\nand extrinsicFn returned ", 
+						extrinsicFn(params=extrinsicValues, 
+							selfstates=current.states[taxon.index], otherstates=current.states[-taxon.index], 
+							timefrompresent =depthfrompresent
+							)
+						," with current.states[taxon.index] = ", current.states[taxon.index])
+						)
+					}
 				}
-			}
+			if(is.na(new.state)) {
+				stop("where are these NA new.states coming from?? Something is very wrong")
+				}
 			taxon.df$states[alive.rows[taxon.index]] <- new.state
 		}
 		if(length(ids.speciating)>0) {

@@ -1,0 +1,161 @@
+---
+title: "Analyzing Trait Evolution with Approximate Bayesian Computation in TreEvo"
+author: "David W. Bapst"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+#          fig_caption:: yes
+
+vignette: >
+  %\VignetteIndexEntry{Analyzing Trait Evolution with Approximate Bayesian Computation in TreEvo}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r,echo=FALSE}
+library(paleotree)
+data(RaiaCopesRule)
+set.seed(444)
+
+```
+
+ Let's read in the trees from Raia et al 2015, AmNat
+ following is taken from their supplemental appendix, available at AmNat
+
+ they all appear to be trees dated to the last appearance times
+ *and* specifically the end-boundary of the interval containing the last appearance
+
+
+ ammonite genera
+
+
+ now let's plot the tree
+
+```{r}
+plot(ladderize(ammoniteTreeRaia));axisPhylo()
+```
+
+
+
+this tree has polytomies - will have to deal with that
+
+```{r}
+tree<-multi2di(ammoniteTreeRaia) #randomly resolve tree
+tree<-addTermBranchLength(tree,0.01)
+
+plot(ladderize(tree));axisPhylo()
+```
+
+
+plot with traits
+
+ maybe use phytools rather than mine?
+
+
+```{r}
+plotTraitgram(tree=tree, trait=sutureComplexity,
+	 conf.int=FALSE, main="Ammonite Suture Complexity")
+
+plotTraitgram(tree=tree, trait=shellSize,
+	 conf.int=FALSE, main="Ammonite Shell Diameter")
+```
+
+Let's use TreEvo!
+
+```{r}
+
+library(TreEvo)
+
+# character data for doRun must be in matrix form
+  # with rows labeled with taxon names
+
+charData<-matrix(sutureComplexity,ncol=1)
+rownames(charData)<-names(sutureComplexity)
+
+```
+
+Let's analyze it with ordinary BM
+
+```{r, eval=FALSE}
+results<-doRun_prc(
+  phy = tree,
+  traits = charData,
+  intrinsicFn=brownianIntrinsic,
+  extrinsicFn=nullExtrinsic,
+  startingPriorsFns="normal",
+  startingPriorsValues=matrix(c(mean(charData[,1]), sd(charData[,1]))),
+  intrinsicPriorsFns=c("exponential"),
+  intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
+  extrinsicPriorsFns=c("fixed"),
+  extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
+  generation.time=100000,
+  standardDevFactor=0.2,
+  plot=FALSE,
+  StartSims=10,
+  epsilonProportion=0.7,
+  epsilonMultiplier=0.7,
+  nStepsPRC=3,
+  numParticles=20,
+  jobName="examplerun_prc",
+  stopRule=FALSE,
+  multicore=FALSE,
+  coreLimit=1,
+  verboseParticles=FALSE
+  )
+```
+
+Let's analyze it with ordinary BM with a bound
+
+```{r, eval=FALSE}
+resultsBound<-doRun_prc(
+  phy = tree,
+  traits = charData,
+  intrinsicFn=boundaryMinIntrinsic,
+  extrinsicFn=nullExtrinsic,
+  startingPriorsFns="normal",
+  startingPriorsValues=matrix(c(mean(charData[,1]), sd(charData[,1]))),
+  intrinsicPriorsFns=c("exponential","normal"),
+  intrinsicPriorsValues=matrix(c(10, 10, -10, 1), nrow=2, byrow=FALSE),
+  extrinsicPriorsFns=c("fixed"),
+  extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
+  generation.time=100000,
+  standardDevFactor=0.2,
+  plot=FALSE,
+  StartSims=10,
+  epsilonProportion=0.7,
+  epsilonMultiplier=0.7,
+  nStepsPRC=3,
+  numParticles=20,
+  jobName="examplerun_prc",
+  stopRule=FALSE,
+  multicore=TRUE,
+  coreLimit=3,
+  verboseParticles=FALSE
+  )
+
+```
+
+
+```{r, eval=FALSE, echo=FALSE}
+
+save.image(file="treevo_vignette_workspace.Rdata")
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+The figure sizes have been customised so that you can easily put two images side-by-side. 
+
+```{r, fig.show='hold'}
+plot(1:10)
+plot(10:1)
+```
+

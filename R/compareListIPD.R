@@ -17,8 +17,8 @@
 
 
 #' @examples
-#'
-#' data(simRun)
+#' 
+#' data(simRunExample)
 #' 
 #' pdfList<-list(results$particleDataFrame,resultsBound$particleDataFrame)
 #' 

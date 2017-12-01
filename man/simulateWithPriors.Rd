@@ -7,7 +7,8 @@
 \usage{
 simulateWithPriors(phy = NULL, intrinsicFn, extrinsicFn, startingPriorsFns,
   startingPriorsValues, intrinsicPriorsFns, intrinsicPriorsValues,
-  extrinsicPriorsFns, extrinsicPriorsValues, timeStep = 1e-04,
+  extrinsicPriorsFns, extrinsicPriorsValues, generation.time = 1000,
+  TreeYears = max(branching.times(phy)) * 1e+06, timeStep = NULL,
   giveUpAttempts = 10, verbose = FALSE, checks = TRUE, taxon.df = NULL,
   freevector = NULL, niter.brown = 25, niter.lambda = 25,
   niter.delta = 25, niter.OU = 25, niter.white = 25)
@@ -15,7 +16,8 @@ simulateWithPriors(phy = NULL, intrinsicFn, extrinsicFn, startingPriorsFns,
 parallelSimulateWithPriors(nrepSim, multicore, coreLimit, phy, intrinsicFn,
   extrinsicFn, startingPriorsFns, startingPriorsValues, intrinsicPriorsFns,
   intrinsicPriorsValues, extrinsicPriorsFns, extrinsicPriorsValues,
-  timeStep = 1e-04, checkpointFile = NULL, checkpointFreq = 24,
+  generation.time = 1000, TreeYears = max(branching.times(phy)) * 1e+06,
+  timeStep = NULL, checkpointFile = NULL, checkpointFreq = 24,
   verbose = FALSE, freevector = NULL, taxon.df = NULL,
   giveUpAttempts = 10, niter.brown = 25, niter.lambda = 25,
   niter.delta = 25, niter.OU = 25, niter.white = 25)
@@ -48,8 +50,30 @@ use for extrinsic function parameters: can be one of \code{"fixed"}, \code{"unif
 \item{extrinsicPriorsValues}{Matrix with number of columns equal to the number of parameters to pass
 to the extrinsic function and number of rows equal to two (representing two parameters to pass to prior distribution).}
 
-\item{timeStep}{This value corresponds to the number of discrete time steps
-on the shortest branch.}
+\item{generation.time}{The number of years per generation. This sets the coarseness of the simulation; if it's set to 1000, 
+for example, the population's trait values change every 1000 calender years. Note that this is in calender years (see description
+for argument \code{TreeYears}), and not in millions of years (as is typical for dated trees in macroevolutionary studies).
+Thus, if a branch is 1 million-year time-unit long, and a user applies the default \code{generation.time = 1000},
+then 1000 evolutionary changes will be simulated along that branch.
+See documentation for \code{\link{doSimulation}} for further details.}
+
+\item{TreeYears}{The amount of calender time from the root to the furthest tip. Most trees in macroevolutionary studies are dated with
+branch lengths in units of millions of years, and thus the default for this argument is \code{max(branching.times(phy)) * 1e6}.
+If your tree has the most recent tip at time zero (i.e., the modern day), this would be the same as the root age of the tree. If your
+branch lengths are not in millions of years, you should alter this argument. Otherwise, leave this argument alone.
+See documentation for \code{\link{doSimulation}} for further details.}
+
+\item{timeStep}{This value corresponds to the lenght of intervals between discrete evolutionary events ('generations')
+simulated along branches, relative to a rescaled tree where the root to furthest tip distance is 1. For example,
+\code{timeStep = 0.01} of would mean 100 (i.e., 1 / 0.01) evolutionary changes would be expected to occur from
+the root to the furthest tip. (Note that the real number simulated will be much less, because simulations start
+over at each branching node.) Ideally, \code{timeStep} (or its effective value, via other arguments) should be 
+as short as is computationally possible.
+Typically \code{NULL} by default and
+determined internally as follows: \code{timeStep = generation.time / TreeYears}.
+Can be provided a value as an alternative to using arguments \code{generation.time}
+and \code{TreeYears}, which would then be overridden. 
+See documentation for \code{\link{doSimulation}} for further details.}
 
 \item{giveUpAttempts}{Value for when to stop the analysis if \code{NA} values are present.}
 
@@ -116,6 +140,8 @@ want to use \code{\link{simulateWithPriors}} or \code{\link{doSimulation}} funct
 \examples{
 \donttest{
 simPhy<-rcoal(30)
+# get realistic edge lengths
+simPhy$edge.length<-simPhy$edge.length*20
 
 # example simulation
 
@@ -131,7 +157,7 @@ simData<-simulateWithPriors(phy=simPhy,
   intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
   extrinsicPriorsFns=c("fixed"),
   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
-  timeStep=1e-04,
+  generation.time=100000,
 	 freevector=NULL, 	
 	 giveUpAttempts=10, 
 	 verbose=FALSE,
@@ -150,14 +176,16 @@ simDataParallel<-parallelSimulateWithPriors(
   intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
   extrinsicPriorsFns=c("fixed"),
   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE), 
-  timeStep=1e-04,
+  generation.time=100000,
   checkpointFile=NULL, checkpointFreq=24,
   verbose=FALSE,
   freevector=NULL, taxon.df=NULL,
   niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) 
 
 simDataParallel
+ 
 }
+
 }
 \author{
 Brian O'Meara and Barb Banbury

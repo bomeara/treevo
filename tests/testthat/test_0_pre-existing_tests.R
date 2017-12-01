@@ -1,5 +1,6 @@
 test_that("simulation ran", {
-	data(simRun)
+	data(simRunExample)
+	set.seed(1)
 	charDoSim<-doSimulationWithPossibleExtinction(
 		phy=simPhy,
 		intrinsicFn=brownianIntrinsic,
@@ -7,7 +8,7 @@ test_that("simulation ran", {
 		startingValues=c(10), #root state
 		intrinsicValues=c(0.01),
 		extrinsicValues=c(0),
-		timeStep=0.0001,
+		generation.time=100000,
 		saveHistory=FALSE)
 	expect_equal(class(charDoSim[,1]), "numeric")
 	expect_equal(dim(charDoSim)[1], 30)
@@ -16,7 +17,8 @@ test_that("simulation ran", {
 
 
 test_that("doPRC runs correctly", {
-	data(simRun)
+	data(simRunExample)
+	set.seed(1)
 	results <- doRun_prc(
 	  phy = simPhy,
 	  traits = simChar,
@@ -28,7 +30,7 @@ test_that("doPRC runs correctly", {
 	  intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
 	  extrinsicPriorsFns=c("fixed"),
 	  extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
-	  TreeYears=1000,
+	  generation.time=100000,
 	  standardDevFactor=0.2,
 	  plot=FALSE,
 	  StartSims=10,
@@ -40,13 +42,14 @@ test_that("doPRC runs correctly", {
 	  stopRule=FALSE,
 	  multicore=FALSE,
 	  coreLimit=1
-	)
+	  )
 	expect_is(results, "list")
-	expect_false(any(is.na(PairwiseESS(results$particleDataFrame))))
+	expect_false(any(is.na(pairwiseESS(results$particleDataFrame))))
 })
 
 
 test_that("plotting works", {
-	data(simRun)
+	data(simRunExample)
+	set.seed(1)
 	expect_error(plotPosteriors(results$particleDataFrame, results$PriorMatrix), NA)
 })
