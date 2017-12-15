@@ -338,8 +338,7 @@ doRun_prc<-function(
 	}
 	#
 	#Figure out how many iterations to use for optimization in Geiger.
-	
-	#it actually runs faster without checking for cores. And we parallelize elsewhere
+		#it actually runs faster without checking for cores. And we parallelize elsewhere
 	brown<-makeQuiet(fitContinuous(phy=phy, dat=traits, model="BM", ncores=1, control=list(niter=100)))
 	lambda<-makeQuiet(fitContinuous(phy=phy, dat=traits, model="lambda", ncores=1, control=list(niter=100)))
 	delta<-makeQuiet(fitContinuous(phy=phy, dat=traits, model="delta", ncores=1, control=list(niter=100)))
@@ -352,6 +351,7 @@ doRun_prc<-function(
 	niter.OU.g <- round(max(10, min(niter.goal/solnfreq(ou),100)))
 	niter.white.g <- round(max(10, min(niter.goal/solnfreq(white),100)))
 	#
+	# report to the console!
 	message(paste0("Setting number of starting points for Geiger optimization to",
 		paste0("\n   ",niter.brown.g, " for Brownian motion"),
 		paste0("\n   ",niter.lambda.g, " for lambda"),
@@ -436,44 +436,14 @@ doRun_prc<-function(
 		nameVector<-append(nameVector, paste0("ExtrinsicValue", i, sep=""))
 		}
 	#
-	#stores weights for each particle. Initially, assume infinite number of possible particles (so might not apply in discrete case)
-	particleWeights=rep(0, numParticles) 
-	#stores parameters in model for each particle
-	particleParameters<-matrix(nrow=numParticles, 
-		ncol=dim(startingPriorsValues)[2] +  dim(intrinsicPriorsValues)[2] + dim(extrinsicPriorsValues)[2]) 
-	particleDistance=rep(NA, numParticles)
-	particle<-1
-	attempts<-0
-	particleDataFrame<-data.frame()
-	if(verboseParticles){
-		message("successes ", "  attempts ", "  expected number of attempts req. ", "Params.") #\n
-		}
-	#
 	# save before initiating PRC procedure
 	if(saveData){
 		save.image(file=paste0("WS", jobName, ".Rdata", sep=""))
 		}
 	#
-	start.time<-proc.time()[[3]]
-	particleList<-list()
-	#message("Beginning partial rejection control algorithm...")
+	# here I removed the initial loop
 	#
-	
-		
-	#**
-	
-		
-	
-	
-# here I removed the initial loop
-	
 
-	#
-	
-	
-	
-	#** start of the final loop
-	
 	time.per.Step<-numeric(length=nStepsPRC)	
 	for(dataGenerationStep in 1:nStepsPRC) {
 		#	
@@ -508,15 +478,25 @@ doRun_prc<-function(
 		particleStartTime<-proc.time()[[3]]		
 		
 		
+	#stores weights for each particle. Initially, assume infinite number of possible particles (so might not apply in discrete case)
+	particleWeights=rep(0, numParticles) 
+	#stores parameters in model for each particle
+	particleParameters<-matrix(nrow=numParticles, 
+		ncol=dim(startingPriorsValues)[2] +  dim(intrinsicPriorsValues)[2] + dim(extrinsicPriorsValues)[2]) 
+	particleDistance=rep(NA, numParticles)
+	particle<-1
+	attempts<-0
+	particleDataFrame<-data.frame()
+	if(verboseParticles){
+		message("successes ", "  attempts ", "  expected number of attempts req. ", "Params.") #\n
+		}
+	#
+		
+
+
 		
 		
-		
-		
-		
-		
-		
-		
-		
+		#message("Beginning partial rejection control algorithm...")
 		while (particle<=numParticles) {
 			attempts<-attempts+1
 			if(attempts>maxAttempts){
@@ -550,35 +530,6 @@ doRun_prc<-function(
 				
 				}
 			#
-
-			
-			
-			
-			
-		#
-		
-		
-		
-		
-		
-		
-		
-#
-#		newparticleList[[1]]$distance<-abcDistance(
-#			summaryValuesMatrix=summaryStatsLong(phy=phy, 
-#				traits=doSimulationWithPossibleExtinction(phy=NULL,  taxon.df=taxon.df, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, 
-#					startingValues=newparticleList[[1]]$startingValues, intrinsicValues=newparticleList[[1]]$intrinsicValues, 
-#					extrinsicValues=newparticleList[[1]]$extrinsicValues, timeStep=timeStep, checkTimeStep=FALSE), 
-#					niter.brown=niter.brown.g, niter.lambda=niter.lambda.g, niter.delta=niter.delta.g, 
-#					niter.OU=niter.OU.g, niter.white=niter.white.g)
-#			, originalSummaryValues=originalSummaryValues, pls.model.list=pls.model.list )
-#
-
-				
-		
-		
-			
-
 			#
 			#message("dput(newparticleList[[1]]) AFTER MUTATE STATES\n")
 			#dput(newparticleList[[1]])
@@ -609,15 +560,27 @@ doRun_prc<-function(
 			#	
 			
 
-#		if (is.na(newparticleList[[1]]$distance)) {
-#			warning("newparticleList[[1]]$distance = NA, likely an underflow/overflow problem")
-#			newparticleList[[1]]$id <-  (-1)
-#			newparticleList[[1]]$weight<- 0
-#		}else{
-#			if (is.na(toleranceVector[1])) {
-#				warning("toleranceVector[1] = NA")
-#				newparticleList[[1]]$id <- (-1)
-#				newparticleList[[1]]$weight <- 0
+
+			
+			
+			if (is.na(newparticleList[[1]]$distance)) {
+				#message("Error with Geiger?  newparticleList[[1]]$distance = NA\n")
+				#while(sink.number()>0) {sink()}
+				#warning("newparticleList[[1]]$distance = NA")
+				warning("newparticleList[[1]]$distance = NA, likely an underflow/overflow problem")
+				newparticleList[[1]]$id <- (-1)
+				newparticleList[[1]]$weight <- 0
+				
+				
+				
+			}else{
+			
+
+	#			if (is.na(toleranceVector[1])) {
+	#				warning("toleranceVector[1] = NA")
+	#				newparticleList[[1]]$id <- (-1)
+	#				newparticleList[[1]]$weight <- 0
+	
 #			}else{
 #				if ((newparticleList[[1]]$distance) < toleranceVector[1]) {
 #					newparticleList[[1]]$id <- particle
@@ -630,19 +593,8 @@ doRun_prc<-function(
 #					newparticleList[[1]]$weight <- 0
 #					}
 #				}
-#			}
-
-
+#			}			
 			
-			
-			
-			if (is.na(newparticleList[[1]]$distance)) {
-				#message("Error with Geiger?  newparticleList[[1]]$distance = NA\n")
-				#while(sink.number()>0) {sink()}
-				#warning("newparticleList[[1]]$distance = NA")
-				newparticleList[[1]]$id <- (-1)
-				newparticleList[[1]]$weight <- 0
-			}else{
 				if (newparticleList[[1]]$distance < toleranceVector[dataGenerationStep]) {
 					newparticleList[[1]]$id <- particle
 					particle<-particle+1
