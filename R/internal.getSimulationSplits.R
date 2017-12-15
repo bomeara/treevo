@@ -60,7 +60,8 @@ getTaxonDFWithPossibleExtinction<-function(phy) {
 	for (taxon.index in sequence(ape::Ntip(phy))) {
 		heights$name[which(heights$tipward.id==taxon.index)] <- phy$tip.label[taxon.index]
 	}
-	result <- data.frame(t(sapply(split(heights, seq(nrow(heights))), createAbcTaxonFromHeightsRow)), stringsAsFactors=FALSE)
+	result <- data.frame(t(sapply(split(heights, 
+		seq(dim(heights)[1])), createAbcTaxonFromHeightsRow)), stringsAsFactors=FALSE)
 	for (col.id in sequence(dim(result)[2])) {
 		result[,col.id] <- unlist(result[,col.id])
 	}
