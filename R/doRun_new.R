@@ -223,11 +223,10 @@
 #' 
 
 
-##This seems to be working if partialResults does not exist.  If checkpoint=TRUE, then run fails.
+# ARE each particle-gather interval of the PRC algorithm a GENERATION OR a STEP? PLEASE CLARIFY
 
-#the doRun_prc function takes input from the user and then automatically guesses optimal parameters, though user overriding is also possible.
-#the guesses are used to do simulations near the expected region. If omitted, they are set to the midpoint of the input parameter matrices
-
+##old, from before DWB: This seems to be working if partialResults does not exist.  If checkpoint=TRUE, then run fails.
+	# DWB - I guess I should test that... sigh...
 
 
 #' @name doRun
@@ -237,6 +236,13 @@ doRun_prc<-function(
 	phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues, startingPriorsFns, 
 	intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, 
 	#startingValuesGuess=c(), intrinsicValuesGuess=c(), extrinsicValuesGuess=c(), 
+	#
+	# OLD COMMENTING (before DWB):	
+	#the doRun_prc function takes input from the user and then automatically guesses optimal parameters, though user overriding is also possible.
+	#the guesses are used to do simulations near the expected region. If omitted, they are set to the midpoint of the input parameter matrices
+	# so it seems like the above guess parameters are for the 'override' of this feature
+	# I just got rid of them, its too confusing..
+	#	
 	generation.time=1000, TreeYears=max(branching.times(phy)) * 1e6, 
 	multicore=FALSE, coreLimit=NA, validation="CV", scale=TRUE, variance.cutoff=95,
 	niter.goal=5, 
@@ -286,19 +292,19 @@ doRun_prc<-function(
 	PriorMatrix<-matrix(c(startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns), nrow=1, ncol=numberParametersTotal)
 	for (a in 1:dim(startingPriorsValues)[2]) {
 		namesForPriorMatrix<-c(paste0("StartingStates", a, sep=""))
-	}
+		}
 	for (b in 1:dim(intrinsicPriorsValues)[2]) {
 		namesForPriorMatrix<-append(namesForPriorMatrix, paste0("IntrinsicValue", b, sep=""))
-	}
+		}
 	#print(extrinsicPriorsValues)
 	for (c in 1:dim(extrinsicPriorsValues)[2]) {
 		namesForPriorMatrix <-append(namesForPriorMatrix, paste0("ExtrinsicValue", c, sep=""))
-	}
+		}
+	#
 	PriorMatrix<-rbind(PriorMatrix, cbind(startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues))
 	colnames(PriorMatrix)<-namesForPriorMatrix
 	rownames(PriorMatrix)<-c("shape", "value1", "value2")
-
-		
+	#	
 	#initialize weighted mean sd matrices
 	weightedMeanParam<-matrix(nrow=nStepsPRC, ncol=numberParametersTotal)
 	colnames(weightedMeanParam)<-namesForPriorMatrix
@@ -306,7 +312,7 @@ doRun_prc<-function(
 	param.stdev<-matrix(nrow=nStepsPRC, ncol=numberParametersTotal)
 	colnames(param.stdev)<-namesForPriorMatrix
 	rownames(param.stdev)<-paste0("Gen ", c(1: nStepsPRC), sep="")
-
+	#
 	#initialize guesses, if needed
 	#if (length(startingValuesGuess)==0) { #if no user guesses, try pulling a value from the prior
 	#	startingValuesGuess<-rep(NA,length(startingPriorsFns))
@@ -326,11 +332,11 @@ doRun_prc<-function(
 	#		extrinsicValuesGuess[i]<-pullFromPrior(extrinsicPriorsValues[,i],extrinsicPriorsFns[i])
 	#	}
 	#}
-
+	#
 	if (is.na(StartSims)) {
 		StartSims<-1000*numberParametersFree
 	}
-
+	#
 	#Figure out how many iterations to use for optimization in Geiger.
 	
 	#it actually runs faster without checking for cores. And we parallelize elsewhere
@@ -468,7 +474,7 @@ doRun_prc<-function(
 	
 	#** start of the final loop
 	
-	
+	time.per.Step<-numeric(length=nStepsPRC)	
 	for(dataGenerationStep in 1:nStepsPRC) {
 		#	
 		#dataGenerationStep<-dataGenerationStep+1
@@ -725,21 +731,15 @@ doRun_prc<-function(
 			
 #		#
 #		names(particleDataFrame)<-nameVector
-#		# dataGenerationStep=1 # removed when I flattened the loop
-#		time<-proc.time()[[3]]-start.time
-#		time.per.gen<-time
+
+#
 #		#
 #		#rejects.gen.one<-(dim(subset(particleDataFrame, particleDataFrame$id<0))[1])/(dim(subset(particleDataFrame,))[1])
 #		#rejects<-c()
 #		#
-#		for (i in 1:numberParametersTotal){
-#			param.stdev[1,i]<-c(sd(subset(particleDataFrame, particleDataFrame$id>0)[,6+i]))
-#			weightedMeanParam[1,i]<-weighted.mean(subset(particleDataFrame, particleDataFrame$id>0)[,6+i], 
-#				subset(particleDataFrame, particleDataFrame$id>0)[,6])
-#			#c(mean(subset(particleDataFrame, X3>0)[,7:dim(particleDataFrame)[2]])/subset(particleDataFrame, X3>0)[,6])
-#			}
 
-			
+
+		
 			
 		#
 		#
@@ -747,8 +747,13 @@ doRun_prc<-function(
 			which(particleDataFrame$generation==dataGenerationStep), ]$weight/(sum(
 				particleDataFrame[which(particleDataFrame$generation==dataGenerationStep), ]$weight))
 		#	
-		time2<-proc.time()[[3]]-start.time
-		time.per.gen<-c(time.per.gen, time2)
+#		# dataGenerationStep=1 # removed when I flattened the loop
+		timePRCStep<-proc.time()[[3]]-start.time
+		time.per.gen[i]<-timePRCStep
+		
+		
+		
+		
 		#rejects.per.gen<-(dim(subset(particleDataFrame, particleDataFrame$id<0))[1])/(
 			# dim(subset(particleDataFrame[which(particleDataFrame$generation==dataGenerationStep),],))[1])
 		#
@@ -760,6 +765,15 @@ doRun_prc<-function(
 			param.stdev[dataGenerationStep,i]<-c(sd(sub2[,6+i]))
 			weightedMeanParam[dataGenerationStep,i]<-weighted.mean(sub2[,6+i], sub2[,6])
 			}
+			
+#		for (i in 1:numberParametersTotal){
+#			param.stdev[1,i]<-c(sd(subset(particleDataFrame, particleDataFrame$id>0)[,6+i]))
+#			weightedMeanParam[1,i]<-weighted.mean(subset(particleDataFrame, particleDataFrame$id>0)[,6+i], 
+#				subset(particleDataFrame, particleDataFrame$id>0)[,6])
+#			#c(mean(subset(particleDataFrame, X3>0)[,7:dim(particleDataFrame)[2]])/subset(particleDataFrame, X3>0)[,6])
+#			}			
+			
+			
 		#
 		if (stopRule){	#this will stop the PRC from running out to max number of generations if all params are below stopValue
 			FF<-rep(1, dim(weightedMeanParam)[2])
