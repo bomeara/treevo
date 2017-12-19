@@ -725,7 +725,7 @@ doRun_prc<-function(
 		#
 		} #for (dataGenerationStep in 1:nStepsPRC) bracket
 	#
-	# ######### end of PRC particle collection algorithm ##############
+	# ######### end of PRC particle collection algorithm loop ##############
 	#
 	names(particleDataFrame)<-nameVector
 	if(plot) {
