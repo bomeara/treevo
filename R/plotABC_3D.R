@@ -132,7 +132,7 @@ plotABC_3D<-function(particleDataFrame, parameter, show.particles="none",
 				rgl::rgl.material(color="black", alpha=opacity, lit=FALSE)
 				#print(dim(triangles))
 				#print(dim(zfit))
-				if(length(zfit)!=nrow(triangles)){
+				if(length(zfit)!=(dim(triangles)[1])){
 					stop("Error, predict() not properly returning vector for same number of input")
 				}else{
 					rgl::triangles3d(cbind(triangles, zfit), col="red")
@@ -159,19 +159,19 @@ plotABC_3D<-function(particleDataFrame, parameter, show.particles="none",
 			message("Note: Currently not plotting particles.  To plot particles modify the show.particles= argument.")
 			}
 		else if (show.particles=="weights") {
-			for (j in 1:nrow(kept)) {
+			for (j in 1:(dim(kept)[1])) {
 				circle.size<-(kept[j, 6]/max(kept[,6]))*(.1*(max(kept[,param.position])-min(kept[,param.position])))*10
 				rgl::spheres3d(x=kept[j, param.position], y=-1*(.05*(max(y)-min(y))), z=kept[j, 1], radius=circle.size, type="s", col="black", add=TRUE, aspect=TRUE)
 			}	
 		}		
 		else if (show.particles=="distance") {
-			for (j in 1:nrow(kept)) {
+			for (j in 1:(dim(kept)[1])) {
 				circle.size<-(kept[j, 5]/max(kept[,5]))*(.1*(max(kept[,param.position])-min(kept[,param.position])))*15
 				rgl::spheres3d(x=kept[j, param.position], y=-1*(.05*(max(y)-min(y))), z=kept[j, 1], radius=circle.size, type="s", col="black", add=TRUE, aspect=TRUE)
 			}	
 		}	
 		if (plot.parent){
-			for (k in 1:nrow(short.kept)) {
+			for (k in 1:(dim(short.kept)[1])) {
 			prev.gen<-subset(kept[which(kept$generation==short.kept[k, 1]-1),])[,]  #works to retreive prev gen
 			rgl::rgl.material(color="black", alpha=0.5)
 			rgl::lines3d(x=c(short.kept[k, param.position], prev.gen[short.kept[k,]$parentid, param.position]), y=c(0, 0), z=c(short.kept[k, 1], short.kept[k, 1]-1))		}	
