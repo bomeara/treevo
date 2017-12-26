@@ -260,7 +260,7 @@ doRun_prc<-function(
 		stop("maxAttempts must be numeric")}
 
 	timeStep<-generation.time/TreeYears
-	message(paste0("The effective timeStep for this tree will be ",signif(timeStep),
+	message(paste0("The effective timeStep for this tree will be ",signif(timeStep,2),
 		", as a proportion of tree height (root to furthest tip)..."))
 
 	edgesRescaled<-phy$edge.length/max(node.depth.edgelength(phy))
@@ -443,7 +443,7 @@ doRun_prc<-function(
 	#
 	# here I removed the initial loop
 	#
-	time.per.Step<-numeric(length=nStepsPRC)	
+	time.per.gen<-time.per.Step<-numeric(length=nStepsPRC)	
 	for(dataGenerationStep in 1:nStepsPRC) {
 		#	
 		#dataGenerationStep<-dataGenerationStep+1
@@ -454,8 +454,7 @@ doRun_prc<-function(
 		if(dataGenerationStep==1){
 			#stores weights for each particle. Initially, assume infinite number of possible particles (so might not apply in discrete case)
 			particleWeights<-numeric(length=numParticles)  
-			particleDataFrame<-data.frame()
-			
+			particleDataFrame<-data.frame()			
 		}else{
 			particleWeights<-particleWeights/(sum(particleWeights,na.rm=TRUE)) #normalize to one
 			if(verboseParticles){
@@ -506,6 +505,9 @@ doRun_prc<-function(
 				#message("dput(oldParticleList[[particleToSelect]])\n")
 				#dput(oldParticleList[[particleToSelect]])
 				particleToSelect<-which.max(as.vector(rmultinom(1, size = 1, prob=oldParticleWeights)))
+				#print(oldParticleWeights)
+				#print(particleToSelect)
+				#print(length(oldParticleList))
 				newparticleList<-list(oldParticleList[[particleToSelect]])
 				#message("dput(newparticleList[[1]])\n")
 				#dput(newparticleList[[1]])
@@ -562,14 +564,17 @@ doRun_prc<-function(
 				}else{
 					if ((newparticleList[[1]]$distance) < toleranceVector[dataGenerationStep]) {
 						newparticleList[[1]]$id <- particle
-						particle<-particle+1
-						particleList<-append(particleList, newparticleList)	
-
-
+						#particle<-particle+1
+						#particleList<-append(particleList, newparticleList)	
+						#
 						if(dataGenerationStep==1){
 							newparticleList[[1]]$weight <- 1/numParticles
 							particleWeights[particle] <- 1/numParticles
+							particle<-particle+1
+							particleList<-append(particleList, newparticleList)	
 						}else{
+							particle<-particle+1
+							particleList<-append(particleList, newparticleList)	
 							#now get weights, using correction in Sisson et al. 2007
 							newWeight=0
 							for (i in 1:length(oldParticleList)) {
@@ -658,7 +663,7 @@ doRun_prc<-function(
 		#	
 		# dataGenerationStep=1 # removed when I flattened the loop
 		timePRCStep<-proc.time()[[3]]-start.time
-		time.per.gen[i]<-timePRCStep
+		time.per.gen[dataGenerationStep]<-timePRCStep
 		#rejects.per.gen<-(dim(subset(particleDataFrame, particleDataFrame$id<0))[1])/(
 			# dim(subset(particleDataFrame[which(particleDataFrame$generation==dataGenerationStep),],))[1])
 		#
@@ -829,7 +834,7 @@ doRun_rej<-function(
 	startTime<-proc.time()[[3]]
 
 	timeStep<-generation.time/TreeYears
-	message(paste0("The effective timeStep for this tree will be ",signif(timeStep),
+	message(paste0("The effective timeStep for this tree will be ",signif(timeStep,2),
 		", as a proportion of tree height (root to furthest tip)..."))
 
 	edgesRescaled<-phy$edge.length/max(node.depth.edgelength(phy))
