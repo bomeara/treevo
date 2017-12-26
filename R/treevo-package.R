@@ -20,9 +20,11 @@
 # @keywords treevo abc
 
 #' @examples
-#
+#' 
+#' # example analysis, using data simulated with TreEvo
+#' 
 #' \donttest{
-#
+#' 
 #' # let's simulate some data, and then try to infer the parameters using ABC
 #' # get a 30-taxon coalescent tree
 #' simPhy<-rcoal(30)
@@ -78,6 +80,7 @@
 #'   coreLimit=1
 #'   )
 #' }
+#' 
 #' 
 
 # NAMESPACE IMPORTING
