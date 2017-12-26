@@ -478,7 +478,7 @@ doRun_prc<-function(
 		attempts<-0		
 		particleList<-list()
 		if(verboseParticles){
-			message("successes ", "  attempts ", "  expected number of attempts req. ", "Params.") #\n
+			message("Successes ", "  Attempts ", "  Exp. # of Attempts Req. ", "Params.") #\n
 			}		
 		#message("Beginning partial rejection control algorithm...")
 		#
@@ -493,8 +493,12 @@ doRun_prc<-function(
 			if(dataGenerationStep==1){
 				newparticleList<-list(abcparticle(id=particle, generation=1, weight=0))
 				newparticleList[[1]]<-initializeStatesFromMatrices(particle=newparticleList[[1]], 
-					startingPriorsValues=startingPriorsValues, startingPriorsFns=startingPriorsFns, intrinsicPriorsValues=intrinsicPriorsValues, 
-					intrinsicPriorsFns=intrinsicPriorsFns, extrinsicPriorsValues=extrinsicPriorsValues, extrinsicPriorsFns=extrinsicPriorsFns)	
+					startingPriorsValues=startingPriorsValues, 
+					startingPriorsFns=startingPriorsFns, 
+					intrinsicPriorsValues=intrinsicPriorsValues, 
+					intrinsicPriorsFns=intrinsicPriorsFns, 
+					extrinsicPriorsValues=extrinsicPriorsValues, 
+					extrinsicPriorsFns=extrinsicPriorsFns)	
 				particleToSelect<-0
 			}else{
 				#message("particle to select = ", particleToSelect, "\n")
@@ -526,8 +530,10 @@ doRun_prc<-function(
 				summaryValuesMatrix=summaryStatsLong(phy=phy, 
 					traits=doSimulationWithPossibleExtinction(phy=NULL,  taxon.df=taxon.df,
 						intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, 
-						startingValues=newparticleList[[1]]$startingValues, intrinsicValues=newparticleList[[1]]$intrinsicValues, 
-						extrinsicValues=newparticleList[[1]]$extrinsicValues, timeStep=timeStep, checkTimeStep=FALSE), 
+						startingValues=newparticleList[[1]]$startingValues, 
+						intrinsicValues=newparticleList[[1]]$intrinsicValues, 
+						extrinsicValues=newparticleList[[1]]$extrinsicValues, 
+						timeStep=timeStep, checkTimeStep=FALSE), 
 					niter.brown=niter.brown.g, niter.lambda=niter.lambda.g, niter.delta=niter.delta.g, 
 					niter.OU=niter.OU.g, niter.white=niter.white.g)
 				, originalSummaryValues=originalSummaryValues, pls.model.list=pls.model.list
@@ -541,7 +547,8 @@ doRun_prc<-function(
 						plotcol="red"
 						}
 					}
-				text(x=newparticleList[[1]]$intrinsicValues, y=newparticleList[[1]]$distance, labels= dataGenerationStep, col=plotcol)
+				text(x=newparticleList[[1]]$intrinsicValues, 
+					y=newparticleList[[1]]$distance, labels= dataGenerationStep, col=plotcol)
 				}
 			#
 			#message("dput(newparticleList[[1]]) AFTER computeABCDistance\n")
@@ -641,7 +648,7 @@ doRun_prc<-function(
 			#
 			if(verboseParticles){
 				message(paste(particle-1,"         ", attempts,"        ",
-					floor(numParticles*attempts/particle),"                             ",
+					floor(numParticles*attempts/particle),"                    ",
 					signif(newparticleList[[1]]$startingValues,2),"  ", signif(newparticleList[[1]]$intrinsicValues,2),"  ", 
 					signif(newparticleList[[1]]$extrinsicValues,2),"  ", signif(newparticleList[[1]]$distance,2)))
 				}
