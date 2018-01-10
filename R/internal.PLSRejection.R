@@ -46,7 +46,7 @@
 PLSRejection<-function(summaryValuesMatrix, trueFreeValuesMatrix, phy, traits, abcTolerance, verbose=TRUE, validation="CV", scale=TRUE, variance.cutoff=95) {
   originalSummaryValues<-summaryStatsLong(phy=phy, traits=traits)
   if (verbose) {
-    print("Done getting originalSummaryValues") 
+    message("Done getting originalSummaryValues") 
   }
   abcDistancesRaw<-sapply(sequence(dim(trueFreeValuesMatrix)[2]), SingleParameterPLSDistanceSquared, summaryValuesMatrix=summaryValuesMatrix, 
          trueFreeValuesMatrix=trueFreeValuesMatrix, originalSummaryValues=originalSummaryValues,

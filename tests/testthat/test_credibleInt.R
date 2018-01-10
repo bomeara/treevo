@@ -1,4 +1,4 @@
 test_that("credibleInt works", {
   data(simRunExample)
-  credibleInt(results$particleDataFrame)
+  xxx<-credibleInt(results$particleDataFrame)
 })

@@ -201,21 +201,21 @@
 #' #one should make sure priors are uniform with doRun_rej!
 #' 
 #' resultsRej<-doRun_rej( 
-#' 	phy=simPhy,
-#' 	traits=simChar,
-#' 	intrinsicFn=brownianIntrinsic,
-#' 	extrinsicFn=nullExtrinsic,
-#' 	startingPriorsFns="normal",
-#' 	startingPriorsValues=matrix(c(mean(simChar[,1]), sd(simChar[,1]))),
-#' 	intrinsicPriorsFns=c("exponential"),
-#' 	intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE), #grep for normal in pkg
-#' 	extrinsicPriorsFns=c("fixed"),
-#' 	extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
-#' 	StartSims=10,
-#' 	jobName="examplerun_rej",
-#' 	abcTolerance=0.05,
-#' 	multicore=FALSE,
-#' 	coreLimit=1
+#' 	phy = simPhy,
+#' 	traits = simChar,
+#' 	intrinsicFn = brownianIntrinsic,
+#' 	extrinsicFn = nullExtrinsic,
+#' 	startingPriorsFns = "normal",
+#' 	startingPriorsValues = matrix(c(mean(simChar[,1]), sd(simChar[,1]))),
+#' 	intrinsicPriorsFns = c("exponential"),
+#' 	intrinsicPriorsValues = matrix(c(10, 10), nrow=2, byrow=FALSE), #grep for normal in pkg
+#' 	extrinsicPriorsFns = c("fixed"),
+#' 	extrinsicPriorsValues = matrix(c(0, 0), nrow=2, byrow=FALSE),
+#' 	StartSims = 10,
+#' 	jobName = "examplerun_rej",
+#' 	abcTolerance = 0.05,
+#' 	multicore = FALSE,
+#' 	coreLimit = 1
 #' 	)
 #' 
 #' resultsRej

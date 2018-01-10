@@ -61,7 +61,7 @@
 #' # Examples of simulations with various extrinsic models (and null intrinsic model)
 #' tree<-rcoal(30)
 #' # get realistic edge lengths
-#' simPhy$edge.length<-simPhy$edge.length*20
+#' tree$edge.length<-tree$edge.length*20
 #' 
 #' #No trait evolution except due to
 #'		# character displacement due to nearest neighbor taxon

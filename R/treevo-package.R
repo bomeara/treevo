@@ -27,16 +27,16 @@
 #' 
 #' # let's simulate some data, and then try to infer the parameters using ABC
 #' # get a 30-taxon coalescent tree
-#' simPhy<-rcoal(30)
+#' tree<-rcoal(30)
 #' # get realistic edge lengths
-#' simPhy$edge.length<-simPhy$edge.length*20
+#' tree$edge.length<-tree$edge.length*20
 #' 
 #' genRate<-c(0.01)
 #' ancState<-c(10)
 #' 
 #' #Simple Brownian motion
 #' simCharOut<-doSimulation(
-#' 	phy=simPhy,
+#' 	phy=tree,
 #' 	intrinsicFn=brownianIntrinsic,
 #' 	extrinsicFn=nullExtrinsic,
 #' 	startingValues=ancState, #root state
@@ -47,7 +47,7 @@
 #' 
 #' # clean for use with doRun
 #' simChar<-simCharOut[,"statesmatrix",drop=FALSE]
-#' rownames(simChar)<-simPhy$tip.label[simCharOut$taxonid]
+#' rownames(simChar)<-tree$tip.label[simCharOut$taxonid]
 #' 
 #' # NOTE: the example analyses below sample too few particles, 
 #' 	# over too few steps, with too few starting simulations
@@ -56,7 +56,7 @@
 #' # Please set these values to more realistic levels for your analyses!
 #' 
 #' results<-doRun_prc(
-#'   phy = simPhy,
+#'   phy = tree,
 #'   traits = simChar,
 #'   intrinsicFn=brownianIntrinsic,
 #'   extrinsicFn=nullExtrinsic,
