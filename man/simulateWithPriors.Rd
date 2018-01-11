@@ -139,16 +139,16 @@ want to use \code{\link{simulateWithPriors}} or \code{\link{doSimulation}} funct
 }
 \examples{
 \donttest{
-simPhy<-rcoal(30)
+tree<-rcoal(30)
 # get realistic edge lengths
-simPhy$edge.length<-simPhy$edge.length*20
+tree$edge.length<-tree$edge.length*20
 
 # example simulation
 
 # NOTE: the example analyses involve too few simulations, with coarse time-units
 	# - all for the sake of examples that reasonably test the functions
 	
-simData<-simulateWithPriors(phy=simPhy, 
+simData<-simulateWithPriors(phy=tree, 
   intrinsicFn=brownianIntrinsic,
   extrinsicFn=nullExtrinsic,
   startingPriorsFns="normal",
@@ -167,7 +167,7 @@ simData
 
 simDataParallel<-parallelSimulateWithPriors( 
   nrepSim=2, multicore=FALSE, coreLimit=1, 
-  phy=simPhy,
+  phy=tree,
   intrinsicFn=brownianIntrinsic,
   extrinsicFn=nullExtrinsic,
   startingPriorsFns="normal",

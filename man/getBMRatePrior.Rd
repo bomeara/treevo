@@ -4,7 +4,7 @@
 \alias{getBMRatePrior}
 \title{Get Brownian Motion Rate Prior}
 \usage{
-getBMRatePrior(phy, traits, timeStep)
+getBMRatePrior(phy, traits, timeStep, verbose = TRUE)
 }
 \arguments{
 \item{phy}{A phylogenetic tree, in package \code{ape}'s \code{phylo} format.}
@@ -12,6 +12,8 @@ getBMRatePrior(phy, traits, timeStep)
 \item{traits}{Data matrix with rownames identical to \code{phy@tip.label}.}
 
 \item{timeStep}{time in a single iteration of the discrete-time simulation}
+
+\item{verbose}{If \code{TRUE}, gives messages about how the simulation is progessing via \code{print}.}
 }
 \value{
 Returns a matrix of prior values

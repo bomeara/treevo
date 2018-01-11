@@ -339,17 +339,11 @@ doRun_prc<-function(
 	#
 	#Figure out how many iterations to use for optimization in Geiger.
 		#it actually runs faster without checking for cores. And we parallelize elsewhere
-	brown<-makeQuiet(geiger::fitContinuous(phy=phy, dat=traits, model="BM", ncores=1, control=list(niter=100)))
-	lambda<-makeQuiet(geiger::fitContinuous(phy=phy, dat=traits, model="lambda", ncores=1, control=list(niter=100)))
-	delta<-makeQuiet(geiger::fitContinuous(phy=phy, dat=traits, model="delta", ncores=1, control=list(niter=100)))
-	ou<-makeQuiet(geiger::fitContinuous(phy=phy, dat=traits, model="OU", ncores=1, control=list(niter=100)))
-	white<-makeQuiet(geiger::fitContinuous(phy=phy, dat=traits, model="white", ncores=1, control=list(niter=100)))
-	#
-	niter.brown.g <- round(max(10, min(niter.goal/solnfreq(brown),100)))
-	niter.lambda.g <- round(max(10, min(niter.goal/solnfreq(lambda),100)))
-	niter.delta.g <- round(max(10, min(niter.goal/solnfreq(delta),100)))
-	niter.OU.g <- round(max(10, min(niter.goal/solnfreq(ou),100)))
-	niter.white.g <- round(max(10, min(niter.goal/solnfreq(white),100)))
+	niter.brown.g <- getBM(phy=phy,dat=traits,niterN=100)$niter.g
+	niter.lambda.g <- getLambda(phy=phy,dat=traits,niterN=100)$niter.g
+	niter.delta.g <- getDelta(phy=phy,dat=traits,niterN=100)$niter.g
+	niter.OU.g <- getOU(phy=phy,dat=traits,niterN=100)$niter.g
+	niter.white.g <- getWhite(phy=phy,dat=traits,niterN=100)$niter.g
 	#
 	# report to the console!
 	message(paste0("Setting number of starting points for Geiger optimization to",
@@ -919,18 +913,11 @@ doRun_rej<-function(
 
 	#Figure out how many iterations to use for optimization in Geiger.
 	#it actually runs faster without checking for cores. And we parallelize elsewhere
-	brown<-makeQuiet(geiger::fitContinuous(phy=phy, dat=traits, model="BM", ncores=1, control=list(niter=100))) 
-	lambda<-makeQuiet(geiger::fitContinuous(phy=phy, dat=traits, model="lambda", ncores=1, control=list(niter=100)))
-	delta<-makeQuiet(geiger::fitContinuous(phy=phy, dat=traits, model="delta", ncores=1, control=list(niter=100)))
-	ou<-makeQuiet(geiger::fitContinuous(phy=phy, dat=traits, model="OU", ncores=1, control=list(niter=100)))
-	white<-makeQuiet(geiger::fitContinuous(phy=phy, dat=traits, model="white", ncores=1, control=list(niter=100)))
-
-
-	niter.brown.g <- round(max(10, min(niter.goal/solnfreq(brown),100)))
-	niter.lambda.g <- round(max(10, min(niter.goal/solnfreq(lambda),100)))
-	niter.delta.g <- round(max(10, min(niter.goal/solnfreq(delta),100)))
-	niter.OU.g <- round(max(10, min(niter.goal/solnfreq(ou),100)))
-	niter.white.g <- round(max(10, min(niter.goal/solnfreq(white),100)))
+	niter.brown.g <- getBM(phy=phy,dat=traits,niterN=100)$niter.g
+	niter.lambda.g <- getLambda(phy=phy,dat=traits,niterN=100)$niter.g
+	niter.delta.g <- getDelta(phy=phy,dat=traits,niterN=100)$niter.g
+	niter.OU.g <- getOU(phy=phy,dat=traits,niterN=100)$niter.g
+	niter.white.g <- getWhite(phy=phy,dat=traits,niterN=100)$niter.g
 	#
 	message(paste0("Setting number of starting points for Geiger optimization to ",
 		paste0("\n",niter.brown.g, " for Brownian motion"),
