@@ -12,6 +12,11 @@ VERSION - 0.4.2 - 10-03-17
 - Merged functions with shared design (particularly shared parameter sets) into the same help files to reduce redundancy
 - Improved documentation and made working examples for all (although many are dont-test examples)
 
-Version - 0.4.3 -
+Version - 0.4.5 - 01-11-17
+-Reduced code redundancy in doRun_prc
+-Many bug fixes
+-Added many tests
+-Prepared code to transition from using geiger::fitContinuous to phylolm::phylolm
+-
 
 

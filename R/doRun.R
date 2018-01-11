@@ -339,11 +339,11 @@ doRun_prc<-function(
 	#
 	#Figure out how many iterations to use for optimization in Geiger.
 		#it actually runs faster without checking for cores. And we parallelize elsewhere
-	niter.brown.g <- getBM(phy=phy,dat=traits,niterN=100)$niter.g
-	niter.lambda.g <- getLambda(phy=phy,dat=traits,niterN=100)$niter.g
-	niter.delta.g <- getDelta(phy=phy,dat=traits,niterN=100)$niter.g
-	niter.OU.g <- getOU(phy=phy,dat=traits,niterN=100)$niter.g
-	niter.white.g <- getWhite(phy=phy,dat=traits,niterN=100)$niter.g
+	niter.brown.g <- getBM(phy=phy,dat=traits,niterN=100,niter.goal=niter.goal)$niter.g
+	niter.lambda.g <- getLambda(phy=phy,dat=traits,niterN=100,niter.goal=niter.goal)$niter.g
+	niter.delta.g <- getDelta(phy=phy,dat=traits,niterN=100,niter.goal=niter.goal)$niter.g
+	niter.OU.g <- getOU(phy=phy,dat=traits,niterN=100,niter.goal=niter.goal)$niter.g
+	niter.white.g <- getWhite(phy=phy,dat=traits,niterN=100,niter.goal=niter.goal)$niter.g
 	#
 	# report to the console!
 	message(paste0("Setting number of starting points for Geiger optimization to",
@@ -913,11 +913,11 @@ doRun_rej<-function(
 
 	#Figure out how many iterations to use for optimization in Geiger.
 	#it actually runs faster without checking for cores. And we parallelize elsewhere
-	niter.brown.g <- getBM(phy=phy,dat=traits,niterN=100)$niter.g
-	niter.lambda.g <- getLambda(phy=phy,dat=traits,niterN=100)$niter.g
-	niter.delta.g <- getDelta(phy=phy,dat=traits,niterN=100)$niter.g
-	niter.OU.g <- getOU(phy=phy,dat=traits,niterN=100)$niter.g
-	niter.white.g <- getWhite(phy=phy,dat=traits,niterN=100)$niter.g
+	niter.brown.g <- getBM(phy=phy,dat=traits,niterN=100,niter.goal=niter.goal)$niter.g
+	niter.lambda.g <- getLambda(phy=phy,dat=traits,niterN=100,niter.goal=niter.goal)$niter.g
+	niter.delta.g <- getDelta(phy=phy,dat=traits,niterN=100,niter.goal=niter.goal)$niter.g
+	niter.OU.g <- getOU(phy=phy,dat=traits,niterN=100,niter.goal=niter.goal)$niter.g
+	niter.white.g <- getWhite(phy=phy,dat=traits,niterN=100,niter.goal=niter.goal)$niter.g
 	#
 	message(paste0("Setting number of starting points for Geiger optimization to ",
 		paste0("\n",niter.brown.g, " for Brownian motion"),
