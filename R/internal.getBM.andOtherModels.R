@@ -11,10 +11,24 @@
 # will have to build a star tree and fit BM to do White Noise with phylolm
 #
 
+#White noise with phylolm, compared to fitCotinuous:
+#
+#tree<-rtree(100)
+#trait<-rTraitCont(tree)
+#
+#fitCont_WN<-geiger::fitContinuous(phy=tree,dat=trait,model="white")
+#fitCont_WN
+#
+#star<-stree(Ntip(tree))
+#star$edge.length<-rep(1,nrow(star$edge))
+#phylolm::phylolm(trait~1,phy=star,model="BM")
+#
+
 
 ########################################################
 		
 getBM<-function(phy,dat,niterN,niter.goal=NA){
+	res<-list()
 	fit<-makeQuiet(geiger::fitContinuous(phy=phy, dat=dat, 
 		model="BM", ncores=1, control=list(niter=niterN)))
 	res$lnl<-as.numeric(fit$opt$lnL)
@@ -28,6 +42,7 @@ getBM<-function(phy,dat,niterN,niter.goal=NA){
 	
 	
 getLambda<-function(phy,dat,niterN,niter.goal=NA){
+	res<-list()
 	fit<-makeQuiet(geiger::fitContinuous(phy=phy, dat=dat, 
 		model="lambda", ncores=1, control=list(niter=niterN)))
 	res$lnl<-as.numeric(fit$opt$lnL)
@@ -41,6 +56,7 @@ getLambda<-function(phy,dat,niterN,niter.goal=NA){
 	}		
 
 getDelta<-function(phy,dat,niterN,niter.goal=NA){
+	res<-list()
 	fit<-makeQuiet(geiger::fitContinuous(phy=phy, dat=dat,
 		model="delta", ncores=1, control=list(niter=niterN)))
 	res$lnl<-as.numeric(fit$opt$lnL)
@@ -54,6 +70,7 @@ getDelta<-function(phy,dat,niterN,niter.goal=NA){
 	}			
 
 getOU<-function(phy,dat,niterN,niter.goal=NA){
+	res<-list()
 	fit<-makeQuiet(geiger::fitContinuous(phy=phy, dat=dat,
 		model="OU", ncores=1, control=list(niter=niterN)))
 	res$lnl<-as.numeric(fit$opt$lnL)
@@ -67,6 +84,7 @@ getOU<-function(phy,dat,niterN,niter.goal=NA){
 	}		
 
 getWhite<-function(phy,dat,niterN,niter.goal=NA){
+	res<-list()
 	fit<-makeQuiet(geiger::fitContinuous(phy=phy, dat=dat,
 		model="white", ncores=1, control=list(niter=niterN)))
 	res$lnl<-as.numeric(fit$opt$lnL)
