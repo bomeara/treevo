@@ -339,11 +339,11 @@ doRun_prc<-function(
 	#
 	#Figure out how many iterations to use for optimization in Geiger.
 		#it actually runs faster without checking for cores. And we parallelize elsewhere
-	brown<-makeQuiet(fitContinuous(phy=phy, dat=traits, model="BM", ncores=1, control=list(niter=100)))
-	lambda<-makeQuiet(fitContinuous(phy=phy, dat=traits, model="lambda", ncores=1, control=list(niter=100)))
-	delta<-makeQuiet(fitContinuous(phy=phy, dat=traits, model="delta", ncores=1, control=list(niter=100)))
-	ou<-makeQuiet(fitContinuous(phy=phy, dat=traits, model="OU", ncores=1, control=list(niter=100)))
-	white<-makeQuiet(fitContinuous(phy=phy, dat=traits, model="white", ncores=1, control=list(niter=100)))
+	brown<-makeQuiet(geiger::fitContinuous(phy=phy, dat=traits, model="BM", ncores=1, control=list(niter=100)))
+	lambda<-makeQuiet(geiger::fitContinuous(phy=phy, dat=traits, model="lambda", ncores=1, control=list(niter=100)))
+	delta<-makeQuiet(geiger::fitContinuous(phy=phy, dat=traits, model="delta", ncores=1, control=list(niter=100)))
+	ou<-makeQuiet(geiger::fitContinuous(phy=phy, dat=traits, model="OU", ncores=1, control=list(niter=100)))
+	white<-makeQuiet(geiger::fitContinuous(phy=phy, dat=traits, model="white", ncores=1, control=list(niter=100)))
 	#
 	niter.brown.g <- round(max(10, min(niter.goal/solnfreq(brown),100)))
 	niter.lambda.g <- round(max(10, min(niter.goal/solnfreq(lambda),100)))
@@ -919,11 +919,11 @@ doRun_rej<-function(
 
 	#Figure out how many iterations to use for optimization in Geiger.
 	#it actually runs faster without checking for cores. And we parallelize elsewhere
-	brown<-makeQuiet(fitContinuous(phy=phy, dat=traits, model="BM", ncores=1, control=list(niter=100))) 
-	lambda<-makeQuiet(fitContinuous(phy=phy, dat=traits, model="lambda", ncores=1, control=list(niter=100)))
-	delta<-makeQuiet(fitContinuous(phy=phy, dat=traits, model="delta", ncores=1, control=list(niter=100)))
-	ou<-makeQuiet(fitContinuous(phy=phy, dat=traits, model="OU", ncores=1, control=list(niter=100)))
-	white<-makeQuiet(fitContinuous(phy=phy, dat=traits, model="white", ncores=1, control=list(niter=100)))
+	brown<-makeQuiet(geiger::fitContinuous(phy=phy, dat=traits, model="BM", ncores=1, control=list(niter=100))) 
+	lambda<-makeQuiet(geiger::fitContinuous(phy=phy, dat=traits, model="lambda", ncores=1, control=list(niter=100)))
+	delta<-makeQuiet(geiger::fitContinuous(phy=phy, dat=traits, model="delta", ncores=1, control=list(niter=100)))
+	ou<-makeQuiet(geiger::fitContinuous(phy=phy, dat=traits, model="OU", ncores=1, control=list(niter=100)))
+	white<-makeQuiet(geiger::fitContinuous(phy=phy, dat=traits, model="white", ncores=1, control=list(niter=100)))
 
 
 	niter.brown.g <- round(max(10, min(niter.goal/solnfreq(brown),100)))
