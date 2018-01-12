@@ -102,6 +102,7 @@
 #
 #' \donttest{
 # 
+#' set.seed(1)
 #' # Examples of simulations with various intrinsic models (and null extrinsic model)
 #' tree<-rcoal(30)
 #' # get realistic edge lengths

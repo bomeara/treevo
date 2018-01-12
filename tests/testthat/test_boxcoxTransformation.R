@@ -1,8 +1,11 @@
 test_that("boxcoxTransformation works", {
   set.seed(1)
-  data(simRunExample)
+  simPhy <- rcoal(5)
+  simPhy$edge.length <- simPhy$edge.length * 20
+  
+  
   simDataParallel <- parallelSimulateWithPriors(
-    nrepSim = 5,
+    nrepSim = 2,
     multicore = FALSE, 
 	coreLimit = 1, 
 	phy = simPhy,
@@ -25,9 +28,11 @@ test_that("boxcoxTransformation works", {
 	)
   nParFree <- sum(attr(simDataParallel, "freevector"))
   summaryValuesMat <- simDataParallel[, -1:-nParFree]
+  #
   boxTranMat <- boxcoxTransformationMatrix(summaryValuesMatrix = summaryValuesMat)
-  boxTranMat
-  boxcoxTransformation(summaryValuesVector = summaryValuesMat[,
-    1], boxcoxAddition = boxTranMat$boxcoxAddition,
+  #
+  result<-boxcoxTransformation(
+	summaryValuesVector = summaryValuesMat[,1], 
+	boxcoxAddition = boxTranMat$boxcoxAddition,
     boxcoxLambda = boxTranMat$boxcoxLambda)
 })

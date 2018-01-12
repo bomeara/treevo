@@ -1,6 +1,6 @@
 test_that("simulateWithPriors works", {
   set.seed(1)
-  simPhy <- rcoal(10)
+  simPhy <- rcoal(5)
   simPhy$edge.length <- simPhy$edge.length * 20
   
   expect_warning(

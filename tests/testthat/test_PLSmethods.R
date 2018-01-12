@@ -1,7 +1,9 @@
 test_that("PLSmethods works", {
 
   set.seed(1)
-  data(simRunExample)
+  simPhy <- rcoal(5)
+  simPhy$edge.length <- simPhy$edge.length * 20
+  
   nSimulations <- 3
   
   simDataParallel <- parallelSimulateWithPriors(
