@@ -34,14 +34,12 @@ getBM<-function(phy,dat){			#,niterN,niter.goal=NA
 	#res$lnl<-as.numeric(fit$logLik)
 	#res$beta <-as.numeric(fit$opt$sigsq)
 	#res$aic <-as.numeric(fit$aic)
-
-	
+	#
 	fit<-phylolm::phylolm(formula=dat~1,phy=phy,model="BM")
 	res$lnl<-as.numeric(fit$logLik)
 	res$beta <-as.numeric(fit$sigma2)
 	res$aic <-as.numeric(fit$aic)
-
-	
+	#
 	#if(!is.na(niter.goal)){
 	#	res$niter.g <- round(max(10, min(niter.goal/solnfreq(fit),100)))
 	#	}
@@ -101,9 +99,9 @@ getWhite<-function(phy,dat){		#,niterN,niter.goal=NA
 	#
 	# will have to build a star tree and fit BM to do White Noise with phylolm
 	#
-	star<-stree(Ntip(tree))
+	star<-stree(Ntip(phy))
 	star$edge.length<-rep(1,nrow(star$edge))
-	fit<-phylolm::phylolm(formula=trait~1,phy=star,model="BM")	
+	fit<-phylolm::phylolm(formula=dat~1,phy=star,model="BM")	
 	#
 	res$lnl<-as.numeric(fit$logLik)
 	res$beta <-as.numeric(fit$sigma2)
