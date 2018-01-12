@@ -75,8 +75,7 @@ simDataParallel<-parallelSimulateWithPriors(
   timeStep=1e-04,
   checkpointFile=NULL, checkpointFreq=24,
   verbose=FALSE,
-  freevector=NULL, taxon.df=NULL,
-  niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) 
+  freevector=NULL, taxon.df=NULL)
 
 nParFree<-sum(attr(simDataParallel,"freevector"))
 
