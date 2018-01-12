@@ -4,7 +4,7 @@
 #' the rate of trait evolution under the Brownian Motion (BM) model.
 #' 
 #' Returns a matrix of prior values that can be used in the \code{doRun} functions.
-#' Builds on functions in \code{geiger} to estimate distribution.
+#' Builds on functions in \code{phylolm} to estimate distribution.
 #' 
 
 #' @inheritParams doSimulation
@@ -38,7 +38,7 @@ getBMRatePrior<-function(phy, traits, timeStep, verbose=TRUE) {
     if(is.null(names(traits))){
 		names(traits) <- colnames(traits)
 		}
-	continuous.time.sigma.squared <- makeQuiet(geiger::fitContinuous(phy, traits))$opt$sigsq
+	continuous.time.sigma.squared <- getBM(phy=phy, dat=traits)$beta
     numSteps <- getSimulationSplits(phy)[1, 1] / timeStep
     discrete.time.sigma.squared<-continuous.time.sigma.squared * max(node.depth.edgelength(phy)) / numSteps
     discrete.time.sd<-sqrt(discrete.time.sigma.squared)

@@ -87,9 +87,9 @@
 
 #' @import ape
 #' @import stats
-#' @import geiger
 #' @import phytools
 
+#' @importFrom phylolm phylolm
 #' @importFrom pls plsr scores 
 #' @importFrom corpcor pseudoinverse 
 #' @importFrom coda effectiveSize HPDinterval as.mcmc 

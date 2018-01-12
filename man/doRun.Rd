@@ -11,9 +11,9 @@ doRun_prc(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
   extrinsicPriorsValues, extrinsicPriorsFns, generation.time = 1000,
   TreeYears = max(branching.times(phy)) * 1e+06, multicore = FALSE,
   coreLimit = NA, validation = "CV", scale = TRUE, variance.cutoff = 95,
-  niter.goal = 5, numParticles = 300, standardDevFactor = 0.2,
-  StartSims = 300, epsilonProportion = 0.7, epsilonMultiplier = 0.7,
-  nStepsPRC = 5, stopRule = FALSE, stopValue = 0.05, maxAttempts = Inf,
+  numParticles = 300, standardDevFactor = 0.2, StartSims = 300,
+  epsilonProportion = 0.7, epsilonMultiplier = 0.7, nStepsPRC = 5,
+  stopRule = FALSE, stopValue = 0.05, maxAttempts = Inf,
   diagnosticPRCmode = FALSE, jobName = NA, saveData = FALSE,
   verboseParticles = TRUE, plot = FALSE)
 
@@ -22,9 +22,9 @@ doRun_rej(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
   extrinsicPriorsValues, extrinsicPriorsFns,
   TreeYears = max(branching.times(phy)) * 1e+06, generation.time = 1000,
   multicore = FALSE, coreLimit = NA, validation = "CV", scale = TRUE,
-  variance.cutoff = 95, niter.goal = 5, standardDevFactor = 0.2,
-  StartSims = NA, jobName = NA, abcTolerance = 0.1,
-  checkpointFile = NULL, checkpointFreq = 24, savesims = FALSE)
+  variance.cutoff = 95, standardDevFactor = 0.2, StartSims = NA,
+  jobName = NA, abcTolerance = 0.1, checkpointFile = NULL,
+  checkpointFreq = 24, savesims = FALSE)
 }
 \arguments{
 \item{phy}{A phylogenetic tree, in package \code{ape}'s \code{phylo} format.}
@@ -88,8 +88,6 @@ scaling by the standard deviation is done for every segment.}
 \item{variance.cutoff}{Minimum threshold percentage of variance explained for the
 number of components included in the final PLS model fit. This value is a 
 percentage and must be between 0 and 100. Default is 95 percent.}
-
-\item{niter.goal}{Adjust number of starting points for package \code{geiger} to return the best parameter estimates this number of times on average.}
 
 \item{numParticles}{Number of accepted particles per generation.}
 

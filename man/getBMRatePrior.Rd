@@ -24,7 +24,7 @@ the rate of trait evolution under the Brownian Motion (BM) model.
 }
 \details{
 Returns a matrix of prior values that can be used in the \code{doRun} functions.
-Builds on functions in \code{geiger} to estimate distribution.
+Builds on functions in \code{phylolm} to estimate distribution.
 }
 \examples{
 

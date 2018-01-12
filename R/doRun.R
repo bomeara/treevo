@@ -85,14 +85,14 @@
 
 #' @param saveData Option to save various run information during the analysis, including summary statistics from analyses, output to external .Rdata and .txt files.
 
-#' @param niter.goal Adjust number of starting points for package \code{geiger} to return the best parameter estimates this number of times on average.
-
 
 #' @param verboseParticles If \code{TRUE} (the default), a large amount of information about parameter estimates
 #' and acceptance of particles is output to console via \code{message} as \code{doRun_prc} runs. 
 
 #' @param diagnosticPRCmode If \code{TRUE} (\emph{not} the default), the function will be very noisy about characteristics of 
 #' the PRC algorithm as it runs.
+
+# param niter.goal Adjust number of starting points for package \code{geiger} to return the best parameter estimates this number of times on average.
 
 #' @return 
 #' The output of these two functions are lists, composed of multiple objects,
@@ -245,7 +245,7 @@ doRun_prc<-function(
 	#	
 	generation.time=1000, TreeYears=max(branching.times(phy)) * 1e6, 
 	multicore=FALSE, coreLimit=NA, validation="CV", scale=TRUE, variance.cutoff=95,
-	niter.goal=5, 
+	#niter.goal=5, 
 	numParticles=300, standardDevFactor=0.20, 
 	StartSims=300, epsilonProportion=0.7, epsilonMultiplier=0.7, nStepsPRC=5, 
 	stopRule=FALSE, stopValue=0.05, maxAttempts=Inf, diagnosticPRCmode=FALSE,
@@ -270,7 +270,7 @@ doRun_prc<-function(
 		stop("Tree has *NO* rescaled branches longer than generation.time/TreeYears, no simulated evol change can occur!")
 	}
 	if(min(edgesRescaled) < timeStep) {
-		warning("Tree has rescaled branches shorter than generation.time/TreeYears; no evol change can be assigned to these, and geiger functions may fail!")
+		warning("Tree has rescaled branches shorter than generation.time/TreeYears; no evol change can be assigned to these, and ML summary stat functions may fail!")
 		#print("Tree has zero or nearly zero length branches")
 	}
 	
@@ -313,45 +313,10 @@ doRun_prc<-function(
 	colnames(param.stdev)<-namesForPriorMatrix
 	rownames(param.stdev)<-paste0("Gen ", c(1: nStepsPRC), sep="")
 	#
-	#initialize guesses, if needed
-	#if (length(startingValuesGuess)==0) { #if no user guesses, try pulling a value from the prior
-	#	startingValuesGuess<-rep(NA,length(startingPriorsFns))
-	#	for (i in 1:length(startingPriorsFns)) {
-	#		startingValuesGuess[i]<-pullFromPrior(startingPriorsValues[,i],startingPriorsFns[i])
-	#	}
-	#}
-	#if (length(intrinsicValuesGuess)==0) { #if no user guesses, try pulling a value from the prior
-	#	intrinsicValuesGuess<-rep(NA,length(intrinsicPriorsFns))
-	#	for (i in 1:length(intrinsicPriorsFns)) {
-	#		intrinsicValuesGuess[i]<-pullFromPrior(intrinsicPriorsValues[,i],intrinsicPriorsFns[i])
-	#	}
-	#}
-	#if (length(extrinsicValuesGuess)==0) { #if no user guesses, try pulling a value from the prior
-	#	extrinsicValuesGuess<-rep(NA,length(extrinsicPriorsFns))
-	#	for (i in 1:length(extrinsicPriorsFns)) {
-	#		extrinsicValuesGuess[i]<-pullFromPrior(extrinsicPriorsValues[,i],extrinsicPriorsFns[i])
-	#	}
-	#}
 	#
 	if (is.na(StartSims)) {
 		StartSims<-1000*numberParametersFree
-	}
-	#
-	#Figure out how many iterations to use for optimization in Geiger.
-		#it actually runs faster without checking for cores. And we parallelize elsewhere
-	niter.brown.g <- getBM(phy=phy,dat=traits,niterN=100,niter.goal=niter.goal)$niter.g
-	niter.lambda.g <- getLambda(phy=phy,dat=traits,niterN=100,niter.goal=niter.goal)$niter.g
-	niter.delta.g <- getDelta(phy=phy,dat=traits,niterN=100,niter.goal=niter.goal)$niter.g
-	niter.OU.g <- getOU(phy=phy,dat=traits,niterN=100,niter.goal=niter.goal)$niter.g
-	niter.white.g <- getWhite(phy=phy,dat=traits,niterN=100,niter.goal=niter.goal)$niter.g
-	#
-	# report to the console!
-	message(paste0("Setting number of starting points for Geiger optimization to",
-		paste0("\n   ",niter.brown.g, " for Brownian motion"),
-		paste0("\n   ",niter.lambda.g, " for lambda"),
-		paste0("\n   ",niter.delta.g, " for delta"),
-		paste0("\n   ",niter.OU.g, " for OU"),
-		paste0("\n   ",niter.white.g, " for white noise")))
+		}
 	#
 	#---------------------- Initial Simulations (Start) ------------------------------
 	# See Wegmann et al. Efficient Approximate Bayesian Computation Coupled With Markov Chain Monte Carlo Without Likelihood. 
@@ -376,7 +341,8 @@ doRun_prc<-function(
 		startingPriorsValues=startingPriorsValues, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues, 
 		startingPriorsFns=startingPriorsFns, intrinsicPriorsFns=intrinsicPriorsFns, extrinsicPriorsFns=extrinsicPriorsFns, 
 		freevector=freevector, timeStep=timeStep, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, multicore=multicore, 
-		niter.brown=niter.brown.g, niter.lambda=niter.lambda.g, niter.delta=niter.delta.g, niter.OU=niter.OU.g, niter.white=niter.white.g))
+		#niter.brown=niter.brown.g, niter.lambda=niter.lambda.g, niter.delta=niter.delta.g, niter.OU=niter.OU.g, niter.white=niter.white.g
+		))
 	#message("\n\n")
 	#
 	if(saveData){
@@ -823,12 +789,12 @@ doRun_rej<-function(
 	#startingValuesGuess=c(), intrinsicValuesGuess=c(), extrinsicValuesGuess=c(), 
 	TreeYears=max(branching.times(phy)) * 1e6, 
 	generation.time=1000, multicore=FALSE, coreLimit=NA, validation="CV", scale=TRUE, variance.cutoff=95,
-	niter.goal=5, 
+	#niter.goal=5, 
 	standardDevFactor=0.20, StartSims=NA, jobName=NA, abcTolerance=0.1, 
 	checkpointFile=NULL, checkpointFreq=24, savesims=FALSE) {	
 	
-	#library(geiger)
-	#library(pls)
+	
+	
 	if (!is.binary.tree(phy)) {
 		warning("Tree is not fully dichotomous, this may lead to issues")
 	}
@@ -845,7 +811,7 @@ doRun_rej<-function(
 		stop("Tree has *NO* rescaled branches longer than generation.time/TreeYears, no simulated evol change can occur!")
 	}
 	if(min(edgesRescaled) < timeStep) {
-		warning("Tree has rescaled branches shorter than generation.time/TreeYears; no evol change can be assigned to these, and geiger functions may fail!")
+		warning("Tree has rescaled branches shorter than generation.time/TreeYears; no evol change can be assigned to these, and ML summary stat functions may fail!")
 		#print("Tree has zero or nearly zero length branches")
 	}
 	
@@ -878,7 +844,7 @@ doRun_rej<-function(
 	PriorMatrix<-rbind(PriorMatrix, cbind(startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues))
 	colnames(PriorMatrix)<-namesForPriorMatrix
 	rownames(PriorMatrix)<-c("shape", "value1", "value2")	
-
+	#
 	#initialize guesses, if needed
 	#if (length(startingValuesGuess)==0) { #if no user guesses, try pulling a value from the prior
 	#	startingValuesGuess<-rep(NA,length(startingPriorsFns))
@@ -898,41 +864,42 @@ doRun_rej<-function(
 	#		extrinsicValuesGuess[i]<-pullFromPrior(extrinsicPriorsValues[,i],extrinsicPriorsFns[i])
 	#	}
 	#}
-
+	#
 	if (is.na(StartSims)) {
 		StartSims<-1000*numberParametersFree
-	}
-
+		}
+	#
 	#Used to be multiple tries where nrepSim = StartSims*((2^try)/2).  
 		#If initial simulations are not enough, and we need to try again then new analysis will double number of initial simulations
 	nrepSim<-StartSims 
 	message(paste0("Number of initial simulations set to ", nrepSim)) 	#, "\n"
 	if(!is.null(checkpointFile)) {
 		save(list=ls(),file=paste0(checkpointFile,".intialsettings.Rsave",sep=""))
-	}
-
+		}
+	#
 	#Figure out how many iterations to use for optimization in Geiger.
 	#it actually runs faster without checking for cores. And we parallelize elsewhere
-	niter.brown.g <- getBM(phy=phy,dat=traits,niterN=100,niter.goal=niter.goal)$niter.g
-	niter.lambda.g <- getLambda(phy=phy,dat=traits,niterN=100,niter.goal=niter.goal)$niter.g
-	niter.delta.g <- getDelta(phy=phy,dat=traits,niterN=100,niter.goal=niter.goal)$niter.g
-	niter.OU.g <- getOU(phy=phy,dat=traits,niterN=100,niter.goal=niter.goal)$niter.g
-	niter.white.g <- getWhite(phy=phy,dat=traits,niterN=100,niter.goal=niter.goal)$niter.g
+	#niter.brown.g <- getBM(phy=phy,dat=traits,niterN=100,niter.goal=niter.goal)$niter.g
+	#niter.lambda.g <- getLambda(phy=phy,dat=traits,niterN=100,niter.goal=niter.goal)$niter.g
+	#niter.delta.g <- getDelta(phy=phy,dat=traits,niterN=100,niter.goal=niter.goal)$niter.g
+	#niter.OU.g <- getOU(phy=phy,dat=traits,niterN=100,niter.goal=niter.goal)$niter.g
+	#niter.white.g <- getWhite(phy=phy,dat=traits,niterN=100,niter.goal=niter.goal)$niter.g
 	#
-	message(paste0("Setting number of starting points for Geiger optimization to ",
-		paste0("\n",niter.brown.g, " for Brownian motion"),
-		paste0("\n",niter.lambda.g, " for lambda"),
-		paste0("\n",niter.delta.g, " for delta"),
-		paste0("\n",niter.OU.g, " for OU"),
-		paste0("\n",niter.white.g, " for white noise")))
-	
+	#message(paste0("Setting number of starting points for Geiger optimization to ",
+	#	paste0("\n",niter.brown.g, " for Brownian motion"),
+	#	paste0("\n",niter.lambda.g, " for lambda"),
+	#	paste0("\n",niter.delta.g, " for delta"),
+	#	paste0("\n",niter.OU.g, " for OU"),
+	#	paste0("\n",niter.white.g, " for white noise")))
+	#
 	trueFreeValuesANDSummaryValues<-parallelSimulateWithPriors(nrepSim=nrepSim, coreLimit=coreLimit, phy=phy,  taxon.df=taxon.df,
 		startingPriorsValues=startingPriorsValues, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues, 
 		startingPriorsFns=startingPriorsFns, intrinsicPriorsFns=intrinsicPriorsFns, extrinsicPriorsFns=extrinsicPriorsFns, 
 		freevector=freevector, timeStep=timeStep, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, 
 		multicore=multicore, checkpointFile=checkpointFile, checkpointFreq=checkpointFreq, 
-		niter.brown=niter.brown.g, niter.lambda=niter.lambda.g, niter.delta=niter.delta.g, niter.OU=niter.OU.g, niter.white=niter.white.g)
-
+		#niter.brown=niter.brown.g, niter.lambda=niter.lambda.g, niter.delta=niter.delta.g, niter.OU=niter.OU.g, niter.white=niter.white.g
+		)
+	#
 	#message("\n\n")
 	simTime<-proc.time()[[3]]-startTime
 	message(paste0("Initial simulations took ", round(simTime, digits=3), " seconds")) #, "\n"

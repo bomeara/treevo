@@ -1,6 +1,7 @@
 #  Calculate frequency of finding best solution in Geiger
 #  
 #  This function is taken from an internal Geiger function
+# probably really REALLY not needed now that geiger is no longer imported
 #  
 #  @param fitContResult An object returned by geiger::fitContinuous()
 

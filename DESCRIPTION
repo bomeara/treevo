@@ -11,7 +11,7 @@ Depends:
     R (>= 2.13.0),
     ape
 Imports:
-    geiger,
+    phylolm,
     pls,
     stats,
     corpcor,
