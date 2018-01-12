@@ -104,7 +104,7 @@
 # 
 #' set.seed(1)
 #' # Examples of simulations with various intrinsic models (and null extrinsic model)
-#' tree<-rcoal(30)
+#' tree<-rcoal(20)
 #' # get realistic edge lengths
 #' tree$edge.length<-tree$edge.length*20
 #' 
@@ -217,10 +217,10 @@ minBoundaryAutoregressiveIntrinsic<-function(params,states, timefrompresent) {
 	attraction<-params[3]	#in this model, this should be between zero and one
 	minBound<-params[4]
 	newdisplacement<-rnorm(n=length(states),mean=(attractor-states)*attraction,sd=sd) #subtract current states because we want displacement
-	#print(newdisplacement)
+	#message(newdisplacement)
 	for (i in length(newdisplacement)) {
 		newstate<-newdisplacement[i] + states[i]
-		#print(newstate)
+		#message(newstate)
 			if (newstate <params[4]) { #newstate less than min
 				newdisplacement[i]<-params[4] - states[i] #so, rather than go below the minimum, this moves the new state to the minimum
 			}
@@ -237,27 +237,27 @@ autoregressiveIntrinsicTimeSlices<-function(params,states, timefrompresent) {
 		# The last time threshold should be 0, one before that is the end of the previous epoch, etc.
 	numRegimes<-length(params)/4
 	timeSliceVector=c(Inf,params[which(c(1:length(params))%%4==0)])
-	#print(timeSliceVector)
+	#message(timeSliceVector)
 	sd<-params[1]
 	attractor<-params[2]
 	attraction<-params[3]	#in this model, this should be between zero and one
-	#print(paste("timefrompresent = ",timefrompresent))
+	#message(paste("timefrompresent = ",timefrompresent))
 	for (regime in 1:numRegimes) {
-		#print(paste ("tryiing regime = ",regime))
+		#message(paste ("tryiing regime = ",regime))
 		if (timefrompresent<timeSliceVector[regime]) {
-			#print("timefrompresent>timeSliceVector[regime] == TRUE")
+			#message("timefrompresent>timeSliceVector[regime] == TRUE")
 			if (timefrompresent>=timeSliceVector[regime+1]) {
-				#print("timefrompresent<=timeSliceVector[regime+1] == TRUE")
-				#print(paste("choose regime ",regime, " so 4*(regime-1)=",4*(regime-1)))
+				#message("timefrompresent<=timeSliceVector[regime+1] == TRUE")
+				#message(paste("choose regime ",regime, " so 4*(regime-1)=",4*(regime-1)))
 				sd<-params[1+4*(regime-1)]
 				attractor<-params[2+4*(regime-1)]
 				attraction<-params[3+4*(regime-1)]
-					#print(paste("sd = ",sd," attractor = ",attractor, " attraction = ", attraction))
+					#message(paste("sd = ",sd," attractor = ",attractor, " attraction = ", attraction))
 
 			}
 		}
 	}
-	#print(paste("sd = ",sd," attractor = ",attractor, " attraction = ", attraction))
+	#message(paste("sd = ",sd," attractor = ",attractor, " attraction = ", attraction))
 	newdisplacement<-rnorm(n=length(states),mean=(attractor-states)*attraction,sd=sd)
 	return(newdisplacement)
 	}
@@ -302,33 +302,33 @@ autoregressiveIntrinsicTimeSlicesConstantSigma<-function(params,states, timefrom
 	#time is time before present (i.e., 65 could be 65 MYA). The 
 		# last time threshold should be 0, one before that is the end of the previous epoch, etc.
 	numRegimes<-(length(params)-1)/3
-	#print(numRegimes)
+	#message(numRegimes)
 	timeSliceVector<-c(Inf)
 	for (regime in 1:numRegimes) {
 		timeSliceVector<-append(timeSliceVector,params[4+3*(regime-1)])
 	}
 	#timeSliceVector=c(Inf,params[which(c(1:length(params))%%4==0)])
-	#print(timeSliceVector)
+	#message(timeSliceVector)
 	sd<-params[1]
 	attractor<-params[2]
 	attraction<-params[3]	#in this model, this should be between zero and one
-	#print(paste("timefrompresent = ",timefrompresent))
+	#message(paste("timefrompresent = ",timefrompresent))
 	for (regime in 1:numRegimes) {
-		#print(paste ("trying regime = ",regime))
+		#message(paste ("trying regime = ",regime))
 		if (timefrompresent<timeSliceVector[regime]) {
-			#print("timefrompresent>timeSliceVector[regime] == TRUE")
+			#message("timefrompresent>timeSliceVector[regime] == TRUE")
 			if (timefrompresent>=timeSliceVector[regime+1]) {
-				#print("timefrompresent>=timeSliceVector[regime+1] == TRUE")
-				#print(paste("chose regime ",regime))
+				#message("timefrompresent>=timeSliceVector[regime+1] == TRUE")
+				#message(paste("chose regime ",regime))
 				#sd<-params[1+4*(regime-1)]
 				attractor<-params[2+3*(regime-1)]
 				attraction<-params[3+3*(regime-1)]
-				#print(paste("sd = ",sd," attractor = ",attractor, " attraction = ", attraction))
+				#message(paste("sd = ",sd," attractor = ",attractor, " attraction = ", attraction))
 
 			}
 		}
 	}
-	#print(paste("sd = ",sd," attractor = ",attractor, " attraction = ", attraction))
+	#message(paste("sd = ",sd," attractor = ",attractor, " attraction = ", attraction))
 	newdisplacement<-rnorm(n=length(states),mean=(attractor-states)*attraction,sd=sd)
 	return(newdisplacement)
 	}
@@ -340,32 +340,32 @@ varyingBoundariesFixedSigmaIntrinsic<-function(params,states, timefrompresent) {
 	#time is time before present (i.e., 65 could be 65 MYA). The last time (present)
 		# threshold should be 0, one before that is the end of the previous epoch, etc.
 	numRegimes<-(length(params)-1)/3
-	#print(numRegimes)
+	#message(numRegimes)
 	timeSliceVector<-c(Inf)
 	for (regime in 1:numRegimes) {
 		timeSliceVector<-append(timeSliceVector,params[4+3*(regime-1)])
 	}
 	#timeSliceVector=c(Inf,params[which(c(1:length(params))%%4==0)])
-	#print(timeSliceVector)
+	#message(timeSliceVector)
 	sd<-params[1]
 	minBound<-params[2]
 	maxBound<-params[3]
 	for (regime in 1:numRegimes) {
-		#print(paste ("trying regime = ",regime))
+		#message(paste ("trying regime = ",regime))
 		if (timefrompresent<timeSliceVector[regime]) {
-			#print("timefrompresent>timeSliceVector[regime] == TRUE")
+			#message("timefrompresent>timeSliceVector[regime] == TRUE")
 			if (timefrompresent>=timeSliceVector[regime+1]) {
-				#print("timefrompresent>=timeSliceVector[regime+1] == TRUE")
-				#print(paste("chose regime ",regime))
+				#message("timefrompresent>=timeSliceVector[regime+1] == TRUE")
+				#message(paste("chose regime ",regime))
 				#sd<-params[1+4*(regime-1)]
 				minBound<-params[2+3*(regime-1)]
 				maxBound<-params[3+3*(regime-1)]
-				#print(paste("sd = ",sd," attractor = ",attractor, " attraction = ", attraction))
+				#message(paste("sd = ",sd," attractor = ",attractor, " attraction = ", attraction))
 
 			}
 		}
 	}
-	#print(paste("sd = ",sd," attractor = ",attractor, " attraction = ", attraction))
+	#message(paste("sd = ",sd," attractor = ",attractor, " attraction = ", attraction))
 	newdisplacement<-rnorm(n=length(states),mean=0,sd=sd)
 		for (i in length(newdisplacement)) {
 		newstate<-newdisplacement[i]+states[i]
@@ -384,33 +384,33 @@ varyingBoundariesVaryingSigmaIntrinsic<-function(params,states, timefrompresent)
 	#params=[sd1, min1, max1, timethreshold1, sd2, min2, max2, timethreshold2, ...]
 	#time is time before present (i.e., 65 could be 65 MYA). The last time (present) threshold should be 0, one before that is the end of the previous epoch, etc.
 	numRegimes<-(length(params))/3
-	#print(numRegimes)
+	#message(numRegimes)
 	timeSliceVector<-c(Inf)
 	for (regime in 1:numRegimes) {
 		timeSliceVector<-append(timeSliceVector,params[4+4*(regime-1)])
 	}
 	#timeSliceVector=c(Inf,params[which(c(1:length(params))%%4==0)])
-	#print(timeSliceVector)
+	#message(timeSliceVector)
 	sd<-params[1]
 	minBound<-params[2]
 	maxBound<-params[3]
 	for (regime in 1:numRegimes) {
-		#print(paste ("trying regime = ",regime))
+		#message(paste ("trying regime = ",regime))
 		if (timefrompresent<timeSliceVector[regime]) {
-			#print("timefrompresent>timeSliceVector[regime] == TRUE")
+			#message("timefrompresent>timeSliceVector[regime] == TRUE")
 			if (timefrompresent>=timeSliceVector[regime+1]) {
-				#print("timefrompresent>=timeSliceVector[regime+1] == TRUE")
-				#print(paste("chose regime ",regime))
+				#message("timefrompresent>=timeSliceVector[regime+1] == TRUE")
+				#message(paste("chose regime ",regime))
 				#sd<-params[1+4*(regime-1)]
 				sd<-params[1+4*(regime-1)]
 				minBound<-params[2+4*(regime-1)]
 				maxBound<-params[3+4*(regime-1)]
-				#print(paste("sd = ",sd," attractor = ",attractor, " attraction = ", attraction))
+				#message(paste("sd = ",sd," attractor = ",attractor, " attraction = ", attraction))
 
 			}
 		}
 	}
-	#print(paste("sd = ",sd," attractor = ",attractor, " attraction = ", attraction))
+	#message(paste("sd = ",sd," attractor = ",attractor, " attraction = ", attraction))
 	newdisplacement<-rnorm(n=length(states),mean=0,sd=sd)
 		for (i in length(newdisplacement)) {
 		newstate<-newdisplacement[i]+states[i]

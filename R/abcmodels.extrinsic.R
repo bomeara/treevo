@@ -60,7 +60,7 @@
 # 
 #' set.seed(1)
 #' # Examples of simulations with various extrinsic models (and null intrinsic model)
-#' tree<-rcoal(30)
+#' tree<-rcoal(20)
 #' # get realistic edge lengths
 #' tree$edge.length<-tree$edge.length*20
 #' 
@@ -124,7 +124,7 @@ nearestNeighborDisplacementExtrinsic<-function(params,selfstates,otherstates, ti
 	springK<-params[2]
 	maxforce<-params[3]
 	localsign<-sign(selfstates[1]- repulsorValue)
-	#print(abs((selfstates[1]-repulsorValue)))
+	#message(abs((selfstates[1]-repulsorValue)))
 	if(localsign==0) { 
 		localsign=sign(rnorm(n=1))	
 	}

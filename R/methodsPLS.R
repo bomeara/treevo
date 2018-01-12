@@ -92,8 +92,8 @@
 
 
 
-#' @name PLSmethods
-#' @rdname PLSmethods
+#' @name methodsPLS
+#' @rdname methodsPLS
 #' @export
 returnPLSModel<-function(trueFreeValuesMatrix, summaryValuesMatrix, validation="CV", scale=TRUE, variance.cutoff=95, ...) {
   #note that this assumes that trueFreeValues is for a single param at a time, which works MUCH better
@@ -119,7 +119,7 @@ returnPLSModel<-function(trueFreeValuesMatrix, summaryValuesMatrix, validation="
 }
 
 
-#' @rdname PLSmethods
+#' @rdname methodsPLS
 #' @export
 PLSTransform<-function(summaryValuesMatrix, pls.model) {
   if (class(summaryValuesMatrix)!="matrix") {

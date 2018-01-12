@@ -67,7 +67,7 @@ The input parameters for this model are:
 \donttest{
 set.seed(1)
 # Examples of simulations with various extrinsic models (and null intrinsic model)
-tree<-rcoal(30)
+tree<-rcoal(20)
 # get realistic edge lengths
 tree$edge.length<-tree$edge.length*20
 

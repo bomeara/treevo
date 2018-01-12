@@ -116,7 +116,7 @@ plotABC_3D<-function(particleDataFrame, parameter, show.particles="none",
 			#bg3d("color)  #gives background color for plot
 			rgl::plot3d(x, y, z, col="black", box=FALSE, type="n", xlab="", ylab="", zlab="",
 				zlim=c(0, max(particleDataFrame$generation)), ylim=c(0, max(y)))
-			#print(paste("HERE"))
+			#message(paste("HERE"))
 			rgl::rgl.viewpoint(35, 1, 90)  #sets viewpoint for initial plot
 			rgl::title3d(colnames(x)[param.position], col='red', pos=c(NA, -2, max(z))) 
 			#text3d(x=min(x), y=mean(y), z=max(z), text="Density" col='blue') 
@@ -130,8 +130,8 @@ plotABC_3D<-function(particleDataFrame, parameter, show.particles="none",
 				zfit<-predict(lm(zG ~ xG + yG, xyzGen), newdata=data.frame(xG=triangles[,1], yG=triangles[,2]))
 				opacity<-0.8*(ngen/length(v))
 				rgl::rgl.material(color="black", alpha=opacity, lit=FALSE)
-				#print(dim(triangles))
-				#print(dim(zfit))
+				#message(dim(triangles))
+				#message(dim(zfit))
 				if(length(zfit)!=(dim(triangles)[1])){
 					stop("Error, predict() not properly returning vector for same number of input")
 				}else{

@@ -177,7 +177,7 @@ observed trait data set (\code{traits}), models (\code{intrinsicFn}, \code{extri
 (\code{startingPriorsValues}, \code{startingPriorsFns}, \code{intrinsicPriorsValues},
 \code{intrinsicPriorsFns}, \code{extrinsicPriorsValues}, \code{extrinsicPriorsFns}). Pulling from
 the priors, it simulates an initial set of simulations (\code{StartSims}). This set of simulations is
-boxcox transformed ,and a PLS regression (see \code{\link{PLSmethods}}) is performed for each free parameter
+boxcox transformed ,and a PLS regression (see \code{\link{methodsPLS}}) is performed for each free parameter
 to determine the most informative summary statistics (using \code{variance.cutoff}). The euclidean distance is calculated
 between each each initial simulation's most informative summary statistics and the input observed data.
 

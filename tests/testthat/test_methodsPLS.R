@@ -1,4 +1,4 @@
-test_that("PLSmethods works", {
+test_that("methodsPLS works", {
 
   set.seed(1)
   simPhy <- rcoal(5)

@@ -10,7 +10,7 @@ test_that("doSimulation works", {
 	startingValues = c(10),
     intrinsicValues = c(0.01), 
 	extrinsicValues = c(0),
-	generation.time=10000000,
+	generation.time=1000000,
 	saveHistory = FALSE
 	)
 	expect_equal(class(char[,1]), "numeric")
@@ -23,7 +23,7 @@ test_that("doSimulation works", {
     startingValues = c(10), 
 	intrinsicValues = c(0.05,10, 0.01), 
 	extrinsicValues = c(0, 0.1, 0.25),
-	generation.time=10000000,
+	generation.time=1000000,
 	saveHistory = FALSE
 	)
 	expect_equal(class(char[,1]), "numeric")
@@ -57,7 +57,7 @@ test_that("doSimulationForPlotting works", {
     startingValues = c(10), 
 	intrinsicValues = c(0.05,10, 0.01), 
 	extrinsicValues = c(0, 0.1, 0.25),
-	generation.time=10000000,
+	generation.time=1000000,
     plot = TRUE, 
 	saveHistory = FALSE
 	)
@@ -77,7 +77,7 @@ test_that("doSimulationWithPossibleExtinction works", {
 	extrinsicFn = nullExtrinsic,
     startingValues = c(10), 
 	intrinsicValues = c(0.01),
-	generation.time=100000,
+	generation.time=1000000,
     extrinsicValues = c(0), 
 	saveHistory = FALSE
 	)

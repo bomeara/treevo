@@ -13,7 +13,7 @@ getBMRatePrior(phy, traits, timeStep, verbose = TRUE)
 
 \item{timeStep}{time in a single iteration of the discrete-time simulation}
 
-\item{verbose}{If \code{TRUE}, gives messages about how the simulation is progessing via \code{print}.}
+\item{verbose}{If \code{TRUE}, gives messages about how the simulation is progessing via \code{message}.}
 }
 \value{
 Returns a matrix of prior values
@@ -30,7 +30,8 @@ Builds on functions in \code{phylolm} to estimate distribution.
 
 data(simRunExample)
 
-getBMRatePrior(phy=simPhy, traits=simChar, timeStep=1)
+getBMRatePrior(phy=simPhy, traits=simChar,
+   timeStep=1, verbose=TRUE)
 
 
 }

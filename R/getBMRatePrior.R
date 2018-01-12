@@ -23,7 +23,8 @@
 #' 
 #' data(simRunExample)
 #' 
-#' getBMRatePrior(phy=simPhy, traits=simChar, timeStep=1)
+#' getBMRatePrior(phy=simPhy, traits=simChar,
+#'    timeStep=1, verbose=TRUE)
 #' 
 #' 
 
@@ -53,8 +54,10 @@ getBMRatePrior<-function(phy, traits, timeStep, verbose=TRUE) {
   }
   LikelihoodRateEst<-GetBrownianSDRate(phy, traits, timeStep)
   intrinsicPriorsValues<-LikelihoodRateEst^-1
-  print(paste("LikelihoodRateEst =", LikelihoodRateEst, "; Mean of exp distribution for prior is ~", 
-	mean(rexp(10000, LikelihoodRateEst^-1)), "; exp rate =",  LikelihoodRateEst^-1))
+  if(verbose){
+	message(paste0("LikelihoodRateEst = ", LikelihoodRateEst, "; Mean of exp distribution for prior is ~", 
+		mean(rexp(10000, LikelihoodRateEst^-1)), "; exp rate = ",  LikelihoodRateEst^-1))
+	}
   #set prior distribution mean to BM estimate
-  return(c(intrinsicPriorsValues))
+  return(intrinsicPriorsValues)
 }

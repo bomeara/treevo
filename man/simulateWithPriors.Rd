@@ -75,7 +75,7 @@ See documentation for \code{\link{doSimulation}} for further details.}
 
 \item{giveUpAttempts}{Value for when to stop the analysis if \code{NA} values are present.}
 
-\item{verbose}{If \code{TRUE}, gives messages about how the simulation is progessing via \code{print}.}
+\item{verbose}{If \code{TRUE}, gives messages about how the simulation is progessing via \code{message}.}
 
 \item{checks}{If \code{TRUE}, checks inputs for consistency. This activity is skipped (\code{checks = FALSE})
 when run in parallel by \code{parallelSimulateWithPriors}, and instead is only checked once. This
@@ -128,7 +128,7 @@ want to use \code{\link{simulateWithPriors}} or \code{\link{doSimulation}} funct
 \examples{
 \donttest{
 set.seed(1)
-tree<-rcoal(30)
+tree<-rcoal(20)
 # get realistic edge lengths
 tree$edge.length<-tree$edge.length*20
 

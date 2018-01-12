@@ -11,7 +11,7 @@
 #' (\code{startingPriorsValues}, \code{startingPriorsFns}, \code{intrinsicPriorsValues},
 #' \code{intrinsicPriorsFns}, \code{extrinsicPriorsValues}, \code{extrinsicPriorsFns}). Pulling from
 #' the priors, it simulates an initial set of simulations (\code{StartSims}). This set of simulations is
-#' boxcox transformed ,and a PLS regression (see \code{\link{PLSmethods}}) is performed for each free parameter
+#' boxcox transformed ,and a PLS regression (see \code{\link{methodsPLS}}) is performed for each free parameter
 #' to determine the most informative summary statistics (using \code{variance.cutoff}). The euclidean distance is calculated
 #' between each each initial simulation's most informative summary statistics and the input observed data.
 #' 
@@ -36,7 +36,7 @@
 
 #' @inheritParams doSimulation
 #' @inheritParams simulateWithPriors
-#' @inheritParams PLSmethods
+#' @inheritParams methodsPLS
 
 #' @param traits Data matrix with rownames identical to \code{phy@tip.label}.
 
@@ -276,7 +276,7 @@ doRun_prc<-function(
 	}
 	if(min(edgesRescaled) < timeStep) {
 		warning("Tree has rescaled branches shorter than generation.time/TreeYears; no evol change can be assigned to these, and ML summary stat functions may fail!")
-		#print("Tree has zero or nearly zero length branches")
+		#message("Tree has zero or nearly zero length branches")
 	}
 	
 	totalGenerations<-sum(sapply(edgesRescaled,function(x) floor(x/timeStep)))
@@ -301,7 +301,7 @@ doRun_prc<-function(
 	for (b in 1:dim(intrinsicPriorsValues)[2]) {
 		namesForPriorMatrix<-append(namesForPriorMatrix, paste0("IntrinsicValue", b, sep=""))
 		}
-	#print(extrinsicPriorsValues)
+	#message(extrinsicPriorsValues)
 	for (c in 1:dim(extrinsicPriorsValues)[2]) {
 		namesForPriorMatrix <-append(namesForPriorMatrix, paste0("ExtrinsicValue", c, sep=""))
 		}
@@ -477,9 +477,9 @@ doRun_prc<-function(
 				#message("dput(oldParticleList[[particleToSelect]])\n")
 				#dput(oldParticleList[[particleToSelect]])
 				particleToSelect<-which.max(as.vector(rmultinom(1, size = 1, prob=oldParticleWeights)))
-				#print(oldParticleWeights)
-				#print(particleToSelect)
-				#print(length(oldParticleList))
+				#message(oldParticleWeights)
+				#message(particleToSelect)
+				#message(length(oldParticleList))
 				newparticleList<-list(oldParticleList[[particleToSelect]])
 				#message("dput(newparticleList[[1]])\n")
 				#dput(newparticleList[[1]])
@@ -599,7 +599,7 @@ doRun_prc<-function(
 			#
 			#
 			#while(sink.number()>0) {sink()}
-			#print(newparticleList)
+			#message(newparticleList)
 			#
 			vectorForDataFrame<-c(dataGenerationStep, attempts,newparticleList[[1]]$id, particleToSelect, 
 				newparticleList[[1]]$distance, newparticleList[[1]]$weight, newparticleList[[1]]$startingValues, 
@@ -676,7 +676,7 @@ doRun_prc<-function(
 						FF[check.weightedMeanParam]<-0
 						}
 					}
-				#print(FF)
+				#message(FF)
 				}
 			if (sum(FF)==0){
 				message("\n\n\nweightedMeanParam is < ", stopValue, "Analysis is being terminated at", dataGenerationStep
@@ -747,7 +747,7 @@ doRun_prc<-function(
 	functionTime<-proc.time()[[3]]-functionStartTime
 	message(paste0("Function completed in ",functionTime," seconds."))
 	#
-	#print(prcResults)
+	#message(prcResults)
 	return(prcResults)
 	}
 
@@ -760,11 +760,11 @@ getlnTransitionProb<-function(newvalue,meantouse,Fn,priorValues,stdFactor){
 										
 	if (Fn=="uniform") {
 		sdtouse<-stdFactor*((max(priorValues)-min(priorValues))/sqrt(12))
-		#print(paste0("Fn is uniform and sdtouse = ", sdtouse))
+		#message(paste0("Fn is uniform and sdtouse = ", sdtouse))
 	}
 	else if (Fn=="exponential") {
 		sdtouse<-stdFactor*(1/priorValues[1])
-		#print(paste0("Fn is exponential and sdtouse = ", sdtouse))
+		#message(paste0("Fn is exponential and sdtouse = ", sdtouse))
 	}
 	else {
 		sdtouse<-stdFactor*(priorValues[2])
@@ -774,7 +774,7 @@ getlnTransitionProb<-function(newvalue,meantouse,Fn,priorValues,stdFactor){
 		) - ((log(1)/pnorm(min(priorValues), mean=meantouse, sd=sdtouse, lower.tail=TRUE, log.p=TRUE))
 			* pnorm(max(priorValues), mean=meantouse , sd=sdtouse, lower.tail=FALSE, log.p=TRUE))
 	if(length(lnlocalTransitionProb)!=1){
-		#print(lnlocalTransitionProb)
+		#message(lnlocalTransitionProb)
 		stop("Somehow, multiple lnlocalTransitionProb values produced")
 		}
 	if (is.nan(lnlocalTransitionProb)) {  #to prevent lnlocalTransitionProb from being NaN (if pnorm=0)
@@ -829,7 +829,7 @@ doRun_rej<-function(
 	}
 	if(min(edgesRescaled) < timeStep) {
 		warning("Tree has rescaled branches shorter than generation.time/TreeYears; no evol change can be assigned to these, and ML summary stat functions may fail!")
-		#print("Tree has zero or nearly zero length branches")
+		#message("Tree has zero or nearly zero length branches")
 	}
 	
 	totalGenerations<-sum(sapply(edgesRescaled,function(x) floor(x/timeStep)))
@@ -854,7 +854,7 @@ doRun_rej<-function(
 	for (b in 1:dim(intrinsicPriorsValues)[2]) {
 		namesForPriorMatrix<-append(namesForPriorMatrix, paste0("IntrinsicValue", b, sep=""))
 	}
-	#print(extrinsicPriorsValues)
+	#message(extrinsicPriorsValues)
 	for (c in 1:dim(extrinsicPriorsValues)[2]) {
 		namesForPriorMatrix <-append(namesForPriorMatrix, paste0("ExtrinsicValue", c, sep=""))
 	}
@@ -934,7 +934,7 @@ doRun_rej<-function(
 	
 	#save(abcDistancesRaw, abcDistancesRawTotal, abcDistances, abcResults, particleDataFrame, file="")
 	input.data<-rbind(jobName, length(phy[[3]]), generation.time, TreeYears, timeStep, totalGenerations, StartSims, standardDevFactor, abcTolerance)
-	#print(res)
+	#message(res)
 	
 	rejectionResults<-vector("list")
 	

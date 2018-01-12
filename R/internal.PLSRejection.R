@@ -14,7 +14,7 @@
 
 #  @param abcTolerance Proportion of accepted simulations.
 
-#  @param verbose option to print progress to screen.
+#  @param verbose option to message progress to screen.
 
 #  @param validation Cross Validation procedure for ABC.
 

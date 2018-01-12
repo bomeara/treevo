@@ -90,7 +90,7 @@ is reached without producing a non-\code{NA} result, the simulation is terminate
 
 \item{returnAll}{If \code{TRUE}, the output returned is a \code{data.frame} containing the values at each node from the simulation.}
 
-\item{verbose}{If \code{TRUE}, gives messages about how the simulation is progessing via \code{print}.}
+\item{verbose}{If \code{TRUE}, gives messages about how the simulation is progessing via \code{message}.}
 
 \item{reject.NaN}{If \code{TRUE}, stop run if any simulated value is \code{NaN}.}
 
@@ -131,13 +131,14 @@ want to use \code{\link{simulateWithPriors}} or \code{\link{doSimulation}} funct
 \examples{
 \donttest{
 set.seed(1)
-tree<-rcoal(30)
+tree<-rcoal(20)
 # get realistic edge lengths
 tree$edge.length<-tree$edge.length*20
 
 #Simple Brownian motion
 char<-doSimulation(
 	phy=tree,
+ generation.time=100000,
 	intrinsicFn=brownianIntrinsic,
 	extrinsicFn=nullExtrinsic,
 	startingValues=c(10), #root state
@@ -148,6 +149,7 @@ char<-doSimulation(
 #Character displacement model with minimum bound
 char<-doSimulation(
 	phy=tree,
+ generation.time=100000,
 	intrinsicFn=boundaryMinIntrinsic,
 	extrinsicFn=ExponentiallyDecayingPushExtrinsic,
 	startingValues=c(10), #root state
@@ -158,6 +160,7 @@ char<-doSimulation(
 #Simple Brownian motion
 char<-doSimulationForPlotting(
 	phy=tree,
+ generation.time=100000,
 	intrinsicFn=brownianIntrinsic,
 	extrinsicFn=nullExtrinsic,
 	startingValues=c(10), #root state
@@ -170,6 +173,7 @@ char<-doSimulationForPlotting(
 #Character displacement model with minimum bound
 char<-doSimulationForPlotting(
 	phy=tree,
+ generation.time=100000,
 	intrinsicFn=boundaryMinIntrinsic,
 	extrinsicFn=ExponentiallyDecayingPushExtrinsic,
 	startingValues=c(10), #root state
@@ -184,6 +188,7 @@ char<-doSimulationForPlotting(
 #Simple Brownian motion
 char<-doSimulationWithPossibleExtinction(
 	phy=tree,
+ generation.time=100000,
 	intrinsicFn=brownianIntrinsic,
 	extrinsicFn=nullExtrinsic,
 	startingValues=c(10), #root state
