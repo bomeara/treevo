@@ -49,6 +49,7 @@ test_that("doRun_rej works", {
 	extrinsicPriorsFns = c("fixed"),
     extrinsicPriorsValues = matrix(c(0, 0), nrow = 2,byrow = FALSE), 
 	StartSims = 2, 
+	generation.time=10000000,
 	jobName = "examplerun_rej",
     abcTolerance = 0.05, 
 	multicore = FALSE, 

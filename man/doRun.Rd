@@ -19,12 +19,12 @@ doRun_prc(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
 
 doRun_rej(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
   startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns,
-  extrinsicPriorsValues, extrinsicPriorsFns,
-  TreeYears = max(branching.times(phy)) * 1e+06, generation.time = 1000,
-  multicore = FALSE, coreLimit = NA, validation = "CV", scale = TRUE,
-  variance.cutoff = 95, standardDevFactor = 0.2, StartSims = NA,
-  jobName = NA, abcTolerance = 0.1, checkpointFile = NULL,
-  checkpointFreq = 24, savesims = FALSE)
+  extrinsicPriorsValues, extrinsicPriorsFns, generation.time = 1000,
+  TreeYears = max(branching.times(phy)) * 1e+06, multicore = FALSE,
+  coreLimit = NA, validation = "CV", scale = TRUE, variance.cutoff = 95,
+  standardDevFactor = 0.2, StartSims = NA, jobName = NA,
+  abcTolerance = 0.1, checkpointFile = NULL, checkpointFreq = 24,
+  savesims = FALSE)
 }
 \arguments{
 \item{phy}{A phylogenetic tree, in package \code{ape}'s \code{phylo} format.}
@@ -201,6 +201,7 @@ parameters.
 \examples{
 
 \donttest{
+set.seed(1)
 data(simRunExample)
 
 # NOTE: the example analyses below sample too few particles, 
@@ -249,6 +250,7 @@ resultsRej<-doRun_rej(
 	intrinsicPriorsValues = matrix(c(10, 10), nrow=2, byrow=FALSE), #grep for normal in pkg
 	extrinsicPriorsFns = c("fixed"),
 	extrinsicPriorsValues = matrix(c(0, 0), nrow=2, byrow=FALSE),
+generation.time=100000,
 	StartSims = 10,
 	jobName = "examplerun_rej",
 	abcTolerance = 0.05,

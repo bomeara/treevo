@@ -163,6 +163,7 @@
 #' @examples
 #' 
 #' \donttest{
+#' set.seed(1)
 #' data(simRunExample)
 #' 
 #' # NOTE: the example analyses below sample too few particles, 
@@ -211,6 +212,7 @@
 #' 	intrinsicPriorsValues = matrix(c(10, 10), nrow=2, byrow=FALSE), #grep for normal in pkg
 #' 	extrinsicPriorsFns = c("fixed"),
 #' 	extrinsicPriorsValues = matrix(c(0, 0), nrow=2, byrow=FALSE),
+#'	generation.time=100000,
 #' 	StartSims = 10,
 #' 	jobName = "examplerun_rej",
 #' 	abcTolerance = 0.05,
@@ -235,13 +237,16 @@
 doRun_prc<-function(
 	phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues, startingPriorsFns, 
 	intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, 
-	#startingValuesGuess=c(), intrinsicValuesGuess=c(), extrinsicValuesGuess=c(), 
 	#
 	# OLD COMMENTING (before DWB):	
 	#the doRun_prc function takes input from the user and then automatically guesses optimal parameters, though user overriding is also possible.
 	#the guesses are used to do simulations near the expected region. If omitted, they are set to the midpoint of the input parameter matrices
-	# so it seems like the above guess parameters are for the 'override' of this feature
-	# I just got rid of them, its too confusing..
+	#
+	# DWB :so it seems like the above guess parameters are for the 'override' of this feature
+	# So... I just got rid of them, its too confusing..
+	#
+	#startingValuesGuess=c(), intrinsicValuesGuess=c(), extrinsicValuesGuess=c(), 
+	#
 	#	
 	generation.time=1000, TreeYears=max(branching.times(phy)) * 1e6, 
 	multicore=FALSE, coreLimit=NA, validation="CV", scale=TRUE, variance.cutoff=95,
@@ -788,11 +793,19 @@ getlnTransitionProb<-function(newvalue,meantouse,Fn,priorValues,stdFactor){
 #' @rdname doRun
 #' @export
 doRun_rej<-function(
-	phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues, startingPriorsFns, 
-	intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, 
+	phy, traits, 
+	intrinsicFn, extrinsicFn, 
+	startingPriorsValues, startingPriorsFns, 
+	intrinsicPriorsValues, intrinsicPriorsFns, 
+	extrinsicPriorsValues, extrinsicPriorsFns, 
 	#startingValuesGuess=c(), intrinsicValuesGuess=c(), extrinsicValuesGuess=c(), 
-	TreeYears=max(branching.times(phy)) * 1e6, 
-	generation.time=1000, multicore=FALSE, coreLimit=NA, validation="CV", scale=TRUE, variance.cutoff=95,
+	generation.time=1000, 
+	TreeYears=max(branching.times(phy)) * 1e6,
+	multicore=FALSE, 
+	coreLimit=NA, 
+	validation="CV", 
+	scale=TRUE, 
+	variance.cutoff=95,
 	#niter.goal=5, 
 	standardDevFactor=0.20, StartSims=NA, jobName=NA, abcTolerance=0.1, 
 	checkpointFile=NULL, checkpointFreq=24, savesims=FALSE) {	
