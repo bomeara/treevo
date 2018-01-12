@@ -85,6 +85,7 @@
 #
 #' \donttest{
 # 
+#' set.seed(1)
 #' tree<-rcoal(30)
 #' # get realistic edge lengths
 #' tree$edge.length<-tree$edge.length*20

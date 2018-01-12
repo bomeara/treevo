@@ -1,4 +1,6 @@
 test_that("pairwiseESS works", {
   data(simRunExample)
-  pairwiseESS(results$particleDataFrame)
+  expect_warning(
+  res<-pairwiseESS(results$particleDataFrame)
+  )
 })

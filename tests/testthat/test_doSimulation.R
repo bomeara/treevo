@@ -1,25 +1,41 @@
 test_that("doSimulation works", {
-  tree <- rcoal(30)
+  set.seed(1)
+  tree <- rcoal(5)
   tree$edge.length <- tree$edge.length * 20
+  
   char <- doSimulation(
-  phy = tree, 
+	phy = tree, 
 	intrinsicFn = brownianIntrinsic,
     extrinsicFn = nullExtrinsic, 
 	startingValues = c(10),
     intrinsicValues = c(0.01), 
 	extrinsicValues = c(0),
-	generation.time=100000,
-	saveHistory = FALSE)
+	generation.time=10000000,
+	saveHistory = FALSE
+	)
+	expect_equal(class(char[,1]), "numeric")
+	expect_equal(dim(char)[1], Ntip(tree))
+	
   char <- doSimulation(
-  phy = tree, 
+	phy = tree, 
 	intrinsicFn = boundaryMinIntrinsic,
     extrinsicFn = ExponentiallyDecayingPushExtrinsic,
     startingValues = c(10), 
-	intrinsicValues = c(0.05,
-      10, 0.01), 
+	intrinsicValues = c(0.05,10, 0.01), 
 	extrinsicValues = c(0, 0.1, 0.25),
-	generation.time=100000,
-	saveHistory = FALSE)
+	generation.time=10000000,
+	saveHistory = FALSE
+	)
+	expect_equal(class(char[,1]), "numeric")
+	expect_equal(dim(char)[1], Ntip(tree))
+	
+})
+
+test_that("doSimulationForPlotting works", {
+  set.seed(1)
+  tree <- rcoal(5)
+  tree$edge.length <- tree$edge.length * 20
+	
   char <- doSimulationForPlotting(
 	phy = tree, 
 	intrinsicFn = brownianIntrinsic,
@@ -27,9 +43,13 @@ test_that("doSimulation works", {
 	startingValues = c(10),
     intrinsicValues = c(0.01), 
 	extrinsicValues = c(0),
-	generation.time=100000,
+	generation.time=10000000,
     plot = FALSE, 
-	saveHistory = FALSE)
+	saveHistory = FALSE
+	)
+	expect_equal(class(char[,1]), "numeric")
+	expect_equal(dim(char)[1], Ntip(tree))
+	
   char <- doSimulationForPlotting(
 	phy = tree, 
 	intrinsicFn = boundaryMinIntrinsic,
@@ -37,10 +57,21 @@ test_that("doSimulation works", {
     startingValues = c(10), 
 	intrinsicValues = c(0.05,10, 0.01), 
 	extrinsicValues = c(0, 0.1, 0.25),
-	generation.time=100000,
+	generation.time=10000000,
     plot = TRUE, 
-	saveHistory = FALSE)
-  char <- doSimulationWithPossibleExtinction(
+	saveHistory = FALSE
+	)
+	expect_equal(class(char[,1]), "numeric")
+	expect_equal(dim(char)[1], Ntip(tree))
+})
+
+	
+test_that("doSimulationWithPossibleExtinction works", {
+  set.seed(1)
+  tree <- rcoal(5)
+  tree$edge.length <- tree$edge.length * 20
+	
+  charDoSim <- doSimulationWithPossibleExtinction(
 	phy = tree,
     intrinsicFn = brownianIntrinsic, 
 	extrinsicFn = nullExtrinsic,
@@ -48,22 +79,10 @@ test_that("doSimulation works", {
 	intrinsicValues = c(0.01),
 	generation.time=100000,
     extrinsicValues = c(0), 
-	saveHistory = FALSE)
+	saveHistory = FALSE
+	)
+	
+	expect_equal(class(charDoSim[,1]), "numeric")
+	expect_equal(dim(charDoSim)[1], Ntip(tree))
 })
 
-test_that("simulation ran", {
-	data(simRunExample)
-	set.seed(1)
-	charDoSim<-doSimulationWithPossibleExtinction(
-		phy=simPhy,
-		intrinsicFn=brownianIntrinsic,
-		extrinsicFn=nullExtrinsic,
-		startingValues=c(10), #root state
-		intrinsicValues=c(0.01),
-		extrinsicValues=c(0),
-		generation.time=100000,
-		saveHistory=FALSE)
-	expect_equal(class(charDoSim[,1]), "numeric")
-	expect_equal(dim(charDoSim)[1], 30)
-	}
-)
