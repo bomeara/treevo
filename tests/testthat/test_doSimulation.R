@@ -1,35 +1,54 @@
 test_that("doSimulation works", {
   tree <- rcoal(30)
   tree$edge.length <- tree$edge.length * 20
-  char <- doSimulation(phy = tree, intrinsicFn = brownianIntrinsic,
-    extrinsicFn = nullExtrinsic, startingValues = c(10),
-    intrinsicValues = c(0.01), extrinsicValues = c(0),
-			generation.time=100000,
-    saveHistory = FALSE)
-  char <- doSimulation(phy = tree, intrinsicFn = boundaryMinIntrinsic,
+  char <- doSimulation(
+  phy = tree, 
+	intrinsicFn = brownianIntrinsic,
+    extrinsicFn = nullExtrinsic, 
+	startingValues = c(10),
+    intrinsicValues = c(0.01), 
+	extrinsicValues = c(0),
+	generation.time=100000,
+	saveHistory = FALSE)
+  char <- doSimulation(
+  phy = tree, 
+	intrinsicFn = boundaryMinIntrinsic,
     extrinsicFn = ExponentiallyDecayingPushExtrinsic,
-    startingValues = c(10), intrinsicValues = c(0.05,
-      10, 0.01), extrinsicValues = c(0, 0.1, 0.25),
-	  		generation.time=100000,
-    saveHistory = FALSE)
-  char <- doSimulationForPlotting(phy = tree, intrinsicFn = brownianIntrinsic,
-    extrinsicFn = nullExtrinsic, startingValues = c(10),
-    intrinsicValues = c(0.01), extrinsicValues = c(0),
-			generation.time=100000,
-    plot = FALSE, saveHistory = FALSE)
-  char <- doSimulationForPlotting(phy = tree, intrinsicFn = boundaryMinIntrinsic,
+    startingValues = c(10), 
+	intrinsicValues = c(0.05,
+      10, 0.01), 
+	extrinsicValues = c(0, 0.1, 0.25),
+	generation.time=100000,
+	saveHistory = FALSE)
+  char <- doSimulationForPlotting(
+	phy = tree, 
+	intrinsicFn = brownianIntrinsic,
+    extrinsicFn = nullExtrinsic, 
+	startingValues = c(10),
+    intrinsicValues = c(0.01), 
+	extrinsicValues = c(0),
+	generation.time=100000,
+    plot = FALSE, 
+	saveHistory = FALSE)
+  char <- doSimulationForPlotting(
+	phy = tree, 
+	intrinsicFn = boundaryMinIntrinsic,
     extrinsicFn = ExponentiallyDecayingPushExtrinsic,
     startingValues = c(10), 
 	intrinsicValues = c(0.05,10, 0.01), 
 	extrinsicValues = c(0, 0.1, 0.25),
-	  		generation.time=100000,
-    plot = TRUE, saveHistory = FALSE)
-  char <- doSimulationWithPossibleExtinction(phy = tree,
+	generation.time=100000,
+    plot = TRUE, 
+	saveHistory = FALSE)
+  char <- doSimulationWithPossibleExtinction(
+	phy = tree,
     intrinsicFn = brownianIntrinsic, 
 	extrinsicFn = nullExtrinsic,
-    startingValues = c(10), intrinsicValues = c(0.01),
-			generation.time=100000,
-    extrinsicValues = c(0), saveHistory = FALSE)
+    startingValues = c(10), 
+	intrinsicValues = c(0.01),
+	generation.time=100000,
+    extrinsicValues = c(0), 
+	saveHistory = FALSE)
 })
 
 test_that("simulation ran", {
