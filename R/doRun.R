@@ -335,8 +335,9 @@ doRun_prc<-function(
 	Time<-proc.time()[[3]]
 	trueFreeValues<-matrix(nrow=0, ncol= numberParametersFree)
 	#set up initial sum stats as length of SSL of original data
-	summaryValues<-matrix(nrow=0, ncol=length(summaryStatsLong(phy=phy, traits=traits, 
-		niter.brown=200, niter.lambda=200, niter.delta=200, niter.OU=200, niter.white=200))) 
+	summaryValues<-matrix(nrow=0, ncol=length(summaryStatsLong(phy=phy, traits=traits 
+		#niter.brown=200, niter.lambda=200, niter.delta=200, niter.OU=200, niter.white=200
+		))) 
 	trueFreeValuesANDSummaryValues<-makeQuiet(parallelSimulateWithPriors(nrepSim=nrepSim, coreLimit=coreLimit, phy=phy,  taxon.df=taxon.df,
 		startingPriorsValues=startingPriorsValues, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues, 
 		startingPriorsFns=startingPriorsFns, intrinsicPriorsFns=intrinsicPriorsFns, extrinsicPriorsFns=extrinsicPriorsFns, 
@@ -361,7 +362,9 @@ doRun_prc<-function(
 	#
 	pls.model.list <- makeQuiet(apply(trueFreeValuesMatrix, 2, returnPLSModel, summaryValuesMatrix=summaryValuesMatrix, validation=validation, 
 		scale=scale, variance.cutoff = variance.cutoff))
-	originalSummaryValues <- summaryStatsLong(phy, traits, niter.brown=200, niter.lambda=200, niter.delta=200, niter.OU=200, niter.white=200)
+	originalSummaryValues <- summaryStatsLong(phy, traits, 
+		#niter.brown=200, niter.lambda=200, niter.delta=200, niter.OU=200, niter.white=200
+		)
 	#
 	distanceVector<-abcDistance(summaryValuesMatrix, originalSummaryValues, pls.model.list)
 	#
@@ -493,9 +496,10 @@ doRun_prc<-function(
 						startingValues=newparticleList[[1]]$startingValues, 
 						intrinsicValues=newparticleList[[1]]$intrinsicValues, 
 						extrinsicValues=newparticleList[[1]]$extrinsicValues, 
-						timeStep=timeStep, checkTimeStep=FALSE), 
-					niter.brown=niter.brown.g, niter.lambda=niter.lambda.g, niter.delta=niter.delta.g, 
-					niter.OU=niter.OU.g, niter.white=niter.white.g)
+						timeStep=timeStep, checkTimeStep=FALSE) 
+					#,niter.brown=niter.brown.g, niter.lambda=niter.lambda.g, niter.delta=niter.delta.g, 
+					#niter.OU=niter.OU.g, niter.white=niter.white.g
+					)
 				, originalSummaryValues=originalSummaryValues, pls.model.list=pls.model.list
 				)
 			#

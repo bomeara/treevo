@@ -69,7 +69,7 @@ solnfreq <- function(fitContResult, tol = .Machine$double.eps^0.5){
 # @rdname summaryStatsLong
 # @export
 summaryStatsLong<-function(phy, traits,
-		niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25,
+		#niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25,
 		do.CI=is.ultrametric(phy)) {
 	#
 	if (any(phy$edge.length==0)){
@@ -90,30 +90,30 @@ summaryStatsLong<-function(phy, traits,
 
 	#it actually runs faster without checking for cores. And we parallelize elsewhere
 	
-	brown<-getBM(phy=phy,dat=traits,niterN=niter.brown)
+	brown<-getBM(phy=phy,dat=traits)	#,niterN=niter.brown
 	brown.lnl<-brown$lnl
 	brown.beta <-brown$beta
 	brown.aic <-brown$aic
 	#
-	lambda<-getLambda(phy=phy,dat=traits,niterN=niter.lambda)
+	lambda<-getLambda(phy=phy,dat=traits)	#,niterN=niter.lambda
 	lambda.lnl<-lambda$lnl
 	lambda.beta <-lambda$beta
 	lambda.aic <-lambda$aic
 	lambda.lambda <-lambda$lambda
 	#	
-	delta<-getDelta(phy=phy,dat=traits,niterN=niter.delta)
+	delta<-getDelta(phy=phy,dat=traits)	#,niterN=niter.delta
 	delta.lnl<-delta$lnl
 	delta.beta <-delta$beta
 	delta.aic <-delta$aic
 	delta.delta <-delta$delta
 	#
-	ou<-getOU(phy=phy,dat=traits,niterN=niter.OU)
+	ou<-getOU(phy=phy,dat=traits)	#,niterN=niter.OU
 	ou.lnl<-ou$lnl
 	ou.beta <-ou$beta
 	ou.aic <-ou$aic
 	ou.alpha <-ou$alpha
 	#
-	white<-getWhite(phy=phy,dat=traits,niterN=niter.white)
+	white<-getWhite(phy=phy,dat=traits)	#,niterN=niter.white
 	white.lnl<-white$lnl
 	white.aic <-white$aic
 
