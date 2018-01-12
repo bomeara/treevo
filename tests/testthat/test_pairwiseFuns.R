@@ -4,3 +4,10 @@ test_that("pairwiseKS works", {
     Bounded = resultsBound$particleDataFrame)
   pairwiseKS(particleDataFrameList = pdfList)
 })
+
+test_that("pairwiseESS works", {
+  data(simRunExample)
+  expect_warning(
+  res<-pairwiseESS(results$particleDataFrame)
+  )
+})
