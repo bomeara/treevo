@@ -27,73 +27,90 @@
 
 ########################################################
 		
-getBM<-function(phy,dat,niterN,niter.goal=NA){
+getBM<-function(phy,dat){			#,niterN,niter.goal=NA
 	res<-list()
-	fit<-makeQuiet(geiger::fitContinuous(phy=phy, dat=dat, 
-		model="BM", ncores=1, control=list(niter=niterN)))
-	res$lnl<-as.numeric(fit$opt$lnL)
-	res$beta <-as.numeric(fit$opt$sigsq)
-	res$aic <-as.numeric(fit$opt$aic)
-	if(!is.na(niter.goal)){
-		res$niter.g <- round(max(10, min(niter.goal/solnfreq(fit),100)))
-		}
+	#fit<-makeQuiet(geiger::fitContinuous(phy=phy, dat=dat, 
+	#	model="BM", ncores=1, control=list(niter=niterN)))
+	#res$lnl<-as.numeric(fit$logLik)
+	#res$beta <-as.numeric(fit$opt$sigsq)
+	#res$aic <-as.numeric(fit$aic)
+
+	
+	fit<-phylolm::phylolm(formula=dat~1,phy=phy,model="BM")
+	res$lnl<-as.numeric(fit$logLik)
+	res$beta <-as.numeric(fit$sigma2)
+	res$aic <-as.numeric(fit$aic)
+
+	
+	#if(!is.na(niter.goal)){
+	#	res$niter.g <- round(max(10, min(niter.goal/solnfreq(fit),100)))
+	#	}
 	return(res)
 	}
 	
 	
-getLambda<-function(phy,dat,niterN,niter.goal=NA){
+getLambda<-function(phy,dat){			#,niterN,niter.goal=NA
 	res<-list()
-	fit<-makeQuiet(geiger::fitContinuous(phy=phy, dat=dat, 
-		model="lambda", ncores=1, control=list(niter=niterN)))
-	res$lnl<-as.numeric(fit$opt$lnL)
-	res$beta <-as.numeric(fit$opt$sigsq)
-	res$lambda<-as.numeric(fit$opt$lambda)
-	res$aic <-as.numeric(fit$opt$aic)
-	if(!is.na(niter.goal)){
-		res$niter.g <- round(max(10, min(niter.goal/solnfreq(fit),100)))
-		}
+	#fit<-makeQuiet(geiger::fitContinuous(phy=phy, dat=dat, 
+	#	model="lambda", ncores=1, control=list(niter=niterN)))
+	fit<-phylolm::phylolm(formula=dat~1,phy=phy,model="lambda")
+	res$lnl<-as.numeric(fit$logLik)
+	res$beta <-as.numeric(fit$sigma2)
+	res$lambda<-as.numeric(fit$optpar)
+	res$aic <-as.numeric(fit$aic)
+	#if(!is.na(niter.goal)){
+	#	res$niter.g <- round(max(10, min(niter.goal/solnfreq(fit),100)))
+	#	}
 	return(res)
 	}		
 
-getDelta<-function(phy,dat,niterN,niter.goal=NA){
+getDelta<-function(phy,dat){			#,niterN,niter.goal=NA
 	res<-list()
-	fit<-makeQuiet(geiger::fitContinuous(phy=phy, dat=dat,
-		model="delta", ncores=1, control=list(niter=niterN)))
-	res$lnl<-as.numeric(fit$opt$lnL)
-	res$beta <-as.numeric(fit$opt$sigsq)
-	res$delta<-as.numeric(fit$opt$delta)
-	res$aic <-as.numeric(fit$opt$aic)
-	if(!is.na(niter.goal)){
-		res$niter.g <- round(max(10, min(niter.goal/solnfreq(fit),100)))
-		}
+	#fit<-makeQuiet(geiger::fitContinuous(phy=phy, dat=dat,
+	#	model="delta", ncores=1, control=list(niter=niterN)))
+	fit<-phylolm::phylolm(formula=dat~1,phy=phy,model="delta")
+	res$lnl<-as.numeric(fit$logLik)
+	res$beta <-as.numeric(fit$sigma2)
+	res$delta<-as.numeric(fit$optpar)
+	res$aic <-as.numeric(fit$aic)
+	#if(!is.na(niter.goal)){
+	#	res$niter.g <- round(max(10, min(niter.goal/solnfreq(fit),100)))
+	#	}
 	return(res)
 	}			
 
-getOU<-function(phy,dat,niterN,niter.goal=NA){
+getOU<-function(phy,dat){			#,niterN,niter.goal=NA
 	res<-list()
-	fit<-makeQuiet(geiger::fitContinuous(phy=phy, dat=dat,
-		model="OU", ncores=1, control=list(niter=niterN)))
-	res$lnl<-as.numeric(fit$opt$lnL)
-	res$beta <-as.numeric(fit$opt$sigsq)
-	res$alpha<-as.numeric(fit$opt$alpha)
-	res$aic <-as.numeric(fit$opt$aic)
-	if(!is.na(niter.goal)){
-		res$niter.g <- round(max(10, min(niter.goal/solnfreq(fit),100)))
-		}
+	#fit<-makeQuiet(geiger::fitContinuous(phy=phy, dat=dat,
+	#	model="OU", ncores=1, control=list(niter=niterN)))
+	fit<-phylolm::phylolm(formula=dat~1,phy=phy,model="OUfixedRoot")
+	res$lnl<-as.numeric(fit$logLik)
+	res$beta <-as.numeric(fit$sigma2)
+	res$alpha<-as.numeric(fit$optpar)
+	res$aic <-as.numeric(fit$aic)
+	#if(!is.na(niter.goal)){
+	#	res$niter.g <- round(max(10, min(niter.goal/solnfreq(fit),100)))
+	#	}
 	return(res)
 	}		
 
-getWhite<-function(phy,dat,niterN,niter.goal=NA){
+getWhite<-function(phy,dat){		#,niterN,niter.goal=NA
 	res<-list()
-	fit<-makeQuiet(geiger::fitContinuous(phy=phy, dat=dat,
-		model="white", ncores=1, control=list(niter=niterN)))
-	res$lnl<-as.numeric(fit$opt$lnL)
-	res$beta <-as.numeric(fit$opt$sigsq)
-	res$alpha<-as.numeric(fit$opt$alpha)
-	res$aic <-as.numeric(fit$opt$aic)
-	if(!is.na(niter.goal)){
-		res$niter.g <- round(max(10, min(niter.goal/solnfreq(fit),100)))
-		}
+	#fit<-makeQuiet(geiger::fitContinuous(phy=phy, dat=dat,
+	#	model="white", ncores=1, control=list(niter=niterN)))
+	#
+	# will have to build a star tree and fit BM to do White Noise with phylolm
+	#
+	star<-stree(Ntip(tree))
+	star$edge.length<-rep(1,nrow(star$edge))
+	fit<-phylolm::phylolm(formula=trait~1,phy=star,model="BM")	
+	#
+	res$lnl<-as.numeric(fit$logLik)
+	res$beta <-as.numeric(fit$sigma2)
+	res$aic <-as.numeric(fit$aic)
+	#if(!is.na(niter.goal)){
+	#	res$niter.g <- round(max(10, min(niter.goal/solnfreq(fit),100)))
+	#	}
 	return(res)
 	}			
 	
