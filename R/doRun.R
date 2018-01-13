@@ -1,11 +1,11 @@
 #' Run Approximate Bayesian Computation for Phylogenetic Comparative Methods
-#' 
+#'
 #' The \code{doRun} functions are the main interface for \code{TreEvo} users to do Approximate Bayesian Computation (ABC) analysis,
 #' effectively wrapping the \code{\link{simulateWithPriors}} functions to perform simulations, which
 #' themselves are wrappers for the the \code{\link{doSimulation}} functions. The two current \code{doRun}
 #' functions are \code{doRun_prc} which applies a partial rejection control(PRC) ABC analysis over multiple generations of simulations,
 #' and \code{doRun_rej} which performs a full rejection ('rej') ABC analysis.
-#' 
+#'
 #' Both \code{doRun} functions take an input phylogeny (\code{phy}),
 #' observed trait data set (\code{traits}), models (\code{intrinsicFn}, \code{extrinsicFn}), and priors
 #' (\code{startingPriorsValues}, \code{startingPriorsFns}, \code{intrinsicPriorsValues},
@@ -14,13 +14,13 @@
 #' boxcox transformed ,and a PLS regression (see \code{\link{PLSmethods}}) is performed for each free parameter
 #' to determine the most informative summary statistics (using \code{variance.cutoff}). The euclidean distance is calculated
 #' between each each initial simulation's most informative summary statistics and the input observed data.
-#' 
+#'
 #' Following that step, the approach of the two functions diverge drastically.
-#' 
+#'
 #' For function \code{doRun_rej}, those simulations whose most informative summary statistics fall below
 #' \code{abcTolerance} are kept as accepted 'particles' (simulations runs), describing the
 #' posterior distribution of parameters. No additional generations of simulations are performed.
-#' 
+#'
 #' Coversely, function \code{doRun_prc} performs an ABC-PRC analysis,
 #' which follows a much more complicated algorithm with additional generations. In PRC, tolerance is set based on
 #' \code{epsilonProportion} and \code{epsilonMultiplier}, and the analysis
@@ -31,7 +31,7 @@
 #' particles make up the distribution for the next generation. The accepted
 #' particles from the final generation describe the posterior distributions of
 #' parameters.
-#' 
+#'
 
 
 #' @inheritParams doSimulation
@@ -71,7 +71,7 @@
 #' @param stopValue Threshold value for terminating an analysis prior to
 #' \code{nStepesPRC}.
 
-#' @param maxAttempts Maximum number attempts made in \code{while} loop within the PRC algorithm. 
+#' @param maxAttempts Maximum number attempts made in \code{while} loop within the PRC algorithm.
 #' If reached, the algorithm will terminate with an error message.
 #' By default, this is infinite, and thus there is no effective limit without user intervention.
 
@@ -89,35 +89,35 @@
 
 
 #' @param verboseParticles If \code{TRUE} (the default), a large amount of information about parameter estimates
-#' and acceptance of particles is output to console via \code{message} as \code{doRun_prc} runs. 
+#' and acceptance of particles is output to console via \code{message} as \code{doRun_prc} runs.
 
-#' @param diagnosticPRCmode If \code{TRUE} (\emph{not} the default), the function will be very noisy about characteristics of 
+#' @param diagnosticPRCmode If \code{TRUE} (\emph{not} the default), the function will be very noisy about characteristics of
 #' the PRC algorithm as it runs.
 
-#' @return 
+#' @return
 #' The output of these two functions are lists, composed of multiple objects,
 #' which differ slightly in their content among the two functions. For \code{doRun_prc}, the output is:
 
 #' \describe{
-#' \item{input.data}{Input variables: jobName, number of taxa, nrepSim, 
-#' generation.time, TreeYears, timeStep, totalGenerations, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor} 
+#' \item{input.data}{Input variables: jobName, number of taxa, nrepSim,
+#' generation.time, TreeYears, timeStep, totalGenerations, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor}
 
 #' \item{PriorMatrix}{Matrix of prior distributions}
 
 #' \item{particleDataFrame}{DataFrame with information from each simulation,
 #' including generation, attempt, id, parentid, distance, weight, and parameter states}
 
-#' \item{toleranceVector}{Final tolerance vector} 
+#' \item{toleranceVector}{Final tolerance vector}
 
-#' \item{phy}{Input phylogeny} 
+#' \item{phy}{Input phylogeny}
 
-#' \item{traits}{Input traits} \item{simTime}{Processor time for initial simulations} 
+#' \item{traits}{Input traits} \item{simTime}{Processor time for initial simulations}
 
 #' \item{time.per.gen}{Processor time for subsequent generations}
 
-# \item{whichVip}{Matrix of vip summary statistics for each free parameter} 
+# \item{whichVip}{Matrix of vip summary statistics for each free parameter}
 
-#' \item{credibleInt}{Credible Interval calculation for each free parameter of the final generation} 
+#' \item{credibleInt}{Credible Interval calculation for each free parameter of the final generation}
 
 #' \item{HPD}{Highest Posterior Density calculation each free parameter of the final generation}
 #' }
@@ -125,32 +125,32 @@
 #' For \code{doRun_rej}, the output is:
 
 #' \describe{
-#' \item{input.data}{Input variables: jobName, number of taxa, nrepSim, 
-#' generation.time, TreeYears, timeStep, totalGenerations, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor} 
+#' \item{input.data}{Input variables: jobName, number of taxa, nrepSim,
+#' generation.time, TreeYears, timeStep, totalGenerations, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor}
 
 #' \item{PriorMatrix}{Matrix of prior distributions}
 
-#' \item{phy}{Input phylogeny} 
+#' \item{phy}{Input phylogeny}
 
 #' \item{traits}{Input traits}
 
-#' \item{trueFreeValuesANDSummaryValues}{Parameter estimates and summary stats from all sims} 
+#' \item{trueFreeValuesANDSummaryValues}{Parameter estimates and summary stats from all sims}
 
 #' \item{simTime}{Processor time for simulations}
 
 # \item{whichVip}{Matrix of vip summary statistics for each free parameter}
 
-#' \item{abcDistancesRaw}{Euclidean distances for each simulation and free parameter} 
+#' \item{abcDistancesRaw}{Euclidean distances for each simulation and free parameter}
 
-#' \item{particleDataFrame}{DataFrame with information from each 
-#' simulation, including generation, attempt, id, parentid, distance, weight, and parameter states} 
+#' \item{particleDataFrame}{DataFrame with information from each
+#' simulation, including generation, attempt, id, parentid, distance, weight, and parameter states}
 
-#' \item{credibleInt}{Credible Interval calculation for each free parameter of the final generation} 
+#' \item{credibleInt}{Credible Interval calculation for each free parameter of the final generation}
 
 #' \item{HPD}{Highest Posterior Density calculation each free parameter of the final generation}
 #' }
-#' 
-#' 
+#'
+#'
 
 #' @author Brian O'Meara and Barb Banbury
 
@@ -161,16 +161,16 @@
 # al. 2009
 
 #' @examples
-#' 
+#'
 #' \donttest{
 #' data(simRunExample)
-#' 
-#' # NOTE: the example analyses below sample too few particles, 
+#'
+#' # NOTE: the example analyses below sample too few particles,
 #' 	# over too few steps, with too few starting simulations
 #' 	# - all for the sake of examples that reasonably test the functions
-#' 
+#'
 #' # Please set these values to more realistic levels for your analyses!
-#' 
+#'
 #' resultsPRC<-doRun_prc(
 #'   phy = simPhy,
 #'   traits = simChar,
@@ -195,12 +195,12 @@
 #'   multicore=FALSE,
 #'   coreLimit=1
 #' )
-#' 
+#'
 #' resultsPRC
-#' 
+#'
 #' #one should make sure priors are uniform with doRun_rej!
-#' 
-#' resultsRej<-doRun_rej( 
+#'
+#' resultsRej<-doRun_rej(
 #' 	phy=simPhy,
 #' 	traits=simChar,
 #' 	intrinsicFn=brownianIntrinsic,
@@ -217,10 +217,10 @@
 #' 	multicore=FALSE,
 #' 	coreLimit=1
 #' 	)
-#' 
+#'
 #' resultsRej
 #' }
-#' 
+#'
 
 
 # ARE each particle-gather interval of the PRC algorithm a GENERATION OR a STEP? PLEASE CLARIFY
@@ -233,26 +233,26 @@
 #' @rdname doRun
 #' @export
 doRun_prc<-function(
-	phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues, startingPriorsFns, 
-	intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, 
-	#startingValuesGuess=c(), intrinsicValuesGuess=c(), extrinsicValuesGuess=c(), 
+	phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues, startingPriorsFns,
+	intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns,
+	#startingValuesGuess=c(), intrinsicValuesGuess=c(), extrinsicValuesGuess=c(),
 	#
-	# OLD COMMENTING (before DWB):	
+	# OLD COMMENTING (before DWB):
 	#the doRun_prc function takes input from the user and then automatically guesses optimal parameters, though user overriding is also possible.
 	#the guesses are used to do simulations near the expected region. If omitted, they are set to the midpoint of the input parameter matrices
 	# so it seems like the above guess parameters are for the 'override' of this feature
 	# I just got rid of them, its too confusing..
-	#	
-	generation.time=1000, TreeYears=max(branching.times(phy)) * 1e6, 
+	#
+	generation.time=1000, TreeYears=max(branching.times(phy)) * 1e6,
 	multicore=FALSE, coreLimit=NA, validation="CV", scale=TRUE, variance.cutoff=95,
-	niter.goal=5, 
-	numParticles=300, standardDevFactor=0.20, 
-	StartSims=300, epsilonProportion=0.7, epsilonMultiplier=0.7, nStepsPRC=5, 
+	niter.goal=5,
+	numParticles=300, standardDevFactor=0.20,
+	StartSims=300, epsilonProportion=0.7, epsilonMultiplier=0.7, nStepsPRC=5,
 	stopRule=FALSE, stopValue=0.05, maxAttempts=Inf, diagnosticPRCmode=FALSE,
-	jobName=NA, saveData=FALSE, verboseParticles=TRUE, plot=FALSE) {	
+	jobName=NA, saveData=FALSE, verboseParticles=TRUE, plot=FALSE) {
 
 	functionStartTime<-proc.time()[[3]]
-	
+
 	if (!is.binary.tree(phy)) {
 		warning("Tree is not fully dichotomous, this may cause issues!")
 	}
@@ -265,7 +265,7 @@ doRun_prc<-function(
 
 	edgesRescaled<-phy$edge.length/max(node.depth.edgelength(phy))
 	message("Rescaling edge lengths relative to maximum tip-to-root distance...")
-	
+
 	if(max(edgesRescaled) < timeStep) {
 		stop("Tree has *NO* rescaled branches longer than generation.time/TreeYears, no simulated evol change can occur!")
 	}
@@ -273,15 +273,15 @@ doRun_prc<-function(
 		warning("Tree has rescaled branches shorter than generation.time/TreeYears; no evol change can be assigned to these, and geiger functions may fail!")
 		#print("Tree has zero or nearly zero length branches")
 	}
-	
+
 	totalGenerations<-sum(sapply(edgesRescaled,function(x) floor(x/timeStep)))
 	message("Given generation time, a total of ",round(totalGenerations)," generations will occur over this tree")
-	
+
 	#splits<-getSimulationSplits(phy) #initialize this info
 	taxon.df <- getTaxonDFWithPossibleExtinction(phy)
-	
+
 	# get freevector
-	freevector<-getFreeVector(startingPriorsFns=startingPriorsFns, startingPriorsValues=startingPriorsValues, 
+	freevector<-getFreeVector(startingPriorsFns=startingPriorsFns, startingPriorsValues=startingPriorsValues,
 						intrinsicPriorsFns=intrinsicPriorsFns, intrinsicPriorsValues=intrinsicPriorsValues,
 						extrinsicPriorsFns=extrinsicPriorsFns, extrinsicPriorsValues=extrinsicPriorsValues)
 	numberParametersTotal<-length(freevector)
@@ -304,7 +304,7 @@ doRun_prc<-function(
 	PriorMatrix<-rbind(PriorMatrix, cbind(startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues))
 	colnames(PriorMatrix)<-namesForPriorMatrix
 	rownames(PriorMatrix)<-c("shape", "value1", "value2")
-	#	
+	#
 	#initialize weighted mean sd matrices
 	weightedMeanParam<-matrix(nrow=nStepsPRC, ncol=numberParametersTotal)
 	colnames(weightedMeanParam)<-namesForPriorMatrix
@@ -360,14 +360,14 @@ doRun_prc<-function(
 		paste0("\n   ",niter.white.g, " for white noise")))
 	#
 	#---------------------- Initial Simulations (Start) ------------------------------
-	# See Wegmann et al. Efficient Approximate Bayesian Computation Coupled With Markov Chain Monte Carlo Without Likelihood. 
+	# See Wegmann et al. Efficient Approximate Bayesian Computation Coupled With Markov Chain Monte Carlo Without Likelihood.
 		# Genetics (2009) vol. 182 (4) pp. 1207-1218 for more on the method.
-	# We are doing pls and scaling built into pls. Unlike Wegmann et al., we are doing PLS for each parameter separately. 
+	# We are doing pls and scaling built into pls. Unlike Wegmann et al., we are doing PLS for each parameter separately.
 	# Otherwise, the PLS tends to optimize for just one parameter, and estimates for the less-favored one are quite bad
 	# because the summary stats tend to be used for the other.
 	#
 	#Used to be = StartSims*((2^try)/2), If initial simulations are not enough, and we need to try again then new analysis will double number of initial simulations
-	nrepSim<-StartSims 
+	nrepSim<-StartSims
 	#
 	input.data<-rbind(jobName, length(phy[[3]]), nrepSim, generation.time, TreeYears, timeStep, totalGenerations,
 		epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor)
@@ -376,12 +376,12 @@ doRun_prc<-function(
 	Time<-proc.time()[[3]]
 	trueFreeValues<-matrix(nrow=0, ncol= numberParametersFree)
 	#set up initial sum stats as length of SSL of original data
-	summaryValues<-matrix(nrow=0, ncol=length(summaryStatsLong(phy=phy, traits=traits, 
-		niter.brown=200, niter.lambda=200, niter.delta=200, niter.OU=200, niter.white=200))) 
+	summaryValues<-matrix(nrow=0, ncol=length(summaryStatsLong(phy=phy, traits=traits,
+		niter.brown=200, niter.lambda=200, niter.delta=200, niter.OU=200, niter.white=200)))
 	trueFreeValuesANDSummaryValues<-makeQuiet(parallelSimulateWithPriors(nrepSim=nrepSim, coreLimit=coreLimit, phy=phy,  taxon.df=taxon.df,
-		startingPriorsValues=startingPriorsValues, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues, 
-		startingPriorsFns=startingPriorsFns, intrinsicPriorsFns=intrinsicPriorsFns, extrinsicPriorsFns=extrinsicPriorsFns, 
-		freevector=freevector, timeStep=timeStep, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, multicore=multicore, 
+		startingPriorsValues=startingPriorsValues, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues,
+		startingPriorsFns=startingPriorsFns, intrinsicPriorsFns=intrinsicPriorsFns, extrinsicPriorsFns=extrinsicPriorsFns,
+		freevector=freevector, timeStep=timeStep, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, multicore=multicore,
 		niter.brown=niter.brown.g, niter.lambda=niter.lambda.g, niter.delta=niter.delta.g, niter.OU=niter.OU.g, niter.white=niter.white.g))
 	#message("\n\n")
 	#
@@ -399,7 +399,7 @@ doRun_prc<-function(
 	#
 	#---------------------- Initial Simulations (End) ------------------------------
 	#
-	pls.model.list <- makeQuiet(apply(trueFreeValuesMatrix, 2, returnPLSModel, summaryValuesMatrix=summaryValuesMatrix, validation=validation, 
+	pls.model.list <- makeQuiet(apply(trueFreeValuesMatrix, 2, returnPLSModel, summaryValuesMatrix=summaryValuesMatrix, validation=validation,
 		scale=scale, variance.cutoff = variance.cutoff))
 	originalSummaryValues <- summaryStatsLong(phy, traits, niter.brown=200, niter.lambda=200, niter.delta=200, niter.OU=200, niter.white=200)
 	#
@@ -408,7 +408,7 @@ doRun_prc<-function(
 	#----------------- Find distribution of distances (Start) ----------------------
 	message("Finding distribution of distances...") #\n
 	#this gives the distance such that epsilonProportion of the simulations starting from a given set of values will be rejected
-	epsilonDistance<-quantile(distanceVector, probs=epsilonProportion) 
+	epsilonDistance<-quantile(distanceVector, probs=epsilonProportion)
 	toleranceVector<-rep(epsilonDistance, nStepsPRC)
 	#
 	if(nStepsPRC>1){
@@ -443,9 +443,9 @@ doRun_prc<-function(
 	#
 	# here I removed the initial loop
 	#
-	time.per.gen<-time.per.Step<-numeric(length=nStepsPRC)	
+	time.per.gen<-time.per.Step<-numeric(length=nStepsPRC)
 	for(dataGenerationStep in 1:nStepsPRC) {
-		#	
+		#
 		#dataGenerationStep<-dataGenerationStep+1
 		if(verboseParticles){
 			message("\n", "STARTING DATA GENERATION STEP ", dataGenerationStep, "\n")
@@ -453,8 +453,8 @@ doRun_prc<-function(
 		#
 		if(dataGenerationStep==1){
 			#stores weights for each particle. Initially, assume infinite number of possible particles (so might not apply in discrete case)
-			particleWeights<-numeric(length=numParticles)  
-			particleDataFrame<-data.frame()			
+			particleWeights<-numeric(length=numParticles)
+			particleDataTable<-data.table::data.table()
 		}else{
 			particleWeights<-particleWeights/(sum(particleWeights,na.rm=TRUE)) #normalize to one
 			if(verboseParticles){
@@ -462,24 +462,24 @@ doRun_prc<-function(
 				}
 			oldParticleList<-particleList
 			oldParticleWeights<-particleWeights
-			#stores weights for each particle. 
+			#stores weights for each particle.
 				#Initially, assume infinite number of possible particles (so might not apply in discrete case)
-			particleWeights<-numeric(length=numParticles) 
-			
+			particleWeights<-numeric(length=numParticles)
+
 			}
 		#stores parameters in model for each particle
-		particleParameters<-matrix(nrow=numParticles, 
-			ncol=dim(startingPriorsValues)[2] +  dim(intrinsicPriorsValues)[2] + dim(extrinsicPriorsValues)[2]) 
+		particleParameters<-matrix(nrow=numParticles,
+			ncol=dim(startingPriorsValues)[2] +  dim(intrinsicPriorsValues)[2] + dim(extrinsicPriorsValues)[2])
 		#
 		weightScaling=0;
 		#
 		particleDistance=rep(NA, numParticles)
 		particle<-1
-		attempts<-0		
+		attempts<-0
 		particleList<-list()
 		if(verboseParticles){
 			message("Successes ", "  Attempts ", "  Exp. # of Attempts Req. ", "Params.") #\n
-			}		
+			}
 		#message("Beginning partial rejection control algorithm...")
 		#
 		start.time<-particleStartTime<-proc.time()[[3]]
@@ -492,13 +492,13 @@ doRun_prc<-function(
 			#
 			if(dataGenerationStep==1){
 				newparticleList<-list(abcparticle(id=particle, generation=1, weight=0))
-				newparticleList[[1]]<-initializeStatesFromMatrices(particle=newparticleList[[1]], 
-					startingPriorsValues=startingPriorsValues, 
-					startingPriorsFns=startingPriorsFns, 
-					intrinsicPriorsValues=intrinsicPriorsValues, 
-					intrinsicPriorsFns=intrinsicPriorsFns, 
-					extrinsicPriorsValues=extrinsicPriorsValues, 
-					extrinsicPriorsFns=extrinsicPriorsFns)	
+				newparticleList[[1]]<-initializeStatesFromMatrices(particle=newparticleList[[1]],
+					startingPriorsValues=startingPriorsValues,
+					startingPriorsFns=startingPriorsFns,
+					intrinsicPriorsValues=intrinsicPriorsValues,
+					intrinsicPriorsFns=intrinsicPriorsFns,
+					extrinsicPriorsValues=extrinsicPriorsValues,
+					extrinsicPriorsFns=extrinsicPriorsFns)
 				particleToSelect<-0
 			}else{
 				#message("particle to select = ", particleToSelect, "\n")
@@ -516,10 +516,10 @@ doRun_prc<-function(
 				#message("dput(newparticleList[[1]])\n")
 				#dput(newparticleList[[1]])
 				#message("mutateStates\n")
-				newparticleList[[1]]<-mutateStates(particle=newparticleList[[1]], 
-					startingPriorsValues=startingPriorsValues, startingPriorsFns=startingPriorsFns, 
-					intrinsicPriorsValues=intrinsicPriorsValues, intrinsicPriorsFns=intrinsicPriorsFns, 
-					extrinsicPriorsValues=extrinsicPriorsValues, extrinsicPriorsFns=extrinsicPriorsFns, 
+				newparticleList[[1]]<-mutateStates(particle=newparticleList[[1]],
+					startingPriorsValues=startingPriorsValues, startingPriorsFns=startingPriorsFns,
+					intrinsicPriorsValues=intrinsicPriorsValues, intrinsicPriorsFns=intrinsicPriorsFns,
+					extrinsicPriorsValues=extrinsicPriorsValues, extrinsicPriorsFns=extrinsicPriorsFns,
 					standardDevFactor=standardDevFactor)
 				}
 			#
@@ -527,14 +527,14 @@ doRun_prc<-function(
 			#dput(newparticleList[[1]])
 			#
 			newparticleList[[1]]$distance<-abcDistance(
-				summaryValuesMatrix=summaryStatsLong(phy=phy, 
+				summaryValuesMatrix=summaryStatsLong(phy=phy,
 					traits=doSimulationWithPossibleExtinction(phy=NULL,  taxon.df=taxon.df,
-						intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, 
-						startingValues=newparticleList[[1]]$startingValues, 
-						intrinsicValues=newparticleList[[1]]$intrinsicValues, 
-						extrinsicValues=newparticleList[[1]]$extrinsicValues, 
-						timeStep=timeStep, checkTimeStep=FALSE), 
-					niter.brown=niter.brown.g, niter.lambda=niter.lambda.g, niter.delta=niter.delta.g, 
+						intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn,
+						startingValues=newparticleList[[1]]$startingValues,
+						intrinsicValues=newparticleList[[1]]$intrinsicValues,
+						extrinsicValues=newparticleList[[1]]$extrinsicValues,
+						timeStep=timeStep, checkTimeStep=FALSE),
+					niter.brown=niter.brown.g, niter.lambda=niter.lambda.g, niter.delta=niter.delta.g,
 					niter.OU=niter.OU.g, niter.white=niter.white.g)
 				, originalSummaryValues=originalSummaryValues, pls.model.list=pls.model.list
 				)
@@ -547,13 +547,13 @@ doRun_prc<-function(
 						plotcol="red"
 						}
 					}
-				text(x=newparticleList[[1]]$intrinsicValues, 
+				text(x=newparticleList[[1]]$intrinsicValues,
 					y=newparticleList[[1]]$distance, labels= dataGenerationStep, col=plotcol)
 				}
 			#
 			#message("dput(newparticleList[[1]]) AFTER computeABCDistance\n")
 			#dput(newparticleList[[1]])
-			#	
+			#
 			# test whether to accept particle, if so, accept particle, save it and change weights
 			#
 			if (is.na(newparticleList[[1]]$distance)) {
@@ -572,35 +572,35 @@ doRun_prc<-function(
 					if ((newparticleList[[1]]$distance) < toleranceVector[dataGenerationStep]) {
 						newparticleList[[1]]$id <- particle
 						#particle<-particle+1
-						#particleList<-append(particleList, newparticleList)	
+						#particleList<-append(particleList, newparticleList)
 						#
 						if(dataGenerationStep==1){
 							newparticleList[[1]]$weight <- 1/numParticles
 							particleWeights[particle] <- 1/numParticles
 							particle<-particle+1
-							particleList<-append(particleList, newparticleList)	
+							particleList<-append(particleList, newparticleList)
 						}else{
 							particle<-particle+1
-							particleList<-append(particleList, newparticleList)	
+							particleList<-append(particleList, newparticleList)
 							#now get weights, using correction in Sisson et al. 2007
 							newWeight=0
 							for (i in 1:length(oldParticleList)) {
 								lnTransitionProb=log(1)
 								LLTPstart<-sapply(length(newparticleList[[1]]$startingValues),
 									function(j) getlnTransitionProb(newvalue = newparticleList[[1]]$startingValues[j],
-										meantouse = oldParticleList[[i]]$startingValues[j], 
+										meantouse = oldParticleList[[i]]$startingValues[j],
 										Fn=startingPriorsFns[j],
 										priorValues= startingPriorsValues[,j],
 										stdFactor = standardDevFactor))
 								LLTPintr<-sapply(length(newparticleList[[1]]$intrinsicValues),
 									function(j) getlnTransitionProb(newvalue = newparticleList[[1]]$intrinsicValues[j],
-										meantouse = oldParticleList[[i]]$intrinsicValues[j], 
+										meantouse = oldParticleList[[i]]$intrinsicValues[j],
 										Fn=intrinsicPriorsFns[j],
 										priorValues= intrinsicPriorsValues[,j],
 										stdFactor = standardDevFactor))
 								LLTPextr<-sapply(length(newparticleList[[1]]$extrinsicValues),
 									function(j) getlnTransitionProb(newvalue = newparticleList[[1]]$extrinsicValues[j],
-										meantouse = oldParticleList[[i]]$extrinsicValues[j], 
+										meantouse = oldParticleList[[i]]$extrinsicValues[j],
 										Fn=extrinsicPriorsFns[j],
 										priorValues= extrinsicPriorsValues[,j],
 										stdFactor = standardDevFactor))
@@ -618,7 +618,7 @@ doRun_prc<-function(
 							newparticleList[[1]]$weight<- newWeight
 							particleWeights[particle-1]<-newWeight
 							weightScaling<-weightScaling+newWeight
-							}	
+							}
 						# end else() for if dataGenerationStep is larger than 1
 					}else{
 						#the else() for the if loop where if(newparticleList[[1]]$distance < toleranceVector[dataGenerationStep]) bracket
@@ -626,48 +626,50 @@ doRun_prc<-function(
 						newparticleList[[1]]$weight <- 0
 						}
 					}
-				}	
+				}
 			#
 			#
 			#while(sink.number()>0) {sink()}
 			#print(newparticleList)
 			#
-			vectorForDataFrame<-c(dataGenerationStep, attempts,newparticleList[[1]]$id, particleToSelect, 
-				newparticleList[[1]]$distance, newparticleList[[1]]$weight, newparticleList[[1]]$startingValues, 
+			vectorForDataFrame<-c(dataGenerationStep, attempts,newparticleList[[1]]$id, particleToSelect,
+				newparticleList[[1]]$distance, newparticleList[[1]]$weight, newparticleList[[1]]$startingValues,
 				newparticleList[[1]]$intrinsicValues, newparticleList[[1]]$extrinsicValues)
-			#	
+			#
 			if(diagnosticPRCmode){
-				message("\n\nlength of vectorForDataFrame = ", length(vectorForDataFrame), "\n", "length of startingValues = ", 
-					length(newparticleList[[1]]$startingValues), "\nlength of intrinsicValues = ", length(newparticleList[[1]]$intrinsicValues), 
+				message("\n\nlength of vectorForDataFrame = ", length(vectorForDataFrame), "\n", "length of startingValues = ",
+					length(newparticleList[[1]]$startingValues), "\nlength of intrinsicValues = ", length(newparticleList[[1]]$intrinsicValues),
 					"\nlength of extrinsicValues = ", length(newparticleList[[1]]$extrinsicValues), "\ndistance = ", newparticleList[[1]]$distance,
 					"\nweight = ", newparticleList[[1]]$weight, "\n", vectorForDataFrame, "\n")
 				}
 			#
 			#NOTE THAT WEIGHTS AREN'T NORMALIZED IN THIS DATAFRAME
-			particleDataFrame<-rbind(particleDataFrame, vectorForDataFrame) 
+			particleDataTable <- data.table::rbindlist(particleDataTable, data.table::data.table(vectorForDataFrame))
 			#
 			if(verboseParticles){
 				message(paste(particle-1,"         ", attempts,"        ",
 					floor(numParticles*attempts/particle),"                    ",
-					signif(newparticleList[[1]]$startingValues,2),"  ", signif(newparticleList[[1]]$intrinsicValues,2),"  ", 
+					signif(newparticleList[[1]]$startingValues,2),"  ", signif(newparticleList[[1]]$intrinsicValues,2),"  ",
 					signif(newparticleList[[1]]$extrinsicValues,2),"  ", signif(newparticleList[[1]]$distance,2)))
 				}
 			#
 			} #while (particle<=numParticles) bracket
 
-			
+
 		#
 		if(dataGenerationStep==1){
-			names(particleDataFrame)<-nameVector
+			particleDataTable$ElementName <- nameVector
 			}
 		#
 		#rejects.gen.one<-(dim(subset(particleDataFrame, particleDataFrame$id<0))[1])/(dim(subset(particleDataFrame,))[1])
 		#rejects<-c()
 		#
-		particleDataFrame[which(particleDataFrame$generation==dataGenerationStep), ]$weight<-particleDataFrame[
-			which(particleDataFrame$generation==dataGenerationStep), ]$weight/(sum(
-				particleDataFrame[which(particleDataFrame$generation==dataGenerationStep), ]$weight))
-		#	
+
+		particleDataTable[generation==dataGenerationStep, `:=`(weight=weight/sum(particleDataTable[generation==dataGenerationStep,]$weight))]
+		#particleDataFrame[which(particleDataFrame$generation==dataGenerationStep), ]$weight<-particleDataFrame[
+			#which(particleDataFrame$generation==dataGenerationStep), ]$weight/(sum(
+			#	particleDataFrame[which(particleDataFrame$generation==dataGenerationStep), ]$weight))
+		#
 		# dataGenerationStep=1 # removed when I flattened the loop
 		timePRCStep<-proc.time()[[3]]-start.time
 		time.per.gen[dataGenerationStep]<-timePRCStep
@@ -684,7 +686,7 @@ doRun_prc<-function(
 			param.stdev[dataGenerationStep,i]<-c(sd(sub2[,6+i]))
 			weightedMeanParam[dataGenerationStep,i]<-weighted.mean(sub2[,6+i], sub2[,6])
 			#c(mean(subset(particleDataFrame, X3>0)[,7:dim(particleDataFrame)[2]])/subset(particleDataFrame, X3>0)[,6])
-			}		
+			}
 		#
 		if (stopRule){	#this will stop the PRC from running out to max number of generations if all params are below stopValue
 			FF<-rep(1, dim(weightedMeanParam)[2])
@@ -695,7 +697,7 @@ doRun_prc<-function(
 						#this && is here to make sure any NAs are from fixed params and not miscalculations.
 						weightedMeanParam[dataGenerationStep-1, check.weightedMeanParam]) <= stopValue) && mean(
 						weightedMeanParam[dataGenerationStep, check.weightedMeanParam], weightedMeanParam[dataGenerationStep-1,
-						check.weightedMeanParam]) == 0) {  
+						check.weightedMeanParam]) == 0) {
 					FF[check.weightedMeanParam]<-0
 				}else{
 					stopValueWeightTest<-abs(weightedMeanParam[dataGenerationStep, check.weightedMeanParam]
@@ -714,7 +716,7 @@ doRun_prc<-function(
 					, "instead of continuing to ", nStepsPRC, "\n\n\n")
 				dataGenerationStep<-nStepsPRC
 				}
-			}	# end if-stopRule 
+			}	# end if-stopRule
 		#
 		if(saveData){
 			save.image(file=paste0("WS", jobName, ".Rdata", sep=""))
@@ -784,11 +786,11 @@ doRun_prc<-function(
 
 getlnTransitionProb<-function(newvalue,meantouse,Fn,priorValues,stdFactor){
 		#newvalue = newparticleList[[1]]$startingValues[j],
-		#meantouse = oldParticleList[[i]]$startingValues[j], 
+		#meantouse = oldParticleList[[i]]$startingValues[j],
 		#Fn=startingPriorsFns[j],
 		#priorValues= startingPriorsValues[,j],
 		#stdFactor = standardDevFactor
-										
+
 	if (Fn=="uniform") {
 		sdtouse<-stdFactor*((max(priorValues)-min(priorValues))/sqrt(12))
 		#print(paste0("Fn is uniform and sdtouse = ", sdtouse))
@@ -824,15 +826,15 @@ getlnTransitionProb<-function(newvalue,meantouse,Fn,priorValues,stdFactor){
 #' @rdname doRun
 #' @export
 doRun_rej<-function(
-	phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues, startingPriorsFns, 
-	intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, 
-	#startingValuesGuess=c(), intrinsicValuesGuess=c(), extrinsicValuesGuess=c(), 
-	TreeYears=max(branching.times(phy)) * 1e6, 
+	phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues, startingPriorsFns,
+	intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns,
+	#startingValuesGuess=c(), intrinsicValuesGuess=c(), extrinsicValuesGuess=c(),
+	TreeYears=max(branching.times(phy)) * 1e6,
 	generation.time=1000, multicore=FALSE, coreLimit=NA, validation="CV", scale=TRUE, variance.cutoff=95,
-	niter.goal=5, 
-	standardDevFactor=0.20, StartSims=NA, jobName=NA, abcTolerance=0.1, 
-	checkpointFile=NULL, checkpointFreq=24, savesims=FALSE) {	
-	
+	niter.goal=5,
+	standardDevFactor=0.20, StartSims=NA, jobName=NA, abcTolerance=0.1,
+	checkpointFile=NULL, checkpointFreq=24, savesims=FALSE) {
+
 	#library(geiger)
 	#library(pls)
 	if (!is.binary.tree(phy)) {
@@ -846,7 +848,7 @@ doRun_rej<-function(
 
 	edgesRescaled<-phy$edge.length/max(node.depth.edgelength(phy))
 	message("Rescaling edge lengths relative to maximum tip-to-root distance...")
-	
+
 	if(max(edgesRescaled) < timeStep) {
 		stop("Tree has *NO* rescaled branches longer than generation.time/TreeYears, no simulated evol change can occur!")
 	}
@@ -854,15 +856,15 @@ doRun_rej<-function(
 		warning("Tree has rescaled branches shorter than generation.time/TreeYears; no evol change can be assigned to these, and geiger functions may fail!")
 		#print("Tree has zero or nearly zero length branches")
 	}
-	
+
 	totalGenerations<-sum(sapply(edgesRescaled,function(x) floor(x/timeStep)))
 	message("Given generation time, a total of ",round(totalGenerations)," generations will occur over this tree")
-		
+
 	#splits<-getSimulationSplits(phy) #initialize this info
 	taxon.df <- getTaxonDFWithPossibleExtinction(phy=phy)
 
 	# get freevector
-	freevector<-getFreeVector(startingPriorsFns=startingPriorsFns, startingPriorsValues=startingPriorsValues, 
+	freevector<-getFreeVector(startingPriorsFns=startingPriorsFns, startingPriorsValues=startingPriorsValues,
 						intrinsicPriorsFns=intrinsicPriorsFns, intrinsicPriorsValues=intrinsicPriorsValues,
 						extrinsicPriorsFns=extrinsicPriorsFns, extrinsicPriorsValues=extrinsicPriorsValues)
 	numberParametersTotal<-length(freevector)
@@ -883,7 +885,7 @@ doRun_rej<-function(
 	}
 	PriorMatrix<-rbind(PriorMatrix, cbind(startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues))
 	colnames(PriorMatrix)<-namesForPriorMatrix
-	rownames(PriorMatrix)<-c("shape", "value1", "value2")	
+	rownames(PriorMatrix)<-c("shape", "value1", "value2")
 
 	#initialize guesses, if needed
 	#if (length(startingValuesGuess)==0) { #if no user guesses, try pulling a value from the prior
@@ -909,9 +911,9 @@ doRun_rej<-function(
 		StartSims<-1000*numberParametersFree
 	}
 
-	#Used to be multiple tries where nrepSim = StartSims*((2^try)/2).  
+	#Used to be multiple tries where nrepSim = StartSims*((2^try)/2).
 		#If initial simulations are not enough, and we need to try again then new analysis will double number of initial simulations
-	nrepSim<-StartSims 
+	nrepSim<-StartSims
 	message(paste0("Number of initial simulations set to ", nrepSim)) 	#, "\n"
 	if(!is.null(checkpointFile)) {
 		save(list=ls(),file=paste0(checkpointFile,".intialsettings.Rsave",sep=""))
@@ -919,7 +921,7 @@ doRun_rej<-function(
 
 	#Figure out how many iterations to use for optimization in Geiger.
 	#it actually runs faster without checking for cores. And we parallelize elsewhere
-	brown<-makeQuiet(fitContinuous(phy=phy, dat=traits, model="BM", ncores=1, control=list(niter=100))) 
+	brown<-makeQuiet(fitContinuous(phy=phy, dat=traits, model="BM", ncores=1, control=list(niter=100)))
 	lambda<-makeQuiet(fitContinuous(phy=phy, dat=traits, model="lambda", ncores=1, control=list(niter=100)))
 	delta<-makeQuiet(fitContinuous(phy=phy, dat=traits, model="delta", ncores=1, control=list(niter=100)))
 	ou<-makeQuiet(fitContinuous(phy=phy, dat=traits, model="OU", ncores=1, control=list(niter=100)))
@@ -938,12 +940,12 @@ doRun_rej<-function(
 		paste0("\n",niter.delta.g, " for delta"),
 		paste0("\n",niter.OU.g, " for OU"),
 		paste0("\n",niter.white.g, " for white noise")))
-	
+
 	trueFreeValuesANDSummaryValues<-parallelSimulateWithPriors(nrepSim=nrepSim, coreLimit=coreLimit, phy=phy,  taxon.df=taxon.df,
-		startingPriorsValues=startingPriorsValues, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues, 
-		startingPriorsFns=startingPriorsFns, intrinsicPriorsFns=intrinsicPriorsFns, extrinsicPriorsFns=extrinsicPriorsFns, 
-		freevector=freevector, timeStep=timeStep, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, 
-		multicore=multicore, checkpointFile=checkpointFile, checkpointFreq=checkpointFreq, 
+		startingPriorsValues=startingPriorsValues, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues,
+		startingPriorsFns=startingPriorsFns, intrinsicPriorsFns=intrinsicPriorsFns, extrinsicPriorsFns=extrinsicPriorsFns,
+		freevector=freevector, timeStep=timeStep, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn,
+		multicore=multicore, checkpointFile=checkpointFile, checkpointFreq=checkpointFreq,
 		niter.brown=niter.brown.g, niter.lambda=niter.lambda.g, niter.delta=niter.delta.g, niter.OU=niter.OU.g, niter.white=niter.white.g)
 
 	#message("\n\n")
@@ -960,13 +962,13 @@ doRun_rej<-function(
 
 	res<-makeQuiet(PLSRejection(summaryValuesMatrix=summaryValuesMatrix, trueFreeValuesMatrix=trueFreeValuesMatrix,
 		phy=phy, traits=traits, abcTolerance=abcTolerance))
-	
+
 	#save(abcDistancesRaw, abcDistancesRawTotal, abcDistances, abcResults, particleDataFrame, file="")
 	input.data<-rbind(jobName, length(phy[[3]]), generation.time, TreeYears, timeStep, totalGenerations, StartSims, standardDevFactor, abcTolerance)
 	#print(res)
-	
+
 	rejectionResults<-vector("list")
-	
+
 	#names(rejectionResults)<-c("input.data", "PriorMatrix", "phy", "traits")
 	#save(trueFreeValuesMatrix,res, file="BarbsTestofDistanceCalc2.Rdata")
 
@@ -983,5 +985,3 @@ doRun_rej<-function(
 
 	return(rejectionResults)
 }
-
-

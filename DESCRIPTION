@@ -23,13 +23,14 @@ Imports:
     methods,
     grDevices,
     graphics,
-    phytools
+    phytools,
+    data.table
 Suggests:
     covr,
     doMC,
     doParallel,
     gpclib,
-    rgl, 
+    rgl,
     testthat,
     paleotree,
     knitr,
