@@ -20,7 +20,9 @@ Returns a matrix of prior values
 }
 \description{
 This function automatically calculates prior distributions for
-the rate of trait evolution under the Brownian Motion (BM) model.
+the rate of trait evolution under the Brownian Motion (BM) model on a
+discrete time-scale, at a given \code{timeStep}, in the sense that that
+variable is used with other \code{TreEvo} functions like \code{doRun_prc}.
 }
 \details{
 Returns a matrix of prior values that can be used in the \code{doRun} functions.
@@ -30,8 +32,10 @@ Builds on functions in \code{phylolm} to estimate distribution.
 
 data(simRunExample)
 
+#timeStep = 0.1 -> effectively ~100 steps over the tree length
+
 getBMRatePrior(phy=simPhy, traits=simChar,
-   timeStep=1, verbose=TRUE)
+   timeStep=0.01, verbose=TRUE)
 
 
 }

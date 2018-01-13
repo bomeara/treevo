@@ -43,7 +43,7 @@ test_that("doSimulationForPlotting works", {
 	startingValues = c(10),
     intrinsicValues = c(0.01), 
 	extrinsicValues = c(0),
-	generation.time=10000000,
+	generation.time=1000000,
     plot = FALSE, 
 	saveHistory = FALSE
 	)
@@ -71,6 +71,8 @@ test_that("doSimulationWithPossibleExtinction works", {
   tree <- rcoal(5)
   tree$edge.length <- tree$edge.length * 20
 	
+	
+  expect_warning(
   charDoSim <- doSimulationWithPossibleExtinction(
 	phy = tree,
     intrinsicFn = brownianIntrinsic, 
@@ -80,6 +82,7 @@ test_that("doSimulationWithPossibleExtinction works", {
 	generation.time=1000000,
     extrinsicValues = c(0), 
 	saveHistory = FALSE
+	)
 	)
 	
 	expect_equal(class(charDoSim[,1]), "numeric")

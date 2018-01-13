@@ -6,6 +6,7 @@ test_that("methodsPLS works", {
   
   nSimulations <- 3
   
+  expect_warning(
   simDataParallel <- parallelSimulateWithPriors(
     nrepSim = nSimulations,
     multicore = FALSE, 
@@ -22,7 +23,7 @@ test_that("methodsPLS works", {
 	extrinsicPriorsFns = c("fixed"),
     extrinsicPriorsValues = matrix(c(0, 0), nrow = 2,
       byrow = FALSE), 
-	timeStep = 1e-05, 
+	generation.time = 100000, 
 	checkpointFile = NULL,
     checkpointFreq = 24, 
 	verbose = FALSE, 
@@ -33,6 +34,7 @@ test_that("methodsPLS works", {
     #niter.delta = 25, 
 	#niter.OU = 25, 
 	#niter.white = 25
+	)
 	)
 	
   nParFree <- sum(attr(simDataParallel, "freevector"))

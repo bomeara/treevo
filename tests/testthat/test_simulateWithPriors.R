@@ -14,7 +14,7 @@ test_that("simulateWithPriors works", {
     intrinsicPriorsValues = matrix(c(10, 10), nrow = 2,byrow = FALSE), 
 	extrinsicPriorsFns = c("fixed"),
     extrinsicPriorsValues = matrix(c(0, 0), nrow = 2,byrow = FALSE), 
-	generation.time = 1e+05, 
+	generation.time = 100000, 
 	freevector = NULL,
     giveUpAttempts = 10, 
 	verbose = FALSE
@@ -22,7 +22,7 @@ test_that("simulateWithPriors works", {
 	)
   )
   
-  
+  expect_warning(
   simDataParallel <- parallelSimulateWithPriors(
     nrepSim = 2,
     multicore = FALSE, 
@@ -36,7 +36,7 @@ test_that("simulateWithPriors works", {
     intrinsicPriorsValues = matrix(c(10, 10), nrow = 2,byrow = FALSE), 
 	extrinsicPriorsFns = c("fixed"),
     extrinsicPriorsValues = matrix(c(0, 0), nrow = 2,byrow = FALSE), 
-	generation.time = 1e+05, 
+	generation.time = 100000, 
 	checkpointFile = NULL,
     checkpointFreq = 24, 
 	verbose = FALSE, 
@@ -44,6 +44,6 @@ test_that("simulateWithPriors works", {
     taxon.df = NULL
 	#,niter.brown = 25, niter.lambda = 25,niter.delta = 25, niter.OU = 25, niter.white = 25
 	)
-  
+	)
   
 })

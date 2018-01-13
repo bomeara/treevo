@@ -51,7 +51,7 @@ getLambda<-function(phy,dat){			#,niterN,niter.goal=NA
 	res<-list()
 	#fit<-makeQuiet(geiger::fitContinuous(phy=phy, dat=dat, 
 	#	model="lambda", ncores=1, control=list(niter=niterN)))
-	fit<-phylolm::phylolm(formula=dat~1,phy=phy,model="lambda")
+	fit<-makeQuiet(phylolm::phylolm(formula=dat~1,phy=phy,model="lambda"))
 	res$lnl<-as.numeric(fit$logLik)
 	res$beta <-as.numeric(fit$sigma2)
 	res$lambda<-as.numeric(fit$optpar)
@@ -66,7 +66,7 @@ getDelta<-function(phy,dat){			#,niterN,niter.goal=NA
 	res<-list()
 	#fit<-makeQuiet(geiger::fitContinuous(phy=phy, dat=dat,
 	#	model="delta", ncores=1, control=list(niter=niterN)))
-	fit<-phylolm::phylolm(formula=dat~1,phy=phy,model="delta")
+	fit<-makeQuiet(phylolm::phylolm(formula=dat~1,phy=phy,model="delta"))
 	res$lnl<-as.numeric(fit$logLik)
 	res$beta <-as.numeric(fit$sigma2)
 	res$delta<-as.numeric(fit$optpar)
@@ -81,7 +81,7 @@ getOU<-function(phy,dat){			#,niterN,niter.goal=NA
 	res<-list()
 	#fit<-makeQuiet(geiger::fitContinuous(phy=phy, dat=dat,
 	#	model="OU", ncores=1, control=list(niter=niterN)))
-	fit<-phylolm::phylolm(formula=dat~1,phy=phy,model="OUfixedRoot")
+	fit<-makeQuiet(phylolm::phylolm(formula=dat~1,phy=phy,model="OUfixedRoot"))
 	res$lnl<-as.numeric(fit$logLik)
 	res$beta <-as.numeric(fit$sigma2)
 	res$alpha<-as.numeric(fit$optpar)

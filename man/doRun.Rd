@@ -137,7 +137,8 @@ The output of these two functions are lists, composed of multiple objects,
 which differ slightly in their content among the two functions. For \code{doRun_prc}, the output is:
 \describe{
 \item{input.data}{Input variables: jobName, number of taxa, nrepSim, 
-generation.time, TreeYears, timeStep, totalGenerations, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor} 
+generation.time, TreeYears, timeStep, totalGenerations, epsilonProportion,
+epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor} 
 \item{PriorMatrix}{Matrix of prior distributions}
 \item{particleDataFrame}{DataFrame with information from each simulation,
 including generation, attempt, id, parentid, distance, weight, and parameter states}
@@ -151,7 +152,8 @@ including generation, attempt, id, parentid, distance, weight, and parameter sta
 For \code{doRun_rej}, the output is:
 \describe{
 \item{input.data}{Input variables: jobName, number of taxa, nrepSim, 
-generation.time, TreeYears, timeStep, totalGenerations, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor} 
+generation.time, TreeYears, timeStep, totalGenerations, epsilonProportion,
+epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor} 
 \item{PriorMatrix}{Matrix of prior distributions}
 \item{phy}{Input phylogeny} 
 \item{traits}{Input traits}

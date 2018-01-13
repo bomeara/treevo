@@ -100,7 +100,8 @@
 
 #' \describe{
 #' \item{input.data}{Input variables: jobName, number of taxa, nrepSim, 
-#' generation.time, TreeYears, timeStep, totalGenerations, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor} 
+#' generation.time, TreeYears, timeStep, totalGenerations, epsilonProportion,
+#' epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor} 
 
 #' \item{PriorMatrix}{Matrix of prior distributions}
 
@@ -126,7 +127,8 @@
 
 #' \describe{
 #' \item{input.data}{Input variables: jobName, number of taxa, nrepSim, 
-#' generation.time, TreeYears, timeStep, totalGenerations, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor} 
+#' generation.time, TreeYears, timeStep, totalGenerations, epsilonProportion,
+#' epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor} 
 
 #' \item{PriorMatrix}{Matrix of prior distributions}
 
