@@ -51,9 +51,8 @@ data(simRunExample)
 
 library(TreEvo)
 
-set.seed(2)
-
-simPhy<-rcoal(30)
+set.seed(1)
+simPhy<-rcoal(20)
 # get realistic edge lengths
 simPhy$edge.length<-simPhy$edge.length*20
 
@@ -72,7 +71,7 @@ simCharOut<-doSimulation(
 	startingValues=ancState, #root state
 	intrinsicValues=genRate,
 	extrinsicValues=c(0),
-	generation.time=10000,
+	generation.time=100000,
 	saveHistory=FALSE)
 
 # clean for use with doRun

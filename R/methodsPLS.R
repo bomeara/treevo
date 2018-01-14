@@ -52,14 +52,17 @@
 #' @examples
 #' \donttest{
 #' set.seed(1)
-#' data(simRunExample)
+#' simPhy <- rcoal(20)
+#' simPhy$edge.length <- simPhy$edge.length * 20
 #' 
 #' # example simulation
 #' 
 #' nSimulations<-6
 #' 
 #' simDataParallel<-parallelSimulateWithPriors( 
-#'   nrepSim=nSimulations, multicore=FALSE, coreLimit=1, 
+#'   nrepSim=nSimulations, 
+#'   multicore=FALSE,
+#'   coreLimit=1, 
 #'   phy=simPhy,
 #'   intrinsicFn=brownianIntrinsic,
 #'   extrinsicFn=nullExtrinsic,
@@ -69,11 +72,11 @@
 #'   intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
 #'   extrinsicPriorsFns=c("fixed"),
 #'   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE), 
-#'   timeStep=1e-04,
-#'   checkpointFile=NULL, checkpointFreq=24,
+#'   generation.time=100000,
+#'   checkpointFile=NULL, 
+#'   checkpointFreq=24,
 #'   verbose=FALSE,
-#'   freevector=NULL, taxon.df=NULL,
-#'   niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) 
+#'   freevector=NULL, taxon.df=NULL)
 #' 
 #' nParFree<-sum(attr(simDataParallel,"freevector"))
 #' 
@@ -93,8 +96,8 @@
 
 
 
-#' @name PLSmethods
-#' @rdname PLSmethods
+#' @name methodsPLS
+#' @rdname methodsPLS
 #' @export
 returnPLSModel<-function(trueFreeValuesMatrix, summaryValuesMatrix, validation="CV", scale=TRUE, variance.cutoff=95, ...) {
   #note that this assumes that trueFreeValues is for a single param at a time, which works MUCH better
@@ -120,7 +123,7 @@ returnPLSModel<-function(trueFreeValuesMatrix, summaryValuesMatrix, validation="
 }
 
 
-#' @rdname PLSmethods
+#' @rdname methodsPLS
 #' @export
 PLSTransform<-function(summaryValuesMatrix, pls.model) {
   if (class(summaryValuesMatrix)!="matrix") {

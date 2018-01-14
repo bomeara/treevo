@@ -52,15 +52,11 @@
 #' \code{doParallel} (for Windows), which are used to activate multithreading.
 #' If neither package is installed, this function will fail if \code{multicore=TRUE}.
 
-#' @param niter.brown Number of random starts for the Brownian Motion (BM) model (minimum of 2).
-
-#' @param niter.lambda Number of random starts for the lambda model (minimum of 2).
-
-#' @param niter.delta Number of random starts for the delta model (minimum of 2).
-
-#' @param niter.OU Number of random starts for the Ornstein-Uhlenbeck (OU) model (minimum of 2).
-
-#' @param niter.white Number of random starts for the white noise model (minimum of 2).
+# @param niter.brown Number of random starts for the Brownian Motion (BM) model (minimum of 2).
+# @param niter.lambda Number of random starts for the lambda model (minimum of 2).
+# @param niter.delta Number of random starts for the delta model (minimum of 2).
+# @param niter.OU Number of random starts for the Ornstein-Uhlenbeck (OU) model (minimum of 2).
+# @param niter.white Number of random starts for the white noise model (minimum of 2).
 
 #' @param checks If \code{TRUE}, checks inputs for consistency. This activity is skipped (\code{checks = FALSE})
 #' when run in parallel by \code{parallelSimulateWithPriors}, and instead is only checked once. This
@@ -89,16 +85,17 @@
 #
 #' \donttest{
 # 
-#' simPhy<-rcoal(30)
+#' set.seed(1)
+#' tree<-rcoal(20)
 #' # get realistic edge lengths
-#' simPhy$edge.length<-simPhy$edge.length*20
+#' tree$edge.length<-tree$edge.length*20
 #' 
 #' # example simulation
 #' 
 #' # NOTE: the example analyses involve too few simulations, with coarse time-units
 #' 	# - all for the sake of examples that reasonably test the functions
 #' 	
-#' simData<-simulateWithPriors(phy=simPhy, 
+#' simData<-simulateWithPriors(phy=tree, 
 #'   intrinsicFn=brownianIntrinsic,
 #'   extrinsicFn=nullExtrinsic,
 #'   startingPriorsFns="normal",
@@ -110,14 +107,13 @@
 #'   generation.time=100000,
 #' 	 freevector=NULL, 	
 #' 	 giveUpAttempts=10, 
-#' 	 verbose=FALSE,
-#' 	 niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) 
+#' 	 verbose=TRUE) 
 #' 
 #' simData
 #' 
 #' simDataParallel<-parallelSimulateWithPriors( 
 #'   nrepSim=2, multicore=FALSE, coreLimit=1, 
-#'   phy=simPhy,
+#'   phy=tree,
 #'   intrinsicFn=brownianIntrinsic,
 #'   extrinsicFn=nullExtrinsic,
 #'   startingPriorsFns="normal",
@@ -128,9 +124,7 @@
 #'   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE), 
 #'   generation.time=100000,
 #'   checkpointFile=NULL, checkpointFreq=24,
-#'   verbose=FALSE,
-#'   freevector=NULL, taxon.df=NULL,
-#'   niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) 
+#'   verbose=TRUE, freevector=NULL, taxon.df=NULL) 
 #' 
 #' simDataParallel
 #'  
@@ -146,8 +140,9 @@ simulateWithPriors<-function(
 	phy=NULL, intrinsicFn, extrinsicFn, startingPriorsFns, startingPriorsValues, 
 	intrinsicPriorsFns, intrinsicPriorsValues, extrinsicPriorsFns, extrinsicPriorsValues, 
 	generation.time=1000, TreeYears=max(branching.times(phy)) * 1e6, timeStep=NULL, 
-	giveUpAttempts=10, verbose=FALSE, checks=TRUE, taxon.df=NULL, freevector=NULL, 
-	niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) {
+	giveUpAttempts=10, verbose=FALSE, checks=TRUE, taxon.df=NULL, freevector=NULL 
+	#,niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25
+	) {
 
 	if(is.null(taxon.df)){
 		taxon.df <- getTaxonDFWithPossibleExtinction(phy)
@@ -159,8 +154,8 @@ simulateWithPriors<-function(
 	
 	# checks
 	if(checks){
-		checkNiter(niter.brown=niter.brown, niter.lambda=niter.lambda,
-			niter.delta=niter.delta, niter.OU=niter.OU, niter.white=niter.white)
+		#checkNiter(niter.brown=niter.brown, niter.lambda=niter.lambda,
+		#	niter.delta=niter.delta, niter.OU=niter.OU, niter.white=niter.white)
 		# check TimeStep
 		numberofsteps<-max(taxon.df$endTime)/timeStep
 		mininterval<-min(taxon.df$endTime - taxon.df$startTime)
@@ -210,9 +205,10 @@ simulateWithPriors<-function(
 		simTraits<-doSimulationWithPossibleExtinction(phy=phy, taxon.df=taxon.df, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, 
 			startingValues=trueStarting, intrinsicValues=trueIntrinsic, extrinsicValues=trueExtrinsic,
 			timeStep=timeStep, verbose=verbose, checkTimeStep=FALSE)
-		simSumStats<-summaryStatsLong(phy=phy, traits=simTraits, 
-			niter.brown=niter.brown, niter.lambda=niter.lambda, niter.delta=niter.delta,
-			niter.OU=niter.OU, niter.white=niter.white)
+		simSumStats<-summaryStatsLong(phy=phy, traits=simTraits 
+			#,niter.brown=niter.brown, niter.lambda=niter.lambda, niter.delta=niter.delta,
+			#niter.OU=niter.OU, niter.white=niter.white
+			)
 		simTrueAndStats <-c(trueFreeValues, simSumStats)
 	}
 	if(n.attempts>1) {
@@ -236,8 +232,9 @@ parallelSimulateWithPriors<-function(
 	intrinsicFn, extrinsicFn, startingPriorsFns, startingPriorsValues,
 	intrinsicPriorsFns, intrinsicPriorsValues, extrinsicPriorsFns, extrinsicPriorsValues, 
 	generation.time=1000, TreeYears=max(branching.times(phy)) * 1e6, timeStep=NULL, #timeStep=1e-04,
-	checkpointFile=NULL, checkpointFreq=24, verbose=FALSE, freevector=NULL, taxon.df=NULL, giveUpAttempts=10, 
-	niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) {
+	checkpointFile=NULL, checkpointFreq=24, verbose=FALSE, freevector=NULL, taxon.df=NULL, giveUpAttempts=10 
+	#,niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25
+	) {
 	
 	#library(doMC, quietly=TRUE)
 	#library(foreach, quietly=TRUE)
@@ -247,8 +244,8 @@ parallelSimulateWithPriors<-function(
 		}
 	
 	# checks
-	checkNiter(niter.brown=niter.brown, niter.lambda=niter.lambda,
-		niter.delta=niter.delta, niter.OU=niter.OU, niter.white=niter.white)
+	#checkNiter(niter.brown=niter.brown, niter.lambda=niter.lambda,
+	#	niter.delta=niter.delta, niter.OU=niter.OU, niter.white=niter.white)
 		
 	if(is.null(freevector)){
 		freevector<-getFreeVector(startingPriorsFns=startingPriorsFns, startingPriorsValues=startingPriorsValues, 
@@ -316,7 +313,7 @@ parallelSimulateWithPriors<-function(
 					startingPriorsFns=startingPriorsFns, intrinsicPriorsFns=intrinsicPriorsFns, extrinsicPriorsFns=extrinsicPriorsFns,  giveUpAttempts=giveUpAttempts, 
 					freevector=freevector, timeStep=timeStep, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, verbose=verbose, checks=FALSE))
 			save(trueFreeValuesANDSummaryValues,file=checkpointFileName)
-			print(paste("Just finished",dim(trueFreeValuesANDSummaryValues)[1],"of",nrepSim,"simulations; progress so far saved in",checkpointFileName))
+			message(paste("Just finished",dim(trueFreeValuesANDSummaryValues)[1],"of",nrepSim,"simulations; progress so far saved in",checkpointFileName))
 		}
 		trueFreeValuesANDSummaryValues<-rbind(trueFreeValuesANDSummaryValues, 
 			foreach(1:numberSimsAfterLastCheckpoint, .combine=rbind) %dopar% simulateWithPriors(phy=phy,  taxon.df=taxon.df,
@@ -328,12 +325,12 @@ parallelSimulateWithPriors<-function(
 	return(trueFreeValuesANDSummaryValues)
 }
 
-checkNiter<-function(niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25){
-	if(niter.brown<2){stop("niter.brown must be at least 2")}
-	if(niter.lambda<2){stop("niter.lambda must be at least 2")}
-	if(niter.delta<2){stop("niter.delta must be at least 2")}
-	if(niter.OU<2){stop("niter.OU must be at least 2")}
-	if(niter.white<2){stop("niter.white must be at least 2")}
-	}
+#checkNiter<-function(niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25){
+#	if(niter.brown<2){stop("niter.brown must be at least 2")}
+#	if(niter.lambda<2){stop("niter.lambda must be at least 2")}
+#	if(niter.delta<2){stop("niter.delta must be at least 2")}
+#	if(niter.OU<2){stop("niter.OU must be at least 2")}
+#	if(niter.white<2){stop("niter.white must be at least 2")}
+#	}
 
 

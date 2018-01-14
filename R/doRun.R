@@ -11,7 +11,7 @@
 #' (\code{startingPriorsValues}, \code{startingPriorsFns}, \code{intrinsicPriorsValues},
 #' \code{intrinsicPriorsFns}, \code{extrinsicPriorsValues}, \code{extrinsicPriorsFns}). Pulling from
 #' the priors, it simulates an initial set of simulations (\code{StartSims}). This set of simulations is
-#' boxcox transformed ,and a PLS regression (see \code{\link{PLSmethods}}) is performed for each free parameter
+#' boxcox transformed ,and a PLS regression (see \code{\link{methodsPLS}}) is performed for each free parameter
 #' to determine the most informative summary statistics (using \code{variance.cutoff}). The euclidean distance is calculated
 #' between each each initial simulation's most informative summary statistics and the input observed data.
 #' 
@@ -36,7 +36,7 @@
 
 #' @inheritParams doSimulation
 #' @inheritParams simulateWithPriors
-#' @inheritParams PLSmethods
+#' @inheritParams methodsPLS
 
 #' @param traits Data matrix with rownames identical to \code{phy@tip.label}.
 
@@ -85,8 +85,6 @@
 
 #' @param saveData Option to save various run information during the analysis, including summary statistics from analyses, output to external .Rdata and .txt files.
 
-#' @param niter.goal Adjust number of starting points for package \code{geiger} to return the best parameter estimates this number of times on average.
-
 
 #' @param verboseParticles If \code{TRUE} (the default), a large amount of information about parameter estimates
 #' and acceptance of particles is output to console via \code{message} as \code{doRun_prc} runs. 
@@ -94,13 +92,16 @@
 #' @param diagnosticPRCmode If \code{TRUE} (\emph{not} the default), the function will be very noisy about characteristics of 
 #' the PRC algorithm as it runs.
 
+# param niter.goal Adjust number of starting points for package \code{geiger} to return the best parameter estimates this number of times on average.
+
 #' @return 
 #' The output of these two functions are lists, composed of multiple objects,
 #' which differ slightly in their content among the two functions. For \code{doRun_prc}, the output is:
 
 #' \describe{
 #' \item{input.data}{Input variables: jobName, number of taxa, nrepSim, 
-#' generation.time, TreeYears, timeStep, totalGenerations, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor} 
+#' generation.time, TreeYears, timeStep, totalGenerations, epsilonProportion,
+#' epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor} 
 
 #' \item{PriorMatrix}{Matrix of prior distributions}
 
@@ -126,7 +127,8 @@
 
 #' \describe{
 #' \item{input.data}{Input variables: jobName, number of taxa, nrepSim, 
-#' generation.time, TreeYears, timeStep, totalGenerations, epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor} 
+#' generation.time, TreeYears, timeStep, totalGenerations, epsilonProportion,
+#' epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor} 
 
 #' \item{PriorMatrix}{Matrix of prior distributions}
 
@@ -163,6 +165,7 @@
 #' @examples
 #' 
 #' \donttest{
+#' set.seed(1)
 #' data(simRunExample)
 #' 
 #' # NOTE: the example analyses below sample too few particles, 
@@ -201,21 +204,22 @@
 #' #one should make sure priors are uniform with doRun_rej!
 #' 
 #' resultsRej<-doRun_rej( 
-#' 	phy=simPhy,
-#' 	traits=simChar,
-#' 	intrinsicFn=brownianIntrinsic,
-#' 	extrinsicFn=nullExtrinsic,
-#' 	startingPriorsFns="normal",
-#' 	startingPriorsValues=matrix(c(mean(simChar[,1]), sd(simChar[,1]))),
-#' 	intrinsicPriorsFns=c("exponential"),
-#' 	intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE), #grep for normal in pkg
-#' 	extrinsicPriorsFns=c("fixed"),
-#' 	extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
-#' 	StartSims=10,
-#' 	jobName="examplerun_rej",
-#' 	abcTolerance=0.05,
-#' 	multicore=FALSE,
-#' 	coreLimit=1
+#' 	phy = simPhy,
+#' 	traits = simChar,
+#' 	intrinsicFn = brownianIntrinsic,
+#' 	extrinsicFn = nullExtrinsic,
+#' 	startingPriorsFns = "normal",
+#' 	startingPriorsValues = matrix(c(mean(simChar[,1]), sd(simChar[,1]))),
+#' 	intrinsicPriorsFns = c("exponential"),
+#' 	intrinsicPriorsValues = matrix(c(10, 10), nrow=2, byrow=FALSE), #grep for normal in pkg
+#' 	extrinsicPriorsFns = c("fixed"),
+#' 	extrinsicPriorsValues = matrix(c(0, 0), nrow=2, byrow=FALSE),
+#'	generation.time=100000,
+#' 	StartSims = 10,
+#' 	jobName = "examplerun_rej",
+#' 	abcTolerance = 0.05,
+#' 	multicore = FALSE,
+#' 	coreLimit = 1
 #' 	)
 #' 
 #' resultsRej
@@ -235,17 +239,20 @@
 doRun_prc<-function(
 	phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues, startingPriorsFns, 
 	intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, 
-	#startingValuesGuess=c(), intrinsicValuesGuess=c(), extrinsicValuesGuess=c(), 
 	#
 	# OLD COMMENTING (before DWB):	
 	#the doRun_prc function takes input from the user and then automatically guesses optimal parameters, though user overriding is also possible.
 	#the guesses are used to do simulations near the expected region. If omitted, they are set to the midpoint of the input parameter matrices
-	# so it seems like the above guess parameters are for the 'override' of this feature
-	# I just got rid of them, its too confusing..
+	#
+	# DWB :so it seems like the above guess parameters are for the 'override' of this feature
+	# So... I just got rid of them, its too confusing..
+	#
+	#startingValuesGuess=c(), intrinsicValuesGuess=c(), extrinsicValuesGuess=c(), 
+	#
 	#	
 	generation.time=1000, TreeYears=max(branching.times(phy)) * 1e6, 
 	multicore=FALSE, coreLimit=NA, validation="CV", scale=TRUE, variance.cutoff=95,
-	niter.goal=5, 
+	#niter.goal=5, 
 	numParticles=300, standardDevFactor=0.20, 
 	StartSims=300, epsilonProportion=0.7, epsilonMultiplier=0.7, nStepsPRC=5, 
 	stopRule=FALSE, stopValue=0.05, maxAttempts=Inf, diagnosticPRCmode=FALSE,
@@ -270,8 +277,8 @@ doRun_prc<-function(
 		stop("Tree has *NO* rescaled branches longer than generation.time/TreeYears, no simulated evol change can occur!")
 	}
 	if(min(edgesRescaled) < timeStep) {
-		warning("Tree has rescaled branches shorter than generation.time/TreeYears; no evol change can be assigned to these, and geiger functions may fail!")
-		#print("Tree has zero or nearly zero length branches")
+		warning("Tree has rescaled branches shorter than generation.time/TreeYears; no evol change can be assigned to these, and ML summary stat functions may fail!")
+		#message("Tree has zero or nearly zero length branches")
 	}
 	
 	totalGenerations<-sum(sapply(edgesRescaled,function(x) floor(x/timeStep)))
@@ -296,7 +303,7 @@ doRun_prc<-function(
 	for (b in 1:dim(intrinsicPriorsValues)[2]) {
 		namesForPriorMatrix<-append(namesForPriorMatrix, paste0("IntrinsicValue", b, sep=""))
 		}
-	#print(extrinsicPriorsValues)
+	#message(extrinsicPriorsValues)
 	for (c in 1:dim(extrinsicPriorsValues)[2]) {
 		namesForPriorMatrix <-append(namesForPriorMatrix, paste0("ExtrinsicValue", c, sep=""))
 		}
@@ -313,51 +320,10 @@ doRun_prc<-function(
 	colnames(param.stdev)<-namesForPriorMatrix
 	rownames(param.stdev)<-paste0("Gen ", c(1: nStepsPRC), sep="")
 	#
-	#initialize guesses, if needed
-	#if (length(startingValuesGuess)==0) { #if no user guesses, try pulling a value from the prior
-	#	startingValuesGuess<-rep(NA,length(startingPriorsFns))
-	#	for (i in 1:length(startingPriorsFns)) {
-	#		startingValuesGuess[i]<-pullFromPrior(startingPriorsValues[,i],startingPriorsFns[i])
-	#	}
-	#}
-	#if (length(intrinsicValuesGuess)==0) { #if no user guesses, try pulling a value from the prior
-	#	intrinsicValuesGuess<-rep(NA,length(intrinsicPriorsFns))
-	#	for (i in 1:length(intrinsicPriorsFns)) {
-	#		intrinsicValuesGuess[i]<-pullFromPrior(intrinsicPriorsValues[,i],intrinsicPriorsFns[i])
-	#	}
-	#}
-	#if (length(extrinsicValuesGuess)==0) { #if no user guesses, try pulling a value from the prior
-	#	extrinsicValuesGuess<-rep(NA,length(extrinsicPriorsFns))
-	#	for (i in 1:length(extrinsicPriorsFns)) {
-	#		extrinsicValuesGuess[i]<-pullFromPrior(extrinsicPriorsValues[,i],extrinsicPriorsFns[i])
-	#	}
-	#}
 	#
 	if (is.na(StartSims)) {
 		StartSims<-1000*numberParametersFree
-	}
-	#
-	#Figure out how many iterations to use for optimization in Geiger.
-		#it actually runs faster without checking for cores. And we parallelize elsewhere
-	brown<-makeQuiet(fitContinuous(phy=phy, dat=traits, model="BM", ncores=1, control=list(niter=100)))
-	lambda<-makeQuiet(fitContinuous(phy=phy, dat=traits, model="lambda", ncores=1, control=list(niter=100)))
-	delta<-makeQuiet(fitContinuous(phy=phy, dat=traits, model="delta", ncores=1, control=list(niter=100)))
-	ou<-makeQuiet(fitContinuous(phy=phy, dat=traits, model="OU", ncores=1, control=list(niter=100)))
-	white<-makeQuiet(fitContinuous(phy=phy, dat=traits, model="white", ncores=1, control=list(niter=100)))
-	#
-	niter.brown.g <- round(max(10, min(niter.goal/solnfreq(brown),100)))
-	niter.lambda.g <- round(max(10, min(niter.goal/solnfreq(lambda),100)))
-	niter.delta.g <- round(max(10, min(niter.goal/solnfreq(delta),100)))
-	niter.OU.g <- round(max(10, min(niter.goal/solnfreq(ou),100)))
-	niter.white.g <- round(max(10, min(niter.goal/solnfreq(white),100)))
-	#
-	# report to the console!
-	message(paste0("Setting number of starting points for Geiger optimization to",
-		paste0("\n   ",niter.brown.g, " for Brownian motion"),
-		paste0("\n   ",niter.lambda.g, " for lambda"),
-		paste0("\n   ",niter.delta.g, " for delta"),
-		paste0("\n   ",niter.OU.g, " for OU"),
-		paste0("\n   ",niter.white.g, " for white noise")))
+		}
 	#
 	#---------------------- Initial Simulations (Start) ------------------------------
 	# See Wegmann et al. Efficient Approximate Bayesian Computation Coupled With Markov Chain Monte Carlo Without Likelihood. 
@@ -376,13 +342,15 @@ doRun_prc<-function(
 	Time<-proc.time()[[3]]
 	trueFreeValues<-matrix(nrow=0, ncol= numberParametersFree)
 	#set up initial sum stats as length of SSL of original data
-	summaryValues<-matrix(nrow=0, ncol=length(summaryStatsLong(phy=phy, traits=traits, 
-		niter.brown=200, niter.lambda=200, niter.delta=200, niter.OU=200, niter.white=200))) 
+	summaryValues<-matrix(nrow=0, ncol=length(summaryStatsLong(phy=phy, traits=traits 
+		#niter.brown=200, niter.lambda=200, niter.delta=200, niter.OU=200, niter.white=200
+		))) 
 	trueFreeValuesANDSummaryValues<-makeQuiet(parallelSimulateWithPriors(nrepSim=nrepSim, coreLimit=coreLimit, phy=phy,  taxon.df=taxon.df,
 		startingPriorsValues=startingPriorsValues, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues, 
 		startingPriorsFns=startingPriorsFns, intrinsicPriorsFns=intrinsicPriorsFns, extrinsicPriorsFns=extrinsicPriorsFns, 
 		freevector=freevector, timeStep=timeStep, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, multicore=multicore, 
-		niter.brown=niter.brown.g, niter.lambda=niter.lambda.g, niter.delta=niter.delta.g, niter.OU=niter.OU.g, niter.white=niter.white.g))
+		#niter.brown=niter.brown.g, niter.lambda=niter.lambda.g, niter.delta=niter.delta.g, niter.OU=niter.OU.g, niter.white=niter.white.g
+		))
 	#message("\n\n")
 	#
 	if(saveData){
@@ -401,7 +369,9 @@ doRun_prc<-function(
 	#
 	pls.model.list <- makeQuiet(apply(trueFreeValuesMatrix, 2, returnPLSModel, summaryValuesMatrix=summaryValuesMatrix, validation=validation, 
 		scale=scale, variance.cutoff = variance.cutoff))
-	originalSummaryValues <- summaryStatsLong(phy, traits, niter.brown=200, niter.lambda=200, niter.delta=200, niter.OU=200, niter.white=200)
+	originalSummaryValues <- summaryStatsLong(phy, traits, 
+		#niter.brown=200, niter.lambda=200, niter.delta=200, niter.OU=200, niter.white=200
+		)
 	#
 	distanceVector<-abcDistance(summaryValuesMatrix, originalSummaryValues, pls.model.list)
 	#
@@ -509,9 +479,9 @@ doRun_prc<-function(
 				#message("dput(oldParticleList[[particleToSelect]])\n")
 				#dput(oldParticleList[[particleToSelect]])
 				particleToSelect<-which.max(as.vector(rmultinom(1, size = 1, prob=oldParticleWeights)))
-				#print(oldParticleWeights)
-				#print(particleToSelect)
-				#print(length(oldParticleList))
+				#message(oldParticleWeights)
+				#message(particleToSelect)
+				#message(length(oldParticleList))
 				newparticleList<-list(oldParticleList[[particleToSelect]])
 				#message("dput(newparticleList[[1]])\n")
 				#dput(newparticleList[[1]])
@@ -533,9 +503,10 @@ doRun_prc<-function(
 						startingValues=newparticleList[[1]]$startingValues, 
 						intrinsicValues=newparticleList[[1]]$intrinsicValues, 
 						extrinsicValues=newparticleList[[1]]$extrinsicValues, 
-						timeStep=timeStep, checkTimeStep=FALSE), 
-					niter.brown=niter.brown.g, niter.lambda=niter.lambda.g, niter.delta=niter.delta.g, 
-					niter.OU=niter.OU.g, niter.white=niter.white.g)
+						timeStep=timeStep, checkTimeStep=FALSE) 
+					#,niter.brown=niter.brown.g, niter.lambda=niter.lambda.g, niter.delta=niter.delta.g, 
+					#niter.OU=niter.OU.g, niter.white=niter.white.g
+					)
 				, originalSummaryValues=originalSummaryValues, pls.model.list=pls.model.list
 				)
 			#
@@ -630,7 +601,7 @@ doRun_prc<-function(
 			#
 			#
 			#while(sink.number()>0) {sink()}
-			#print(newparticleList)
+			#message(newparticleList)
 			#
 			vectorForDataFrame<-c(dataGenerationStep, attempts,newparticleList[[1]]$id, particleToSelect, 
 				newparticleList[[1]]$distance, newparticleList[[1]]$weight, newparticleList[[1]]$startingValues, 
@@ -707,7 +678,7 @@ doRun_prc<-function(
 						FF[check.weightedMeanParam]<-0
 						}
 					}
-				#print(FF)
+				#message(FF)
 				}
 			if (sum(FF)==0){
 				message("\n\n\nweightedMeanParam is < ", stopValue, "Analysis is being terminated at", dataGenerationStep
@@ -778,7 +749,7 @@ doRun_prc<-function(
 	functionTime<-proc.time()[[3]]-functionStartTime
 	message(paste0("Function completed in ",functionTime," seconds."))
 	#
-	#print(prcResults)
+	#message(prcResults)
 	return(prcResults)
 	}
 
@@ -791,11 +762,11 @@ getlnTransitionProb<-function(newvalue,meantouse,Fn,priorValues,stdFactor){
 										
 	if (Fn=="uniform") {
 		sdtouse<-stdFactor*((max(priorValues)-min(priorValues))/sqrt(12))
-		#print(paste0("Fn is uniform and sdtouse = ", sdtouse))
+		#message(paste0("Fn is uniform and sdtouse = ", sdtouse))
 	}
 	else if (Fn=="exponential") {
 		sdtouse<-stdFactor*(1/priorValues[1])
-		#print(paste0("Fn is exponential and sdtouse = ", sdtouse))
+		#message(paste0("Fn is exponential and sdtouse = ", sdtouse))
 	}
 	else {
 		sdtouse<-stdFactor*(priorValues[2])
@@ -805,7 +776,7 @@ getlnTransitionProb<-function(newvalue,meantouse,Fn,priorValues,stdFactor){
 		) - ((log(1)/pnorm(min(priorValues), mean=meantouse, sd=sdtouse, lower.tail=TRUE, log.p=TRUE))
 			* pnorm(max(priorValues), mean=meantouse , sd=sdtouse, lower.tail=FALSE, log.p=TRUE))
 	if(length(lnlocalTransitionProb)!=1){
-		#print(lnlocalTransitionProb)
+		#message(lnlocalTransitionProb)
 		stop("Somehow, multiple lnlocalTransitionProb values produced")
 		}
 	if (is.nan(lnlocalTransitionProb)) {  #to prevent lnlocalTransitionProb from being NaN (if pnorm=0)
@@ -824,17 +795,25 @@ getlnTransitionProb<-function(newvalue,meantouse,Fn,priorValues,stdFactor){
 #' @rdname doRun
 #' @export
 doRun_rej<-function(
-	phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues, startingPriorsFns, 
-	intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, 
+	phy, traits, 
+	intrinsicFn, extrinsicFn, 
+	startingPriorsValues, startingPriorsFns, 
+	intrinsicPriorsValues, intrinsicPriorsFns, 
+	extrinsicPriorsValues, extrinsicPriorsFns, 
 	#startingValuesGuess=c(), intrinsicValuesGuess=c(), extrinsicValuesGuess=c(), 
-	TreeYears=max(branching.times(phy)) * 1e6, 
-	generation.time=1000, multicore=FALSE, coreLimit=NA, validation="CV", scale=TRUE, variance.cutoff=95,
-	niter.goal=5, 
+	generation.time=1000, 
+	TreeYears=max(branching.times(phy)) * 1e6,
+	multicore=FALSE, 
+	coreLimit=NA, 
+	validation="CV", 
+	scale=TRUE, 
+	variance.cutoff=95,
+	#niter.goal=5, 
 	standardDevFactor=0.20, StartSims=NA, jobName=NA, abcTolerance=0.1, 
 	checkpointFile=NULL, checkpointFreq=24, savesims=FALSE) {	
 	
-	#library(geiger)
-	#library(pls)
+	
+	
 	if (!is.binary.tree(phy)) {
 		warning("Tree is not fully dichotomous, this may lead to issues")
 	}
@@ -851,8 +830,8 @@ doRun_rej<-function(
 		stop("Tree has *NO* rescaled branches longer than generation.time/TreeYears, no simulated evol change can occur!")
 	}
 	if(min(edgesRescaled) < timeStep) {
-		warning("Tree has rescaled branches shorter than generation.time/TreeYears; no evol change can be assigned to these, and geiger functions may fail!")
-		#print("Tree has zero or nearly zero length branches")
+		warning("Tree has rescaled branches shorter than generation.time/TreeYears; no evol change can be assigned to these, and ML summary stat functions may fail!")
+		#message("Tree has zero or nearly zero length branches")
 	}
 	
 	totalGenerations<-sum(sapply(edgesRescaled,function(x) floor(x/timeStep)))
@@ -877,14 +856,14 @@ doRun_rej<-function(
 	for (b in 1:dim(intrinsicPriorsValues)[2]) {
 		namesForPriorMatrix<-append(namesForPriorMatrix, paste0("IntrinsicValue", b, sep=""))
 	}
-	#print(extrinsicPriorsValues)
+	#message(extrinsicPriorsValues)
 	for (c in 1:dim(extrinsicPriorsValues)[2]) {
 		namesForPriorMatrix <-append(namesForPriorMatrix, paste0("ExtrinsicValue", c, sep=""))
 	}
 	PriorMatrix<-rbind(PriorMatrix, cbind(startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues))
 	colnames(PriorMatrix)<-namesForPriorMatrix
 	rownames(PriorMatrix)<-c("shape", "value1", "value2")	
-
+	#
 	#initialize guesses, if needed
 	#if (length(startingValuesGuess)==0) { #if no user guesses, try pulling a value from the prior
 	#	startingValuesGuess<-rep(NA,length(startingPriorsFns))
@@ -904,48 +883,42 @@ doRun_rej<-function(
 	#		extrinsicValuesGuess[i]<-pullFromPrior(extrinsicPriorsValues[,i],extrinsicPriorsFns[i])
 	#	}
 	#}
-
+	#
 	if (is.na(StartSims)) {
 		StartSims<-1000*numberParametersFree
-	}
-
+		}
+	#
 	#Used to be multiple tries where nrepSim = StartSims*((2^try)/2).  
 		#If initial simulations are not enough, and we need to try again then new analysis will double number of initial simulations
 	nrepSim<-StartSims 
 	message(paste0("Number of initial simulations set to ", nrepSim)) 	#, "\n"
 	if(!is.null(checkpointFile)) {
 		save(list=ls(),file=paste0(checkpointFile,".intialsettings.Rsave",sep=""))
-	}
-
+		}
+	#
 	#Figure out how many iterations to use for optimization in Geiger.
 	#it actually runs faster without checking for cores. And we parallelize elsewhere
-	brown<-makeQuiet(fitContinuous(phy=phy, dat=traits, model="BM", ncores=1, control=list(niter=100))) 
-	lambda<-makeQuiet(fitContinuous(phy=phy, dat=traits, model="lambda", ncores=1, control=list(niter=100)))
-	delta<-makeQuiet(fitContinuous(phy=phy, dat=traits, model="delta", ncores=1, control=list(niter=100)))
-	ou<-makeQuiet(fitContinuous(phy=phy, dat=traits, model="OU", ncores=1, control=list(niter=100)))
-	white<-makeQuiet(fitContinuous(phy=phy, dat=traits, model="white", ncores=1, control=list(niter=100)))
-
-
-	niter.brown.g <- round(max(10, min(niter.goal/solnfreq(brown),100)))
-	niter.lambda.g <- round(max(10, min(niter.goal/solnfreq(lambda),100)))
-	niter.delta.g <- round(max(10, min(niter.goal/solnfreq(delta),100)))
-	niter.OU.g <- round(max(10, min(niter.goal/solnfreq(ou),100)))
-	niter.white.g <- round(max(10, min(niter.goal/solnfreq(white),100)))
+	#niter.brown.g <- getBM(phy=phy,dat=traits,niterN=100,niter.goal=niter.goal)$niter.g
+	#niter.lambda.g <- getLambda(phy=phy,dat=traits,niterN=100,niter.goal=niter.goal)$niter.g
+	#niter.delta.g <- getDelta(phy=phy,dat=traits,niterN=100,niter.goal=niter.goal)$niter.g
+	#niter.OU.g <- getOU(phy=phy,dat=traits,niterN=100,niter.goal=niter.goal)$niter.g
+	#niter.white.g <- getWhite(phy=phy,dat=traits,niterN=100,niter.goal=niter.goal)$niter.g
 	#
-	message(paste0("Setting number of starting points for Geiger optimization to ",
-		paste0("\n",niter.brown.g, " for Brownian motion"),
-		paste0("\n",niter.lambda.g, " for lambda"),
-		paste0("\n",niter.delta.g, " for delta"),
-		paste0("\n",niter.OU.g, " for OU"),
-		paste0("\n",niter.white.g, " for white noise")))
-	
+	#message(paste0("Setting number of starting points for Geiger optimization to ",
+	#	paste0("\n",niter.brown.g, " for Brownian motion"),
+	#	paste0("\n",niter.lambda.g, " for lambda"),
+	#	paste0("\n",niter.delta.g, " for delta"),
+	#	paste0("\n",niter.OU.g, " for OU"),
+	#	paste0("\n",niter.white.g, " for white noise")))
+	#
 	trueFreeValuesANDSummaryValues<-parallelSimulateWithPriors(nrepSim=nrepSim, coreLimit=coreLimit, phy=phy,  taxon.df=taxon.df,
 		startingPriorsValues=startingPriorsValues, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues, 
 		startingPriorsFns=startingPriorsFns, intrinsicPriorsFns=intrinsicPriorsFns, extrinsicPriorsFns=extrinsicPriorsFns, 
 		freevector=freevector, timeStep=timeStep, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, 
 		multicore=multicore, checkpointFile=checkpointFile, checkpointFreq=checkpointFreq, 
-		niter.brown=niter.brown.g, niter.lambda=niter.lambda.g, niter.delta=niter.delta.g, niter.OU=niter.OU.g, niter.white=niter.white.g)
-
+		#niter.brown=niter.brown.g, niter.lambda=niter.lambda.g, niter.delta=niter.delta.g, niter.OU=niter.OU.g, niter.white=niter.white.g
+		)
+	#
 	#message("\n\n")
 	simTime<-proc.time()[[3]]-startTime
 	message(paste0("Initial simulations took ", round(simTime, digits=3), " seconds")) #, "\n"
@@ -963,7 +936,7 @@ doRun_rej<-function(
 	
 	#save(abcDistancesRaw, abcDistancesRawTotal, abcDistances, abcResults, particleDataFrame, file="")
 	input.data<-rbind(jobName, length(phy[[3]]), generation.time, TreeYears, timeStep, totalGenerations, StartSims, standardDevFactor, abcTolerance)
-	#print(res)
+	#message(res)
 	
 	rejectionResults<-vector("list")
 	

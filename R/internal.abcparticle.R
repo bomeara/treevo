@@ -132,31 +132,31 @@ mutateState<-function(startingState, standardDevFactor, priorFn, priorValues) {
 	else if (priorFn=="uniform") {
 		sdToUse<-standardDevFactor*(abs(max(priorValues)-min(priorValues)))
 			if (sdToUse<0){
-				print(paste("priorFN=", priorFn, "standardDevFactor=", standardDevFactor, "range(priorValues)=", range(priorValues)))
+				message(paste("priorFN=", priorFn, "standardDevFactor=", standardDevFactor, "range(priorValues)=", range(priorValues)))
 			}
 	}
 	else if (priorFn=="normal") {
 		sdToUse<-standardDevFactor*priorValues[2]
 			if (sdToUse<0){
-				print(paste("priorFN=", priorFn, "standardDevFactor=", standardDevFactor, "range(priorValues)=", range(priorValues)))
+				message(paste("priorFN=", priorFn, "standardDevFactor=", standardDevFactor, "range(priorValues)=", range(priorValues)))
 			}
 	}
 	else if (priorFn=="lognormal") {
 		sdToUse<-standardDevFactor*priorValues[2]
 			if (sdToUse<0){
-				print(paste("priorFN=", priorFn, "standardDevFactor=", standardDevFactor, "range(priorValues)=", range(priorValues)))
+				message(paste("priorFN=", priorFn, "standardDevFactor=", standardDevFactor, "range(priorValues)=", range(priorValues)))
 			}
 	}
 	else if (priorFn=="gamma") {
 		sdToUse<-standardDevFactor*sqrt(priorValues[1]*priorValues[2]*priorValues[2])
 			if (sdToUse<0){
-				print(paste("priorFN=", priorFn, "standardDevFactor=", standardDevFactor, "range(priorValues)=", range(priorValues)))
+				message(paste("priorFN=", priorFn, "standardDevFactor=", standardDevFactor, "range(priorValues)=", range(priorValues)))
 			}
 	}
 	else if (priorFn=="exponential") {
 		sdToUse<-standardDevFactor/priorValues[1]
 			if (sdToUse<0){
-				print(paste("priorFN=", priorFn, "standardDevFactor=", standardDevFactor, "range(priorValues)=", range(priorValues)))
+				message(paste("priorFN=", priorFn, "standardDevFactor=", standardDevFactor, "range(priorValues)=", range(priorValues)))
 			}
 	}
 	else {
@@ -167,8 +167,8 @@ mutateState<-function(startingState, standardDevFactor, priorFn, priorValues) {
 		newState<-rnorm(n=1, mean=startingState, sd=sdToUse)
 		validNewState<-TRUE
 		if(is.na(newState)) {
-			print(paste("MUTATESTATE_ERROR: newState = ",newState," sdToUse=",sdToUse," startingState=",startingState," priorFn=",priorFn," startingState=",startingState," priorValues=\n",sep=""))
-			print(priorValues)
+			message(paste("MUTATESTATE_ERROR: newState = ",newState," sdToUse=",sdToUse," startingState=",startingState," priorFn=",priorFn," startingState=",startingState," priorValues=\n",sep=""))
+			message(priorValues)
 		}
 		if (newState<minBound){
 			validNewState<-FALSE

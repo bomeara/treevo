@@ -104,7 +104,7 @@ plotPosteriors<-function(particleDataFrame, priorsMat, realParam=FALSE, realPara
 	nParticles<-dim(subset(all[which(all$weight>0),], run==max(all$run)))[1]
 
 	for (param in 1:dim(priorsMat)[2]) {
-		#print(param)
+		#message(param)
 		#v<-vector("list", max(all$run))
 		which.param<-param+7
 		r<-c()
@@ -137,7 +137,7 @@ plotPosteriors<-function(particleDataFrame, priorsMat, realParam=FALSE, realPara
 				}
 
 			if (priorsMat[1, param]=="uniform") {
-				#print("made it to uniform priorFn")
+				#message("made it to uniform priorFn")
 				min=as.numeric(min(priorsMat[2, param], priorsMat[3, param]))
 				max=as.numeric(max(priorsMat[2, param], priorsMat[3, param]))
 				x<-runif(1000, min, max)
@@ -150,7 +150,7 @@ plotPosteriors<-function(particleDataFrame, priorsMat, realParam=FALSE, realPara
 				}
 			}
 			else if (priorsMat[1, param]=="normal") {
-				#print("made it to normal priorFn")
+				#message("made it to normal priorFn")
 				mean=as.numeric(priorsMat[2, param])
 				stdev=as.numeric(priorsMat[3, param])
 				x<-rnorm(1000, mean, stdev)
@@ -188,7 +188,7 @@ plotPosteriors<-function(particleDataFrame, priorsMat, realParam=FALSE, realPara
 				}
 			}
 			else if (priorsMat[1, param]=="exponential") {
-				#print("made it to exponential priorFn")
+				#message("made it to exponential priorFn")
 				rate=as.numeric(priorsMat[2, param])
 				x<-rexp(1000, rate)
 				w<-density(x)
