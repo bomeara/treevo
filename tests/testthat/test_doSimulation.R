@@ -85,7 +85,7 @@ test_that("doSimulationWithPossibleExtinction works", {
 	)
 	)
 	
-	expect_equal(class(charDoSim[,1]), "integer")
+	expect_equal(class(charDoSim[,1]), "numeric")
 	expect_equal(dim(charDoSim)[1], Ntip(tree))
 })
 

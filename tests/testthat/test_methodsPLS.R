@@ -4,7 +4,7 @@ test_that("methodsPLS works", {
   simPhy <- rcoal(5)
   simPhy$edge.length <- simPhy$edge.length * 20
   
-  nSimulations <- 3
+  nSimulations <- 6
   
   #expect_warning(
   simDataParallel <- parallelSimulateWithPriors(
