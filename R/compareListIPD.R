@@ -61,15 +61,15 @@ compareListIPD<-function(particleDataFrameList, verbose=FALSE){
 					}
 				}
 			}
-			#print(paste("param = ", param))
-			#print(paste("generation = ", gen))
+			#message(paste("param = ", param))
+			#message(paste("generation = ", gen))
 			genvector<-append(genvector, rep(gen, length(unique(as.vector(IPDmatrix)))))
 			IPDvector<-append(IPDvector, unique(as.vector(IPDmatrix)))
-			#print(genvector)
-			#print(IPDvector)
+			#message(genvector)
+			#message(IPDvector)
 			if(verbose){
-				print(paste("param=", names(data1[[1]][6+param])))
-				print(cbind(genvector, IPDvector))
+				message(paste("param=", names(data1[[1]][6+param])))
+				message(cbind(genvector, IPDvector))
 			}
 		}
 		#pdf(paste("compareListIPD", jobName, ".pdf", sep=""))
@@ -77,7 +77,7 @@ compareListIPD<-function(particleDataFrameList, verbose=FALSE){
 		
 	}	
 	layout(1)
-}
+	}
 
 #   Calculate interparticle distance
 #   

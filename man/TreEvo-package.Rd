@@ -18,9 +18,10 @@ A package for applying Approximate Bayesian Computation to estimating parameters
 
 \donttest{
 
+set.seed(1)
 # let's simulate some data, and then try to infer the parameters using ABC
 # get a 30-taxon coalescent tree
-tree<-rcoal(30)
+tree<-rcoal(20)
 # get realistic edge lengths
 tree$edge.length<-tree$edge.length*20
 

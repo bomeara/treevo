@@ -25,9 +25,10 @@
 #' 
 #' \donttest{
 #' 
+#' set.seed(1)
 #' # let's simulate some data, and then try to infer the parameters using ABC
 #' # get a 30-taxon coalescent tree
-#' tree<-rcoal(30)
+#' tree<-rcoal(20)
 #' # get realistic edge lengths
 #' tree$edge.length<-tree$edge.length*20
 #' 
@@ -87,9 +88,9 @@
 
 #' @import ape
 #' @import stats
-#' @import geiger
 #' @import phytools
 
+#' @importFrom phylolm phylolm
 #' @importFrom pls plsr scores 
 #' @importFrom corpcor pseudoinverse 
 #' @importFrom coda effectiveSize HPDinterval as.mcmc 
