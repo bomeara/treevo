@@ -1,5 +1,5 @@
 # internal functions for fitting models of trait evolution using ML functions in other packages for use as summary statistics
-# 
+#
 # 01-11-18: now centralizing all calls to geiger::fitContinuous so that we can replace with usage from phylolm::phylolm
 
 	
@@ -29,7 +29,7 @@
 		
 getBM<-function(phy,dat){			#,niterN,niter.goal=NA
 	res<-list()
-	#fit<-makeQuiet(geiger::fitContinuous(phy=phy, dat=dat, 
+	#fit<-makeQuiet(geiger::fitContinuous(phy=phy, dat=dat,
 	#	model="BM", ncores=1, control=list(niter=niterN)))
 	#res$lnl<-as.numeric(fit$logLik)
 	#res$beta <-as.numeric(fit$opt$sigsq)
@@ -49,7 +49,7 @@ getBM<-function(phy,dat){			#,niterN,niter.goal=NA
 	
 getLambda<-function(phy,dat){			#,niterN,niter.goal=NA
 	res<-list()
-	#fit<-makeQuiet(geiger::fitContinuous(phy=phy, dat=dat, 
+	#fit<-makeQuiet(geiger::fitContinuous(phy=phy, dat=dat,
 	#	model="lambda", ncores=1, control=list(niter=niterN)))
 	fit<-makeQuiet(phylolm::phylolm(formula=dat~1,phy=phy,model="lambda"))
 	res$lnl<-as.numeric(fit$logLik)

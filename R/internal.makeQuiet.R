@@ -13,7 +13,7 @@ makeQuiet<-function(funToEval){
 	}
 
 
-# @example 
+# @example
 #
 # fun <- function(x){
 #   message("Thanks for using my function!!")

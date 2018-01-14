@@ -26,18 +26,18 @@
 #' @name credibleInt
 #' @rdname credibleInt
 #' @export
-credibleInt<-function(particleDataFrame, percent=0.95) { 
+credibleInt<-function(particleDataFrame, percent=0.95) {
 	# ugh ugh
 	#generation<-NULL #to appease R CMD CHECK
 	# yes??? I think this is right, not sure
-	generation<-particleDataFrame$generation 
+	generation<-particleDataFrame$generation
 	#
 	PercentTail<-(1-percent)/2
 	Ints<-matrix(nrow=(dim(particleDataFrame)[2]-6), ncol=4)
 	colnames(Ints)<-c("mean", "sd", "LowerCI", "UpperCI")
 	rownames(Ints)<-names(particleDataFrame[7: dim(particleDataFrame)[2]])
 	subpDF<-subset(particleDataFrame[which(particleDataFrame$weight>0),],
-		generation==max(particleDataFrame$generation),drop=FALSE)[7:dim(particleDataFrame)[2]] 
+		generation==max(particleDataFrame$generation),drop=FALSE)[7:dim(particleDataFrame)[2]]
 	for(i in 1:dim(subpDF)[2]){
 		if(length(subpDF[,i])>1){
 			if(sd(subpDF[,i]) != 0) {

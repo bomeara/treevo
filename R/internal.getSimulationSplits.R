@@ -1,10 +1,10 @@
 # Simulation Splits
-# 
+#
 # This function retrieves branch lengths and ancestor-decendant relationships
 # from a tree
-# 
+#
 # This function is used by other TreEvo functions for internal calculations.
-# 
+#
 
 # @inheritParams doSimulation
 
@@ -60,7 +60,7 @@ getTaxonDFWithPossibleExtinction<-function(phy) {
 	for (taxon.index in sequence(ape::Ntip(phy))) {
 		heights$name[which(heights$tipward.id==taxon.index)] <- phy$tip.label[taxon.index]
 	}
-	result <- data.frame(t(sapply(split(heights, 
+	result <- data.frame(t(sapply(split(heights,
 		seq(dim(heights)[1])), createAbcTaxonFromHeightsRow)), stringsAsFactors=FALSE)
 	for (col.id in sequence(dim(result)[2])) {
 		result[,col.id] <- unlist(result[,col.id])
@@ -78,7 +78,7 @@ getTaxonDFWithPossibleExtinction<-function(phy) {
 # @return An abctaxon object
 # @author Brian O'Meara
 createAbcTaxonFromHeightsRow <- function(x) {
-	return(abctaxon(id=x$tipward.id, name=x$name, timeSinceSpeciation=0, states=NA, nextstates=NA, 
+	return(abctaxon(id=x$tipward.id, name=x$name, timeSinceSpeciation=0, states=NA, nextstates=NA,
 	startTime=x$rootward.height, endTime=x$tipward.height, terminal=!grepl("internal.", x$name), ancestorId=x$rootward.id))
 }
 

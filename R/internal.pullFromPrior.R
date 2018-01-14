@@ -1,8 +1,8 @@
 #   Pull value from prior
-#   
+#
 #   This function retreives random value from variable prior functions
-#   
-#   
+#
+#
 #   @param priorValues Matrix with ncol=number of states (characters) at root
 #   and nrow=2 (two parameters to pass to prior distribution)
 #   @param priorFn Prior shape

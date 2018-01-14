@@ -50,7 +50,7 @@
 #' simChar<-simCharOut[,"statesmatrix",drop=FALSE]
 #' rownames(simChar)<-tree$tip.label[simCharOut$taxonid]
 #' 
-#' # NOTE: the example analyses below sample too few particles, 
+#' # NOTE: the example analyses below sample too few particles,
 #' 	# over too few steps, with too few starting simulations
 #' 	# - all for the sake of examples that reasonably test the functions
 #' 
@@ -91,19 +91,19 @@
 #' @import phytools
 
 #' @importFrom phylolm phylolm
-#' @importFrom pls plsr scores 
-#' @importFrom corpcor pseudoinverse 
-#' @importFrom coda effectiveSize HPDinterval as.mcmc 
-#' @importFrom foreach foreach getDoParWorkers '%dopar%' 
-#' @importFrom partitions blockparts 
-#' @importFrom MASS boxcox 
-#' @importFrom mvtnorm dmvnorm 
-#' @importFrom graphics curve layout legend lines plot plot.new points polygon rect segments symbols text title 
-#' @importFrom grDevices dev.off gray pdf rgb 
+#' @importFrom pls plsr scores
+#' @importFrom corpcor pseudoinverse
+#' @importFrom coda effectiveSize HPDinterval as.mcmc
+#' @importFrom foreach foreach getDoParWorkers '%dopar%'
+#' @importFrom partitions blockparts
+#' @importFrom MASS boxcox
+#' @importFrom mvtnorm dmvnorm
+#' @importFrom graphics curve layout legend lines plot plot.new points polygon rect segments symbols text title
+#' @importFrom grDevices dev.off gray pdf rgb
 #' @importFrom methods as setAs
 #' @importFrom utils capture.output
 
-# @importFrom rgl plot3d title3d rgl.viewpoint open3d rgl.material triangles3d lines3d spheres3d 
+# @importFrom rgl plot3d title3d rgl.viewpoint open3d rgl.material triangles3d lines3d spheres3d
 
 
 #' 

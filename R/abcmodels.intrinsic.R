@@ -101,7 +101,7 @@
 #' @examples
 #
 #' \donttest{
-# 
+#
 #' set.seed(1)
 #' # Examples of simulations with various intrinsic models (and null extrinsic model)
 #' tree<-rcoal(20)
@@ -144,9 +144,9 @@
 #' 	generation.time=100000,
 #' 	plot=TRUE,
 #' 	saveHistory=FALSE)
-# 
+#
 #' }
- 
+
 
 #' @name intrinsicModels
 #' @rdname intrinsicModels
@@ -197,7 +197,7 @@ boundaryMinIntrinsic <-function(params, states, timefrompresent) {
 
 #' @rdname intrinsicModels
 #' @export
-autoregressiveIntrinsic<-function(params,states, timefrompresent) { 
+autoregressiveIntrinsic<-function(params,states, timefrompresent) {
 	#a discrete time OU, same sd, mean, and attraction for all chars
 	#params[1] is sd (sigma), params[2] is attractor (ie. character mean), params[3] is attraction (ie. alpha)
 	sd<-params[1]
@@ -209,7 +209,7 @@ autoregressiveIntrinsic<-function(params,states, timefrompresent) {
 
 #' @rdname intrinsicModels
 #' @export
-minBoundaryAutoregressiveIntrinsic<-function(params,states, timefrompresent) { 
+minBoundaryAutoregressiveIntrinsic<-function(params,states, timefrompresent) {
 	#a discrete time OU, same sd, mean, and attraction for all chars
 	#params[1] is sd (sigma), params[2] is attractor (ie. character mean), params[3] is attraction (ie. alpha), params[4] is min bound
 	sd<-params[1]
@@ -230,10 +230,10 @@ minBoundaryAutoregressiveIntrinsic<-function(params,states, timefrompresent) {
 
 #' @rdname intrinsicModels
 #' @export
-autoregressiveIntrinsicTimeSlices<-function(params,states, timefrompresent) { 
+autoregressiveIntrinsicTimeSlices<-function(params,states, timefrompresent) {
 	#a discrete time OU, differing mean, sigma, and attaction with time
 	#params=[sd1, attractor1, attraction1, timethreshold1, sd2, attractor2, attraction2, timethreshold2, ...]
-	#time is time before present (i.e., 65 could be 65 MYA). 
+	#time is time before present (i.e., 65 could be 65 MYA).
 		# The last time threshold should be 0, one before that is the end of the previous epoch, etc.
 	numRegimes<-length(params)/4
 	timeSliceVector=c(Inf,params[which(c(1:length(params))%%4==0)])
@@ -267,10 +267,10 @@ autoregressiveIntrinsicTimeSlices<-function(params,states, timefrompresent) {
 
 #' @rdname intrinsicModels
 #' @export
-autoregressiveIntrinsicTimeSlicesConstantMean<-function(params,states, timefrompresent) { 
+autoregressiveIntrinsicTimeSlicesConstantMean<-function(params,states, timefrompresent) {
 	#a discrete time OU, constant mean, differing sigma, and differing attaction with time
 	#params=[sd1 (sigma1), attraction1 (alpha 1), timethreshold1, sd2 (sigma2), attraction2 (alpha 2), timethreshold2, ..., attractor (mean)]
-	#time is time before present (i.e., 65 could be 65 MYA). 
+	#time is time before present (i.e., 65 could be 65 MYA).
 		# The last time threshold should be 0, one before that is the end of the previous epoch, etc.
 	numTimeSlices<-(length(params)-1)/3
 	sd<-params[1]
@@ -296,10 +296,10 @@ autoregressiveIntrinsicTimeSlicesConstantMean<-function(params,states, timefromp
 
 #' @rdname intrinsicModels
 #' @export
-autoregressiveIntrinsicTimeSlicesConstantSigma<-function(params,states, timefrompresent) { 
+autoregressiveIntrinsicTimeSlicesConstantSigma<-function(params,states, timefrompresent) {
 	##a discrete time OU, differing mean, constant sigma, and attaction with time
 	#params=[sd, attractor1, attraction1, timethreshold1, attractor2, attraction2, timethreshold2, ...]
-	#time is time before present (i.e., 65 could be 65 MYA). The 
+	#time is time before present (i.e., 65 could be 65 MYA). The
 		# last time threshold should be 0, one before that is the end of the previous epoch, etc.
 	numRegimes<-(length(params)-1)/3
 	#message(numRegimes)
@@ -334,7 +334,7 @@ autoregressiveIntrinsicTimeSlicesConstantSigma<-function(params,states, timefrom
 	}
 
 
-varyingBoundariesFixedSigmaIntrinsic<-function(params,states, timefrompresent) { 
+varyingBoundariesFixedSigmaIntrinsic<-function(params,states, timefrompresent) {
 	#differing boundaries with time
 	#params=[sd, min1, max1, timethreshold1, min2, max2, timethreshold2, ...]
 	#time is time before present (i.e., 65 could be 65 MYA). The last time (present)
@@ -379,7 +379,7 @@ varyingBoundariesFixedSigmaIntrinsic<-function(params,states, timefrompresent) {
 	return(newdisplacement)
 	}
 
-varyingBoundariesVaryingSigmaIntrinsic<-function(params,states, timefrompresent) { 
+varyingBoundariesVaryingSigmaIntrinsic<-function(params,states, timefrompresent) {
 	#differing boundaries with time
 	#params=[sd1, min1, max1, timethreshold1, sd2, min2, max2, timethreshold2, ...]
 	#time is time before present (i.e., 65 could be 65 MYA). The last time (present) threshold should be 0, one before that is the end of the previous epoch, etc.

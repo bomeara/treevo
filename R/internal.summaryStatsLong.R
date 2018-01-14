@@ -1,8 +1,8 @@
 #  Calculate frequency of finding best solution in Geiger
-#  
+#
 #  This function is taken from an internal Geiger function
 # probably really REALLY not needed now that geiger is no longer imported
-#  
+#
 #  @param fitContResult An object returned by geiger::fitContinuous()
 
 #  @param tol Tolerance for equality of solutions
@@ -23,9 +23,9 @@ solnfreq <- function(fitContResult, tol = .Machine$double.eps^0.5){
 
 
 #  Calculate summary statistics
-#  
+#
 #  This function creates a vector of summary statistics for TreEvo analysis
-#  
+#
 #  Calculates 17 summary statistics from the geiger::fitContinuous.hacked function
 #  (brown.lnl, brown.beta, brown.aic, lambda.lnl, lambda.beta, lambda.lambda,
 #  lambda.aic, delta.lnl, delta.beta, delta.delta, delta.aic, ou.lnl, ou.beta,
@@ -33,7 +33,7 @@ solnfreq <- function(fitContResult, tol = .Machine$double.eps^0.5){
 #  raw.var, raw.median, and all tip character values, phylogenetic independent
 #  contrasts, ancestral state reconstruction values, and the range of ancestral
 #  state reconstruction confidence interval.
-#  
+#
 
 # actually the above isn't true - isn't clear it uses geiger::fitContinuous.hacked at all!
 
@@ -61,9 +61,9 @@ solnfreq <- function(fitContResult, tol = .Machine$double.eps^0.5){
 # @keywords summaryStatsLong
 
 #  @examples
-#  
+#
 #  #summaryStatsLong(phy, char)
-#  
+#
 
 # @name summaryStatsLong
 # @rdname summaryStatsLong

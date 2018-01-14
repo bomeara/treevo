@@ -1,9 +1,12 @@
-Version - 0.4.6 - 01-13-17
+Version - 0.5.0 - 01-14-18
+-Seemed reasonable to bump version to 0.5 given great change in infrastructure
+
+Version - 0.4.6 - 01-13-18
 -Stable build with geiger::fitContinuous replaced for phylolm::phylolm
 	-Stable tests, stable examples including dont-run examples
 -Much faster for many package functionalities
 
-Version - 0.4.5 - 01-11-17
+Version - 0.4.5 - 01-11-18
 -Reduced code redundancy in doRun_prc
 -Many bug fixes
 -Added many tests

@@ -49,14 +49,14 @@
 #' 
 #'  data(simRunExample)
 #'  plotABC_3D(particleDataFrame=results$particleDataFrame, parameter=7,
-#'      show.particles="none", plot.parent=FALSE, realParam=FALSE, realParamValues=NA) 
+#'      show.particles="none", plot.parent=FALSE, realParam=FALSE, realParamValues=NA)
 #' 
 #' }
 
 #' @name plotABC_3D
 #' @rdname plotABC_3D
 #' @export
-plotABC_3D<-function(particleDataFrame, parameter, show.particles="none", 
+plotABC_3D<-function(particleDataFrame, parameter, show.particles="none",
 	plot.parent=FALSE, realParam=FALSE, realParamValues=NA) {
 
 	# check if gpclib exists, if not - FAIL
@@ -79,7 +79,7 @@ plotABC_3D<-function(particleDataFrame, parameter, show.particles="none",
 	# ugh ugh
 	#generation<-NULL #to appease R CMD CHECK
 	# yes??? I think this is right, not sure
-	generation<-particleDataFrame$generation 
+	generation<-particleDataFrame$generation
 		
 	x<-particleDataFrame	
 	param.position<-parameter
@@ -118,9 +118,9 @@ plotABC_3D<-function(particleDataFrame, parameter, show.particles="none",
 				zlim=c(0, max(particleDataFrame$generation)), ylim=c(0, max(y)))
 			#message(paste("HERE"))
 			rgl::rgl.viewpoint(35, 1, 90)  #sets viewpoint for initial plot
-			rgl::title3d(colnames(x)[param.position], col='red', pos=c(NA, -2, max(z))) 
-			#text3d(x=min(x), y=mean(y), z=max(z), text="Density" col='blue') 
-			#title3d("Starting States", col='purple', pos=c(NA, 0, max(which.gen))) 
+			rgl::title3d(colnames(x)[param.position], col='red', pos=c(NA, -2, max(z)))
+			#text3d(x=min(x), y=mean(y), z=max(z), text="Density" col='blue')
+			#title3d("Starting States", col='purple', pos=c(NA, 0, max(which.gen)))
 			#
 			
 			for (i in 1:max(s)){
