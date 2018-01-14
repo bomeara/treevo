@@ -3,7 +3,7 @@ test_that("simulateWithPriors works", {
   simPhy <- rcoal(5)
   simPhy$edge.length <- simPhy$edge.length * 20
   
-  expect_warning(
+  #expect_warning(
   simData <- simulateWithPriors(
     phy = simPhy, 
 	intrinsicFn = brownianIntrinsic,
@@ -20,9 +20,9 @@ test_that("simulateWithPriors works", {
 	verbose = FALSE
 	#,niter.brown = 25,niter.lambda = 25, niter.delta = 25, niter.OU = 25,niter.white = 25
 	)
-  )
+  #)
   
-  expect_warning(
+  #expect_warning(
   simDataParallel <- parallelSimulateWithPriors(
     nrepSim = 2,
     multicore = FALSE, 
@@ -44,6 +44,6 @@ test_that("simulateWithPriors works", {
     taxon.df = NULL
 	#,niter.brown = 25, niter.lambda = 25,niter.delta = 25, niter.OU = 25, niter.white = 25
 	)
-	)
+	#)
   
 })

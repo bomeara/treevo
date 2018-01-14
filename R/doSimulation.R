@@ -164,7 +164,7 @@
 #' 	extrinsicFn=ExponentiallyDecayingPushExtrinsic,
 #' 	startingValues=c(10), #root state
 #' 	intrinsicValues=c(0.05, 10, 0.01),
-#' 	extrinsicValues=c(0, .1, .25),
+#' 	extrinsicValues=c(0, 0.1, 0.25),
 #' 	plot=TRUE,
 #' 	saveHistory=FALSE)
 #' 

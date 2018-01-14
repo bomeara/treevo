@@ -77,7 +77,7 @@ compareListIPD<-function(particleDataFrameList, verbose=FALSE){
 		
 	}	
 	layout(1)
-}
+	}
 
 #   Calculate interparticle distance
 #   

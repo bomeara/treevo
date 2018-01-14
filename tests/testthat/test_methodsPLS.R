@@ -6,7 +6,7 @@ test_that("methodsPLS works", {
   
   nSimulations <- 3
   
-  expect_warning(
+  #expect_warning(
   simDataParallel <- parallelSimulateWithPriors(
     nrepSim = nSimulations,
     multicore = FALSE, 
@@ -35,7 +35,7 @@ test_that("methodsPLS works", {
 	#niter.OU = 25, 
 	#niter.white = 25
 	)
-	)
+	#)
 	
   nParFree <- sum(attr(simDataParallel, "freevector"))
   trueFreeValuesMat <- simDataParallel[, 1:nParFree]

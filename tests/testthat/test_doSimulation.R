@@ -13,7 +13,7 @@ test_that("doSimulation works", {
 	generation.time=1000000,
 	saveHistory = FALSE
 	)
-	expect_equal(class(char[,1]), "numeric")
+	expect_equal(class(char[,1]), "integer")
 	expect_equal(dim(char)[1], Ntip(tree))
 	
   char <- doSimulation(
@@ -26,7 +26,7 @@ test_that("doSimulation works", {
 	generation.time=1000000,
 	saveHistory = FALSE
 	)
-	expect_equal(class(char[,1]), "numeric")
+	expect_equal(class(char[,1]), "integer")
 	expect_equal(dim(char)[1], Ntip(tree))
 	
 })
@@ -47,7 +47,7 @@ test_that("doSimulationForPlotting works", {
     plot = FALSE, 
 	saveHistory = FALSE
 	)
-	expect_equal(class(char[,1]), "numeric")
+	expect_equal(class(char[,1]), "integer")
 	expect_equal(dim(char)[1], Ntip(tree))
 	
   char <- doSimulationForPlotting(
@@ -61,7 +61,7 @@ test_that("doSimulationForPlotting works", {
     plot = TRUE, 
 	saveHistory = FALSE
 	)
-	expect_equal(class(char[,1]), "numeric")
+	expect_equal(class(char[,1]), "integer")
 	expect_equal(dim(char)[1], Ntip(tree))
 })
 
@@ -85,7 +85,7 @@ test_that("doSimulationWithPossibleExtinction works", {
 	)
 	)
 	
-	expect_equal(class(charDoSim[,1]), "numeric")
+	expect_equal(class(charDoSim[,1]), "integer")
 	expect_equal(dim(charDoSim)[1], Ntip(tree))
 })
 
