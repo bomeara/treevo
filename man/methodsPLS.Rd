@@ -55,14 +55,17 @@ model fit with \code{returnPLSModel} to transform summary values.
 \examples{
 \donttest{
 set.seed(1)
-data(simRunExample)
+simPhy <- rcoal(20)
+simPhy$edge.length <- simPhy$edge.length * 20
 
 # example simulation
 
 nSimulations<-6
 
 simDataParallel<-parallelSimulateWithPriors( 
-  nrepSim=nSimulations, multicore=FALSE, coreLimit=1, 
+  nrepSim=nSimulations, 
+  multicore=FALSE,
+  coreLimit=1, 
   phy=simPhy,
   intrinsicFn=brownianIntrinsic,
   extrinsicFn=nullExtrinsic,
@@ -73,7 +76,8 @@ simDataParallel<-parallelSimulateWithPriors(
   extrinsicPriorsFns=c("fixed"),
   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE), 
   generation.time=100000,
-  checkpointFile=NULL, checkpointFreq=24,
+  checkpointFile=NULL, 
+  checkpointFreq=24,
   verbose=FALSE,
   freevector=NULL, taxon.df=NULL)
 

@@ -13,14 +13,14 @@ test_that("doRun_prc runs correctly", {
 	  intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
 	  extrinsicPriorsFns=c("fixed"),
 	  extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
-	  generation.time=100000,
+	  generation.time=1000000,
 	  standardDevFactor=0.2,
 	  plot=FALSE,
-	  StartSims=2,
+	  StartSims=10,
 	  epsilonProportion=0.7,
 	  epsilonMultiplier=0.7,
 	  nStepsPRC=2,
-	  numParticles=3,
+	  numParticles=10,
 	  jobName="exampleRun",
 	  stopRule=FALSE,
 	  multicore=FALSE,
@@ -28,7 +28,7 @@ test_that("doRun_prc runs correctly", {
 	  )
 	  )
 	expect_is(results, "list")
-	expect_false(any(is.na(pairwiseESS(results$particleDataFrame))))
+	expect_warning(expect_false(any(is.na(pairwiseESS(results$particleDataFrame)))))
 })
 
 
@@ -48,14 +48,13 @@ test_that("doRun_rej works", {
     intrinsicPriorsValues = matrix(c(10, 10), nrow = 2,byrow = FALSE),
 	extrinsicPriorsFns = c("fixed"),
     extrinsicPriorsValues = matrix(c(0, 0), nrow = 2,byrow = FALSE), 
-	StartSims = 2, 
-	generation.time=100000,
+	StartSims = 10, 
+	generation.time=1000000,
 	jobName = "examplerun_rej",
     abcTolerance = 0.05, 
 	multicore = FALSE, 
 	coreLimit = 1)
 	)
 	expect_is(resultsRej, "list")
-	expect_false(any(is.na(pairwiseESS(resultsRej$particleDataFrame))))
 })
 
