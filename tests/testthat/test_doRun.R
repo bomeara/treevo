@@ -38,21 +38,21 @@ test_that("doRun_rej works", {
 	set.seed(1)
    expect_warning(
    resultsRej <- doRun_rej(
-	phy = simPhy, 
+	phy = simPhy,
 	traits = simChar,
-    intrinsicFn = brownianIntrinsic, 
+    intrinsicFn = brownianIntrinsic,
 	extrinsicFn = nullExtrinsic,
-    startingPriorsFns = "normal", 
-	startingPriorsValues = matrix(c(mean(simChar[,1]), sd(simChar[, 1]))), 
+    startingPriorsFns = "normal",
+	startingPriorsValues = matrix(c(mean(simChar[,1]), sd(simChar[, 1]))),
 	intrinsicPriorsFns = c("exponential"),
     intrinsicPriorsValues = matrix(c(10, 10), nrow = 2,byrow = FALSE),
 	extrinsicPriorsFns = c("fixed"),
-    extrinsicPriorsValues = matrix(c(0, 0), nrow = 2,byrow = FALSE), 
-	StartSims = 10, 
+    extrinsicPriorsValues = matrix(c(0, 0), nrow = 2,byrow = FALSE),
+	StartSims = 10,
 	generation.time=1000000,
 	jobName = "examplerun_rej",
-    abcTolerance = 0.05, 
-	multicore = FALSE, 
+    abcTolerance = 0.05,
+	multicore = FALSE,
 	coreLimit = 1)
 	)
 	expect_is(resultsRej, "list")

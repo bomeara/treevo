@@ -4,10 +4,10 @@ test_that("plotABC_3D works", {
     data(simRunExample)
     plotABC_3D(
 		particleDataFrame = results$particleDataFrame,
-		parameter = 7, 
-		show.particles = "none", 
+		parameter = 7,
+		show.particles = "none",
 		plot.parent = FALSE,
-		realParam = FALSE, 
+		realParam = FALSE,
 		realParamValues = NA)
   }
 })
@@ -17,7 +17,7 @@ test_that("plotPosteriors works", {
 	data(simRunExample)
 	plotPosteriors(
 		particleDataFrame = results$particleDataFrame,
-		priorsMat = results$PriorMatrix, 
+		priorsMat = results$PriorMatrix,
 		realParam = TRUE,
 		realParamValues = c(ancState, genRate)
 		)
@@ -28,8 +28,8 @@ test_that("plotPosteriors correctly gives an error", {
 	data(simRunExample)
 	expect_error(
 		plotPosteriors(
-			results$particleDataFrame, 
-			results$PriorMatrix) 
+			results$particleDataFrame,
+			results$PriorMatrix)
 		,NA)
 })
 
@@ -37,10 +37,10 @@ test_that("plotPriorPost works", {
 	set.seed(1)
   data(simRunExample)
   plotPrior(priorFn = "exponential", priorVariables = c(10))
-  
+
   plotPrior(priorFn = "normal", priorVariables = c(1,
     2))
-  
+
   plotPrior(priorFn = "gamma", priorVariables = c(2,
     0.2), plotQuants = FALSE, plotLegend = FALSE)
   priorKernal <- getUnivariatePriorCurve(priorFn = "normal",
