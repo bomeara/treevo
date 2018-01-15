@@ -57,7 +57,7 @@ The input parameters for this model are:
 \code{everyoneDisplacementExtrinsic} params = sd, springK, maximum force
 
 \code{ExponentiallyDecayingPushExtrinsic} describes a model of extrinsic trait evolution where the character
-values of a focal taxon is 'pushed' away from other taxa with similar values, but the force of that 'push' 
+values of a focal taxon is 'pushed' away from other taxa with similar values, but the force of that 'push'
 exponentially decays as lineages diverge and their character values become less similar.
 
 The input parameters for this model are:
@@ -109,7 +109,7 @@ char<-doSimulationForPlotting(
 	generation.time=100000,
 	plot=TRUE,
 	saveHistory=FALSE)
-} 
+}
 }
 \author{
 Brian O'Meara and Barb Banbury

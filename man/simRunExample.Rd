@@ -29,11 +29,11 @@ trait values as a one-column matrix with row names indicating tip labels, as des
 
 The objects \code{results} and \code{resultsBound} are lists composed of a number
 of elements (see the documentation for the \code{\link{doRun_prc}} function for more detail). These elements are
-respectively \code{input.data}, \code{PriorMatrix}, \code{particleDataFrame}, \code{toleranceVector}, \code{phy}, 
+respectively \code{input.data}, \code{PriorMatrix}, \code{particleDataFrame}, \code{toleranceVector}, \code{phy},
 \code{traits}, \code{simTime}, \code{time.per.gen}, \code{credibleInt}, and \code{HPD}.}
 \description{
 Simulated 30-taxon coalescent tree and simulated character data from a Brownian Motion
-intrinsic model (\code{\link{brownianIntrinsic}}), with saved generating parameters. 
+intrinsic model (\code{\link{brownianIntrinsic}}), with saved generating parameters.
 Character data was generated under this model using \code{doSimulation}.
 Also includes results from an example analysis.
 }
@@ -100,7 +100,7 @@ results<-doRun_prc(
   jobName="examplerun_prc",
   stopRule=FALSE,
   multicore=FALSE,
-  verboseParticles=TRUE,  
+  verboseParticles=TRUE,
   coreLimit=1
   )
 
@@ -126,7 +126,7 @@ resultsBound<-doRun_prc(
   jobName="examplerun_prc_bound",
   stopRule=FALSE,
   multicore=FALSE,
-  verboseParticles=TRUE,  
+  verboseParticles=TRUE,
   coreLimit=1
   )
 

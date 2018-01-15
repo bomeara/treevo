@@ -43,7 +43,7 @@ simCharOut<-doSimulation(
 simChar<-simCharOut[,"statesmatrix",drop=FALSE]
 rownames(simChar)<-tree$tip.label[simCharOut$taxonid]
 
-# NOTE: the example analyses below sample too few particles, 
+# NOTE: the example analyses below sample too few particles,
 	# over too few steps, with too few starting simulations
 	# - all for the sake of examples that reasonably test the functions
 

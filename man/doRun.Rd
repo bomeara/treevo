@@ -56,7 +56,7 @@ to the extrinsic function and number of rows equal to two (representing two para
 \item{extrinsicPriorsFns}{Vector containing names of prior distributions to
 use for extrinsic function parameters: can be one of \code{"fixed"}, \code{"uniform"}, \code{"normal"},}
 
-\item{generation.time}{The number of years per generation. This sets the coarseness of the simulation; if it's set to 1000, 
+\item{generation.time}{The number of years per generation. This sets the coarseness of the simulation; if it's set to 1000,
 for example, the population's trait values change every 1000 calender years. Note that this is in calender years (see description
 for argument \code{TreeYears}), and not in millions of years (as is typical for dated trees in macroevolutionary studies).
 Thus, if a branch is 1 million-year time-unit long, and a user applies the default \code{generation.time = 1000},
@@ -79,14 +79,14 @@ If neither package is installed, this function will fail if \code{multicore=TRUE
 \item{validation}{Character argument controlling what validation procedure is used by \code{\link{plsr}}.
 Default is \code{"CV"} for cross-validation.}
 
-\item{scale}{This argument is passed to \code{\link{plsr}}.  It may be a numeric vector, or logical. If numeric vector, 
-the input is scaled by dividing each variable with the corresponding element of scale. 
-If \code{scale = TRUE}, the inpus is scaled by dividing each variable by its sample standard deviation. 
+\item{scale}{This argument is passed to \code{\link{plsr}}.  It may be a numeric vector, or logical. If numeric vector,
+the input is scaled by dividing each variable with the corresponding element of scale.
+If \code{scale = TRUE}, the inpus is scaled by dividing each variable by its sample standard deviation.
 If cross-validation is selected (the default for \code{returnPLSModel}),
 scaling by the standard deviation is done for every segment.}
 
 \item{variance.cutoff}{Minimum threshold percentage of variance explained for the
-number of components included in the final PLS model fit. This value is a 
+number of components included in the final PLS model fit. This value is a
 percentage and must be between 0 and 100. Default is 95 percent.}
 
 \item{numParticles}{Number of accepted particles per generation.}
@@ -108,11 +108,11 @@ next falls below the \code{stopValue}.}
 \item{stopValue}{Threshold value for terminating an analysis prior to
 \code{nStepesPRC}.}
 
-\item{maxAttempts}{Maximum number attempts made in \code{while} loop within the PRC algorithm. 
+\item{maxAttempts}{Maximum number attempts made in \code{while} loop within the PRC algorithm.
 If reached, the algorithm will terminate with an error message.
 By default, this is infinite, and thus there is no effective limit without user intervention.}
 
-\item{diagnosticPRCmode}{If \code{TRUE} (\emph{not} the default), the function will be very noisy about characteristics of 
+\item{diagnosticPRCmode}{If \code{TRUE} (\emph{not} the default), the function will be very noisy about characteristics of
 the PRC algorithm as it runs.}
 
 \item{jobName}{Optional job name.}
@@ -136,33 +136,33 @@ and acceptance of particles is output to console via \code{message} as \code{doR
 The output of these two functions are lists, composed of multiple objects,
 which differ slightly in their content among the two functions. For \code{doRun_prc}, the output is:
 \describe{
-\item{input.data}{Input variables: jobName, number of taxa, nrepSim, 
+\item{input.data}{Input variables: jobName, number of taxa, nrepSim,
 generation.time, TreeYears, timeStep, totalGenerations, epsilonProportion,
-epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor} 
+epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor}
 \item{PriorMatrix}{Matrix of prior distributions}
 \item{particleDataFrame}{DataFrame with information from each simulation,
 including generation, attempt, id, parentid, distance, weight, and parameter states}
-\item{toleranceVector}{Final tolerance vector} 
-\item{phy}{Input phylogeny} 
-\item{traits}{Input traits} \item{simTime}{Processor time for initial simulations} 
+\item{toleranceVector}{Final tolerance vector}
+\item{phy}{Input phylogeny}
+\item{traits}{Input traits} \item{simTime}{Processor time for initial simulations}
 \item{time.per.gen}{Processor time for subsequent generations}
-\item{credibleInt}{Credible Interval calculation for each free parameter of the final generation} 
+\item{credibleInt}{Credible Interval calculation for each free parameter of the final generation}
 \item{HPD}{Highest Posterior Density calculation each free parameter of the final generation}
 }
 For \code{doRun_rej}, the output is:
 \describe{
-\item{input.data}{Input variables: jobName, number of taxa, nrepSim, 
+\item{input.data}{Input variables: jobName, number of taxa, nrepSim,
 generation.time, TreeYears, timeStep, totalGenerations, epsilonProportion,
-epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor} 
+epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor}
 \item{PriorMatrix}{Matrix of prior distributions}
-\item{phy}{Input phylogeny} 
+\item{phy}{Input phylogeny}
 \item{traits}{Input traits}
-\item{trueFreeValuesANDSummaryValues}{Parameter estimates and summary stats from all sims} 
+\item{trueFreeValuesANDSummaryValues}{Parameter estimates and summary stats from all sims}
 \item{simTime}{Processor time for simulations}
-\item{abcDistancesRaw}{Euclidean distances for each simulation and free parameter} 
-\item{particleDataFrame}{DataFrame with information from each 
-simulation, including generation, attempt, id, parentid, distance, weight, and parameter states} 
-\item{credibleInt}{Credible Interval calculation for each free parameter of the final generation} 
+\item{abcDistancesRaw}{Euclidean distances for each simulation and free parameter}
+\item{particleDataFrame}{DataFrame with information from each
+simulation, including generation, attempt, id, parentid, distance, weight, and parameter states}
+\item{credibleInt}{Credible Interval calculation for each free parameter of the final generation}
 \item{HPD}{Highest Posterior Density calculation each free parameter of the final generation}
 }
 }
@@ -206,7 +206,7 @@ parameters.
 set.seed(1)
 data(simRunExample)
 
-# NOTE: the example analyses below sample too few particles, 
+# NOTE: the example analyses below sample too few particles,
 	# over too few steps, with too few starting simulations
 	# - all for the sake of examples that reasonably test the functions
 
@@ -241,7 +241,7 @@ resultsPRC
 
 #one should make sure priors are uniform with doRun_rej!
 
-resultsRej<-doRun_rej( 
+resultsRej<-doRun_rej(
 	phy = simPhy,
 	traits = simChar,
 	intrinsicFn = brownianIntrinsic,

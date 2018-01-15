@@ -43,7 +43,7 @@ intrinsic model.}
 \item{extrinsicValues}{Vector of values corresponding to the parameters of the
 extrinsic model.}
 
-\item{generation.time}{The number of years per generation. This sets the coarseness of the simulation; if it's set to 1000, 
+\item{generation.time}{The number of years per generation. This sets the coarseness of the simulation; if it's set to 1000,
 for example, the population's trait values change every 1000 calender years. Note that this is in calender years (see description
 for argument \code{TreeYears}), and not in millions of years (as is typical for dated trees in macroevolutionary studies).
 Thus, if a branch is 1 million-year time-unit long, and a user applies the default \code{generation.time = 1000},
@@ -60,12 +60,12 @@ See documentation for \code{\link{doSimulation}} for further details.}
 simulated along branches, relative to a rescaled tree where the root to furthest tip distance is 1. For example,
 \code{timeStep = 0.01} of would mean 100 (i.e., 1 / 0.01) evolutionary changes would be expected to occur from
 the root to the furthest tip. (Note that the real number simulated will be much less, because simulations start
-over at each branching node.) Ideally, \code{timeStep} (or its effective value, via other arguments) should be 
+over at each branching node.) Ideally, \code{timeStep} (or its effective value, via other arguments) should be
 as short as is computationally possible.
 Typically \code{NULL} by default and
 determined internally as follows: \code{timeStep = generation.time / TreeYears}.
 Can be provided a value as an alternative to using arguments \code{generation.time}
-and \code{TreeYears}, which would then be overridden. 
+and \code{TreeYears}, which would then be overridden.
 See documentation for \code{\link{doSimulation}} for further details.}
 
 \item{saveHistory}{If \code{TRUE}, saves the character history throughout the simulation.

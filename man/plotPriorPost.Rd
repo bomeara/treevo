@@ -26,13 +26,13 @@ getUnivariatePosteriorCurve(acceptedValues, from = NULL, to = NULL,
 "lognormal", "gamma", or "exponential".}
 
 \item{priorVariables}{Variables needed to describe the shape of the
-distribution, dependent on \code{priorFn}: 
+distribution, dependent on \code{priorFn}:
 \describe{
-\item{priorFn = "uniform"}{priorVariables = c(min, max)} 
+\item{priorFn = "uniform"}{priorVariables = c(min, max)}
 \item{priorFn = "normal"}{priorVariables = c(mean, standard deviation)}
 \item{priorFn = "lognormal"}{priorVariables = c(mean, standard deviation)}
 \item{priorFn = "gamma"}{priorVariables = c(shape, scale)}
-\item{priorFn = "exponential"}{priorVariables = c(rate)} 
+\item{priorFn = "exponential"}{priorVariables = c(rate)}
 }}
 
 \item{plotQuants}{If \code{TRUE}, plots line segments at the quantiles}
@@ -69,7 +69,7 @@ Assorted functions for visualizing and summarizing the prior and posterior proba
 \details{
 Function \code{plotPrior} visualizes the shape of various prior probability distributions available in TreEvo ABC analyses, while
 function \code{plotUnivariatePosteriorVsPrior} plots the univariate density distributions from the prior and posterior against each other for comparison.
-Function \code{getUnivariatePriorCurve} returns density coordinates and summary statistics from a selected prior probability distribution, while  
+Function \code{getUnivariatePriorCurve} returns density coordinates and summary statistics from a selected prior probability distribution, while
 function \code{getUnivariatePosteriorCurve} returns density coordinates and summary statistics from the posterior distribution of an ABC analysis.
 The summaries from \code{getUnivariatePriorCurve} and \code{getUnivariatePosteriorCurve} are used as the input for \code{plotUnivariatePosteriorVsPrior}.
 }
@@ -90,7 +90,7 @@ data(simRunExample)
 priorKernal<-getUnivariatePriorCurve(priorFn="normal", priorVariables=c(28,2),
 	nPoints=100000, from=NULL, to=NULL, prob=0.95)
 
-postKernal<-getUnivariatePosteriorCurve(acceptedValues=results$particleDataFrame$StartingStates1, 
+postKernal<-getUnivariatePosteriorCurve(acceptedValues=results$particleDataFrame$StartingStates1,
 	from=NULL, to=NULL, prob=0.95)
 
 priorKernal
@@ -98,7 +98,7 @@ postKernal
 
 # let's compare this (supposed) prior against the posterior in a plot
 
-plotUnivariatePosteriorVsPrior(posteriorCurve=postKernal, priorCurve=priorKernal, 
+plotUnivariatePosteriorVsPrior(posteriorCurve=postKernal, priorCurve=priorKernal,
 	label="parameter", trueValue=NULL, prob=0.95)
 
 # cool!
