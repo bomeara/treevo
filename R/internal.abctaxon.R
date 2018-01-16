@@ -2,10 +2,10 @@
 
 
 #   abctaxon
-#  
+#
 #   Internal TreEvo function to create a list of objects
-#  
-#  
+#
+#
 #   @param id Simulation ID
 #   @param name Taxon of interest
 #   @param timeSinceSpeciation Time since speciation

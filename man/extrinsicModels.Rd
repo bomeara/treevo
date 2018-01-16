@@ -65,10 +65,11 @@ The input parameters for this model are:
 }
 \examples{
 \donttest{
+set.seed(1)
 # Examples of simulations with various extrinsic models (and null intrinsic model)
-tree<-rcoal(30)
+tree<-rcoal(20)
 # get realistic edge lengths
-simPhy$edge.length<-simPhy$edge.length*20
+tree$edge.length<-tree$edge.length*20
 
 #No trait evolution except due to
 	# character displacement due to nearest neighbor taxon

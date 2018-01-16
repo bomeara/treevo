@@ -4,7 +4,7 @@
 #' 
 #' Function \code{plotPrior} visualizes the shape of various prior probability distributions available in TreEvo ABC analyses, while
 #' function \code{plotUnivariatePosteriorVsPrior} plots the univariate density distributions from the prior and posterior against each other for comparison.
-#' Function \code{getUnivariatePriorCurve} returns density coordinates and summary statistics from a selected prior probability distribution, while  
+#' Function \code{getUnivariatePriorCurve} returns density coordinates and summary statistics from a selected prior probability distribution, while
 #' function \code{getUnivariatePosteriorCurve} returns density coordinates and summary statistics from the posterior distribution of an ABC analysis.
 #' The summaries from \code{getUnivariatePriorCurve} and \code{getUnivariatePosteriorCurve} are used as the input for \code{plotUnivariatePosteriorVsPrior}.
 #' 
@@ -13,10 +13,10 @@
 #' "lognormal", "gamma", or "exponential".
 
 #' @param priorVariables Variables needed to describe the shape of the
-#' distribution, dependent on \code{priorFn}: 
+#' distribution, dependent on \code{priorFn}:
 #' \describe{
 
-#' \item{priorFn = "uniform"}{priorVariables = c(min, max)} 
+#' \item{priorFn = "uniform"}{priorVariables = c(min, max)}
 
 #' \item{priorFn = "normal"}{priorVariables = c(mean, standard deviation)}
 
@@ -24,9 +24,9 @@
 
 #' \item{priorFn = "gamma"}{priorVariables = c(shape, scale)}
 
-#' \item{priorFn = "exponential"}{priorVariables = c(rate)} 
+#' \item{priorFn = "exponential"}{priorVariables = c(rate)}
 
-# \item{priorFn = "fixed"}{priorVariables = c(x)} 
+# \item{priorFn = "fixed"}{priorVariables = c(x)}
 
 #' }
 
@@ -52,7 +52,7 @@
 
 #' @param trueValue True parameter value, if any such exists and is known (usually only true of simulations).
 
-#' @return 
+#' @return
 #' \code{plotPrior} and \code{plotUnivariatePosteriorVsPrior} produce plots of the respective distributions (see above).
 #' 
 #' \code{getUnivariatePriorCurve} and \code{getUnivariatePosteriorCurve} returns a list of x and y density coordinates, mean, and lower and
@@ -92,7 +92,7 @@
 #' priorKernal<-getUnivariatePriorCurve(priorFn="normal", priorVariables=c(28,2),
 #' 	nPoints=100000, from=NULL, to=NULL, prob=0.95)
 #' 
-#' postKernal<-getUnivariatePosteriorCurve(acceptedValues=results$particleDataFrame$StartingStates1, 
+#' postKernal<-getUnivariatePosteriorCurve(acceptedValues=results$particleDataFrame$StartingStates1,
 #' 	from=NULL, to=NULL, prob=0.95)
 #' 
 #' priorKernal
@@ -100,7 +100,7 @@
 #' 
 #' # let's compare this (supposed) prior against the posterior in a plot
 #' 
-#' plotUnivariatePosteriorVsPrior(posteriorCurve=postKernal, priorCurve=priorKernal, 
+#' plotUnivariatePosteriorVsPrior(posteriorCurve=postKernal, priorCurve=priorKernal,
 #' 	label="parameter", trueValue=NULL, prob=0.95)
 #' 
 #' # cool!
@@ -114,7 +114,7 @@
 #' @rdname plotPriorPost
 #' @export
 plotPrior<-function(
-	priorFn=match.arg(arg=priorFn,choices=c("fixed", "uniform", "normal", "lognormal", "gamma", "exponential"), several.ok=FALSE), 
+	priorFn=match.arg(arg=priorFn,choices=c("fixed", "uniform", "normal", "lognormal", "gamma", "exponential"), several.ok=FALSE),
 	priorVariables, plotQuants=TRUE, plotLegend=TRUE){
 	#plot.new()
 	x<-NA
@@ -183,7 +183,7 @@ plotPrior<-function(
 		poly$x<-c(0, poly$x, max(poly$x), 0)
 		poly$y<-c(0, poly$y, min(poly$y), 0)
 		#title(priorFn)
-		polygon(poly, col=rgb(0, 0, 0, 0.3)) 
+		polygon(poly, col=rgb(0, 0, 0, 0.3))
 		for (i in 1:length(quant)) {
 			quant.value[i]<-qgamma(quant[i], shape, scale)
 			if (plotQuants) {
@@ -245,7 +245,7 @@ plotUnivariatePosteriorVsPrior<-function(posteriorCurve, priorCurve, label="para
 
 #' @rdname plotPriorPost
 #' @export
-getUnivariatePriorCurve<-function(priorFn, priorVariables,  
+getUnivariatePriorCurve<-function(priorFn, priorVariables,
 		nPoints=100000, from=NULL, to=NULL, prob=0.95) {
 	#
 	samples<-replicate(nPoints,pullFromPrior(priorVariables, priorFn))
@@ -258,7 +258,7 @@ getUnivariatePriorCurve<-function(priorFn, priorVariables,
 	result<-density(samples,from=from, to=to)
 	hpd.result<-HPDinterval(as.mcmc(samples), prob)
   if (priorFn=="uniform") {
-    result<-list(x=result$x,y=rep(max(result$y),length(result$x))) #kludge so uniform looks uniform 
+    result<-list(x=result$x,y=rep(max(result$y),length(result$x))) #kludge so uniform looks uniform
   }
 	return(list(x=result$x,y=result$y, mean=mean(samples), lower=hpd.result[1,1], upper=hpd.result[1,2]))
 }

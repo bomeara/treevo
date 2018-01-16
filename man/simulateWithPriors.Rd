@@ -10,8 +10,7 @@ simulateWithPriors(phy = NULL, intrinsicFn, extrinsicFn, startingPriorsFns,
   extrinsicPriorsFns, extrinsicPriorsValues, generation.time = 1000,
   TreeYears = max(branching.times(phy)) * 1e+06, timeStep = NULL,
   giveUpAttempts = 10, verbose = FALSE, checks = TRUE, taxon.df = NULL,
-  freevector = NULL, niter.brown = 25, niter.lambda = 25,
-  niter.delta = 25, niter.OU = 25, niter.white = 25)
+  freevector = NULL)
 
 parallelSimulateWithPriors(nrepSim, multicore, coreLimit, phy, intrinsicFn,
   extrinsicFn, startingPriorsFns, startingPriorsValues, intrinsicPriorsFns,
@@ -19,8 +18,7 @@ parallelSimulateWithPriors(nrepSim, multicore, coreLimit, phy, intrinsicFn,
   generation.time = 1000, TreeYears = max(branching.times(phy)) * 1e+06,
   timeStep = NULL, checkpointFile = NULL, checkpointFreq = 24,
   verbose = FALSE, freevector = NULL, taxon.df = NULL,
-  giveUpAttempts = 10, niter.brown = 25, niter.lambda = 25,
-  niter.delta = 25, niter.OU = 25, niter.white = 25)
+  giveUpAttempts = 10)
 }
 \arguments{
 \item{phy}{A phylogenetic tree, in package \code{ape}'s \code{phylo} format.}
@@ -77,7 +75,7 @@ See documentation for \code{\link{doSimulation}} for further details.}
 
 \item{giveUpAttempts}{Value for when to stop the analysis if \code{NA} values are present.}
 
-\item{verbose}{If \code{TRUE}, gives messages about how the simulation is progessing via \code{print}.}
+\item{verbose}{If \code{TRUE}, gives messages about how the simulation is progessing via \code{message}.}
 
 \item{checks}{If \code{TRUE}, checks inputs for consistency. This activity is skipped (\code{checks = FALSE})
 when run in parallel by \code{parallelSimulateWithPriors}, and instead is only checked once. This
@@ -90,16 +88,6 @@ Can be supplied as input to spead up repeated calculations, but by default is
 
 \item{freevector}{A logical vector (with length equal to the number of parameters), indicating free (\code{TRUE}) and
 fixed (\code{FALSE}) parameters.}
-
-\item{niter.brown}{Number of random starts for the Brownian Motion (BM) model (minimum of 2).}
-
-\item{niter.lambda}{Number of random starts for the lambda model (minimum of 2).}
-
-\item{niter.delta}{Number of random starts for the delta model (minimum of 2).}
-
-\item{niter.OU}{Number of random starts for the Ornstein-Uhlenbeck (OU) model (minimum of 2).}
-
-\item{niter.white}{Number of random starts for the white noise model (minimum of 2).}
 
 \item{nrepSim}{Number of replicated simulations to run.}
 
@@ -139,16 +127,17 @@ want to use \code{\link{simulateWithPriors}} or \code{\link{doSimulation}} funct
 }
 \examples{
 \donttest{
-simPhy<-rcoal(30)
+set.seed(1)
+tree<-rcoal(20)
 # get realistic edge lengths
-simPhy$edge.length<-simPhy$edge.length*20
+tree$edge.length<-tree$edge.length*20
 
 # example simulation
 
 # NOTE: the example analyses involve too few simulations, with coarse time-units
 	# - all for the sake of examples that reasonably test the functions
 	
-simData<-simulateWithPriors(phy=simPhy, 
+simData<-simulateWithPriors(phy=tree, 
   intrinsicFn=brownianIntrinsic,
   extrinsicFn=nullExtrinsic,
   startingPriorsFns="normal",
@@ -160,14 +149,13 @@ simData<-simulateWithPriors(phy=simPhy,
   generation.time=100000,
 	 freevector=NULL, 	
 	 giveUpAttempts=10, 
-	 verbose=FALSE,
-	 niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) 
+	 verbose=TRUE) 
 
 simData
 
 simDataParallel<-parallelSimulateWithPriors( 
   nrepSim=2, multicore=FALSE, coreLimit=1, 
-  phy=simPhy,
+  phy=tree,
   intrinsicFn=brownianIntrinsic,
   extrinsicFn=nullExtrinsic,
   startingPriorsFns="normal",
@@ -178,9 +166,7 @@ simDataParallel<-parallelSimulateWithPriors(
   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE), 
   generation.time=100000,
   checkpointFile=NULL, checkpointFreq=24,
-  verbose=FALSE,
-  freevector=NULL, taxon.df=NULL,
-  niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) 
+  verbose=TRUE, freevector=NULL, taxon.df=NULL) 
 
 simDataParallel
  

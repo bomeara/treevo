@@ -1,6 +1,6 @@
 # internal function for calculating freevector
 
-getFreeVector<-function(startingPriorsFns, startingPriorsValues, 
+getFreeVector<-function(startingPriorsFns, startingPriorsValues,
 						intrinsicPriorsFns, intrinsicPriorsValues, extrinsicPriorsFns, extrinsicPriorsValues){
 	#checks
 	if(!is.matrix(startingPriorsValues)){

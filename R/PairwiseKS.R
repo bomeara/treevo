@@ -37,7 +37,7 @@ pairwiseKS<-function(particleDataFrameList) {
 	x<-list()
 	for (list in 1:length(particleDataFrameList)) {
 		nonZeroFrame<-particleDataFrameList[[list]][which(particleDataFrameList[[list]][,6]>0),]
-		x[[list]]<-subset(nonZeroFrame,nonZeroFrame$generation==max(nonZeroFrame$generation)) 
+		x[[list]]<-subset(nonZeroFrame,nonZeroFrame$generation==max(nonZeroFrame$generation))
 		}	
 
 	KSMatrixList<-vector("list", dim(x[[1]])[2]-6)

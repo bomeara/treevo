@@ -30,8 +30,8 @@
 #' 
 #' # example simulation
 #' 
-#' simDataParallel<-parallelSimulateWithPriors( 
-#'   nrepSim=5, multicore=FALSE, coreLimit=1, 
+#' simDataParallel<-parallelSimulateWithPriors(
+#'   nrepSim=5, multicore=FALSE, coreLimit=1,
 #'   phy=simPhy,
 #'   intrinsicFn=brownianIntrinsic,
 #'   extrinsicFn=nullExtrinsic,
@@ -40,12 +40,11 @@
 #'   intrinsicPriorsFns=c("exponential"),
 #'   intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
 #'   extrinsicPriorsFns=c("fixed"),
-#'   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE), 
-#'   timeStep=1e-04,
+#'   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
+#'   generation.time=100000,
 #'   checkpointFile=NULL, checkpointFreq=24,
 #'   verbose=FALSE,
-#'   freevector=NULL, taxon.df=NULL,
-#'   niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) 
+#'   freevector=NULL, taxon.df=NULL)
 #' 
 #' nParFree<-sum(attr(simDataParallel,"freevector"))
 #' 
@@ -63,10 +62,10 @@
 #' @name boxcoxTransformation
 #' @rdname boxcoxTransformation
 #' @export
-boxcoxTransformation<-function(summaryValuesVector, boxcoxAddition, boxcoxLambda) { 
+boxcoxTransformation<-function(summaryValuesVector, boxcoxAddition, boxcoxLambda) {
 	#yes, a row of summary values
 	for (summaryValueIndex in 1:length(summaryValuesVector)) {
-        summaryValuesVector[summaryValueIndex] <- (summaryValuesVector[summaryValueIndex] + 
+        summaryValuesVector[summaryValueIndex] <- (summaryValuesVector[summaryValueIndex] +
             boxcoxAddition[summaryValueIndex])^boxcoxLambda[summaryValueIndex]
     }
     return(summaryValuesVector)
@@ -98,7 +97,7 @@ boxcoxTransformationMatrix<-function (summaryValuesMatrix) {
     }
     summaryValuesMatrix[, summaryValueIndex] <- summaryVM^boxcoxLambda[summaryValueIndex]
   }
-  res<-list(boxcoxAddition = boxcoxAddition, boxcoxLambda = boxcoxLambda, 
+  res<-list(boxcoxAddition = boxcoxAddition, boxcoxLambda = boxcoxLambda,
        boxcoxSummaryValuesMatrix = summaryValuesMatrix)
   return(res)
 }

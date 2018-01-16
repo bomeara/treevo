@@ -40,7 +40,7 @@
 #' @name bayesCoverageProb
 #' @rdname bayesCoverageProb
 #' @export
-bayesCoverageProb<-function(RealParam, HPD, verbose=FALSE){  
+bayesCoverageProb<-function(RealParam, HPD, verbose=FALSE){
 	if(class(RealParam)=="numeric"){
 		rps<-vector("list", length=length(HPD))
 		for (i in 1: length(HPD)){
@@ -54,8 +54,8 @@ bayesCoverageProb<-function(RealParam, HPD, verbose=FALSE){
 	#	HPD<-list(HPD)
 	#	}
 	#
-	#if(length(RealParam) != dim(HPD[[1]])[1]){ warning("RealParams and HPD do not match")}  
-		#need something like this, but it will have to be after changing the RealParam to take a list 
+	#if(length(RealParam) != dim(HPD[[1]])[1]){ warning("RealParams and HPD do not match")}
+		#need something like this, but it will have to be after changing the RealParam to take a list
 	Covered<-matrix(nrow=length(HPD), ncol=length(rps[[i]]))
 	colnames(Covered)<-rownames(HPD[[1]])
 	for(i in 1:length(HPD)){

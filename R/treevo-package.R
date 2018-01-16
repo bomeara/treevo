@@ -20,21 +20,24 @@
 # @keywords treevo abc
 
 #' @examples
-#
+#' 
+#' # example analysis, using data simulated with TreEvo
+#' 
 #' \donttest{
-#
+#' 
+#' set.seed(1)
 #' # let's simulate some data, and then try to infer the parameters using ABC
 #' # get a 30-taxon coalescent tree
-#' simPhy<-rcoal(30)
+#' tree<-rcoal(20)
 #' # get realistic edge lengths
-#' simPhy$edge.length<-simPhy$edge.length*20
+#' tree$edge.length<-tree$edge.length*20
 #' 
 #' genRate<-c(0.01)
 #' ancState<-c(10)
 #' 
 #' #Simple Brownian motion
 #' simCharOut<-doSimulation(
-#' 	phy=simPhy,
+#' 	phy=tree,
 #' 	intrinsicFn=brownianIntrinsic,
 #' 	extrinsicFn=nullExtrinsic,
 #' 	startingValues=ancState, #root state
@@ -45,16 +48,16 @@
 #' 
 #' # clean for use with doRun
 #' simChar<-simCharOut[,"statesmatrix",drop=FALSE]
-#' rownames(simChar)<-simPhy$tip.label[simCharOut$taxonid]
+#' rownames(simChar)<-tree$tip.label[simCharOut$taxonid]
 #' 
-#' # NOTE: the example analyses below sample too few particles, 
+#' # NOTE: the example analyses below sample too few particles,
 #' 	# over too few steps, with too few starting simulations
 #' 	# - all for the sake of examples that reasonably test the functions
 #' 
 #' # Please set these values to more realistic levels for your analyses!
 #' 
 #' results<-doRun_prc(
-#'   phy = simPhy,
+#'   phy = tree,
 #'   traits = simChar,
 #'   intrinsicFn=brownianIntrinsic,
 #'   extrinsicFn=nullExtrinsic,
@@ -79,27 +82,28 @@
 #'   )
 #' }
 #' 
+#' 
 
 # NAMESPACE IMPORTING
 
 #' @import ape
 #' @import stats
-#' @import geiger
 #' @import phytools
 
-#' @importFrom pls plsr scores 
-#' @importFrom corpcor pseudoinverse 
-#' @importFrom coda effectiveSize HPDinterval as.mcmc 
-#' @importFrom foreach foreach getDoParWorkers '%dopar%' 
-#' @importFrom partitions blockparts 
-#' @importFrom MASS boxcox 
-#' @importFrom mvtnorm dmvnorm 
-#' @importFrom graphics curve layout legend lines plot plot.new points polygon rect segments symbols text title 
-#' @importFrom grDevices dev.off gray pdf rgb 
+#' @importFrom phylolm phylolm
+#' @importFrom pls plsr scores
+#' @importFrom corpcor pseudoinverse
+#' @importFrom coda effectiveSize HPDinterval as.mcmc
+#' @importFrom foreach foreach getDoParWorkers '%dopar%'
+#' @importFrom partitions blockparts
+#' @importFrom MASS boxcox
+#' @importFrom mvtnorm dmvnorm
+#' @importFrom graphics curve layout legend lines plot plot.new points polygon rect segments symbols text title
+#' @importFrom grDevices dev.off gray pdf rgb
 #' @importFrom methods as setAs
 #' @importFrom utils capture.output
 
-# @importFrom rgl plot3d title3d rgl.viewpoint open3d rgl.material triangles3d lines3d spheres3d 
+# @importFrom rgl plot3d title3d rgl.viewpoint open3d rgl.material triangles3d lines3d spheres3d
 
 
 #' 

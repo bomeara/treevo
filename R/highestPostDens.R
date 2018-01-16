@@ -34,7 +34,7 @@ highestPostDens<-function(particleDataFrame, percent=0.95, returnData=FALSE){
   	# ugh ugh
 	#generation<-NULL #to appease R CMD CHECK
 	# yes??? I think this is right, not sure
-	generation<-particleDataFrame$generation 
+	generation<-particleDataFrame$generation
 	
 #	library(coda, quietly=TRUE)
 	summary<-vector("list")

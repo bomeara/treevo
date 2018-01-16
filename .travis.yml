@@ -4,11 +4,11 @@ warnings_are_errors: TRUE
 
 before_install:
 - sudo apt-get install libgmp3-dev
-- export RGL_USE_NULL=TRUE 
+- export RGL_USE_NULL=TRUE
 
 script:
 - R CMD build .
 - travis_wait 45 R CMD check *tar.gz --as-cran
-  
+
 after_success:
   -  travis_wait 45 Rscript -e 'covr::codecov()'

@@ -7,7 +7,7 @@
 #' within ABC analyses using the \code{\link{doRun}} functions. See \emph{Note} below.
 #' 
 
-#' @note 
+#' @note
 #' The \code{\link{simulateWithPriors}} functions are effectively the engine that powers the \code{\link{doRun}}
 #' functions, while the \code{\link{doSimulation}} functions are the pistons within the \code{\link{simulateWithPriors}} engine.
 #' In general, most users will just drive the car - they will just use \code{\link{doRun}}, but some users may
@@ -52,15 +52,11 @@
 #' \code{doParallel} (for Windows), which are used to activate multithreading.
 #' If neither package is installed, this function will fail if \code{multicore=TRUE}.
 
-#' @param niter.brown Number of random starts for the Brownian Motion (BM) model (minimum of 2).
-
-#' @param niter.lambda Number of random starts for the lambda model (minimum of 2).
-
-#' @param niter.delta Number of random starts for the delta model (minimum of 2).
-
-#' @param niter.OU Number of random starts for the Ornstein-Uhlenbeck (OU) model (minimum of 2).
-
-#' @param niter.white Number of random starts for the white noise model (minimum of 2).
+# @param niter.brown Number of random starts for the Brownian Motion (BM) model (minimum of 2).
+# @param niter.lambda Number of random starts for the lambda model (minimum of 2).
+# @param niter.delta Number of random starts for the delta model (minimum of 2).
+# @param niter.OU Number of random starts for the Ornstein-Uhlenbeck (OU) model (minimum of 2).
+# @param niter.white Number of random starts for the white noise model (minimum of 2).
 
 #' @param checks If \code{TRUE}, checks inputs for consistency. This activity is skipped (\code{checks = FALSE})
 #' when run in parallel by \code{parallelSimulateWithPriors}, and instead is only checked once. This
@@ -77,7 +73,7 @@
 #' (a set of values as long as the number of freely varying parameters), concatenated with a set of summary statistics for
 #' the simulation. Function \code{parallelSimulateWithPriors} returns a matrix of such vectors bound
 #' together, with each row representing a different simulation. By default,
-#' both functions also assign a logical vector named \code{freevector}, indicating the total number of 
+#' both functions also assign a logical vector named \code{freevector}, indicating the total number of
 #' parameters and which parameters are freely-varying (have \code{TRUE} values), as an attribute of
 #' the output.
 
@@ -88,17 +84,18 @@
 #' @examples
 #
 #' \donttest{
-# 
-#' simPhy<-rcoal(30)
+#
+#' set.seed(1)
+#' tree<-rcoal(20)
 #' # get realistic edge lengths
-#' simPhy$edge.length<-simPhy$edge.length*20
+#' tree$edge.length<-tree$edge.length*20
 #' 
 #' # example simulation
 #' 
 #' # NOTE: the example analyses involve too few simulations, with coarse time-units
 #' 	# - all for the sake of examples that reasonably test the functions
 #' 	
-#' simData<-simulateWithPriors(phy=simPhy, 
+#' simData<-simulateWithPriors(phy=tree,
 #'   intrinsicFn=brownianIntrinsic,
 #'   extrinsicFn=nullExtrinsic,
 #'   startingPriorsFns="normal",
@@ -109,15 +106,14 @@
 #'   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
 #'   generation.time=100000,
 #' 	 freevector=NULL, 	
-#' 	 giveUpAttempts=10, 
-#' 	 verbose=FALSE,
-#' 	 niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) 
+#' 	 giveUpAttempts=10,
+#' 	 verbose=TRUE)
 #' 
 #' simData
 #' 
-#' simDataParallel<-parallelSimulateWithPriors( 
-#'   nrepSim=2, multicore=FALSE, coreLimit=1, 
-#'   phy=simPhy,
+#' simDataParallel<-parallelSimulateWithPriors(
+#'   nrepSim=2, multicore=FALSE, coreLimit=1,
+#'   phy=tree,
 #'   intrinsicFn=brownianIntrinsic,
 #'   extrinsicFn=nullExtrinsic,
 #'   startingPriorsFns="normal",
@@ -125,29 +121,28 @@
 #'   intrinsicPriorsFns=c("exponential"),
 #'   intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
 #'   extrinsicPriorsFns=c("fixed"),
-#'   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE), 
+#'   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
 #'   generation.time=100000,
 #'   checkpointFile=NULL, checkpointFreq=24,
-#'   verbose=FALSE,
-#'   freevector=NULL, taxon.df=NULL,
-#'   niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) 
+#'   verbose=TRUE, freevector=NULL, taxon.df=NULL)
 #' 
 #' simDataParallel
-#'  
+#' 
 #' }
 #' 
- 
+
 
 
 #' @name simulateWithPriors
 #' @rdname simulateWithPriors
 #' @export
 simulateWithPriors<-function(
-	phy=NULL, intrinsicFn, extrinsicFn, startingPriorsFns, startingPriorsValues, 
-	intrinsicPriorsFns, intrinsicPriorsValues, extrinsicPriorsFns, extrinsicPriorsValues, 
-	generation.time=1000, TreeYears=max(branching.times(phy)) * 1e6, timeStep=NULL, 
-	giveUpAttempts=10, verbose=FALSE, checks=TRUE, taxon.df=NULL, freevector=NULL, 
-	niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) {
+	phy=NULL, intrinsicFn, extrinsicFn, startingPriorsFns, startingPriorsValues,
+	intrinsicPriorsFns, intrinsicPriorsValues, extrinsicPriorsFns, extrinsicPriorsValues,
+	generation.time=1000, TreeYears=max(branching.times(phy)) * 1e6, timeStep=NULL,
+	giveUpAttempts=10, verbose=FALSE, checks=TRUE, taxon.df=NULL, freevector=NULL
+	#,niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25
+	) {
 
 	if(is.null(taxon.df)){
 		taxon.df <- getTaxonDFWithPossibleExtinction(phy)
@@ -159,27 +154,27 @@ simulateWithPriors<-function(
 	
 	# checks
 	if(checks){
-		checkNiter(niter.brown=niter.brown, niter.lambda=niter.lambda,
-			niter.delta=niter.delta, niter.OU=niter.OU, niter.white=niter.white)
+		#checkNiter(niter.brown=niter.brown, niter.lambda=niter.lambda,
+		#	niter.delta=niter.delta, niter.OU=niter.OU, niter.white=niter.white)
 		# check TimeStep
 		numberofsteps<-max(taxon.df$endTime)/timeStep
 		mininterval<-min(taxon.df$endTime - taxon.df$startTime)
 		#
 		if (floor(mininterval/timeStep)<50 & floor(mininterval/timeStep)>=3) {
-			warning(paste0("You have only ", floor(mininterval/timeStep), 
+			warning(paste0("You have only ", floor(mininterval/timeStep),
 				" timeSteps on the shortest branch in this dataset but should probably have a lot more if you expect change on this branch. Please consider decreasing timeStep to no more than ",
 				signif(mininterval/50,2)))
 			}
 		if (floor(mininterval/timeStep)<3) {
-			warning(paste0("You have only ", floor(mininterval/timeStep), 
-				" timeSteps on the shortest branch in this dataset but should probably have a lot more if you expect change on this branch. Please consider decreasing timeStep to no more than ", 
+			warning(paste0("You have only ", floor(mininterval/timeStep),
+				" timeSteps on the shortest branch in this dataset but should probably have a lot more if you expect change on this branch. Please consider decreasing timeStep to no more than ",
 				signif(mininterval/50,2)," or at the very least ", signif(mininterval/3,2)))
 			#	timeStep <- mininterval/3
 			}
 		}
 		
 	if(is.null(freevector)){
-		freevector<-getFreeVector(startingPriorsFns=startingPriorsFns, startingPriorsValues=startingPriorsValues, 
+		freevector<-getFreeVector(startingPriorsFns=startingPriorsFns, startingPriorsValues=startingPriorsValues,
 					intrinsicPriorsFns=intrinsicPriorsFns, intrinsicPriorsValues=intrinsicPriorsValues,
 					extrinsicPriorsFns=extrinsicPriorsFns, extrinsicPriorsValues=extrinsicPriorsValues)
 		}
@@ -207,12 +202,13 @@ simulateWithPriors<-function(
 		trueFreeValues<-trueInitial[freevector]
 
 		message(".")
-		simTraits<-doSimulationWithPossibleExtinction(phy=phy, taxon.df=taxon.df, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, 
+		simTraits<-doSimulationWithPossibleExtinction(phy=phy, taxon.df=taxon.df, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn,
 			startingValues=trueStarting, intrinsicValues=trueIntrinsic, extrinsicValues=trueExtrinsic,
 			timeStep=timeStep, verbose=verbose, checkTimeStep=FALSE)
-		simSumStats<-summaryStatsLong(phy=phy, traits=simTraits, 
-			niter.brown=niter.brown, niter.lambda=niter.lambda, niter.delta=niter.delta,
-			niter.OU=niter.OU, niter.white=niter.white)
+		simSumStats<-summaryStatsLong(phy=phy, traits=simTraits
+			#,niter.brown=niter.brown, niter.lambda=niter.lambda, niter.delta=niter.delta,
+			#niter.OU=niter.OU, niter.white=niter.white
+			)
 		simTrueAndStats <-c(trueFreeValues, simSumStats)
 	}
 	if(n.attempts>1) {
@@ -231,13 +227,14 @@ simulateWithPriors<-function(
 #' @rdname simulateWithPriors
 #' @export
 parallelSimulateWithPriors<-function(
-	nrepSim, multicore, coreLimit,  
-	phy, 
+	nrepSim, multicore, coreLimit,
+	phy,
 	intrinsicFn, extrinsicFn, startingPriorsFns, startingPriorsValues,
-	intrinsicPriorsFns, intrinsicPriorsValues, extrinsicPriorsFns, extrinsicPriorsValues, 
+	intrinsicPriorsFns, intrinsicPriorsValues, extrinsicPriorsFns, extrinsicPriorsValues,
 	generation.time=1000, TreeYears=max(branching.times(phy)) * 1e6, timeStep=NULL, #timeStep=1e-04,
-	checkpointFile=NULL, checkpointFreq=24, verbose=FALSE, freevector=NULL, taxon.df=NULL, giveUpAttempts=10, 
-	niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25) {
+	checkpointFile=NULL, checkpointFreq=24, verbose=FALSE, freevector=NULL, taxon.df=NULL, giveUpAttempts=10
+	#,niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25
+	) {
 	
 	#library(doMC, quietly=TRUE)
 	#library(foreach, quietly=TRUE)
@@ -247,11 +244,11 @@ parallelSimulateWithPriors<-function(
 		}
 	
 	# checks
-	checkNiter(niter.brown=niter.brown, niter.lambda=niter.lambda,
-		niter.delta=niter.delta, niter.OU=niter.OU, niter.white=niter.white)
+	#checkNiter(niter.brown=niter.brown, niter.lambda=niter.lambda,
+	#	niter.delta=niter.delta, niter.OU=niter.OU, niter.white=niter.white)
 		
 	if(is.null(freevector)){
-		freevector<-getFreeVector(startingPriorsFns=startingPriorsFns, startingPriorsValues=startingPriorsValues, 
+		freevector<-getFreeVector(startingPriorsFns=startingPriorsFns, startingPriorsValues=startingPriorsValues,
 					intrinsicPriorsFns=intrinsicPriorsFns, intrinsicPriorsValues=intrinsicPriorsValues,
 					extrinsicPriorsFns=extrinsicPriorsFns, extrinsicPriorsValues=extrinsicPriorsValues)
 		}
@@ -295,7 +292,7 @@ parallelSimulateWithPriors<-function(
 	if (is.null(checkpointFile)) {
 		trueFreeValuesANDSummaryValues<-foreach(1:nrepSim, .combine=rbind) %dopar% simulateWithPriors(phy=phy, taxon.df=taxon.df,
 			startingPriorsValues=startingPriorsValues, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues,
-			startingPriorsFns=startingPriorsFns, intrinsicPriorsFns=intrinsicPriorsFns, extrinsicPriorsFns=extrinsicPriorsFns, giveUpAttempts=giveUpAttempts, 
+			startingPriorsFns=startingPriorsFns, intrinsicPriorsFns=intrinsicPriorsFns, extrinsicPriorsFns=extrinsicPriorsFns, giveUpAttempts=giveUpAttempts,
 			freevector=freevector, timeStep=timeStep, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, verbose=verbose, checks=FALSE)
 	}
 	else {
@@ -310,30 +307,30 @@ parallelSimulateWithPriors<-function(
 			warning(paste("Checkpoint frequency adjusted from",checkpointFreq,"to",checkpointFreqAdjusted,"to reduce the wasted time on unused cores"))
 		}
 		for (rep in sequence(numberLoops)) {
-			trueFreeValuesANDSummaryValues<-rbind(trueFreeValuesANDSummaryValues, 
+			trueFreeValuesANDSummaryValues<-rbind(trueFreeValuesANDSummaryValues,
 				foreach(1:numberSimsPerLoop, .combine=rbind) %dopar% simulateWithPriors(phy=phy,  taxon.df=taxon.df,
 					startingPriorsValues=startingPriorsValues, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues,
-					startingPriorsFns=startingPriorsFns, intrinsicPriorsFns=intrinsicPriorsFns, extrinsicPriorsFns=extrinsicPriorsFns,  giveUpAttempts=giveUpAttempts, 
+					startingPriorsFns=startingPriorsFns, intrinsicPriorsFns=intrinsicPriorsFns, extrinsicPriorsFns=extrinsicPriorsFns,  giveUpAttempts=giveUpAttempts,
 					freevector=freevector, timeStep=timeStep, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, verbose=verbose, checks=FALSE))
 			save(trueFreeValuesANDSummaryValues,file=checkpointFileName)
-			print(paste("Just finished",dim(trueFreeValuesANDSummaryValues)[1],"of",nrepSim,"simulations; progress so far saved in",checkpointFileName))
+			message(paste("Just finished",dim(trueFreeValuesANDSummaryValues)[1],"of",nrepSim,"simulations; progress so far saved in",checkpointFileName))
 		}
-		trueFreeValuesANDSummaryValues<-rbind(trueFreeValuesANDSummaryValues, 
+		trueFreeValuesANDSummaryValues<-rbind(trueFreeValuesANDSummaryValues,
 			foreach(1:numberSimsAfterLastCheckpoint, .combine=rbind) %dopar% simulateWithPriors(phy=phy,  taxon.df=taxon.df,
 				startingPriorsValues=startingPriorsValues, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues,
-				startingPriorsFns=startingPriorsFns, intrinsicPriorsFns=intrinsicPriorsFns, extrinsicPriorsFns=extrinsicPriorsFns,  giveUpAttempts=giveUpAttempts, 
+				startingPriorsFns=startingPriorsFns, intrinsicPriorsFns=intrinsicPriorsFns, extrinsicPriorsFns=extrinsicPriorsFns,  giveUpAttempts=giveUpAttempts,
 				freevector=freevector, timeStep=timeStep, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, verbose=verbose, checks=FALSE))
 	}
 	attr(trueFreeValuesANDSummaryValues,"freevector")<-freevector
 	return(trueFreeValuesANDSummaryValues)
 }
 
-checkNiter<-function(niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25){
-	if(niter.brown<2){stop("niter.brown must be at least 2")}
-	if(niter.lambda<2){stop("niter.lambda must be at least 2")}
-	if(niter.delta<2){stop("niter.delta must be at least 2")}
-	if(niter.OU<2){stop("niter.OU must be at least 2")}
-	if(niter.white<2){stop("niter.white must be at least 2")}
-	}
+#checkNiter<-function(niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25){
+#	if(niter.brown<2){stop("niter.brown must be at least 2")}
+#	if(niter.lambda<2){stop("niter.lambda must be at least 2")}
+#	if(niter.delta<2){stop("niter.delta must be at least 2")}
+#	if(niter.OU<2){stop("niter.OU must be at least 2")}
+#	if(niter.white<2){stop("niter.white must be at least 2")}
+#	}
 
 

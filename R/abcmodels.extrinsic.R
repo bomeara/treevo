@@ -32,7 +32,7 @@
 #' 
 #' 
 #' \code{ExponentiallyDecayingPushExtrinsic} describes a model of extrinsic trait evolution where the character
-#' values of a focal taxon is 'pushed' away from other taxa with similar values, but the force of that 'push' 
+#' values of a focal taxon is 'pushed' away from other taxa with similar values, but the force of that 'push'
 #' exponentially decays as lineages diverge and their character values become less similar.
 #' 
 #' The input parameters for this model are:
@@ -57,11 +57,12 @@
 #' @examples
 #
 #' \donttest{
-# 
+#
+#' set.seed(1)
 #' # Examples of simulations with various extrinsic models (and null intrinsic model)
-#' tree<-rcoal(30)
+#' tree<-rcoal(20)
 #' # get realistic edge lengths
-#' simPhy$edge.length<-simPhy$edge.length*20
+#' tree$edge.length<-tree$edge.length*20
 #' 
 #' #No trait evolution except due to
 #'		# character displacement due to nearest neighbor taxon
@@ -102,8 +103,8 @@
 #' 	plot=TRUE,
 #' 	saveHistory=FALSE)
 #
-#' } 
-# 
+#' }
+#
 
 #' @name extrinsicModels
 #' @rdname extrinsicModels
@@ -115,7 +116,7 @@ nullExtrinsic<-function(params,selfstates,otherstates, timefrompresent) {
 
 #' @rdname extrinsicModels
 #' @export
-nearestNeighborDisplacementExtrinsic<-function(params,selfstates,otherstates, timefrompresent) { 
+nearestNeighborDisplacementExtrinsic<-function(params,selfstates,otherstates, timefrompresent) {
 	#params[1] is sd, params[2] is springK, params[3] is maxforce
 	repulsorTaxon<-which.min(abs(otherstates-selfstates))
 	repulsorValue<-otherstates[repulsorTaxon]
@@ -123,8 +124,8 @@ nearestNeighborDisplacementExtrinsic<-function(params,selfstates,otherstates, ti
 	springK<-params[2]
 	maxforce<-params[3]
 	localsign<-sign(selfstates[1]- repulsorValue)
-	#print(abs((selfstates[1]-repulsorValue)))
-	if(localsign==0) { 
+	#message(abs((selfstates[1]-repulsorValue)))
+	if(localsign==0) {
 		localsign=sign(rnorm(n=1))	
 	}
 	newdisplacement<-rnorm(n=1,mean=localsign*min(c(abs(springK/((selfstates[1]-repulsorValue)*(selfstates[1]-repulsorValue))),maxforce),na.rm=TRUE),sd=sd)
@@ -134,7 +135,7 @@ nearestNeighborDisplacementExtrinsic<-function(params,selfstates,otherstates, ti
 
 #' @rdname extrinsicModels
 #' @export
-everyoneDisplacementExtrinsic<-function(params,selfstates,otherstates, timefrompresent) { 
+everyoneDisplacementExtrinsic<-function(params,selfstates,otherstates, timefrompresent) {
 	#this is set up for one character only right now
 	#params[1] is sd, params[2] is springK, params[3] is maxforce
 	sd<-params[1]
@@ -155,7 +156,7 @@ everyoneDisplacementExtrinsic<-function(params,selfstates,otherstates, timefromp
 
 #' @rdname extrinsicModels
 #' @export
-ExponentiallyDecayingPushExtrinsic<-function(params,selfstates,otherstates, timefrompresent) { 
+ExponentiallyDecayingPushExtrinsic<-function(params,selfstates,otherstates, timefrompresent) {
 	#params[1] is sd, params[2] is maxForce when character difference = 0, params[3] is half
 		# distance (the phenotypic distance at which repulsion is half maxForce)
 	repulsorTaxon<-which.min(abs(otherstates-selfstates))

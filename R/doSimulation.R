@@ -88,7 +88,7 @@
 
 #' @param returnAll If \code{TRUE}, the output returned is a \code{data.frame} containing the values at each node from the simulation.
 
-#' @param verbose If \code{TRUE}, gives messages about how the simulation is progessing via \code{print}.
+#' @param verbose If \code{TRUE}, gives messages about how the simulation is progessing via \code{message}.
 
 #' @param reject.NaN If \code{TRUE}, stop run if any simulated value is \code{NaN}.
 
@@ -116,41 +116,42 @@
 #
 #' \donttest{
 #
-#' tree<-rcoal(30)
+#' set.seed(1)
+#' tree<-rcoal(20)
 #' # get realistic edge lengths
-#' simPhy$edge.length<-simPhy$edge.length*20
+#' tree$edge.length<-tree$edge.length*20
 #'
 #' #Simple Brownian motion
 #' char<-doSimulation(
 #' 	phy=tree,
+#'  generation.time=100000,
 #' 	intrinsicFn=brownianIntrinsic,
 #' 	extrinsicFn=nullExtrinsic,
 #' 	startingValues=c(10), #root state
 #' 	intrinsicValues=c(0.01),
 #' 	extrinsicValues=c(0),
-# 	timeStep=0.01,
 #' 	saveHistory=FALSE)
 #'
 #' #Character displacement model with minimum bound
 #' char<-doSimulation(
 #' 	phy=tree,
+#'  generation.time=100000,
 #' 	intrinsicFn=boundaryMinIntrinsic,
 #' 	extrinsicFn=ExponentiallyDecayingPushExtrinsic,
 #' 	startingValues=c(10), #root state
 #' 	intrinsicValues=c(0.05, 10, 0.01),
 #' 	extrinsicValues=c(0, .1, .25),
-# 	timeStep=0.001,
 #' 	saveHistory=FALSE)
 #'
 #' #Simple Brownian motion
 #' char<-doSimulationForPlotting(
 #' 	phy=tree,
+#'  generation.time=100000,
 #' 	intrinsicFn=brownianIntrinsic,
 #' 	extrinsicFn=nullExtrinsic,
 #' 	startingValues=c(10), #root state
 #' 	intrinsicValues=c(0.01),
 #' 	extrinsicValues=c(0),
-# 	timeStep=0.01,
 #' 	plot=FALSE,
 #' 	saveHistory=FALSE)
 #'
@@ -158,20 +159,22 @@
 #' #Character displacement model with minimum bound
 #' char<-doSimulationForPlotting(
 #' 	phy=tree,
+#'  generation.time=100000,
 #' 	intrinsicFn=boundaryMinIntrinsic,
 #' 	extrinsicFn=ExponentiallyDecayingPushExtrinsic,
 #' 	startingValues=c(10), #root state
 #' 	intrinsicValues=c(0.05, 10, 0.01),
-#' 	extrinsicValues=c(0, .1, .25),
+#' 	extrinsicValues=c(0, 0.1, 0.25),
 #' 	plot=TRUE,
 #' 	saveHistory=FALSE)
 #'
 #'
 #' # with extinction
-#' 
+#'
 #' #Simple Brownian motion
 #' char<-doSimulationWithPossibleExtinction(
 #' 	phy=tree,
+#'  generation.time=100000,
 #' 	intrinsicFn=brownianIntrinsic,
 #' 	extrinsicFn=nullExtrinsic,
 #' 	startingValues=c(10), #root state
@@ -239,7 +242,7 @@ doSimulation<-function(phy=NULL, intrinsicFn, extrinsicFn, startingValues, intri
 
 	#start running
 	while(timefrompresent>0) {
-		#print(timefrompresent)
+		#message(timefrompresent)
 		#speciation if needed
 		while ((timefrompresent-timeStep)<=taxon.df[1, 1]) { #do speciation. changed from if to while to deal with effectively polytomies
 			originallength<-length(taxa)
@@ -265,8 +268,8 @@ doSimulation<-function(phy=NULL, intrinsicFn, extrinsicFn, startingValues, intri
 			else {
 				taxon.df[1, ]<-c(-1, 0, 0, 0)
 			}
-			#print("------------------- speciation -------------------")
-			#print(taxa)
+			#message("------------------- speciation -------------------")
+			#message(taxa)
 			#summarizeTaxonStates(taxa)
 		}
 		#trait evolution step
@@ -304,8 +307,8 @@ doSimulation<-function(phy=NULL, intrinsicFn, extrinsicFn, startingValues, intri
 
 		}
 		taxa<-lapply(taxa,stateNextState)
-		#print("------------------- step -------------------")
-		#print(taxa)
+		#message("------------------- step -------------------")
+		#message(taxa)
 		#summarizeTaxonStates(taxa)
 
 		timefrompresent<-timefrompresent-timeStep
@@ -369,7 +372,7 @@ doSimulationForPlotting<-function(phy=NULL, intrinsicFn, extrinsicFn, startingVa
 
 	#start running
 		while(timefrompresent>0) {
-	#print(timefrompresent)
+	#message(timefrompresent)
 	#speciation if needed
 			while ((timefrompresent-timeStep)<=taxon.df[1, 1]) { #do speciation. changed from if to while to deal with effectively polytomies
 				originallength<-length(taxa)
@@ -393,8 +396,8 @@ doSimulationForPlotting<-function(phy=NULL, intrinsicFn, extrinsicFn, startingVa
 				else {
 					taxon.df[1, ]<-c(-1, 0, 0, 0)
 				}
-	#print("------------------- speciation -------------------")
-	#print(taxa)
+	#message("------------------- speciation -------------------")
+	#message(taxa)
 	#summarizeTaxonStates(taxa)
 			}
 	#trait evolution step
@@ -405,8 +408,8 @@ doSimulationForPlotting<-function(phy=NULL, intrinsicFn, extrinsicFn, startingVa
 						otherstatesvector<-c(otherstatesvector, taxa[[j]]$states)
 					}
 				}
-	#print(taxa)
-	#print(length(otherstatesvector))
+	#message(taxa)
+	#message(length(otherstatesvector))
 				otherstatesmatrix<-matrix(otherstatesvector, ncol=length(taxa[[i]]$states), byrow=TRUE) #each row represents one taxon
 				newvalues<-taxa[[i]]$states+intrinsicFn(params=intrinsicValues, states=taxa[[i]]$states, timefrompresent =timefrompresent)+extrinsicFn(params=extrinsicValues, selfstates=taxa[[i]]$states, otherstates=otherstatesmatrix, timefrompresent =timefrompresent)
 				taxa[[i]]$nextstates<-newvalues
@@ -427,8 +430,8 @@ doSimulationForPlotting<-function(phy=NULL, intrinsicFn, extrinsicFn, startingVa
 
 
 			}
-	#print("------------------- step -------------------")
-	#print(taxa)
+	#message("------------------- step -------------------")
+	#message(taxa)
 	#summarizeTaxonStates(taxa)
 
 			timefrompresent<-timefrompresent-timeStep
@@ -543,8 +546,8 @@ doSimulationWithPossibleExtinction<-function(phy=NULL, intrinsicFn, extrinsicFn,
 		#if(any(is.na(current.states))) {
 		#	#message(paste0("current.states ",current.states))
 		#	#message(paste0("taxon.df$id %in% ids.alive.at.start ",paste0(taxon.df$id %in% ids.alive.at.start,collapse=" ")))
-		#	print(c(height.start,height.end))
-		#	print(taxon.df[taxon.df$id %in% ids.alive.at.start,])
+		#	message(c(height.start,height.end))
+		#	message(taxon.df[taxon.df$id %in% ids.alive.at.start,])
 		#	stop("there are NAs in current.states! How?? Something is very wrong")
 		#	}
 		#first evolve in this interval, then speciate
@@ -626,8 +629,8 @@ doSimulationWithPossibleExtinction<-function(phy=NULL, intrinsicFn, extrinsicFn,
 		depthfrompresent <- depth.end
 		heightfromroot <- height.end
 		if(verbose) {
-			print(paste0("now at height", height.end, "finishing at", max(taxon.df$endTime)))
-			print(taxon.df)
+			message(paste0("now at height", height.end, "finishing at", max(taxon.df$endTime)))
+			message(taxon.df)
 		}
 		if(reject.NaN) {
 			if(any(is.nan(taxon.df$states))) {
@@ -663,7 +666,7 @@ doSimulationWithPossibleExtinction<-function(phy=NULL, intrinsicFn, extrinsicFn,
 # @rdname summarizeTaxonStates
 # @export
 summarizeTaxonStates<-function(taxa) {
-#print("in summarizeTaxonStates")
+#message("in summarizeTaxonStates")
 	statesvector<-c()
 	taxonid<-c()
 	taxonname<-c()
