@@ -12,6 +12,14 @@ vignette: >
   
 ---
 
+```{r}
+# Control Box
+multicore<-TRUE
+coreLimit<-4
+# as of 01-18-18, gen times of 1000000 complete relatively quickly, smaller do not!
+generation.time<-1000000
+```  
+
 ```{r,echo=FALSE}
 library(paleotree)
 data(RaiaCopesRule)
@@ -70,6 +78,8 @@ rownames(charData)<-names(sutureComplexity)
 Let's analyze it with ordinary BM
 
 ```{r}
+
+system.time(
 results<-doRun_prc(
   phy = tree,
   traits = charData,
@@ -81,7 +91,7 @@ results<-doRun_prc(
   intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
   extrinsicPriorsFns=c("fixed"),
   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
-  generation.time=100000,
+  generation.time=generation.time,
   standardDevFactor=0.2,
   plot=FALSE,
   StartSims=10,
@@ -91,15 +101,17 @@ results<-doRun_prc(
   numParticles=20,
   jobName="typicalBMrun",
   stopRule=FALSE,
-  multicore=FALSE,
-  coreLimit=1,
-  verboseParticles=FALSE
+  multicore=multicore,
+  coreLimit=coreLimit,
+  verboseParticles=TRUE
   )
+)
 ```
 
 Let's analyze it with ordinary BM with a bound
-
+  
 ```{r}
+
 system.time(
 resultsBound<-doRun_prc(
   phy = tree,
@@ -112,7 +124,7 @@ resultsBound<-doRun_prc(
   intrinsicPriorsValues=matrix(c(10, 10, -10, 1), nrow=2, byrow=FALSE),
   extrinsicPriorsFns=c("fixed"),
   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
-  generation.time=1000000,
+  generation.time=generation.time,
   standardDevFactor=0.2,
   plot=FALSE,
   StartSims=10,
@@ -122,8 +134,8 @@ resultsBound<-doRun_prc(
   numParticles=20,
   jobName="BMwithBoundRun",
   stopRule=FALSE,
-  multicore=TRUE,
-  coreLimit=3,
+  multicore=multicore,
+  coreLimit=coreLimit,
   verboseParticles=FALSE
   )
 )
