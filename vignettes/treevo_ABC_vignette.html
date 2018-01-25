@@ -12,7 +12,7 @@
 
 <meta name="author" content="David W. Bapst" />
 
-<meta name="date" content="2018-01-17" />
+<meta name="date" content="2018-01-25" />
 
 <title>Analyzing Trait Evolution with Approximate Bayesian Computation in TreEvo</title>
 
@@ -70,10 +70,15 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Analyzing Trait Evolution with Approximate Bayesian Computation in TreEvo</h1>
 <h4 class="author"><em>David W. Bapst</em></h4>
-<h4 class="date"><em>2018-01-17</em></h4>
+<h4 class="date"><em>2018-01-25</em></h4>
 
 
 
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Control Box</span>
+multicore&lt;-<span class="ot">TRUE</span>
+coreLimit&lt;-<span class="dv">4</span>
+<span class="co"># as of 01-18-18, gen times of 1000000 complete relatively quickly, smaller do not!</span>
+generation.time&lt;-<span class="dv">1000000</span></code></pre></div>
 <pre><code>## Loading required package: ape</code></pre>
 <p>For this vignette, we will use the tree of ammonite genera, and the continuous character data for those ammonites, taken from Raia et al. (2015, American Naturalist). This data is taken from their supplemental appendix, available at the American Naturalist website, and is available as an example dataset in R package <code>paleotree</code>.</p>
 <p>The trees for the three groups examined in this paper all appear to be trees dated to the last appearance times (as opposed to the first appearance time) <em>and</em> specifically the end-boundary of the interval containing the last appearance.</p>
@@ -112,7 +117,7 @@ results&lt;-<span class="kw">doRun_prc</span>(
   <span class="dt">intrinsicPriorsValues=</span><span class="kw">matrix</span>(<span class="kw">c</span>(<span class="dv">10</span>, <span class="dv">10</span>), <span class="dt">nrow=</span><span class="dv">2</span>, <span class="dt">byrow=</span><span class="ot">FALSE</span>),
   <span class="dt">extrinsicPriorsFns=</span><span class="kw">c</span>(<span class="st">&quot;fixed&quot;</span>),
   <span class="dt">extrinsicPriorsValues=</span><span class="kw">matrix</span>(<span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">0</span>), <span class="dt">nrow=</span><span class="dv">2</span>, <span class="dt">byrow=</span><span class="ot">FALSE</span>),
-  <span class="dt">generation.time=</span><span class="dv">1000000</span>,
+  <span class="dt">generation.time=</span>generation.time,
   <span class="dt">standardDevFactor=</span><span class="fl">0.2</span>,
   <span class="dt">plot=</span><span class="ot">FALSE</span>,
   <span class="dt">StartSims=</span><span class="dv">10</span>,
@@ -122,8 +127,8 @@ results&lt;-<span class="kw">doRun_prc</span>(
   <span class="dt">numParticles=</span><span class="dv">20</span>,
   <span class="dt">jobName=</span><span class="st">&quot;typicalBMrun&quot;</span>,
   <span class="dt">stopRule=</span><span class="ot">FALSE</span>,
-  <span class="dt">multicore=</span><span class="ot">TRUE</span>,
-  <span class="dt">coreLimit=</span><span class="dv">4</span>,
+  <span class="dt">multicore=</span>multicore,
+  <span class="dt">coreLimit=</span>coreLimit,
   <span class="dt">verboseParticles=</span><span class="ot">TRUE</span>
   )
 )</code></pre></div>
@@ -136,132 +141,328 @@ results&lt;-<span class="kw">doRun_prc</span>(
 <pre><code>## Given generation time, a total of 204 generations will occur over this tree</code></pre>
 <pre><code>## Number of initial simulations set to 10</code></pre>
 <pre><code>## Doing initial simulations...</code></pre>
-<pre><code>## Initial simulations took 52.77 seconds</code></pre>
+<pre><code>## Initial simulations took 27.68 seconds</code></pre>
 <pre><code>## Finding distribution of distances...</code></pre>
 <pre><code>## Beginning partial rejection control algorithm...</code></pre>
 <pre><code>## 
 ## STARTING DATA GENERATION STEP 1</code></pre>
 <pre><code>## Successes   Attempts   Exp. # of Attempts Req. Params.</code></pre>
-<pre><code>## 1           1          10                      1.3    0.013    0    12</code></pre>
-<pre><code>## 2           2          13                      1.4    0.014    0    13</code></pre>
-<pre><code>## 3           3          15                      1.3    0.092    0    17</code></pre>
-<pre><code>## 4           4          16                      1.2    0.082    0    15</code></pre>
-<pre><code>## 5           5          16                      1.1    0.085    0    15</code></pre>
-<pre><code>## 6           6          17                      1.7    0.024    0    14</code></pre>
-<pre><code>## 7           7          17                      0.98    0.1    0    15</code></pre>
-<pre><code>## 8           8          17                      1.1    0.15    0    16</code></pre>
-<pre><code>## 9           9          18                      1.3    0.011    0    12</code></pre>
-<pre><code>## 10           10          18                      1.5    0.15    0    20</code></pre>
-<pre><code>## 11           11          18                      1.6    0.077    0    18</code></pre>
-<pre><code>## 12           12          18                      1.5    0.16    0    20</code></pre>
-<pre><code>## 13           13          18                      1.4    0.13    0    21</code></pre>
-<pre><code>## 14           14          18                      1.2    0.078    0    18</code></pre>
-<pre><code>## 15           15          18                      1.3    0.13    0    21</code></pre>
-<pre><code>## 16           16          18                      1.1    0.13    0    16</code></pre>
-<pre><code>## 16           17          20                      1.3    0.27    0    32</code></pre>
-<pre><code>## 17           18          20                      1.4    0.028    0    17</code></pre>
-<pre><code>## 18           19          20                      1.2    0.091    0    18</code></pre>
-<pre><code>## 18           20          21                      1.1    0.37    0    57</code></pre>
-<pre><code>## 18           21          22                      1.3    0.28    0    29</code></pre>
-<pre><code>## 19           22          22                      1.1    0.02    0    13</code></pre>
-<pre><code>## 20           23          21                      1.3    0.054    0    18</code></pre>
+<pre><code>## 1           1          10                      0.92    0.065    0    32</code></pre>
+<pre><code>## 2           2          13                      1.5    0.21    0    45</code></pre>
+<pre><code>## 3           3          15                      1.4    0.06    0    28</code></pre>
+<pre><code>## 4           4          16                      1.4    0.0044    0    21</code></pre>
+<pre><code>## 5           5          16                      1.5    0.011    0    24</code></pre>
+<pre><code>## 6           6          17                      1.3    0.045    0    31</code></pre>
+<pre><code>## 7           7          17                      1.3    0.13    0    39</code></pre>
+<pre><code>## 7           8          20                      1.2    0.44    0    65</code></pre>
+<pre><code>## 7           9          22                      1.3    0.44    0    76</code></pre>
+<pre><code>## 8           10          22                      1.3    0.12    0    42</code></pre>
+<pre><code>## 8           11          24                      1.4    0.25    0    52</code></pre>
+<pre><code>## 9           12          24                      1.3    0.049    0    26</code></pre>
+<pre><code>## 10           13          23                      1.2    0.16    0    43</code></pre>
+<pre><code>## 11           14          23                      1.3    0.037    0    26</code></pre>
+<pre><code>## 12           15          23                      1.4    0.027    0    32</code></pre>
+<pre><code>## 13           16          22                      1.5    0.022    0    26</code></pre>
+<pre><code>## 13           17          24                      1.2    0.27    0    74</code></pre>
+<pre><code>## 14           18          24                      1.4    0.12    0    42</code></pre>
+<pre><code>## 15           19          23                      1.4    0.053    0    33</code></pre>
+<pre><code>## 16           20          23                      1.6    0.025    0    27</code></pre>
+<pre><code>## 17           21          23                      1.4    0.078    0    35</code></pre>
+<pre><code>## 18           22          23                      1.2    0.24    0    41</code></pre>
+<pre><code>## 19           23          23                      1.3    0.01    0    24</code></pre>
+<pre><code>## 20           24          22                      1.4    0.12    0    45</code></pre>
 <pre><code>## 
 ## STARTING DATA GENERATION STEP 2</code></pre>
 <pre><code>## particleWeights
 ## 0.05 0.05 0.05 0.05 0.05 0.05 0.05 0.05 0.05 0.05 0.05 0.05 0.05 0.05 0.05 0.05 0.05 0.05 0.05 0.05</code></pre>
 <pre><code>## Successes   Attempts   Exp. # of Attempts Req. Params.</code></pre>
-<pre><code>## 1           1          10                      1.1    0.064    0    19</code></pre>
-<pre><code>## 2           2          13                      1.3    0.074    0    17</code></pre>
-<pre><code>## 3           3          15                      1.4    0.0095    0    11</code></pre>
-<pre><code>## 4           4          16                      1.3    0.033    0    14</code></pre>
-<pre><code>## 5           5          16                      1.4    0.0096    0    12</code></pre>
-<pre><code>## 5           6          20                      1.6    0.073    0    21</code></pre>
-<pre><code>## 6           7          20                      1.2    0.081    0    16</code></pre>
-<pre><code>## 7           8          20                      1.1    0.094    0    16</code></pre>
-<pre><code>## 8           9          20                      1.5    0.14    0    16</code></pre>
-<pre><code>## 9           10          20                      1.4    0.012    0    11</code></pre>
-<pre><code>## 10           11          20                      1.6    0.11    0    19</code></pre>
-<pre><code>## 11           12          20                      1.3    0.013    0    13</code></pre>
-<pre><code>## 12           13          20                      1.5    0.11    0    15</code></pre>
-<pre><code>## 13           14          20                      1.1    0.086    0    17</code></pre>
-<pre><code>## 13           15          21                      1.5    0.15    0    29</code></pre>
-<pre><code>## 14           16          21                      1.6    0.098    0    18</code></pre>
-<pre><code>## 15           17          21                      1.2    0.08    0    15</code></pre>
-<pre><code>## 16           18          21                      1.1    0.084    0    15</code></pre>
-<pre><code>## 17           19          21                      1.7    0.01    0    13</code></pre>
-<pre><code>## 18           20          21                      1.4    0.029    0    13</code></pre>
-<pre><code>## 18           21          22                      1.3    0.079    0    20</code></pre>
-<pre><code>## 19           22          22                      1.3    0.11    0    16</code></pre>
-<pre><code>## 20           23          21                      1.2    0.091    0    19</code></pre>
+<pre><code>## 0           1          20                      1.3    0.14    0    35</code></pre>
+<pre><code>## 1           2          20                      1.3    0.093    0    31</code></pre>
+<pre><code>## 2           3          20                      1.5    0.01    0    24</code></pre>
+<pre><code>## 2           4          26                      1.4    0.078    0    40</code></pre>
+<pre><code>## 3           5          25                      1.4    0.018    0    27</code></pre>
+<pre><code>## 3           6          30                      1.4    0.065    0    33</code></pre>
+<pre><code>## 4           7          28                      1.3    0.03    0    27</code></pre>
+<pre><code>## 5           8          26                      1.3    0.073    0    32</code></pre>
+<pre><code>## 6           9          25                      1.4    0.016    0    25</code></pre>
+<pre><code>## 7           10          25                      1.3    0.036    0    28</code></pre>
+<pre><code>## 7           11          27                      1.4    0.073    0    39</code></pre>
+<pre><code>## 8           12          26                      1.5    0.035    0    28</code></pre>
+<pre><code>## 9           13          26                      1.2    0.15    0    32</code></pre>
+<pre><code>## 9           14          28                      1.4    0.1    0    41</code></pre>
+<pre><code>## 9           15          30                      1.4    0.11    0    38</code></pre>
+<pre><code>## 10           16          29                      1.5    0.052    0    30</code></pre>
+<pre><code>## 11           17          28                      0.84    0.081    0    33</code></pre>
+<pre><code>## 11           18          30                      1.5    0.23    0    48</code></pre>
+<pre><code>## 12           19          29                      1.5    0.036    0    27</code></pre>
+<pre><code>## 13           20          28                      0.88    0.05    0    32</code></pre>
+<pre><code>## 14           21          28                      1.3    0.015    0    26</code></pre>
+<pre><code>## 14           22          29                      1.3    0.061    0    35</code></pre>
+<pre><code>## 14           23          30                      1.4    0.066    0    34</code></pre>
+<pre><code>## 14           24          32                      1.3    0.037    0    34</code></pre>
+<pre><code>## 15           25          31                      1.3    0.0047    0    21</code></pre>
+<pre><code>## 15           26          32                      1.4    0.14    0    53</code></pre>
+<pre><code>## 16           27          31                      1.3    0.018    0    27</code></pre>
+<pre><code>## 17           28          31                      1.4    0.16    0    31</code></pre>
+<pre><code>## 17           29          32                      1.2    0.23    0    61</code></pre>
+<pre><code>## 17           30          33                      1.3    0.14    0    64</code></pre>
+<pre><code>## 18           31          32                      1.4    0.029    0    29</code></pre>
+<pre><code>## 19           32          32                      1.3    0.047    0    29</code></pre>
+<pre><code>## 20           33          31                      1.5    0.00071    0    14</code></pre>
 <pre><code>## 
 ## STARTING DATA GENERATION STEP 3</code></pre>
 <pre><code>## particleWeights
-## 0.047 0.059 0.049 0.06 0.048 0.064 0.046 0.046 0.051 0.014 0.078 0.035 0.063 0.019 0.049 0.062 0.013 0.055 0.061 0.081</code></pre>
+## 0.06 0.05 0.067 0.06 0.061 0.066 0.059 0.044 0.043 0.05 0.0014 0.026 0.0075 0.061 0.058 0.061 0.065 0.059 0.062 0.04</code></pre>
 <pre><code>## Successes   Attempts   Exp. # of Attempts Req. Params.</code></pre>
-<pre><code>## 0           1          20                      1.5    0.15    0    17</code></pre>
-<pre><code>## 0           2          40                      1.2    0.072    0    16</code></pre>
-<pre><code>## 0           3          60                      1.2    0.11    0    24</code></pre>
-<pre><code>## 0           4          80                      1.2    0.039    0    16</code></pre>
-<pre><code>## 1           5          50                      1.3    0.0036    0    11</code></pre>
-<pre><code>## 1           6          60                      1.3    0.11    0    20</code></pre>
-<pre><code>## 1           7          70                      1.1    0.1    0    23</code></pre>
-<pre><code>## 1           8          80                      1.3    0.13    0    21</code></pre>
-<pre><code>## 1           9          90                      1.1    0.11    0    15</code></pre>
-<pre><code>## 2           10          66                      1.4    0.026    0    13</code></pre>
-<pre><code>## 3           11          55                      1.4    0.036    0    12</code></pre>
-<pre><code>## 4           12          48                      1.4    0.0032    0    13</code></pre>
-<pre><code>## 5           13          43                      1.3    0.024    0    14</code></pre>
-<pre><code>## 6           14          40                      1.4    0.022    0    10</code></pre>
-<pre><code>## 6           15          42                      1.4    0.013    0    14</code></pre>
-<pre><code>## 7           16          40                      1.4    0.041    0    12</code></pre>
-<pre><code>## 7           17          42                      1.2    0.1    0    18</code></pre>
-<pre><code>## 7           18          45                      1.1    0.11    0    15</code></pre>
-<pre><code>## 8           19          42                      1.4    0.011    0    13</code></pre>
-<pre><code>## 8           20          44                      1.3    0.11    0    20</code></pre>
-<pre><code>## 9           21          42                      1.4    0.0048    0    11</code></pre>
-<pre><code>## 9           22          44                      1.1    0.1    0    19</code></pre>
-<pre><code>## 9           23          46                      1.3    0.09    0    16</code></pre>
-<pre><code>## 9           24          48                      1.3    0.035    0    15</code></pre>
-<pre><code>## 10           25          45                      1.4    0.017    0    13</code></pre>
-<pre><code>## 10           26          47                      1.2    0.097    0    19</code></pre>
-<pre><code>## 10           27          49                      1.5    0.13    0    23</code></pre>
-<pre><code>## 10           28          50                      1.4    0.09    0    14</code></pre>
-<pre><code>## 10           29          52                      1.2    0.11    0    16</code></pre>
-<pre><code>## 10           30          54                      1.3    0.099    0    21</code></pre>
-<pre><code>## 10           31          56                      1.4    0.00024    0    16</code></pre>
-<pre><code>## 10           32          58                      1.5    0.17    0    28</code></pre>
-<pre><code>## 10           33          60                      1.4    0.012    0    14</code></pre>
-<pre><code>## 10           34          61                      1.5    0.16    0    35</code></pre>
-<pre><code>## 10           35          63                      1.1    0.054    0    19</code></pre>
-<pre><code>## 11           36          60                      1.4    0.024    0    14</code></pre>
-<pre><code>## 11           37          61                      1.2    0.077    0    17</code></pre>
-<pre><code>## 12           38          58                      1.4    0.062    0    12</code></pre>
-<pre><code>## 13           39          55                      1.2    0.022    0    10</code></pre>
-<pre><code>## 13           40          57                      1.3    0.041    0    14</code></pre>
-<pre><code>## 13           41          58                      1.2    0.11    0    18</code></pre>
-<pre><code>## 13           42          60                      1.2    0.07    0    19</code></pre>
-<pre><code>## 14           43          57                      1.7    0.0035    0    13</code></pre>
-<pre><code>## 14           44          58                      1.1    0.049    0    15</code></pre>
-<pre><code>## 15           45          56                      1.4    0.0042    0    12</code></pre>
-<pre><code>## 15           46          57                      1.3    0.025    0    14</code></pre>
-<pre><code>## 15           47          58                      1.3    0.02    0    14</code></pre>
-<pre><code>## 15           48          60                      1.1    0.086    0    18</code></pre>
-<pre><code>## 15           49          61                      1.2    0.13    0    22</code></pre>
-<pre><code>## 15           50          62                      1.1    0.076    0    17</code></pre>
-<pre><code>## 16           51          60                      1.3    0.03    0    13</code></pre>
-<pre><code>## 17           52          57                      1.3    0.011    0    11</code></pre>
-<pre><code>## 17           53          58                      1.4    0.034    0    15</code></pre>
-<pre><code>## 17           54          60                      1.1    0.083    0    18</code></pre>
-<pre><code>## 18           55          57                      1.4    0.037    0    13</code></pre>
-<pre><code>## 18           56          58                      1.2    0.11    0    16</code></pre>
-<pre><code>## 18           57          60                      1.5    0.12    0    22</code></pre>
-<pre><code>## 18           58          61                      1    0.12    0    18</code></pre>
-<pre><code>## 19           59          59                      1.4    0.019    0    13</code></pre>
-<pre><code>## 19           60          60                      1.2    0.019    0    16</code></pre>
-<pre><code>## 19           61          61                      1.2    0.11    0    18</code></pre>
-<pre><code>## 20           62          59                      1.3    0.02    0    13</code></pre>
-<pre><code>## Collection of simulation particles under PRC completed in 686.44 seconds...</code></pre>
-<pre><code>## Function completed in 1266.32 seconds.</code></pre>
+<pre><code>## 0           1          20                      1.2    0.13    0    41</code></pre>
+<pre><code>## 0           2          40                      1.5    0.14    0    40</code></pre>
+<pre><code>## 0           3          60                      1.3    0.033    0    27</code></pre>
+<pre><code>## 0           4          80                      1.6    0.048    0    32</code></pre>
+<pre><code>## 0           5          100                      1.5    0.016    0    25</code></pre>
+<pre><code>## 1           6          60                      1.5    0.0079    0    23</code></pre>
+<pre><code>## 1           7          70                      1.4    0.011    0    24</code></pre>
+<pre><code>## 1           8          80                      1.4    0.017    0    26</code></pre>
+<pre><code>## 2           9          60                      1.3    0.0077    0    23</code></pre>
+<pre><code>## 2           10          66                      0.93    0.044    0    28</code></pre>
+<pre><code>## 2           11          73                      1.4    0.028    0    27</code></pre>
+<pre><code>## 2           12          80                      1.4    0.16    0    51</code></pre>
+<pre><code>## 2           13          86                      1.4    0.15    0    53</code></pre>
+<pre><code>## 2           14          93                      1.3    0.0096    0    24</code></pre>
+<pre><code>## 2           15          100                      1.3    0.059    0    26</code></pre>
+<pre><code>## 2           16          106                      1.5    0.049    0    26</code></pre>
+<pre><code>## 2           17          113                      1.3    0.058    0    34</code></pre>
+<pre><code>## 2           18          120                      1.4    0.076    0    37</code></pre>
+<pre><code>## 2           19          126                      1.3    0.0095    0    23</code></pre>
+<pre><code>## 2           20          133                      1.3    0.035    0    30</code></pre>
+<pre><code>## 2           21          140                      1.4    0.013    0    25</code></pre>
+<pre><code>## 2           22          146                      1.4    0.042    0    30</code></pre>
+<pre><code>## 2           23          153                      1.3    0.15    0    37</code></pre>
+<pre><code>## 2           24          160                      1.3    0.1    0    34</code></pre>
+<pre><code>## 2           25          166                      1.3    0.066    0    29</code></pre>
+<pre><code>## 2           26          173                      1.3    0.032    0    27</code></pre>
+<pre><code>## 2           27          180                      1.4    0.12    0    39</code></pre>
+<pre><code>## 2           28          186                      1.4    0.11    0    37</code></pre>
+<pre><code>## 2           29          193                      1.3    0.13    0    35</code></pre>
+<pre><code>## 2           30          200                      1.4    0.027    0    30</code></pre>
+<pre><code>## 2           31          206                      1.3    0.082    0    33</code></pre>
+<pre><code>## 2           32          213                      1.3    0.041    0    31</code></pre>
+<pre><code>## 2           33          220                      1.3    0.05    0    41</code></pre>
+<pre><code>## 2           34          226                      1.4    0.043    0    28</code></pre>
+<pre><code>## 2           35          233                      1.4    0.021    0    29</code></pre>
+<pre><code>## 2           36          240                      1.3    0.081    0    36</code></pre>
+<pre><code>## 2           37          246                      1.2    0.067    0    38</code></pre>
+<pre><code>## 2           38          253                      1.4    0.026    0    28</code></pre>
+<pre><code>## 2           39          260                      1.3    0.054    0    31</code></pre>
+<pre><code>## 2           40          266                      1.5    0.016    0    26</code></pre>
+<pre><code>## 2           41          273                      1.3    0.035    0    28</code></pre>
+<pre><code>## 2           42          280                      1.5    0.069    0    35</code></pre>
+<pre><code>## 2           43          286                      1.3    0.011    0    24</code></pre>
+<pre><code>## 2           44          293                      0.89    0.022    0    30</code></pre>
+<pre><code>## 2           45          300                      1.4    0.14    0    40</code></pre>
+<pre><code>## 2           46          306                      1.4    0.042    0    33</code></pre>
+<pre><code>## 2           47          313                      1.5    0.032    0    27</code></pre>
+<pre><code>## 2           48          320                      1.3    0.062    0    30</code></pre>
+<pre><code>## 2           49          326                      1.4    0.093    0    33</code></pre>
+<pre><code>## 2           50          333                      1.2    0.17    0    39</code></pre>
+<pre><code>## 2           51          340                      1.3    0.067    0    33</code></pre>
+<pre><code>## 3           52          260                      1.3    0.0052    0    21</code></pre>
+<pre><code>## 4           53          212                      1.3    0.0044    0    19</code></pre>
+<pre><code>## 4           54          216                      1.3    0.066    0    30</code></pre>
+<pre><code>## 4           55          220                      1.4    0.054    0    29</code></pre>
+<pre><code>## 4           56          224                      1.3    0.097    0    39</code></pre>
+<pre><code>## 4           57          228                      1.5    0.012    0    24</code></pre>
+<pre><code>## 4           58          232                      1.3    0.045    0    28</code></pre>
+<pre><code>## 4           59          236                      1.4    0.012    0    24</code></pre>
+<pre><code>## 4           60          240                      1.5    0.03    0    29</code></pre>
+<pre><code>## 4           61          244                      1.5    0.019    0    27</code></pre>
+<pre><code>## 4           62          248                      1.5    0.031    0    27</code></pre>
+<pre><code>## 4           63          252                      1.5    0.038    0    33</code></pre>
+<pre><code>## 4           64          256                      1.4    0.04    0    28</code></pre>
+<pre><code>## 4           65          260                      1.3    0.013    0    24</code></pre>
+<pre><code>## 4           66          264                      1.5    0.075    0    33</code></pre>
+<pre><code>## 4           67          268                      1.4    0.016    0    25</code></pre>
+<pre><code>## 4           68          272                      1.4    0.13    0    34</code></pre>
+<pre><code>## 4           69          276                      1.3    0.055    0    30</code></pre>
+<pre><code>## 4           70          280                      1.4    0.053    0    30</code></pre>
+<pre><code>## 4           71          284                      1.3    0.024    0    28</code></pre>
+<pre><code>## 4           72          288                      1.4    0.017    0    27</code></pre>
+<pre><code>## 4           73          292                      1.3    0.033    0    27</code></pre>
+<pre><code>## 4           74          296                      1.2    0.12    0    32</code></pre>
+<pre><code>## 4           75          300                      1.3    0.008    0    23</code></pre>
+<pre><code>## 4           76          304                      1.2    0.11    0    33</code></pre>
+<pre><code>## 4           77          308                      1.4    0.13    0    41</code></pre>
+<pre><code>## 4           78          312                      1.4    0.08    0    34</code></pre>
+<pre><code>## 4           79          316                      1.3    0.049    0    34</code></pre>
+<pre><code>## 4           80          320                      1.4    0.067    0    38</code></pre>
+<pre><code>## 4           81          324                      1.4    0.036    0    32</code></pre>
+<pre><code>## 5           82          273                      1.5    0.0013    0    16</code></pre>
+<pre><code>## 5           83          276                      1.2    0.083    0    29</code></pre>
+<pre><code>## 5           84          280                      1.4    0.045    0    29</code></pre>
+<pre><code>## 5           85          283                      1.4    0.017    0    27</code></pre>
+<pre><code>## 5           86          286                      1.3    0.028    0    24</code></pre>
+<pre><code>## 5           87          290                      1.3    0.091    0    40</code></pre>
+<pre><code>## 5           88          293                      1.3    0.029    0    29</code></pre>
+<pre><code>## 5           89          296                      1.3    0.014    0    24</code></pre>
+<pre><code>## 6           90          257                      1.3    0.0011    0    16</code></pre>
+<pre><code>## 6           91          260                      1.5    0.034    0    31</code></pre>
+<pre><code>## 6           92          262                      1.5    0.042    0    28</code></pre>
+<pre><code>## 6           93          265                      1.3    0.051    0    27</code></pre>
+<pre><code>## 6           94          268                      1.5    0.014    0    23</code></pre>
+<pre><code>## 6           95          271                      1.3    0.028    0    28</code></pre>
+<pre><code>## 6           96          274                      1.3    0.061    0    30</code></pre>
+<pre><code>## 6           97          277                      1.3    0.078    0    28</code></pre>
+<pre><code>## 7           98          245                      1.5    0.0097    0    23</code></pre>
+<pre><code>## 7           99          247                      1.5    0.05    0    27</code></pre>
+<pre><code>## 7           100          250                      1.2    0.072    0    35</code></pre>
+<pre><code>## 7           101          252                      1.4    0.028    0    29</code></pre>
+<pre><code>## 7           102          255                      1.4    0.15    0    37</code></pre>
+<pre><code>## 8           103          228                      1.4    0.0011    0    16</code></pre>
+<pre><code>## 8           104          231                      1.4    0.025    0    27</code></pre>
+<pre><code>## 8           105          233                      1.4    0.019    0    26</code></pre>
+<pre><code>## 8           106          235                      1.3    0.048    0    32</code></pre>
+<pre><code>## 8           107          237                      1.5    0.027    0    26</code></pre>
+<pre><code>## 8           108          240                      1.3    0.017    0    28</code></pre>
+<pre><code>## 9           109          218                      1.4    0.0019    0    18</code></pre>
+<pre><code>## 9           110          220                      1.3    0.15    0    43</code></pre>
+<pre><code>## 9           111          222                      1.4    0.042    0    29</code></pre>
+<pre><code>## 9           112          224                      1.3    0.07    0    29</code></pre>
+<pre><code>## 9           113          226                      1.3    0.013    0    25</code></pre>
+<pre><code>## 9           114          228                      1.3    0.098    0    36</code></pre>
+<pre><code>## 9           115          230                      1.2    0.038    0    29</code></pre>
+<pre><code>## 9           116          232                      1.3    0.057    0    36</code></pre>
+<pre><code>## 9           117          234                      1.3    0.024    0    30</code></pre>
+<pre><code>## 9           118          236                      1.3    0.051    0    31</code></pre>
+<pre><code>## 10           119          216                      1.3    0.00072    0    14</code></pre>
+<pre><code>## 10           120          218                      1.5    0.054    0    41</code></pre>
+<pre><code>## 10           121          220                      1.2    0.011    0    24</code></pre>
+<pre><code>## 10           122          221                      1.4    0.084    0    29</code></pre>
+<pre><code>## 10           123          223                      1.4    0.01    0    24</code></pre>
+<pre><code>## 10           124          225                      1.3    0.063    0    33</code></pre>
+<pre><code>## 11           125          208                      1.5    0.0019    0    18</code></pre>
+<pre><code>## 11           126          210                      1.3    0.076    0    35</code></pre>
+<pre><code>## 12           127          195                      1.5    0.018    0    23</code></pre>
+<pre><code>## 12           128          196                      1.4    0.15    0    41</code></pre>
+<pre><code>## 12           129          198                      1.4    0.028    0    27</code></pre>
+<pre><code>## 12           130          200                      1.3    0.1    0    51</code></pre>
+<pre><code>## 12           131          201                      1.3    0.062    0    29</code></pre>
+<pre><code>## 12           132          203                      1.2    0.17    0    33</code></pre>
+<pre><code>## 13           133          190                      1.5    0.0061    0    22</code></pre>
+<pre><code>## 13           134          191                      1.5    0.015    0    25</code></pre>
+<pre><code>## 13           135          192                      1.3    0.03    0    27</code></pre>
+<pre><code>## 14           136          181                      1.6    0.00064    0    14</code></pre>
+<pre><code>## 14           137          182                      1.3    0.11    0    32</code></pre>
+<pre><code>## 14           138          184                      1.4    0.029    0    28</code></pre>
+<pre><code>## 14           139          185                      1.4    0.16    0    49</code></pre>
+<pre><code>## 14           140          186                      1.4    0.049    0    30</code></pre>
+<pre><code>## 14           141          188                      1.2    0.15    0    54</code></pre>
+<pre><code>## 14           142          189                      1.5    0.057    0    28</code></pre>
+<pre><code>## 14           143          190                      1.4    0.071    0    35</code></pre>
+<pre><code>## 14           144          192                      1.5    0.18    0    41</code></pre>
+<pre><code>## 14           145          193                      1.3    0.03    0    30</code></pre>
+<pre><code>## 14           146          194                      1.4    0.18    0    46</code></pre>
+<pre><code>## 14           147          196                      1.3    0.024    0    28</code></pre>
+<pre><code>## 14           148          197                      1.4    0.026    0    29</code></pre>
+<pre><code>## 14           149          198                      1.4    0.06    0    34</code></pre>
+<pre><code>## 14           150          200                      1.3    0.01    0    25</code></pre>
+<pre><code>## 15           151          188                      1.5    0.003    0    19</code></pre>
+<pre><code>## 15           152          190                      1.4    0.16    0    33</code></pre>
+<pre><code>## 15           153          191                      1.4    0.18    0    50</code></pre>
+<pre><code>## 15           154          192                      1.5    0.032    0    30</code></pre>
+<pre><code>## 15           155          193                      1.5    0.065    0    34</code></pre>
+<pre><code>## 15           156          195                      1.4    0.033    0    28</code></pre>
+<pre><code>## 15           157          196                      1.3    0.05    0    32</code></pre>
+<pre><code>## 15           158          197                      1.4    0.031    0    27</code></pre>
+<pre><code>## 15           159          198                      1.3    0.012    0    26</code></pre>
+<pre><code>## 15           160          200                      1.5    0.082    0    33</code></pre>
+<pre><code>## 15           161          201                      1.4    0.046    0    33</code></pre>
+<pre><code>## 15           162          202                      1.2    0.19    0    41</code></pre>
+<pre><code>## 15           163          203                      1.2    0.14    0    29</code></pre>
+<pre><code>## 15           164          205                      1.3    0.067    0    26</code></pre>
+<pre><code>## 15           165          206                      1.4    0.014    0    25</code></pre>
+<pre><code>## 15           166          207                      1.3    0.095    0    29</code></pre>
+<pre><code>## 15           167          208                      1.2    0.062    0    30</code></pre>
+<pre><code>## 16           168          197                      1.3    0.0067    0    21</code></pre>
+<pre><code>## 16           169          198                      1.4    0.017    0    26</code></pre>
+<pre><code>## 16           170          200                      1.3    0.15    0    45</code></pre>
+<pre><code>## 16           171          201                      1.3    0.025    0    29</code></pre>
+<pre><code>## 16           172          202                      1.3    0.052    0    31</code></pre>
+<pre><code>## 16           173          203                      1.4    0.0083    0    23</code></pre>
+<pre><code>## 16           174          204                      1.4    0.025    0    28</code></pre>
+<pre><code>## 16           175          205                      1.3    0.043    0    28</code></pre>
+<pre><code>## 16           176          207                      1.5    0.032    0    30</code></pre>
+<pre><code>## 16           177          208                      1.2    0.036    0    34</code></pre>
+<pre><code>## 17           178          197                      1.5    0.0043    0    21</code></pre>
+<pre><code>## 17           179          198                      1.5    0.16    0    34</code></pre>
+<pre><code>## 17           180          200                      1.3    0.081    0    30</code></pre>
+<pre><code>## 17           181          201                      1.4    0.068    0    33</code></pre>
+<pre><code>## 17           182          202                      1.4    0.14    0    41</code></pre>
+<pre><code>## 17           183          203                      1.3    0.064    0    32</code></pre>
+<pre><code>## 17           184          204                      1.5    0.026    0    28</code></pre>
+<pre><code>## 17           185          205                      1.5    0.035    0    29</code></pre>
+<pre><code>## 17           186          206                      1.4    0.045    0    26</code></pre>
+<pre><code>## 17           187          207                      1.3    0.032    0    27</code></pre>
+<pre><code>## 17           188          208                      1.4    0.051    0    33</code></pre>
+<pre><code>## 18           189          198                      1.3    0.0011    0    16</code></pre>
+<pre><code>## 18           190          200                      1.2    0.026    0    26</code></pre>
+<pre><code>## 18           191          201                      1.3    0.05    0    32</code></pre>
+<pre><code>## 18           192          202                      1.5    0.045    0    32</code></pre>
+<pre><code>## 18           193          203                      1.5    0.039    0    28</code></pre>
+<pre><code>## 18           194          204                      1.4    0.18    0    45</code></pre>
+<pre><code>## 18           195          205                      1.3    0.14    0    39</code></pre>
+<pre><code>## 18           196          206                      1.3    0.036    0    31</code></pre>
+<pre><code>## 18           197          207                      1.3    0.041    0    31</code></pre>
+<pre><code>## 18           198          208                      1.5    0.034    0    32</code></pre>
+<pre><code>## 18           199          209                      1.4    0.019    0    27</code></pre>
+<pre><code>## 18           200          210                      1.4    0.12    0    35</code></pre>
+<pre><code>## 18           201          211                      1.3    0.017    0    29</code></pre>
+<pre><code>## 18           202          212                      1.3    0.02    0    27</code></pre>
+<pre><code>## 18           203          213                      1.3    0.036    0    29</code></pre>
+<pre><code>## 18           204          214                      1.4    0.019    0    27</code></pre>
+<pre><code>## 18           205          215                      1.2    0.12    0    36</code></pre>
+<pre><code>## 18           206          216                      1.4    0.042    0    28</code></pre>
+<pre><code>## 18           207          217                      1.5    0.13    0    41</code></pre>
+<pre><code>## 18           208          218                      1.3    0.012    0    26</code></pre>
+<pre><code>## 18           209          220                      1.3    0.047    0    27</code></pre>
+<pre><code>## 18           210          221                      1.3    0.1    0    39</code></pre>
+<pre><code>## 18           211          222                      1.3    0.045    0    36</code></pre>
+<pre><code>## 18           212          223                      1.3    0.029    0    27</code></pre>
+<pre><code>## 18           213          224                      1.3    0.009    0    23</code></pre>
+<pre><code>## 18           214          225                      1.3    0.14    0    43</code></pre>
+<pre><code>## 18           215          226                      1.3    0.066    0    29</code></pre>
+<pre><code>## 18           216          227                      1.3    0.019    0    25</code></pre>
+<pre><code>## 18           217          228                      1.4    0.016    0    26</code></pre>
+<pre><code>## 18           218          229                      1.5    0.04    0    27</code></pre>
+<pre><code>## 18           219          230                      1.4    0.024    0    28</code></pre>
+<pre><code>## 18           220          231                      1.4    0.017    0    27</code></pre>
+<pre><code>## 18           221          232                      1.2    0.029    0    28</code></pre>
+<pre><code>## 18           222          233                      1.4    0.036    0    30</code></pre>
+<pre><code>## 18           223          234                      1.3    0.05    0    32</code></pre>
+<pre><code>## 18           224          235                      1.3    0.013    0    24</code></pre>
+<pre><code>## 18           225          236                      1.5    0.045    0    27</code></pre>
+<pre><code>## 18           226          237                      1.3    0.043    0    31</code></pre>
+<pre><code>## 18           227          238                      1.3    0.012    0    24</code></pre>
+<pre><code>## 18           228          240                      1.4    0.049    0    27</code></pre>
+<pre><code>## 18           229          241                      1.3    0.094    0    40</code></pre>
+<pre><code>## 18           230          242                      1.5    0.018    0    25</code></pre>
+<pre><code>## 18           231          243                      1.3    0.086    0    37</code></pre>
+<pre><code>## 18           232          244                      1.3    0.046    0    30</code></pre>
+<pre><code>## 19           233          233                      1.2    0.0046    0    20</code></pre>
+<pre><code>## 19           234          234                      1.4    0.0099    0    24</code></pre>
+<pre><code>## 19           235          235                      1.5    0.016    0    24</code></pre>
+<pre><code>## 19           236          236                      1.3    0.036    0    30</code></pre>
+<pre><code>## 19           237          237                      1.4    0.02    0    26</code></pre>
+<pre><code>## 19           238          238                      1.4    0.043    0    30</code></pre>
+<pre><code>## 19           239          239                      1.4    0.0077    0    23</code></pre>
+<pre><code>## 19           240          240                      1.3    0.065    0    34</code></pre>
+<pre><code>## 19           241          241                      1.3    0.1    0    34</code></pre>
+<pre><code>## 19           242          242                      1.3    0.14    0    56</code></pre>
+<pre><code>## 19           243          243                      1.4    0.019    0    26</code></pre>
+<pre><code>## 19           244          244                      1.3    0.11    0    30</code></pre>
+<pre><code>## 19           245          245                      1.3    0.071    0    30</code></pre>
+<pre><code>## 19           246          246                      1.5    0.15    0    59</code></pre>
+<pre><code>## 20           247          235                      1.3    0.014    0    22</code></pre>
+<pre><code>## Collection of simulation particles under PRC completed in 1410.2 seconds...</code></pre>
+<pre><code>## Function completed in 1765.36 seconds.</code></pre>
 <p>Let’s analyze it with ordinary BM with a bound</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">system.time</span>(
 resultsBound&lt;-<span class="kw">doRun_prc</span>(
@@ -275,7 +476,7 @@ resultsBound&lt;-<span class="kw">doRun_prc</span>(
   <span class="dt">intrinsicPriorsValues=</span><span class="kw">matrix</span>(<span class="kw">c</span>(<span class="dv">10</span>, <span class="dv">10</span>, <span class="op">-</span><span class="dv">10</span>, <span class="dv">1</span>), <span class="dt">nrow=</span><span class="dv">2</span>, <span class="dt">byrow=</span><span class="ot">FALSE</span>),
   <span class="dt">extrinsicPriorsFns=</span><span class="kw">c</span>(<span class="st">&quot;fixed&quot;</span>),
   <span class="dt">extrinsicPriorsValues=</span><span class="kw">matrix</span>(<span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">0</span>), <span class="dt">nrow=</span><span class="dv">2</span>, <span class="dt">byrow=</span><span class="ot">FALSE</span>),
-  <span class="dt">generation.time=</span><span class="dv">1000000</span>,
+  <span class="dt">generation.time=</span>generation.time,
   <span class="dt">standardDevFactor=</span><span class="fl">0.2</span>,
   <span class="dt">plot=</span><span class="ot">FALSE</span>,
   <span class="dt">StartSims=</span><span class="dv">10</span>,
@@ -285,9 +486,9 @@ resultsBound&lt;-<span class="kw">doRun_prc</span>(
   <span class="dt">numParticles=</span><span class="dv">20</span>,
   <span class="dt">jobName=</span><span class="st">&quot;BMwithBoundRun&quot;</span>,
   <span class="dt">stopRule=</span><span class="ot">FALSE</span>,
-  <span class="dt">multicore=</span><span class="ot">TRUE</span>,
-  <span class="dt">coreLimit=</span><span class="dv">4</span>,
-  <span class="dt">verboseParticles=</span><span class="ot">TRUE</span>
+  <span class="dt">multicore=</span>multicore,
+  <span class="dt">coreLimit=</span>coreLimit,
+  <span class="dt">verboseParticles=</span><span class="ot">FALSE</span>
   )
 )</code></pre></div>
 <pre><code>## The effective timeStep for this tree will be 0.055, as a proportion of tree height (root to furthest tip)...</code></pre>
@@ -299,129 +500,11 @@ resultsBound&lt;-<span class="kw">doRun_prc</span>(
 <pre><code>## Given generation time, a total of 204 generations will occur over this tree</code></pre>
 <pre><code>## Number of initial simulations set to 10</code></pre>
 <pre><code>## Doing initial simulations...</code></pre>
-<pre><code>## Initial simulations took 48.36 seconds</code></pre>
+<pre><code>## Initial simulations took 26.26 seconds</code></pre>
 <pre><code>## Finding distribution of distances...</code></pre>
 <pre><code>## Beginning partial rejection control algorithm...</code></pre>
-<pre><code>## 
-## STARTING DATA GENERATION STEP 1</code></pre>
-<pre><code>## Successes   Attempts   Exp. # of Attempts Req. Params.</code></pre>
-<pre><code>## 1           1          10                      1.1    0.23    0    251           1          10                      1.1    -7.4    0    25</code></pre>
-<pre><code>## 2           2          13                      1.5    0.034    0    202           2          13                      1.5    -12    0    20</code></pre>
-<pre><code>## 3           3          15                      1.2    0.0017    0    243           3          15                      1.2    -12    0    24</code></pre>
-<pre><code>## 4           4          16                      1.2    0.16    0    304           4          16                      1.2    -10    0    30</code></pre>
-<pre><code>## 5           5          16                      1.4    0.13    0    255           5          16                      1.4    -8.7    0    25</code></pre>
-<pre><code>## 6           6          17                      1.3    0.023    0    206           6          17                      1.3    -10    0    20</code></pre>
-<pre><code>## 7           7          17                      1.6    0.019    0    247           7          17                      1.6    -8.5    0    24</code></pre>
-<pre><code>## 8           8          17                      1.3    0.31    0    398           8          17                      1.3    -8.6    0    39</code></pre>
-<pre><code>## 9           9          18                      1.2    0.0024    0    249           9          18                      1.2    -11    0    24</code></pre>
-<pre><code>## 10           10          18                      1.1    0.051    0    2410           10          18                      1.1    -9.9    0    24</code></pre>
-<pre><code>## 11           11          18                      1.4    0.018    0    1911           11          18                      1.4    -9.7    0    19</code></pre>
-<pre><code>## 12           12          18                      1.1    0.063    0    2012           12          18                      1.1    -10    0    20</code></pre>
-<pre><code>## 13           13          18                      1.5    0.071    0    1813           13          18                      1.5    -8.4    0    18</code></pre>
-<pre><code>## 14           14          18                      1.5    0.02    0    2114           14          18                      1.5    -9.9    0    21</code></pre>
-<pre><code>## 15           15          18                      1.4    0.017    0    2215           15          18                      1.4    -10    0    22</code></pre>
-<pre><code>## 16           16          18                      1.2    0.047    0    2016           16          18                      1.2    -11    0    20</code></pre>
-<pre><code>## 17           17          18                      1.2    0.1    0    2117           17          18                      1.2    -9.3    0    21</code></pre>
-<pre><code>## 18           18          18                      0.88    0.11    0    2618           18          18                      0.88    -9.7    0    26</code></pre>
-<pre><code>## 18           19          20                      1.3    0.64    0    6118           19          20                      1.3    -9.6    0    61</code></pre>
-<pre><code>## 19           20          20                      1.4    0.036    0    2219           20          20                      1.4    -9    0    22</code></pre>
-<pre><code>## 20           21          20                      1    0.14    0    2820           21          20                      1    -11    0    28</code></pre>
-<pre><code>## 
-## STARTING DATA GENERATION STEP 2</code></pre>
-<pre><code>## particleWeights
-## 0.05 0.05 0.05 0.05 0.05 0.05 0.05 0.05 0.05 0.05 0.05 0.05 0.05 0.05 0.05 0.05 0.05 0.05 0.05 0.05</code></pre>
-<pre><code>## Successes   Attempts   Exp. # of Attempts Req. Params.</code></pre>
-<pre><code>## 1           1          10                      1.6    0.049    0    221           1          10                      1.6    -12    0    22</code></pre>
-<pre><code>## 1           2          20                      1.2    0.15    0    421           2          20                      1.2    -9    0    42</code></pre>
-<pre><code>## 2           3          20                      1.2    0.0025    0    222           3          20                      1.2    -12    0    22</code></pre>
-<pre><code>## 3           4          20                      1.1    0.056    0    253           4          20                      1.1    -9.9    0    25</code></pre>
-<pre><code>## 4           5          20                      1.3    0.19    0    214           5          20                      1.3    -10    0    21</code></pre>
-<pre><code>## 5           6          20                      1.1    0.14    0    265           6          20                      1.1    -9.4    0    26</code></pre>
-<pre><code>## 6           7          20                      0.86    0.096    0    276           7          20                      0.86    -9.8    0    27</code></pre>
-<pre><code>## 7           8          20                      1.2    0.089    0    257           8          20                      1.2    -8.9    0    25</code></pre>
-<pre><code>## 8           9          20                      1.1    0.012    0    208           9          20                      1.1    -9.8    0    20</code></pre>
-<pre><code>## 9           10          20                      1.5    0.06    0    259           10          20                      1.5    -8.5    0    25</code></pre>
-<pre><code>## 10           11          20                      1.1    0.064    0    1810           11          20                      1.1    -10    0    18</code></pre>
-<pre><code>## 11           12          20                      1.5    0.013    0    2111           12          20                      1.5    -8.8    0    21</code></pre>
-<pre><code>## 12           13          20                      1.2    0.063    0    2612           13          20                      1.2    -10    0    26</code></pre>
-<pre><code>## 12           14          21                      1.3    0.35    0    3012           14          21                      1.3    -8.5    0    30</code></pre>
-<pre><code>## 13           15          21                      1.4    0.043    0    2113           15          21                      1.4    -10    0    21</code></pre>
-<pre><code>## 14           16          21                      1.1    0.045    0    2014           16          21                      1.1    -11    0    20</code></pre>
-<pre><code>## 15           17          21                      1.2    0.043    0    2115           17          21                      1.2    -10    0    21</code></pre>
-<pre><code>## 15           18          22                      1.4    0.11    0    3515           18          22                      1.4    -8.9    0    35</code></pre>
-<pre><code>## 16           19          22                      1.2    0.003    0    2216           19          22                      1.2    -11    0    22</code></pre>
-<pre><code>## 17           20          22                      1.1    0.043    0    1817           20          22                      1.1    -11    0    18</code></pre>
-<pre><code>## 17           21          23                      1.5    0.00014    0    3217           21          23                      1.5    -10    0    32</code></pre>
-<pre><code>## 18           22          23                      1.2    0.012    0    2018           22          23                      1.2    -12    0    20</code></pre>
-<pre><code>## 19           23          23                      1.6    0.055    0    2419           23          23                      1.6    -12    0    24</code></pre>
-<pre><code>## 20           24          22                      1.2    0.045    0    1820           24          22                      1.2    -11    0    18</code></pre>
-<pre><code>## 
-## STARTING DATA GENERATION STEP 3</code></pre>
-<pre><code>## particleWeights
-## 0.026 0.064 0.05 0.065 0.029 0.053 0.0084 0.026 0.095 0.07 0.048 0.052 0.015 0.065 0.089 0.047 0.053 0.045 0.04 0.061</code></pre>
-<pre><code>## Successes   Attempts   Exp. # of Attempts Req. Params.</code></pre>
-<pre><code>## 0           1          20                      1.2    0.063    0    240           1          20                      1.2    -10    0    24</code></pre>
-<pre><code>## 1           2          20                      1.2    0.073    0    191           2          20                      1.2    -10    0    19</code></pre>
-<pre><code>## 2           3          20                      1.2    0.032    0    202           3          20                      1.2    -11    0    20</code></pre>
-<pre><code>## 2           4          26                      1.2    0.18    0    422           4          26                      1.2    -11    0    42</code></pre>
-<pre><code>## 2           5          33                      1.3    0.00087    0    262           5          33                      1.3    -10    0    26</code></pre>
-<pre><code>## 2           6          40                      1.1    0.028    0    232           6          40                      1.1    -11    0    23</code></pre>
-<pre><code>## 3           7          35                      1.1    0.038    0    193           7          35                      1.1    -11    0    19</code></pre>
-<pre><code>## 4           8          32                      1.1    0.028    0    184           8          32                      1.1    -10    0    18</code></pre>
-<pre><code>## 4           9          36                      1.5    0.072    0    434           9          36                      1.5    -8.3    0    43</code></pre>
-<pre><code>## 4           10          40                      1.5    0.068    0    214           10          40                      1.5    -8.5    0    21</code></pre>
-<pre><code>## 5           11          36                      1.3    0.035    0    195           11          36                      1.3    -12    0    19</code></pre>
-<pre><code>## 5           12          40                      1.1    0.033    0    225           12          40                      1.1    -12    0    22</code></pre>
-<pre><code>## 5           13          43                      1.2    0.18    0    395           13          43                      1.2    -10    0    39</code></pre>
-<pre><code>## 6           14          40                      1.2    0.053    0    206           14          40                      1.2    -10    0    20</code></pre>
-<pre><code>## 7           15          37                      1.2    0.041    0    167           15          37                      1.2    -12    0    16</code></pre>
-<pre><code>## 7           16          40                      1.2    0.058    0    227           16          40                      1.2    -11    0    22</code></pre>
-<pre><code>## 7           17          42                      1.1    0.08    0    247           17          42                      1.1    -10    0    24</code></pre>
-<pre><code>## 8           18          40                      1.2    0.049    0    208           18          40                      1.2    -10    0    20</code></pre>
-<pre><code>## 8           19          42                      1.5    0.027    0    218           19          42                      1.5    -8.4    0    21</code></pre>
-<pre><code>## 8           20          44                      1.3    0.22    0    468           20          44                      1.3    -10    0    46</code></pre>
-<pre><code>## 9           21          42                      1.1    0.034    0    199           21          42                      1.1    -11    0    19</code></pre>
-<pre><code>## 9           22          44                      1.2    0.16    0    219           22          44                      1.2    -9.5    0    21</code></pre>
-<pre><code>## 10           23          41                      1.1    0.07    0    1810           23          41                      1.1    -9.9    0    18</code></pre>
-<pre><code>## 11           24          40                      1.5    0.055    0    1811           24          40                      1.5    -8.4    0    18</code></pre>
-<pre><code>## 11           25          41                      1.1    0.042    0    2011           25          41                      1.1    -10    0    20</code></pre>
-<pre><code>## 12           26          40                      1.3    0.021    0    1612           26          40                      1.3    -12    0    16</code></pre>
-<pre><code>## 13           27          38                      1.2    0.052    0    1313           27          38                      1.2    -12    0    13</code></pre>
-<pre><code>## 13           28          40                      1.3    0.00054    0    2513           28          40                      1.3    -11    0    25</code></pre>
-<pre><code>## 13           29          41                      1.2    0.045    0    2813           29          41                      1.2    -11    0    28</code></pre>
-<pre><code>## 13           30          42                      0.87    0.1    0    2113           30          42                      0.87    -10    0    21</code></pre>
-<pre><code>## 13           31          44                      1.2    0.061    0    2613           31          44                      1.2    -10    0    26</code></pre>
-<pre><code>## 13           32          45                      1.5    0.047    0    2313           32          45                      1.5    -8.8    0    23</code></pre>
-<pre><code>## 13           33          47                      1.2    0.0036    0    2113           33          47                      1.2    -12    0    21</code></pre>
-<pre><code>## 13           34          48                      1.1    0.0076    0    2113           34          48                      1.1    -11    0    21</code></pre>
-<pre><code>## 13           35          50                      1.2    0.18    0    4013           35          50                      1.2    -9    0    40</code></pre>
-<pre><code>## 13           36          51                      1.2    0.055    0    2213           36          51                      1.2    -11    0    22</code></pre>
-<pre><code>## 13           37          52                      1.5    0.055    0    2213           37          52                      1.5    -8.3    0    22</code></pre>
-<pre><code>## 14           38          50                      1.1    0.022    0    2014           38          50                      1.1    -10    0    20</code></pre>
-<pre><code>## 15           39          48                      1.1    0.027    0    1915           39          48                      1.1    -12    0    19</code></pre>
-<pre><code>## 15           40          50                      1.6    0.069    0    3315           40          50                      1.6    -12    0    33</code></pre>
-<pre><code>## 15           41          51                      1.1    0.031    0    2215           41          51                      1.1    -9.8    0    22</code></pre>
-<pre><code>## 15           42          52                      1.2    0.038    0    2115           42          52                      1.2    -10    0    21</code></pre>
-<pre><code>## 16           43          50                      1.2    0.016    0    2016           43          50                      1.2    -11    0    20</code></pre>
-<pre><code>## 16           44          51                      1.2    0.028    0    2116           44          51                      1.2    -11    0    21</code></pre>
-<pre><code>## 16           45          52                      1.5    0.068    0    2716           45          52                      1.5    -8.3    0    27</code></pre>
-<pre><code>## 16           46          54                      1.1    0.1    0    3116           46          54                      1.1    -10    0    31</code></pre>
-<pre><code>## 16           47          55                      1.2    0.19    0    4416           47          55                      1.2    -10    0    44</code></pre>
-<pre><code>## 17           48          53                      1.6    0.06    0    1917           48          53                      1.6    -12    0    19</code></pre>
-<pre><code>## 17           49          54                      1.2    0.069    0    2017           49          54                      1.2    -11    0    20</code></pre>
-<pre><code>## 17           50          55                      1.6    0.07    0    2217           50          55                      1.6    -12    0    22</code></pre>
-<pre><code>## 18           51          53                      1.1    0.064    0    2018           51          53                      1.1    -10    0    20</code></pre>
-<pre><code>## 18           52          54                      1.2    0.036    0    2318           52          54                      1.2    -11    0    23</code></pre>
-<pre><code>## 19           53          53                      1    0.027    0    2019           53          53                      1    -11    0    20</code></pre>
-<pre><code>## 19           54          54                      1.6    0.04    0    2819           54          54                      1.6    -8.5    0    28</code></pre>
-<pre><code>## 19           55          55                      1.2    0.023    0    2119           55          55                      1.2    -10    0    21</code></pre>
-<pre><code>## 19           56          56                      1.2    0.022    0    2119           56          56                      1.2    -12    0    21</code></pre>
-<pre><code>## 19           57          57                      1.1    0.066    0    2319           57          57                      1.1    -12    0    23</code></pre>
-<pre><code>## 19           58          58                      0.8    0.12    0    2919           58          58                      0.8    -9.9    0    29</code></pre>
-<pre><code>## 19           59          59                      1.1    0.076    0    2119           59          59                      1.1    -11    0    21</code></pre>
-<pre><code>## 20           60          57                      1.1    0.0073    0    1920           60          57                      1.1    -11    0    19</code></pre>
-<pre><code>## Collection of simulation particles under PRC completed in 693.22 seconds...</code></pre>
-<pre><code>## Function completed in 1239.66 seconds.</code></pre>
+<pre><code>## Collection of simulation particles under PRC completed in 142.7 seconds...</code></pre>
+<pre><code>## Function completed in 439.3 seconds.</code></pre>
 
 
 

@@ -77,9 +77,9 @@ rownames(charData)<-names(sutureComplexity)
 
 Let's analyze it with ordinary BM
 
-```{r}
+```{r eval=FALSE}
 
-system.time(
+
 results<-doRun_prc(
   phy = tree,
   traits = charData,
@@ -105,14 +105,14 @@ results<-doRun_prc(
   coreLimit=coreLimit,
   verboseParticles=TRUE
   )
-)
+
 ```
 
 Let's analyze it with ordinary BM with a bound
   
-```{r}
+```{r eval=FALSE}
 
-system.time(
+
 resultsBound<-doRun_prc(
   phy = tree,
   traits = charData,
@@ -138,7 +138,7 @@ resultsBound<-doRun_prc(
   coreLimit=coreLimit,
   verboseParticles=FALSE
   )
-)
+
 
 ```
 
