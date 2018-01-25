@@ -125,8 +125,13 @@ summaryStatsLong<-function(phy, traits,
 	raw.median<-as.numeric(median(traits))	#message("summaryStatsLong")
 
 	pic<-makeQuiet(as.vector(pic.ortho(as.matrix(traits), phy)))  #independent contrasts
+	#
 	aceResults<-makeQuiet(ace(traits, phy))
-	anc.states<-as.vector(aceResults$ace) #ancestral states
+	#anc.states<-as.vector(aceResults$ace) #ancestral states
+	
+	#fastAnc is much faster than ape's ace for our purposes
+	anc.states<-phytools::fastAnc(tree=tree,x=fakeData)
+	
 
 	#combined summary stats
 	summarystats<-c(brown.lnl, brown.beta, brown.aic, lambda.lnl, lambda.beta, lambda.lambda, lambda.aic,
