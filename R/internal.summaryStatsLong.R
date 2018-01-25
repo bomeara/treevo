@@ -68,9 +68,10 @@ solnfreq <- function(fitContResult, tol = .Machine$double.eps^0.5){
 # @name summaryStatsLong
 # @rdname summaryStatsLong
 # @export
-summaryStatsLong<-function(phy, traits,
-		#niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25,
-		do.CI=is.ultrametric(phy)) {
+summaryStatsLong<-function(phy, traits
+		#,niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25,
+		#,do.CI=is.ultrametric(phy)
+		) {
 	#
 	if (any(phy$edge.length==0)){
 		if(!any(phy$edge[which(phy$edge.length==0),2] %in% phy$edge[,1])){
@@ -117,7 +118,6 @@ summaryStatsLong<-function(phy, traits,
 	white.lnl<-white$lnl
 	white.aic <-white$aic
 
-
 	raw.mean<-as.numeric(mean(traits))
 	raw.max<-as.numeric(max(traits))
 	raw.min<-as.numeric(min(traits))
@@ -125,27 +125,31 @@ summaryStatsLong<-function(phy, traits,
 	raw.median<-as.numeric(median(traits))	#message("summaryStatsLong")
 
 	pic<-makeQuiet(as.vector(pic.ortho(as.matrix(traits), phy)))  #independent contrasts
-	#
+
+
 	#aceResults<-makeQuiet(ace(traits, phy))
 	#anc.states<-as.vector(aceResults$ace) #ancestral states
+	#if(do.CI) {
+	#	anc.CIrange<-as.vector(aceResults$CI95[,2]-aceResults$CI95[,1]) #range between upper and lower 95% CI
+	#	summarystats <- c(summarystats, anc.CIrange)
+	#}
+
 	
 	#fastAnc is much faster than ape's ace for our purposes
-	anc.states<-phytools::fastAnc(tree=phy,x=traits)
+	ancResults<-phytools::fastAnc(tree=phy,x=traits,CI=TRUE)
+	anc.states<-ancResults$ace
+	anc.CIrange<-ancResults$CI
 	
 
 	#combined summary stats
 	summarystats<-c(brown.lnl, brown.beta, brown.aic, lambda.lnl, lambda.beta, lambda.lambda, lambda.aic,
 		delta.lnl, delta.beta, delta.delta, delta.aic, ou.lnl, ou.beta, ou.alpha, ou.aic, white.lnl, white.aic,
-		raw.mean, raw.max, raw.min, raw.var, raw.median, traits[[1]], pic, anc.states)
+		raw.mean, raw.max, raw.min, raw.var, raw.median, traits[[1]], pic, anc.states,anc.CIrange)
 
-	if(do.CI) {
-		anc.CIrange<-as.vector(aceResults$CI95[,2]-aceResults$CI95[,1]) #range between upper and lower 95% CI
-		summarystats <- c(summarystats, anc.CIrange)
-	}
 
 
 	summarystats[which(is.finite(summarystats)==FALSE)]<-NA
 	#
-	while(sink.number()>0) {sink()}
+	#while(sink.number()>0) {sink()}
 	summarystats
 	}
