@@ -285,7 +285,7 @@ doRun_prc<-function(
 	message("Given generation time, a total of ",round(totalGenerations)," generations will occur over this tree")
 	
 	#splits<-getSimulationSplits(phy) #initialize this info
-	taxon.df <- getTaxonDFWithPossibleExtinction(phy)
+	taxonDF <- getTaxonDFWithPossibleExtinction(phy)
 	
 	# get freevector
 	freevector<-getFreeVector(startingPriorsFns=startingPriorsFns, startingPriorsValues=startingPriorsValues,
@@ -345,7 +345,7 @@ doRun_prc<-function(
 	summaryValues<-matrix(nrow=0, ncol=length(summaryStatsLong(phy=phy, traits=traits
 		#niter.brown=200, niter.lambda=200, niter.delta=200, niter.OU=200, niter.white=200
 		)))
-	trueFreeValuesANDSummaryValues<-makeQuiet(parallelSimulateWithPriors(nrepSim=nrepSim, coreLimit=coreLimit, phy=phy,  taxon.df=taxon.df,
+	trueFreeValuesANDSummaryValues<-makeQuiet(parallelSimulateWithPriors(nrepSim=nrepSim, coreLimit=coreLimit, phy=phy,  taxonDF=taxonDF,
 		startingPriorsValues=startingPriorsValues, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues,
 		startingPriorsFns=startingPriorsFns, intrinsicPriorsFns=intrinsicPriorsFns, extrinsicPriorsFns=extrinsicPriorsFns,
 		freevector=freevector, timeStep=timeStep, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, multicore=multicore,
@@ -369,7 +369,7 @@ doRun_prc<-function(
 	#
 	pls.model.list <- makeQuiet(apply(trueFreeValuesMatrix, 2, returnPLSModel, summaryValuesMatrix=summaryValuesMatrix, validation=validation,
 		scale=scale, variance.cutoff = variance.cutoff))
-	originalSummaryValues <- summaryStatsLong(phy, traits,
+	originalSummaryValues <- summaryStatsLong(phy, traits
 		#niter.brown=200, niter.lambda=200, niter.delta=200, niter.OU=200, niter.white=200
 		)
 	#
@@ -498,7 +498,7 @@ doRun_prc<-function(
 			#
 			newparticleList[[1]]$distance<-abcDistance(
 				summaryValuesMatrix=summaryStatsLong(phy=phy,
-					traits=doSimulationWithPossibleExtinction(phy=NULL,  taxon.df=taxon.df,
+					traits=doSimulationWithPossibleExtinction(phy=NULL,  taxonDF=taxonDF,
 						intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn,
 						startingValues=newparticleList[[1]]$startingValues,
 						intrinsicValues=newparticleList[[1]]$intrinsicValues,
@@ -838,7 +838,7 @@ doRun_rej<-function(
 	message("Given generation time, a total of ",round(totalGenerations)," generations will occur over this tree")
 		
 	#splits<-getSimulationSplits(phy) #initialize this info
-	taxon.df <- getTaxonDFWithPossibleExtinction(phy=phy)
+	taxonDF <- getTaxonDFWithPossibleExtinction(phy=phy)
 
 	# get freevector
 	freevector<-getFreeVector(startingPriorsFns=startingPriorsFns, startingPriorsValues=startingPriorsValues,
@@ -911,7 +911,7 @@ doRun_rej<-function(
 	#	paste0("\n",niter.OU.g, " for OU"),
 	#	paste0("\n",niter.white.g, " for white noise")))
 	#
-	trueFreeValuesANDSummaryValues<-parallelSimulateWithPriors(nrepSim=nrepSim, coreLimit=coreLimit, phy=phy,  taxon.df=taxon.df,
+	trueFreeValuesANDSummaryValues<-parallelSimulateWithPriors(nrepSim=nrepSim, coreLimit=coreLimit, phy=phy,  taxonDF=taxonDF,
 		startingPriorsValues=startingPriorsValues, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues,
 		startingPriorsFns=startingPriorsFns, intrinsicPriorsFns=intrinsicPriorsFns, extrinsicPriorsFns=extrinsicPriorsFns,
 		freevector=freevector, timeStep=timeStep, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn,

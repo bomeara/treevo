@@ -71,8 +71,8 @@ mutateStates <- function(particle, startingPriorsValues, startingPriorsFns, intr
 # 	return(newtips)
 # }
 
-simulateTips <- function(particle, taxon.df, phy, intrinsicFn, extrinsicFn, timeStep) {
-	newtips<-doSimulationWithPossibleExtinction(taxon.df=taxon.df,
+simulateTips <- function(particle, taxonDF, phy, intrinsicFn, extrinsicFn, timeStep) {
+	newtips<-doSimulationWithPossibleExtinction(taxonDF=taxonDF,
 		intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, startingValues=particle$startingValues,
 		intrinsicValues=particle$intrinsicValues, extrinsicValues=particle$extrinsicValues, timeStep=timeStep)
 	return(newtips)

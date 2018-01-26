@@ -29,7 +29,7 @@
 
 #' @param phy A phylogenetic tree, in package \code{ape}'s \code{phylo} format.
 
-#' @param taxon.df A data.frame containing data on nodes (both tips and internal nodes) output by various internal functions.
+#' @param taxonDF A data.frame containing data on nodes (both tips and internal nodes) output by various internal functions.
 #' Can be supplied as input to spead up repeated calculations, but by default is
 #' \code{NULL}, which instead forces a calculation from input \code{phy}.
 
@@ -192,19 +192,19 @@
 doSimulationWithPossibleExtinction<-function(phy=NULL, intrinsicFn, extrinsicFn, startingValues, intrinsicValues, extrinsicValues,
 	generation.time=1000, TreeYears=max(branching.times(phy)) * 1e6,
 	timeStep=NULL, saveHistory=FALSE, saveRealParams=FALSE, jobName="", maxAttempts = 100,
-	returnAll = FALSE, verbose=FALSE, reject.NaN=TRUE, taxon.df=NULL, checkTimeStep=TRUE) {
+	returnAll = FALSE, verbose=FALSE, reject.NaN=TRUE, taxonDF=NULL, checkTimeStep=TRUE) {
 	#
 	
 	if(is.null(timeStep)){
 		timeStep<-generation.time/TreeYears
 		}
 	
-	if(is.null(taxon.df)){
-		taxon.df <- getTaxonDFWithPossibleExtinction(phy)
+	if(is.null(taxonDF)){
+		taxonDF <- getTaxonDFWithPossibleExtinction(phy)
 		}
 		
-	if(is.null(taxon.df) & is.null(phy)){
-		stop("phy or taxon.df must be provided as input")
+	if(is.null(taxonDF) & is.null(phy)){
+		stop("phy or taxonDF must be provided as input")
 		}
 	#
 	if (saveRealParams){
@@ -227,12 +227,12 @@ doSimulationWithPossibleExtinction<-function(phy=NULL, intrinsicFn, extrinsicFn,
 		endTime<-c()
 		}
 	#
-	numberofsteps<-max(taxon.df$endTime)/timeStep
-	mininterval<-min(taxon.df$endTime - taxon.df$startTime)
+	numberofsteps<-max(taxonDF$endTime)/timeStep
+	mininterval<-min(taxonDF$endTime - taxonDF$startTime)
 	#
 	if(checkTimeStep){
 		#if (numberofsteps<1000) {
-			#warning(paste0("You have only ", numberofsteps, " but should probably have a lot more. Please consider decreasing timeStep to no more than ", taxon.df[1, 1]/1000))
+			#warning(paste0("You have only ", numberofsteps, " but should probably have a lot more. Please consider decreasing timeStep to no more than ", taxonDF[1, 1]/1000))
 		#	}
 		if (floor(mininterval/timeStep)<50 & floor(mininterval/timeStep)>=3) {
 			warning(paste0("You have only ", floor(mininterval/timeStep),
@@ -248,126 +248,132 @@ doSimulationWithPossibleExtinction<-function(phy=NULL, intrinsicFn, extrinsicFn,
 		}
 	#
 	#initial setup
-	depthfrompresent = max(taxon.df$endTime)
+	depthfrompresent = max(taxonDF$endTime)
 	heightfromroot = 0
-	taxon.df$states[which(taxon.df$startTime==0)] <- startingValues
-	taxon.df.previous <- taxon.df
+	taxonDF$states[which(taxonDF$startTime==0)] <- startingValues
+	taxonDF.previous <- taxonDF
 	while(depthfrompresent>0) {
 		if(reject.NaN) {
-			taxon.df.previous <- taxon.df
+			taxonDF.previous <- taxonDF
 			}
 		#
 		depth.start <- depthfrompresent
 		depth.end <- depthfrompresent - timeStep
 		height.start <- heightfromroot
 		height.end <- heightfromroot + timeStep
-		ids.alive.at.start <- taxon.df$id[which(taxon.df$startTime <= height.start & taxon.df$endTime > height.start)]
-		ids.alive.at.end <-  taxon.df$id[which(taxon.df$endTime > height.end & taxon.df$startTime <= height.end)]
-		ids.only.alive.in.interval <- taxon.df$id[which(taxon.df$startTime > height.start & taxon.df$endTime < height.end)]
+		ids.alive.at.start <- taxonDF$id[which(taxonDF$startTime <= height.start & taxonDF$endTime > height.start)]
+		ids.alive.at.end <-  taxonDF$id[which(taxonDF$endTime > height.end & taxonDF$startTime <= height.end)]
+		ids.only.alive.in.interval <- taxonDF$id[which(taxonDF$startTime > height.start & taxonDF$endTime < height.end)]
 		ids.changing.status <-  c(ids.alive.at.start[!(ids.alive.at.start  %in% ids.alive.at.end)], ids.only.alive.in.interval)
-		ids.speciating <- c(taxon.df$id[which((taxon.df$id %in% ids.changing.status) & (!taxon.df$terminal))], ids.only.alive.in.interval)
-		alive.rows <- which(taxon.df$id %in% ids.alive.at.start)
-		current.states <- taxon.df$states[alive.rows]
-		#if(any(is.na(current.states))) {
-		#	#message(paste0("current.states ",current.states))
-		#	#message(paste0("taxon.df$id %in% ids.alive.at.start ",paste0(taxon.df$id %in% ids.alive.at.start,collapse=" ")))
+		ids.speciating <- c(taxonDF$id[which((taxonDF$id %in% ids.changing.status) & (!taxonDF$terminal))], ids.only.alive.in.interval)
+		aliveRows <- which(taxonDF$id %in% ids.alive.at.start)
+		currentStates <- taxonDF$states[aliveRows]
+		#if(any(is.na(currentStates))) {
+		#	#message(paste0("currentStates ",currentStates))
+		#	#message(paste0("taxonDF$id %in% ids.alive.at.start ",paste0(taxonDF$id %in% ids.alive.at.start,collapse=" ")))
 		#	message(c(height.start,height.end))
-		#	message(taxon.df[taxon.df$id %in% ids.alive.at.start,])
-		#	stop("there are NAs in current.states! How?? Something is very wrong")
+		#	message(taxonDF[taxonDF$id %in% ids.alive.at.start,])
+		#	stop("there are NAs in currentStates! How?? Something is very wrong")
 		#	}
 		#first evolve in this interval, then speciate
-		for (taxon.index in sequence(length(alive.rows))) {
-			if(is.na(taxon.df$states[alive.rows[taxon.index]])) {
-				taxon.df$states[alive.rows[taxon.index]] <- taxon.df$states[which(taxon.df$id==taxon.df$ancestorId[alive.rows[taxon.index]])]
-				if(is.na(taxon.df$states[alive.rows[taxon.index]])){
+		for (taxonIndex in aliveRows) {
+			if(is.na(taxonDF$states[taxonIndex])) {
+				whichAncestor<- which(taxonDF$id==taxonDF$ancestorId[taxonIndex])
+				taxonDF$states[taxonIndex] <- taxonDF$states[whichAncestor]
+				if(is.na(taxonDF$states[taxonIndex])){
 					stop("A taxon's ancestor has an NA character")
 					}
-				current.states[taxon.index]<-taxon.df$states[alive.rows[taxon.index]]
+				currentStates[taxonIndex]<-taxonDF$states[taxonIndex]
 				}
 			#
-			new.state <- taxon.df$states[alive.rows[taxon.index]] + intrinsicFn(params=intrinsicValues,
-				states=current.states[taxon.index], timefrompresent =depthfrompresent)+extrinsicFn(params=extrinsicValues,
-				selfstates=current.states[taxon.index], otherstates=current.states[-taxon.index], timefrompresent =depthfrompresent)
+			newState <- taxonDF$states[taxonIndex] + 
+				intrinsicFn(params = intrinsicValues, states = currentStates[taxonIndex], 
+					timefrompresent = depthfrompresent) + 
+				extrinsicFn(params = extrinsicValues, selfstates = currentStates[taxonIndex], 
+					otherstates = currentStates[-taxonIndex], timefrompresent = depthfrompresent)
 			#
-			if(is.na(new.state)) {
-				warning("A simulation run produced a state of NA - something is probably very wrong")
-				attempt.count=0
-				while(is.na(new.state) & attempt.count <= maxAttempts) {
-					old = taxon.df$states[alive.rows[taxon.index]]
-					intrinsic.displacement = intrinsicFn(params=intrinsicValues, states=current.states[taxon.index],
+			#
+			if(is.na(newState)) {	# what happens if I change this to a stop?
+				stop("A simulation run produced a state of NA - something is probably very wrong")
+				attempt.count<-0
+				while(is.na(newState) & attempt.count <= maxAttempts) {
+					old = taxonDF$states[taxonIndex]
+					intrinsic.displacement = intrinsicFn(params=intrinsicValues, states=currentStates[taxonIndex],
 						timefrompresent =depthfrompresent)
-					extrinsic.displacement = extrinsicFn(params=extrinsicValues, selfstates=current.states[taxon.index],
-						otherstates=current.states[-taxon.index], timefrompresent =depthfrompresent)
+					extrinsic.displacement = extrinsicFn(params=extrinsicValues, selfstates=currentStates[taxonIndex],
+						otherstates=currentStates[-taxonIndex], timefrompresent =depthfrompresent)
 					#if(is.na(intrinsic.displacement)){
 					#	stop("The intrinsicFn is returning NAs; something terrible has happened")
 					#	}
 					#if(is.na(extrinsic.displacement)){
 					#	stop("The extrinsicFn is returning NAs; something terrible has happened")
 					#	}
-					new.state <- old + intrinsic.displacement + extrinsic.displacement
+					newState <- old + intrinsic.displacement + extrinsic.displacement
 					warning(paste0("Attempt ", attempt.count, " led to using old value of ", old, " intrinsicFn return of ",intrinsic.displacement, " and extrinsicFn return of ", extrinsic.displacement))
 					#message(paste0("For diagnostic purposes: IntrinsicValues ",intrinsicValues))
 					attempt.count<-attempt.count+1
 					}
-				if(is.na(new.state) & attempt.count>maxAttempts) {
+				if(is.na(newState) & attempt.count>maxAttempts) {
 					if(is.na(extrinsic.displacement)){
 						message(paste0(ls(),collapse=", "))
-						#message(str(alive.rows))
-						message(paste0("taxon.index ",taxon.index,"\n",
-										"alive.rows ",paste0(alive.rows, collapse=", "),"\n",
-										"length(alive.rows) ",length(alive.rows),"\n",
-										"sequence(length(alive.rows))", paste(sequence(length(alive.rows)),collapse=", "), "\n",
-										"current.states ",paste(current.states,collapse=", "),"\n",
+						#message(str(aliveRows))
+						message(paste0("taxonIndex ",taxonIndex,"\n",
+										"aliveRows ",paste0(aliveRows, collapse=", "),"\n",
+										"length(aliveRows) ",length(aliveRows),"\n",
+										"sequence(length(aliveRows))", paste(sequence(length(aliveRows)),collapse=", "), "\n",
+										"currentStates ",paste(currentStates,collapse=", "),"\n",
 										"params ",extrinsicValues,"\n",
-										"selfstates ",current.states[taxon.index],"\n",
+										"selfstates ",currentStates[taxonIndex],"\n",
 										"otherstates ",paste(
-											current.states[-taxon.index],collapse=" "),"\n",
+											currentStates[-taxonIndex],collapse=" "),"\n",
 										"timefrompresent ",depthfrompresent,"\n"))
 						}
 					stop(paste0(
 						"Simulating with these parameters resulted in problematic results despite ", maxAttempts, " attempts",
-						"\nFor one example, taxon.df$states[alive.rows[taxon.index]] was ",
-						taxon.df$states[alive.rows[taxon.index]], ", for which intrinsicFn returned ",
-						intrinsicFn(params=intrinsicValues, states=current.states[taxon.index],
+						"\nFor one example, taxonDF$states[taxonIndex] was ",
+						taxonDF$states[taxonIndex], ", for which intrinsicFn returned ",
+						intrinsicFn(params=intrinsicValues, states=currentStates[taxonIndex],
 							timefrompresent =depthfrompresent)
 						, "\nand extrinsicFn returned ",
 						extrinsicFn(params=extrinsicValues,
-							selfstates=current.states[taxon.index], otherstates=current.states[-taxon.index],
+							selfstates=currentStates[taxonIndex], otherstates=currentStates[-taxonIndex],
 							timefrompresent =depthfrompresent
 							)
-						," with current.states[taxon.index] = ", current.states[taxon.index])
+						," with currentStates[taxonIndex] = ", currentStates[taxonIndex])
 						)
 					}
 				}
-			if(is.na(new.state)) {
-				stop("where are these NA new.states coming from?? Something is very wrong")
+			if(is.na(newState)) {
+				stop("where are these NA newStates coming from?? Something is very wrong")
 				}
-			taxon.df$states[alive.rows[taxon.index]] <- new.state
-		}
-		if(length(ids.speciating)>0) {
-			for (speciating.taxon.index in sequence(length(ids.speciating))) {
-				ancestor.row <- which(taxon.df$id==ids.speciating[speciating.taxon.index])
-				descendant.rows <- which(taxon.df$ancestorId==taxon.df$id[ancestor.row])
-				taxon.df$states[descendant.rows] <- taxon.df$states[ancestor.row]
+			taxonDF$states[taxonIndex] <- newState
 			}
-		}
+		# now specieate and pass one state to descendant
+		if(length(ids.speciating)>0) {
+			for (speciating.taxonIndex in sequence(length(ids.speciating))) {
+				ancestor.row <- which(taxonDF$id==ids.speciating[speciating.taxonIndex])
+				descendant.rows <- which(taxonDF$ancestorId==taxonDF$id[ancestor.row])
+				taxonDF$states[descendant.rows] <- taxonDF$states[ancestor.row]
+				}
+			}
+		#
 		depthfrompresent <- depth.end
 		heightfromroot <- height.end
 		if(verbose) {
-			message(paste0("now at height", height.end, "finishing at", max(taxon.df$endTime)))
-			message(taxon.df)
+			message(paste0("now at height", height.end, "finishing at", max(taxonDF$endTime)))
+			message(taxonDF)
 		}
 		if(reject.NaN) {
-			if(any(is.nan(taxon.df$states))) {
+			if(any(is.nan(taxonDF$states))) {
 				save(list=ls(), file="ErrorRun.rda")
 				stop(paste0("There was an NaN generated. See saved objects in ", getwd(), "/ErrorRun.rda", sep=""))
 			}
 		}
 	}
 	if(returnAll) {
-		return(taxon.df)
+		return(taxonDF)
 	}
-	final.results <- subset(taxon.df, taxon.df$terminal==TRUE)
+	final.results <- subset(taxonDF, taxonDF$terminal==TRUE)
 	final.result.df <- data.frame(states=final.results$states)
 	rownames(final.result.df) <- final.results$name
 	#
@@ -379,7 +385,7 @@ doSimulationWithPossibleExtinction<-function(phy=NULL, intrinsicFn, extrinsicFn,
 #' @export
 doSimulation<-function(phy=NULL, intrinsicFn, extrinsicFn, startingValues, intrinsicValues, extrinsicValues,
 	generation.time=1000, TreeYears=max(branching.times(phy)) * 1e6,
-	timeStep=NULL, saveHistory=FALSE, saveRealParams=FALSE, jobName="", taxon.df = NULL) {
+	timeStep=NULL, saveHistory=FALSE, saveRealParams=FALSE, jobName="", taxonDF = NULL) {
 
 	if(!is.ultrametric(phy)){
 		stop("phy must be ultrametric for function doSimulation")
@@ -389,8 +395,8 @@ doSimulation<-function(phy=NULL, intrinsicFn, extrinsicFn, startingValues, intri
 		timeStep<-generation.time/TreeYears
 		}
 	
-	if(is.null(taxon.df)){
-		taxon.df<-getSimulationSplits(phy)
+	if(is.null(taxonDF)){
+		taxonDF<-getSimulationSplits(phy)
 		}
 		
 	#
@@ -412,11 +418,11 @@ doSimulation<-function(phy=NULL, intrinsicFn, extrinsicFn, startingValues, intri
 		startTime<-c()
 		endTime<-c()
 	}
-	numberofsteps<-floor(taxon.df[1, 1]/timeStep)
-	mininterval<-min(taxon.df[1:(dim(taxon.df)[1]-1), 1]-taxon.df[2:(dim(taxon.df)[1]), 1])
+	numberofsteps<-floor(taxonDF[1, 1]/timeStep)
+	mininterval<-min(taxonDF[1:(dim(taxonDF)[1]-1), 1]-taxonDF[2:(dim(taxonDF)[1]), 1])
 
 	#if (numberofsteps<1000) {
-		#warning(paste0("You have only ", numberofsteps, " but should probably have a lot more. Please consider decreasing timeStep to no more than ", taxon.df[1, 1]/1000))
+		#warning(paste0("You have only ", numberofsteps, " but should probably have a lot more. Please consider decreasing timeStep to no more than ", taxonDF[1, 1]/1000))
 	#}
 	#if (floor(mininterval/timeStep)<50 {
 		#warning(paste0("You have only ", floor(mininterval/timeStep),
@@ -425,37 +431,37 @@ doSimulation<-function(phy=NULL, intrinsicFn, extrinsicFn, startingValues, intri
 	#}
 
 	#initial setup
-	timefrompresent=taxon.df[1, 1]
-	taxa<-list(abctaxon(id=taxon.df[1, 3], states=startingValues), abctaxon(id=taxon.df[1, 4], states=startingValues))
-	taxon.df<-taxon.df[2:dim(taxon.df)[1], ] #pop off top value
+	timefrompresent=taxonDF[1, 1]
+	taxa<-list(abctaxon(id=taxonDF[1, 3], states=startingValues), abctaxon(id=taxonDF[1, 4], states=startingValues))
+	taxonDF<-taxonDF[2:dim(taxonDF)[1], ] #pop off top value
 
 	#start running
 	while(timefrompresent>0) {
 		#message(timefrompresent)
 		#speciation if needed
-		while ((timefrompresent-timeStep)<=taxon.df[1, 1]) { #do speciation. changed from if to while to deal with effectively polytomies
+		while ((timefrompresent-timeStep)<=taxonDF[1, 1]) { #do speciation. changed from if to while to deal with effectively polytomies
 			originallength<-length(taxa)
 			taxontodelete<-Inf
 			originallength<-length(taxa)
 			taxontodelete<-Inf
 			for (i in 1:originallength) { #need to merge this from my branch still -DG
-				if (taxa[[i]]$id==taxon.df[1, 2]) {
+				if (taxa[[i]]$id==taxonDF[1, 2]) {
 					taxontodelete<-i
 					taxa[[originallength+1]] <- taxa[[i]]
 					taxa[[originallength+2]] <- taxa[[i]]
-					taxa[[originallength+1]]$id<-taxon.df[1, 3]
+					taxa[[originallength+1]]$id<-taxonDF[1, 3]
 					taxa[[originallength+1]]$timeSinceSpeciation<-0
-					taxa[[originallength+2]]$id<-taxon.df[1, 4]
+					taxa[[originallength+2]]$id<-taxonDF[1, 4]
 					taxa[[originallength+2]]$timeSinceSpeciation<-0
 				}
 			}
 			#message("taxontodelete = ", taxontodelete)
 			taxa<-taxa[-1*taxontodelete]
-			if(dim(taxon.df)[1]>1) {
-				taxon.df<-taxon.df[2:(dim(taxon.df)[1]), ] #pop off top value
+			if(dim(taxonDF)[1]>1) {
+				taxonDF<-taxonDF[2:(dim(taxonDF)[1]), ] #pop off top value
 			}
 			else {
-				taxon.df[1, ]<-c(-1, 0, 0, 0)
+				taxonDF[1, ]<-c(-1, 0, 0, 0)
 			}
 			#message("------------------- speciation -------------------")
 			#message(taxa)
@@ -514,7 +520,7 @@ doSimulation<-function(phy=NULL, intrinsicFn, extrinsicFn, startingValues, intri
 #' @export
 doSimulationForPlotting<-function(phy=NULL, intrinsicFn, extrinsicFn, startingValues, intrinsicValues,
 	extrinsicValues, 	generation.time=1000, TreeYears=max(branching.times(phy)) * 1e6,
-	timeStep=NULL, plot=FALSE, savePlot=FALSE, saveHistory=FALSE, saveRealParams=FALSE, jobName="", taxon.df=NULL) {
+	timeStep=NULL, plot=FALSE, savePlot=FALSE, saveHistory=FALSE, saveRealParams=FALSE, jobName="", taxonDF=NULL) {
 
 	if(!is.ultrametric(phy)){
 		stop("phy must be ultrametric for function doSimulationForPlotting")
@@ -524,8 +530,8 @@ doSimulationForPlotting<-function(phy=NULL, intrinsicFn, extrinsicFn, startingVa
 		timeStep<-generation.time/TreeYears
 		}	
 	
-	if(is.null(taxon.df)){
-		taxon.df<-getSimulationSplits(phy)
+	if(is.null(taxonDF)){
+		taxonDF<-getSimulationSplits(phy)
 		}
 
 	if (saveRealParams){
@@ -546,44 +552,44 @@ doSimulationForPlotting<-function(phy=NULL, intrinsicFn, extrinsicFn, startingVa
 		startTime<-c()
 		endTime<-c()
 	}
-		numberofsteps<-floor(taxon.df[1, 1]/timeStep)
-		mininterval<-min(taxon.df[1:(dim(taxon.df)[1]-1), 1]-taxon.df[2:(dim(taxon.df)[1]), 1])
+		numberofsteps<-floor(taxonDF[1, 1]/timeStep)
+		mininterval<-min(taxonDF[1:(dim(taxonDF)[1]-1), 1]-taxonDF[2:(dim(taxonDF)[1]), 1])
 		if (numberofsteps<1000) {
-			#warning(paste0("You have only ", numberofsteps, " but should probably have a lot more. Please consider decreasing timeStep to no more than ", taxon.df[1, 1]/1000))
+			#warning(paste0("You have only ", numberofsteps, " but should probably have a lot more. Please consider decreasing timeStep to no more than ", taxonDF[1, 1]/1000))
 		}
 		if (floor(mininterval/timeStep)<50) {
 			#warning(paste0("You have only ", floor(mininterval/timeStep), " timeSteps on the shortest branch in this dataset but should probably have a lot more. Please consider decreasing timeStep to no more than ", signif(mininterval/50)))
 		}
 	#initial setup
-		timefrompresent=taxon.df[1, 1]
-		taxa<-list(abctaxon(id=taxon.df[1, 3], states=startingValues), abctaxon(id=taxon.df[1, 4], states=startingValues))
-		taxon.df<-taxon.df[2:dim(taxon.df)[1], ] #pop off top value
+		timefrompresent=taxonDF[1, 1]
+		taxa<-list(abctaxon(id=taxonDF[1, 3], states=startingValues), abctaxon(id=taxonDF[1, 4], states=startingValues))
+		taxonDF<-taxonDF[2:dim(taxonDF)[1], ] #pop off top value
 		
 	#start running
 		while(timefrompresent>0) {
 	#message(timefrompresent)
 	#speciation if needed
-			while ((timefrompresent-timeStep)<=taxon.df[1, 1]) { #do speciation. changed from if to while to deal with effectively polytomies
+			while ((timefrompresent-timeStep)<=taxonDF[1, 1]) { #do speciation. changed from if to while to deal with effectively polytomies
 				originallength<-length(taxa)
 				taxontodelete<-Inf
 				for (i in 1:originallength) {
-					if (taxa[[i]]$id==taxon.df[1, 2]) {
+					if (taxa[[i]]$id==taxonDF[1, 2]) {
 						taxontodelete<-i
 						taxa[[originallength+1]] <- taxa[[i]]
 						taxa[[originallength+2]] <- taxa[[i]]
-						taxa[[originallength+1]]$id<-taxon.df[1, 3]
+						taxa[[originallength+1]]$id<-taxonDF[1, 3]
 						taxa[[originallength+1]]$timeSinceSpeciation<-0
-						taxa[[originallength+2]]$id<-taxon.df[1, 4]
+						taxa[[originallength+2]]$id<-taxonDF[1, 4]
 						taxa[[originallength+2]]$timeSinceSpeciation<-0
 					}
 				}
 	#message("taxontodelete = ", taxontodelete)
 				taxa<-taxa[-1*taxontodelete]
-				if(dim(taxon.df)[1]>1) {
-					taxon.df<-taxon.df[2:(dim(taxon.df)[1]), ] #pop off top value
+				if(dim(taxonDF)[1]>1) {
+					taxonDF<-taxonDF[2:(dim(taxonDF)[1]), ] #pop off top value
 				}
 				else {
-					taxon.df[1, ]<-c(-1, 0, 0, 0)
+					taxonDF[1, ]<-c(-1, 0, 0, 0)
 				}
 	#message("------------------- speciation -------------------")
 	#message(taxa)

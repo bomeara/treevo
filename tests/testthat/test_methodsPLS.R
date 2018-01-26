@@ -28,7 +28,7 @@ test_that("methodsPLS works", {
     checkpointFreq = 24,
 	verbose = FALSE,
 	freevector = NULL,
-    taxon.df = NULL
+    taxonDF = NULL
 	#,niter.brown = 25,
 	#niter.lambda = 25,
     #niter.delta = 25,

@@ -124,7 +124,7 @@
 #'   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
 #'   generation.time=100000,
 #'   checkpointFile=NULL, checkpointFreq=24,
-#'   verbose=TRUE, freevector=NULL, taxon.df=NULL)
+#'   verbose=TRUE, freevector=NULL, taxonDF=NULL)
 #' 
 #' simDataParallel
 #' 
@@ -140,12 +140,12 @@ simulateWithPriors<-function(
 	phy=NULL, intrinsicFn, extrinsicFn, startingPriorsFns, startingPriorsValues,
 	intrinsicPriorsFns, intrinsicPriorsValues, extrinsicPriorsFns, extrinsicPriorsValues,
 	generation.time=1000, TreeYears=max(branching.times(phy)) * 1e6, timeStep=NULL,
-	giveUpAttempts=10, verbose=FALSE, checks=TRUE, taxon.df=NULL, freevector=NULL
+	giveUpAttempts=10, verbose=FALSE, checks=TRUE, taxonDF=NULL, freevector=NULL
 	#,niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25
 	) {
 
-	if(is.null(taxon.df)){
-		taxon.df <- getTaxonDFWithPossibleExtinction(phy)
+	if(is.null(taxonDF)){
+		taxonDF <- getTaxonDFWithPossibleExtinction(phy)
 		}
 		
 	if(is.null(timeStep)){
@@ -157,8 +157,8 @@ simulateWithPriors<-function(
 		#checkNiter(niter.brown=niter.brown, niter.lambda=niter.lambda,
 		#	niter.delta=niter.delta, niter.OU=niter.OU, niter.white=niter.white)
 		# check TimeStep
-		numberofsteps<-max(taxon.df$endTime)/timeStep
-		mininterval<-min(taxon.df$endTime - taxon.df$startTime)
+		numberofsteps<-max(taxonDF$endTime)/timeStep
+		mininterval<-min(taxonDF$endTime - taxonDF$startTime)
 		#
 		if (floor(mininterval/timeStep)<50 & floor(mininterval/timeStep)>=3) {
 			warning(paste0("You have only ", floor(mininterval/timeStep),
@@ -202,7 +202,7 @@ simulateWithPriors<-function(
 		trueFreeValues<-trueInitial[freevector]
 
 		message(".")
-		simTraits<-doSimulationWithPossibleExtinction(phy=phy, taxon.df=taxon.df, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn,
+		simTraits<-doSimulationWithPossibleExtinction(phy=phy, taxonDF=taxonDF, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn,
 			startingValues=trueStarting, intrinsicValues=trueIntrinsic, extrinsicValues=trueExtrinsic,
 			timeStep=timeStep, verbose=verbose, checkTimeStep=FALSE)
 		simSumStats<-summaryStatsLong(phy=phy, traits=simTraits
@@ -232,7 +232,7 @@ parallelSimulateWithPriors<-function(
 	intrinsicFn, extrinsicFn, startingPriorsFns, startingPriorsValues,
 	intrinsicPriorsFns, intrinsicPriorsValues, extrinsicPriorsFns, extrinsicPriorsValues,
 	generation.time=1000, TreeYears=max(branching.times(phy)) * 1e6, timeStep=NULL, #timeStep=1e-04,
-	checkpointFile=NULL, checkpointFreq=24, verbose=FALSE, freevector=NULL, taxon.df=NULL, giveUpAttempts=10
+	checkpointFile=NULL, checkpointFreq=24, verbose=FALSE, freevector=NULL, taxonDF=NULL, giveUpAttempts=10
 	#,niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25
 	) {
 	
@@ -253,13 +253,13 @@ parallelSimulateWithPriors<-function(
 					extrinsicPriorsFns=extrinsicPriorsFns, extrinsicPriorsValues=extrinsicPriorsValues)
 		}
 	
-	if(is.null(taxon.df)){
-		taxon.df <- getTaxonDFWithPossibleExtinction(phy)
+	if(is.null(taxonDF)){
+		taxonDF <- getTaxonDFWithPossibleExtinction(phy)
 		}
 
 	# check TimeStep
-	numberofsteps<-max(taxon.df$endTime)/timeStep
-	mininterval<-min(taxon.df$endTime - taxon.df$startTime)
+	numberofsteps<-max(taxonDF$endTime)/timeStep
+	mininterval<-min(taxonDF$endTime - taxonDF$startTime)
 	#
 	if (floor(mininterval/timeStep)<50 & floor(mininterval/timeStep)>=3) {
 		message(paste0("You have only ", floor(mininterval/timeStep), " timeSteps on the shortest branch in this dataset but should probably have a lot more if you expect change on this branch. Please consider decreasing timeStep to no more than ",
@@ -290,7 +290,7 @@ parallelSimulateWithPriors<-function(
 
 	message("Doing simulations: ")
 	if (is.null(checkpointFile)) {
-		trueFreeValuesANDSummaryValues<-foreach(1:nrepSim, .combine=rbind) %dopar% simulateWithPriors(phy=phy, taxon.df=taxon.df,
+		trueFreeValuesANDSummaryValues<-foreach(1:nrepSim, .combine=rbind) %dopar% simulateWithPriors(phy=phy, taxonDF=taxonDF,
 			startingPriorsValues=startingPriorsValues, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues,
 			startingPriorsFns=startingPriorsFns, intrinsicPriorsFns=intrinsicPriorsFns, extrinsicPriorsFns=extrinsicPriorsFns, giveUpAttempts=giveUpAttempts,
 			freevector=freevector, timeStep=timeStep, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, verbose=verbose, checks=FALSE)
@@ -308,7 +308,7 @@ parallelSimulateWithPriors<-function(
 		}
 		for (rep in sequence(numberLoops)) {
 			trueFreeValuesANDSummaryValues<-rbind(trueFreeValuesANDSummaryValues,
-				foreach(1:numberSimsPerLoop, .combine=rbind) %dopar% simulateWithPriors(phy=phy,  taxon.df=taxon.df,
+				foreach(1:numberSimsPerLoop, .combine=rbind) %dopar% simulateWithPriors(phy=phy,  taxonDF=taxonDF,
 					startingPriorsValues=startingPriorsValues, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues,
 					startingPriorsFns=startingPriorsFns, intrinsicPriorsFns=intrinsicPriorsFns, extrinsicPriorsFns=extrinsicPriorsFns,  giveUpAttempts=giveUpAttempts,
 					freevector=freevector, timeStep=timeStep, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, verbose=verbose, checks=FALSE))
@@ -316,7 +316,7 @@ parallelSimulateWithPriors<-function(
 			message(paste("Just finished",dim(trueFreeValuesANDSummaryValues)[1],"of",nrepSim,"simulations; progress so far saved in",checkpointFileName))
 		}
 		trueFreeValuesANDSummaryValues<-rbind(trueFreeValuesANDSummaryValues,
-			foreach(1:numberSimsAfterLastCheckpoint, .combine=rbind) %dopar% simulateWithPriors(phy=phy,  taxon.df=taxon.df,
+			foreach(1:numberSimsAfterLastCheckpoint, .combine=rbind) %dopar% simulateWithPriors(phy=phy,  taxonDF=taxonDF,
 				startingPriorsValues=startingPriorsValues, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues,
 				startingPriorsFns=startingPriorsFns, intrinsicPriorsFns=intrinsicPriorsFns, extrinsicPriorsFns=extrinsicPriorsFns,  giveUpAttempts=giveUpAttempts,
 				freevector=freevector, timeStep=timeStep, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, verbose=verbose, checks=FALSE))

@@ -46,7 +46,7 @@
 #    timeStep=10^-6,
 #    checkpointFile=NULL, checkpointFreq=24,
 #    verbose=FALSE,
-#    freevector=NULL, taxon.df=NULL,
+#    freevector=NULL, taxonDF=NULL,
 #    niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25)
 #
 #  nParFree<-sum(attr(simDataParallel,"freevector"))
