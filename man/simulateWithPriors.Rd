@@ -9,7 +9,7 @@ simulateWithPriors(phy = NULL, intrinsicFn, extrinsicFn, startingPriorsFns,
   startingPriorsValues, intrinsicPriorsFns, intrinsicPriorsValues,
   extrinsicPriorsFns, extrinsicPriorsValues, generation.time = 1000,
   TreeYears = max(branching.times(phy)) * 1e+06, timeStep = NULL,
-  giveUpAttempts = 10, verbose = FALSE, checks = TRUE, taxon.df = NULL,
+  giveUpAttempts = 10, verbose = FALSE, checks = TRUE, taxonDF = NULL,
   freevector = NULL)
 
 parallelSimulateWithPriors(nrepSim, multicore, coreLimit, phy, intrinsicFn,
@@ -17,7 +17,7 @@ parallelSimulateWithPriors(nrepSim, multicore, coreLimit, phy, intrinsicFn,
   intrinsicPriorsValues, extrinsicPriorsFns, extrinsicPriorsValues,
   generation.time = 1000, TreeYears = max(branching.times(phy)) * 1e+06,
   timeStep = NULL, checkpointFile = NULL, checkpointFreq = 24,
-  verbose = FALSE, freevector = NULL, taxon.df = NULL,
+  verbose = FALSE, freevector = NULL, taxonDF = NULL,
   giveUpAttempts = 10)
 }
 \arguments{
@@ -82,7 +82,7 @@ when run in parallel by \code{parallelSimulateWithPriors}, and instead is only c
 argument also controls whether \code{simulateWithPriors} assigns \code{freevector} as an attribute to the
 output produced.}
 
-\item{taxon.df}{A data.frame containing data on nodes (both tips and internal nodes) output by various internal functions.
+\item{taxonDF}{A data.frame containing data on nodes (both tips and internal nodes) output by various internal functions.
 Can be supplied as input to spead up repeated calculations, but by default is
 \code{NULL}, which instead forces a calculation from input \code{phy}.}
 
@@ -166,7 +166,7 @@ simDataParallel<-parallelSimulateWithPriors(
   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
   generation.time=100000,
   checkpointFile=NULL, checkpointFreq=24,
-  verbose=TRUE, freevector=NULL, taxon.df=NULL)
+  verbose=TRUE, freevector=NULL, taxonDF=NULL)
 
 simDataParallel
 
