@@ -267,34 +267,46 @@ doSimulationWithPossibleExtinction<-function(phy=NULL, intrinsicFn, extrinsicFn,
 		ids.changing.status <-  c(ids.alive.at.start[!(ids.alive.at.start  %in% ids.alive.at.end)], ids.only.alive.in.interval)
 		ids.speciating <- c(taxonDF$id[which((taxonDF$id %in% ids.changing.status) & (!taxonDF$terminal))], ids.only.alive.in.interval)
 		aliveRows <- which(taxonDF$id %in% ids.alive.at.start)
+		#if(any(is.na(aliveRows))){
+		#	stop("some aliveRows are NA")
+		#	}
 		currentStates <- taxonDF$states[aliveRows]
 		#if(any(is.na(currentStates))) {
-		#	#message(paste0("currentStates ",currentStates))
-		#	#message(paste0("taxonDF$id %in% ids.alive.at.start ",paste0(taxonDF$id %in% ids.alive.at.start,collapse=" ")))
+		#	message(paste0("currentStates ",currentStates))
+		#	message(paste0("taxonDF$id %in% ids.alive.at.start ",paste0(taxonDF$id %in% ids.alive.at.start,collapse=" ")))
 		#	message(c(height.start,height.end))
 		#	message(taxonDF[taxonDF$id %in% ids.alive.at.start,])
 		#	stop("there are NAs in currentStates! How?? Something is very wrong")
 		#	}
+		#
 		#first evolve in this interval, then speciate
 		for (taxonIndex in aliveRows) {
+			# find match within aliveRows for match to currentStates
+			whichTaxon<-which(taxonIndex==aliveRows)
+			# check if the ancestor is NA
 			if(is.na(taxonDF$states[taxonIndex])) {
 				whichAncestor<- which(taxonDF$id==taxonDF$ancestorId[taxonIndex])
 				taxonDF$states[taxonIndex] <- taxonDF$states[whichAncestor]
 				if(is.na(taxonDF$states[taxonIndex])){
 					stop("A taxon's ancestor has an NA character")
 					}
-				currentStates[taxonIndex]<-taxonDF$states[taxonIndex]
-				}
+				currentStates[whichTaxon]<-taxonDF$states[taxonIndex]
+				}				
 			#
 			newState <- taxonDF$states[taxonIndex] + 
-				intrinsicFn(params = intrinsicValues, states = currentStates[taxonIndex], 
+				intrinsicFn(params = intrinsicValues, states = currentStates[whichTaxon], 
 					timefrompresent = depthfrompresent) + 
-				extrinsicFn(params = extrinsicValues, selfstates = currentStates[taxonIndex], 
-					otherstates = currentStates[-taxonIndex], timefrompresent = depthfrompresent)
+				extrinsicFn(params = extrinsicValues, selfstates = currentStates[whichTaxon], 
+					otherstates = currentStates[-whichTaxon], timefrompresent = depthfrompresent)
 			#
 			#
 			if(is.na(newState)) {	# what happens if I change this to a stop? oh that's no good
-				warning("A simulation run produced a state of NA - something is probably very wrong")
+				stop("A simulation run produced a state of NA - something is probably very wrong")
+				if(any(is.na(currentStates))) {
+					stop(paste0("there are NAs in currentStates! How?? Something is very wrong\n",
+						"taxonIndex ",taxonIndex,
+						"currentStates ",currentStates))
+					}
 				attempt.count<-0
 				while(is.na(newState) & attempt.count <= maxAttempts) {
 					old = taxonDF$states[taxonIndex]
@@ -314,11 +326,14 @@ doSimulationWithPossibleExtinction<-function(phy=NULL, intrinsicFn, extrinsicFn,
 					if(is.na(extrinsic.displacement)){
 						stop(
 							paste("The extrinsicFn is returning NAs; something terrible has happened:",
+								"\ntaxonIndex",taxonIndex,
+								"\naliveRows",aliveRows,
+								"\ncurrentStates",currentStates,
 								"\nparams:",extrinsicValues,
 								"\nselfstates:",currentStates[taxonIndex],
 								"\notherstates:",currentStates[-taxonIndex],
-								"\ntimefrompresent:",depthfrompresent,
-								"\nextFun:",extrinsicFn
+								"\ntimefrompresent:",depthfrompresent
+								#,"\nextFun:",extrinsicFn
 								)
 							)
 						}
