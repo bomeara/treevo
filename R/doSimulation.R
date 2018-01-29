@@ -293,21 +293,24 @@ doSimulationWithPossibleExtinction<-function(phy=NULL, intrinsicFn, extrinsicFn,
 					otherstates = currentStates[-taxonIndex], timefrompresent = depthfrompresent)
 			#
 			#
-			if(is.na(newState)) {	# what happens if I change this to a stop?
-				stop("A simulation run produced a state of NA - something is probably very wrong")
+			if(is.na(newState)) {	# what happens if I change this to a stop? oh that's no good
+				warning("A simulation run produced a state of NA - something is probably very wrong")
 				attempt.count<-0
 				while(is.na(newState) & attempt.count <= maxAttempts) {
 					old = taxonDF$states[taxonIndex]
+					if(is.na(old)){
+						stop("Ancestral state for a simulated character state is NA - something is very wrong")
+						}
 					intrinsic.displacement = intrinsicFn(params=intrinsicValues, states=currentStates[taxonIndex],
 						timefrompresent =depthfrompresent)
 					extrinsic.displacement = extrinsicFn(params=extrinsicValues, selfstates=currentStates[taxonIndex],
 						otherstates=currentStates[-taxonIndex], timefrompresent =depthfrompresent)
-					#if(is.na(intrinsic.displacement)){
-					#	stop("The intrinsicFn is returning NAs; something terrible has happened")
-					#	}
-					#if(is.na(extrinsic.displacement)){
-					#	stop("The extrinsicFn is returning NAs; something terrible has happened")
-					#	}
+					if(is.na(intrinsic.displacement)){
+						stop("The intrinsicFn is returning NAs; something terrible has happened")
+						}
+					if(is.na(extrinsic.displacement)){
+						stop("The extrinsicFn is returning NAs; something terrible has happened")
+						}
 					newState <- old + intrinsic.displacement + extrinsic.displacement
 					warning(paste0("Attempt ", attempt.count, " led to using old value of ", old, " intrinsicFn return of ",intrinsic.displacement, " and extrinsicFn return of ", extrinsic.displacement))
 					#message(paste0("For diagnostic purposes: IntrinsicValues ",intrinsicValues))

@@ -54,8 +54,8 @@ highestPostDens<-function(particleDataFrame, percent=0.95, returnData=FALSE){
 			if(sd(subpDF[,i]) != 0) {
 				Ints[i,1]<-mean(subpDF[,i]) #not weighted
 				Ints[i,2]<-sd(subpDF[,i])
-				Ints[i,3]<-HPDinterval(as.mcmc(subpDF[,i]), prob=percent)[1] #returns lower HPD		
-				Ints[i,4]<-HPDinterval(as.mcmc(subpDF[,i]), prob=percent)[2] #returns upper HPD	
+				Ints[i,3]<-coda::HPDinterval(coda::as.mcmc(subpDF[,i]), prob=percent)[1] #returns lower HPD		
+				Ints[i,4]<-coda::HPDinterval(coda::as.mcmc(subpDF[,i]), prob=percent)[2] #returns upper HPD	
 				if(returnData){
 					summary[[i]]<-subpDF[,i][-c(which(subpDF[i]<Ints[i,3]), which(subpDF[,i]>Ints[i,4]))]
 					}		

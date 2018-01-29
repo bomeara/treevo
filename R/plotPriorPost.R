@@ -256,7 +256,7 @@ getUnivariatePriorCurve<-function(priorFn, priorVariables,
 		to<-max(samples)
 	}
 	result<-density(samples,from=from, to=to)
-	hpd.result<-HPDinterval(as.mcmc(samples), prob)
+	hpd.result<-coda::HPDinterval(coda::as.mcmc(samples), prob)
   if (priorFn=="uniform") {
     result<-list(x=result$x,y=rep(max(result$y),length(result$x))) #kludge so uniform looks uniform
   }
@@ -276,7 +276,7 @@ getUnivariatePosteriorCurve<-function(acceptedValues, from=NULL, to=NULL, prob=0
 		to<-max(acceptedValues)
 	}
 	result<-density(acceptedValues,from=from, to=to)
-	hpd.result<-HPDinterval(as.mcmc(acceptedValues), prob)
+	hpd.result<-coda::HPDinterval(coda::as.mcmc(acceptedValues), prob)
 	return(list(x=result$x, y=result$y, mean=mean(acceptedValues), lower=hpd.result[1,1], upper=hpd.result[1,2]))
 }
 
