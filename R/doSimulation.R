@@ -298,18 +298,29 @@ doSimulationWithPossibleExtinction<-function(phy=NULL, intrinsicFn, extrinsicFn,
 				attempt.count<-0
 				while(is.na(newState) & attempt.count <= maxAttempts) {
 					old = taxonDF$states[taxonIndex]
+					#check
 					if(is.na(old)){
 						stop("Ancestral state for a simulated character state is NA - something is very wrong")
 						}
 					intrinsic.displacement = intrinsicFn(params=intrinsicValues, states=currentStates[taxonIndex],
 						timefrompresent =depthfrompresent)
-					extrinsic.displacement = extrinsicFn(params=extrinsicValues, selfstates=currentStates[taxonIndex],
-						otherstates=currentStates[-taxonIndex], timefrompresent =depthfrompresent)
+					#check
 					if(is.na(intrinsic.displacement)){
 						stop("The intrinsicFn is returning NAs; something terrible has happened")
 						}
+					extrinsic.displacement = extrinsicFn(params=extrinsicValues, selfstates=currentStates[taxonIndex],
+						otherstates=currentStates[-taxonIndex], timefrompresent =depthfrompresent)
+					#check
 					if(is.na(extrinsic.displacement)){
-						stop("The extrinsicFn is returning NAs; something terrible has happened")
+						stop(
+							paste("The extrinsicFn is returning NAs; something terrible has happened:",
+								"\nparams:",extrinsicValues,
+								"\nselfstates:",currentStates[taxonIndex],
+								"\notherstates:",currentStates[-taxonIndex],
+								"\ntimefrompresent:",depthfrompresent,
+								"\nextFun:",extrinsicFn
+								)
+							)
 						}
 					newState <- old + intrinsic.displacement + extrinsic.displacement
 					warning(paste0("Attempt ", attempt.count, " led to using old value of ", old, " intrinsicFn return of ",intrinsic.displacement, " and extrinsicFn return of ", extrinsic.displacement))
