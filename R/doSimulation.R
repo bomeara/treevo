@@ -194,18 +194,21 @@ doSimulationWithPossibleExtinction<-function(phy=NULL, intrinsicFn, extrinsicFn,
 	timeStep=NULL, saveHistory=FALSE, saveRealParams=FALSE, jobName="", maxAttempts = 100,
 	returnAll = FALSE, verbose=FALSE, reject.NaN=TRUE, taxonDF=NULL, checkTimeStep=TRUE) {
 	#
-	
+	#
 	if(is.null(timeStep)){
 		timeStep<-generation.time/TreeYears
 		}
-	
+	#
 	if(is.null(taxonDF)){
 		taxonDF <- getTaxonDFWithPossibleExtinction(phy)
 		}
-		
+	#
 	if(is.null(taxonDF) & is.null(phy)){
 		stop("phy or taxonDF must be provided as input")
 		}
+	#
+	# which element of DF is states
+	whichStatesCol<-which(names(taxonDF)=="states")
 	#
 	if (saveRealParams){
 		RealParams<-vector("list", 2)
@@ -232,16 +235,19 @@ doSimulationWithPossibleExtinction<-function(phy=NULL, intrinsicFn, extrinsicFn,
 	#
 	if(checkTimeStep){
 		#if (numberofsteps<1000) {
-			#warning(paste0("You have only ", numberofsteps, " but should probably have a lot more. Please consider decreasing timeStep to no more than ", taxonDF[1, 1]/1000))
+			#warning(paste0("You have only ", numberofsteps, " but should probably have a lot more. Please consider 
+			#decreasing timeStep to no more than ", taxonDF[1, 1]/1000))
 		#	}
 		if (floor(mininterval/timeStep)<50 & floor(mininterval/timeStep)>=3) {
 			warning(paste0("You have only ", floor(mininterval/timeStep),
-				" timeSteps on the shortest branch in this dataset but should probably have a lot more if you expect change on this branch. Please consider decreasing timeStep to no more than ",
+				" timeSteps on the shortest branch in this dataset but should probably have a lot more if you expect ", 
+				"change on this branch. Please consider decreasing timeStep to no more than ",
 				signif(mininterval/50,2)))
 			}
 		if (floor(mininterval/timeStep)<3) {
 			warning(paste0("You have only ", floor(mininterval/timeStep),
-				" timeSteps on the shortest branch in this dataset but should probably have a lot more if you expect change on this branch. Please consider decreasing timeStep to no more than ",
+				" timeSteps on the shortest branch in this dataset but should probably have a lot more if you expect change ",
+				"on this branch. Please consider decreasing timeStep to no more than ",
 					signif(mininterval/50,2)," or at the very least ", signif(mininterval/3,2)))
 		#	timeStep <- mininterval/3
 			}
@@ -250,9 +256,15 @@ doSimulationWithPossibleExtinction<-function(phy=NULL, intrinsicFn, extrinsicFn,
 	#initial setup
 	depthfrompresent = max(taxonDF$endTime)
 	heightfromroot = 0
-	taxonDF$states[which(taxonDF$startTime==0)] <- startingValues
+	taxonDF[[whichStatesCol]][which(taxonDF$startTime==0)] <- startingValues
+	#	
 	taxonDF.previous <- taxonDF
+	#
 	taxonID<-taxonDF$id
+	taxonStartTime<-taxonDF$startTime
+	taxonEndTime<-taxonDF$endTime
+	taxonTerminal<-taxonDF$terminal
+	taxonAnc<-taxonDF$ancestorId
 	while(depthfrompresent>0) {
 		if(reject.NaN) {
 			taxonDF.previous <- taxonDF
@@ -262,16 +274,20 @@ doSimulationWithPossibleExtinction<-function(phy=NULL, intrinsicFn, extrinsicFn,
 		depth.end <- depthfrompresent - timeStep
 		height.start <- heightfromroot
 		height.end <- heightfromroot + timeStep
-		ids.alive.at.start <- taxonID[which(taxonDF$startTime <= height.start & taxonDF$endTime > height.start)]
-		ids.alive.at.end <-  taxonID[which(taxonDF$endTime > height.end & taxonDF$startTime <= height.end)]
-		ids.only.alive.in.interval <- taxonID[which(taxonDF$startTime > height.start & taxonDF$endTime < height.end)]
+		ids.alive.at.start <- taxonID[which(taxonStartTime <= height.start & taxonEndTime > height.start)]
+		ids.alive.at.end <-  taxonID[which(taxonEndTime > height.end & taxonStartTime <= height.end)]
+		ids.only.alive.in.interval <- taxonID[which(taxonStartTime > height.start & taxonEndTime < height.end)]
 		ids.changing.status <-  c(ids.alive.at.start[!(ids.alive.at.start  %in% ids.alive.at.end)], ids.only.alive.in.interval)
-		ids.speciating <- c(taxonID[which((taxonID %in% ids.changing.status) & (!taxonDF$terminal))], ids.only.alive.in.interval)
+		ids.speciating <- c(taxonID[which((taxonID %in% ids.changing.status) & (!taxonTerminal))], ids.only.alive.in.interval)
+		#
 		aliveRows <- which(taxonID %in% ids.alive.at.start)
+		#
 		#if(any(is.na(aliveRows))){
 		#	stop("some aliveRows are NA")
 		#	}
-		currentStates <- taxonDF$states[aliveRows]
+		#
+		currentStates <- taxonDF[[whichStatesCol]][aliveRows]
+		#
 		#if(any(is.na(currentStates))) {
 		#	message(paste0("currentStates ",currentStates))
 		#	message(paste0("taxonID %in% ids.alive.at.start ",paste0(taxonID %in% ids.alive.at.start,collapse=" ")))
@@ -284,17 +300,18 @@ doSimulationWithPossibleExtinction<-function(phy=NULL, intrinsicFn, extrinsicFn,
 		for (taxonIndex in aliveRows) {
 			# find match within aliveRows for match to currentStates
 			whichTaxon<-which(taxonIndex==aliveRows)
+			taxonState<-taxonDF[[whichStatesCol]][taxonIndex]
 			# check if the ancestor is NA
-			if(is.na(taxonDF$states[taxonIndex])) {
-				whichAncestor<- which(taxonID==taxonDF$ancestorId[taxonIndex])
-				taxonDF$states[taxonIndex] <- taxonDF$states[whichAncestor]
-				if(is.na(taxonDF$states[taxonIndex])){
+			if(is.na(taxonState)) {
+				whichAncestor<- which(taxonID==taxonAnc[taxonIndex])
+				taxonState <- taxonDF[[whichStatesCol]][whichAncestor]
+				if(is.na(taxonState)){
 					stop("A taxon's ancestor has an NA character")
 					}
-				currentStates[whichTaxon]<-taxonDF$states[taxonIndex]
+				currentStates[whichTaxon]<-taxonState
 				}				
 			#
-			newState <- taxonDF$states[taxonIndex] + 
+			newState <- taxonState + 
 				intrinsicFn(params = intrinsicValues, states = currentStates[whichTaxon], 
 					timefrompresent = depthfrompresent) + 
 				extrinsicFn(params = extrinsicValues, selfstates = currentStates[whichTaxon], 
@@ -310,7 +327,7 @@ doSimulationWithPossibleExtinction<-function(phy=NULL, intrinsicFn, extrinsicFn,
 					}
 				attempt.count<-0
 				while(is.na(newState) & attempt.count <= maxAttempts) {
-					old = taxonDF$states[taxonIndex]
+					old = taxonState
 					#check
 					if(is.na(old)){
 						stop("Ancestral state for a simulated character state is NA - something is very wrong")
@@ -361,7 +378,7 @@ doSimulationWithPossibleExtinction<-function(phy=NULL, intrinsicFn, extrinsicFn,
 					stop(paste0(
 						"Simulating with these parameters resulted in problematic results despite ", maxAttempts, " attempts",
 						"\nFor one example, taxonDF$states[taxonIndex] was ",
-						taxonDF$states[taxonIndex], ", for which intrinsicFn returned ",
+						taxonDF[[whichStatesCol]][taxonIndex], ", for which intrinsicFn returned ",
 						intrinsicFn(params=intrinsicValues, states=currentStates[taxonIndex],
 							timefrompresent =depthfrompresent)
 						, "\nand extrinsicFn returned ",
@@ -376,40 +393,42 @@ doSimulationWithPossibleExtinction<-function(phy=NULL, intrinsicFn, extrinsicFn,
 			if(is.na(newState)) {
 				stop("where are these NA newStates coming from?? Something is very wrong")
 				}
-			taxonDF$states[taxonIndex] <- newState
+			taxonDF[[whichStatesCol]][taxonIndex] <- newState
 			}
 		# now specieate and pass one state to descendant
 		if(length(ids.speciating)>0) {
 			for (speciating.taxonIndex in sequence(length(ids.speciating))) {
 				ancestor.row <- which(taxonID==ids.speciating[speciating.taxonIndex])
-				descendant.rows <- which(taxonDF$ancestorId==taxonID[ancestor.row])
-				taxonDF$states[descendant.rows] <- taxonDF$states[ancestor.row]
+				descendant.rows <- which(taxonAnc==taxonID[ancestor.row])
+				taxonDF[[whichStatesCol]][descendant.rows] <- taxonDF[[whichStatesCol]][ancestor.row]
 				}
 			}
 		#
 		depthfrompresent <- depth.end
 		heightfromroot <- height.end
 		if(verbose) {
-			message(paste0("now at height", height.end, "finishing at", max(taxonDF$endTime)))
+			message(paste0("now at height", height.end, "finishing at", max(taxonEndTime)))
 			message(taxonDF)
-		}
+			}
 		if(reject.NaN) {
-			if(any(is.nan(taxonDF$states))) {
+			if(any(is.nan(taxonDF[[whichStatesCol]]))) {
 				save(list=ls(), file="ErrorRun.rda")
 				stop(paste0("There was an NaN generated. See saved objects in ", getwd(), "/ErrorRun.rda", sep=""))
+				}
 			}
 		}
-	}
 	if(returnAll) {
 		return(taxonDF)
-	}
-	final.results <- subset(taxonDF, taxonDF$terminal==TRUE)
-	final.result.df <- data.frame(states=final.results$states)
+		}
+	final.results <- subset(taxonDF, taxonTerminal==TRUE)
+	final.result.df <- data.frame(states=final.results[[whichStatesCol]])
 	rownames(final.result.df) <- final.results$name
 	#
 	return(final.result.df)
 	}
 
+	
+	
 #' @name doSimulation
 #' @rdname doSimulation
 #' @export
