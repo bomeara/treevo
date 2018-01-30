@@ -286,7 +286,9 @@ doSimulationWithPossibleExtinction<-function(phy=NULL, intrinsicFn, extrinsicFn,
 		#	stop("some aliveRows are NA")
 		#	}
 		#
-		currentStates <- taxonDF[[whichStatesCol]][aliveRows]
+		taxonStates<-taxonDF[[whichStatesCol]]
+		currentStates <- taxonStates[aliveRows]
+		
 		#
 		#if(any(is.na(currentStates))) {
 		#	message(paste0("currentStates ",currentStates))
@@ -300,11 +302,11 @@ doSimulationWithPossibleExtinction<-function(phy=NULL, intrinsicFn, extrinsicFn,
 		for (taxonIndex in aliveRows) {
 			# find match within aliveRows for match to currentStates
 			whichTaxon<-which(taxonIndex==aliveRows)
-			taxonState<-taxonDF[[whichStatesCol]][taxonIndex]
+			taxonState<-taxonStates[taxonIndex]
 			# check if the ancestor is NA
 			if(is.na(taxonState)) {
 				whichAncestor<- which(taxonID==taxonAnc[taxonIndex])
-				taxonState <- taxonDF[[whichStatesCol]][whichAncestor]
+				taxonState <- taxonStates[whichAncestor]
 				if(is.na(taxonState)){
 					stop("A taxon's ancestor has an NA character")
 					}
@@ -378,7 +380,7 @@ doSimulationWithPossibleExtinction<-function(phy=NULL, intrinsicFn, extrinsicFn,
 					stop(paste0(
 						"Simulating with these parameters resulted in problematic results despite ", maxAttempts, " attempts",
 						"\nFor one example, taxonDF$states[taxonIndex] was ",
-						taxonDF[[whichStatesCol]][taxonIndex], ", for which intrinsicFn returned ",
+						taxonStates[taxonIndex], ", for which intrinsicFn returned ",
 						intrinsicFn(params=intrinsicValues, states=currentStates[taxonIndex],
 							timefrompresent =depthfrompresent)
 						, "\nand extrinsicFn returned ",
@@ -389,18 +391,20 @@ doSimulationWithPossibleExtinction<-function(phy=NULL, intrinsicFn, extrinsicFn,
 						," with currentStates[taxonIndex] = ", currentStates[taxonIndex])
 						)
 					}
+				if(is.na(newState)) {
+					stop("where are these NA newStates coming from?? Something is very wrong")
+					}					
 				}
-			if(is.na(newState)) {
-				stop("where are these NA newStates coming from?? Something is very wrong")
-				}
-			taxonDF[[whichStatesCol]][taxonIndex] <- newState
+
+			taxonStates[taxonIndex] <- newState
 			}
+		
 		# now specieate and pass one state to descendant
 		if(length(ids.speciating)>0) {
 			for (speciating.taxonIndex in sequence(length(ids.speciating))) {
 				ancestor.row <- which(taxonID==ids.speciating[speciating.taxonIndex])
 				descendant.rows <- which(taxonAnc==taxonID[ancestor.row])
-				taxonDF[[whichStatesCol]][descendant.rows] <- taxonDF[[whichStatesCol]][ancestor.row]
+				taxonStates[descendant.rows] <- taxonStates[ancestor.row]
 				}
 			}
 		#
@@ -408,14 +412,17 @@ doSimulationWithPossibleExtinction<-function(phy=NULL, intrinsicFn, extrinsicFn,
 		heightfromroot <- height.end
 		if(verbose) {
 			message(paste0("now at height", height.end, "finishing at", max(taxonEndTime)))
-			message(taxonDF)
+			#message(taxonDF)
 			}
 		if(reject.NaN) {
-			if(any(is.nan(taxonDF[[whichStatesCol]]))) {
+			if(any(is.nan(taxonStates))) {
 				save(list=ls(), file="ErrorRun.rda")
 				stop(paste0("There was an NaN generated. See saved objects in ", getwd(), "/ErrorRun.rda", sep=""))
 				}
 			}
+		#
+		# finally update the dataframe
+		taxonDF[[whichStatesCol]]<-taxonStates
 		}
 	if(returnAll) {
 		return(taxonDF)
