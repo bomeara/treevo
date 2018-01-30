@@ -252,6 +252,7 @@ doSimulationWithPossibleExtinction<-function(phy=NULL, intrinsicFn, extrinsicFn,
 	heightfromroot = 0
 	taxonDF$states[which(taxonDF$startTime==0)] <- startingValues
 	taxonDF.previous <- taxonDF
+	taxonID<-taxonDF$id
 	while(depthfrompresent>0) {
 		if(reject.NaN) {
 			taxonDF.previous <- taxonDF
@@ -261,21 +262,21 @@ doSimulationWithPossibleExtinction<-function(phy=NULL, intrinsicFn, extrinsicFn,
 		depth.end <- depthfrompresent - timeStep
 		height.start <- heightfromroot
 		height.end <- heightfromroot + timeStep
-		ids.alive.at.start <- taxonDF$id[which(taxonDF$startTime <= height.start & taxonDF$endTime > height.start)]
-		ids.alive.at.end <-  taxonDF$id[which(taxonDF$endTime > height.end & taxonDF$startTime <= height.end)]
-		ids.only.alive.in.interval <- taxonDF$id[which(taxonDF$startTime > height.start & taxonDF$endTime < height.end)]
+		ids.alive.at.start <- taxonID[which(taxonDF$startTime <= height.start & taxonDF$endTime > height.start)]
+		ids.alive.at.end <-  taxonID[which(taxonDF$endTime > height.end & taxonDF$startTime <= height.end)]
+		ids.only.alive.in.interval <- taxonID[which(taxonDF$startTime > height.start & taxonDF$endTime < height.end)]
 		ids.changing.status <-  c(ids.alive.at.start[!(ids.alive.at.start  %in% ids.alive.at.end)], ids.only.alive.in.interval)
-		ids.speciating <- c(taxonDF$id[which((taxonDF$id %in% ids.changing.status) & (!taxonDF$terminal))], ids.only.alive.in.interval)
-		aliveRows <- which(taxonDF$id %in% ids.alive.at.start)
+		ids.speciating <- c(taxonID[which((taxonID %in% ids.changing.status) & (!taxonDF$terminal))], ids.only.alive.in.interval)
+		aliveRows <- which(taxonID %in% ids.alive.at.start)
 		#if(any(is.na(aliveRows))){
 		#	stop("some aliveRows are NA")
 		#	}
 		currentStates <- taxonDF$states[aliveRows]
 		#if(any(is.na(currentStates))) {
 		#	message(paste0("currentStates ",currentStates))
-		#	message(paste0("taxonDF$id %in% ids.alive.at.start ",paste0(taxonDF$id %in% ids.alive.at.start,collapse=" ")))
+		#	message(paste0("taxonID %in% ids.alive.at.start ",paste0(taxonID %in% ids.alive.at.start,collapse=" ")))
 		#	message(c(height.start,height.end))
-		#	message(taxonDF[taxonDF$id %in% ids.alive.at.start,])
+		#	message(taxonDF[taxonID %in% ids.alive.at.start,])
 		#	stop("there are NAs in currentStates! How?? Something is very wrong")
 		#	}
 		#
@@ -285,7 +286,7 @@ doSimulationWithPossibleExtinction<-function(phy=NULL, intrinsicFn, extrinsicFn,
 			whichTaxon<-which(taxonIndex==aliveRows)
 			# check if the ancestor is NA
 			if(is.na(taxonDF$states[taxonIndex])) {
-				whichAncestor<- which(taxonDF$id==taxonDF$ancestorId[taxonIndex])
+				whichAncestor<- which(taxonID==taxonDF$ancestorId[taxonIndex])
 				taxonDF$states[taxonIndex] <- taxonDF$states[whichAncestor]
 				if(is.na(taxonDF$states[taxonIndex])){
 					stop("A taxon's ancestor has an NA character")
@@ -380,8 +381,8 @@ doSimulationWithPossibleExtinction<-function(phy=NULL, intrinsicFn, extrinsicFn,
 		# now specieate and pass one state to descendant
 		if(length(ids.speciating)>0) {
 			for (speciating.taxonIndex in sequence(length(ids.speciating))) {
-				ancestor.row <- which(taxonDF$id==ids.speciating[speciating.taxonIndex])
-				descendant.rows <- which(taxonDF$ancestorId==taxonDF$id[ancestor.row])
+				ancestor.row <- which(taxonID==ids.speciating[speciating.taxonIndex])
+				descendant.rows <- which(taxonDF$ancestorId==taxonID[ancestor.row])
 				taxonDF$states[descendant.rows] <- taxonDF$states[ancestor.row]
 				}
 			}
