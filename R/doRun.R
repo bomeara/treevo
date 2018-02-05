@@ -258,55 +258,61 @@ doRun_prc<-function(
 	numParticles=300, standardDevFactor=0.20,
 	StartSims=300, epsilonProportion=0.7, epsilonMultiplier=0.7, nStepsPRC=5,
 	stopRule=FALSE, stopValue=0.05, maxAttempts=Inf, diagnosticPRCmode=FALSE,
-	jobName=NA, saveData=FALSE, verboseParticles=TRUE, plot=FALSE) {	
-
+	jobName=NA, saveData=FALSE, verboseParticles=TRUE, plot=FALSE){
+	#
+	#
 	functionStartTime<-proc.time()[[3]]
-	
+	#
 	if (!is.binary.tree(phy)) {
 		warning("Tree is not fully dichotomous, this may cause issues!")
-	}
+		}
+	#	
 	if(!is.numeric(maxAttempts)){
-		stop("maxAttempts must be numeric")}
-
+		stop("maxAttempts must be numeric")
+		}
+	#
 	timeStep<-generation.time/TreeYears
 	message(paste0("The effective timeStep for this tree will be ",signif(timeStep,2),
 		", as a proportion of tree height (root to furthest tip)..."))
-
+	#
 	edgesRescaled<-phy$edge.length/max(node.depth.edgelength(phy))
 	message("Rescaling edge lengths relative to maximum tip-to-root distance...")
-	
+	#
 	if(max(edgesRescaled) < timeStep) {
 		stop("Tree has *NO* rescaled branches longer than generation.time/TreeYears, no simulated evol change can occur!")
-	}
+		}
+	#
 	if(min(edgesRescaled) < timeStep) {
 		warning("Tree has rescaled branches shorter than generation.time/TreeYears; no evol change can be assigned to these, and ML summary stat functions may fail!")
 		#message("Tree has zero or nearly zero length branches")
-	}
-	
+		}
+	#
 	totalGenerations<-sum(sapply(edgesRescaled,function(x) floor(x/timeStep)))
 	message("Given generation time, a total of ",round(totalGenerations)," generations will occur over this tree")
-	
+	#
 	#splits<-getSimulationSplits(phy) #initialize this info
 	taxonDF <- getTaxonDFWithPossibleExtinction(phy)
-	
+	#
 	# get freevector
 	freevector<-getFreeVector(startingPriorsFns=startingPriorsFns, startingPriorsValues=startingPriorsValues,
 						intrinsicPriorsFns=intrinsicPriorsFns, intrinsicPriorsValues=intrinsicPriorsValues,
 						extrinsicPriorsFns=extrinsicPriorsFns, extrinsicPriorsValues=extrinsicPriorsValues)
 	numberParametersTotal<-length(freevector)
 	numberParametersFree<-sum(freevector)
-
+	#
 	#create PriorMatrix
 	namesForPriorMatrix<-c()
 	PriorMatrix<-matrix(c(startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns), nrow=1, ncol=numberParametersTotal)
-	for (a in 1:dim(startingPriorsValues)[2]) {
+	for (a in 1:dim(startingPriorsValues)[2]){
 		namesForPriorMatrix<-c(paste0("StartingStates", a, sep=""))
 		}
-	for (b in 1:dim(intrinsicPriorsValues)[2]) {
+	#
+	for (b in 1:dim(intrinsicPriorsValues)[2]){
 		namesForPriorMatrix<-append(namesForPriorMatrix, paste0("IntrinsicValue", b, sep=""))
 		}
+	#
 	#message(extrinsicPriorsValues)
-	for (c in 1:dim(extrinsicPriorsValues)[2]) {
+	for (c in 1:dim(extrinsicPriorsValues)[2]){
 		namesForPriorMatrix <-append(namesForPriorMatrix, paste0("ExtrinsicValue", c, sep=""))
 		}
 	#
@@ -347,12 +353,15 @@ doRun_prc<-function(
 	summaryValues<-matrix(nrow=0, ncol=length(summaryStatsLong(phy=phy, traits=traits
 		#niter.brown=200, niter.lambda=200, niter.delta=200, niter.OU=200, niter.white=200
 		)))
-	trueFreeValuesANDSummaryValues<-makeQuiet(parallelSimulateWithPriors(nrepSim=nrepSim, coreLimit=coreLimit, phy=phy,  taxonDF=taxonDF,
-		startingPriorsValues=startingPriorsValues, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues,
-		startingPriorsFns=startingPriorsFns, intrinsicPriorsFns=intrinsicPriorsFns, extrinsicPriorsFns=extrinsicPriorsFns,
-		freevector=freevector, timeStep=timeStep, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, multicore=multicore,
-		#niter.brown=niter.brown.g, niter.lambda=niter.lambda.g, niter.delta=niter.delta.g, niter.OU=niter.OU.g, niter.white=niter.white.g
-		))
+	trueFreeValuesANDSummaryValues<-makeQuiet(
+		parallelSimulateWithPriors(
+			nrepSim=nrepSim, coreLimit=coreLimit, phy=phy,  taxonDF=taxonDF,
+			startingPriorsValues=startingPriorsValues, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues,
+			startingPriorsFns=startingPriorsFns, intrinsicPriorsFns=intrinsicPriorsFns, extrinsicPriorsFns=extrinsicPriorsFns,
+			freevector=freevector, timeStep=timeStep, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, multicore=multicore,
+			#niter.brown=niter.brown.g, niter.lambda=niter.lambda.g, niter.delta=niter.delta.g, niter.OU=niter.OU.g, niter.white=niter.white.g
+			)
+		)
 	#message("\n\n")
 	#
 	if(saveData){

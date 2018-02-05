@@ -151,7 +151,8 @@
 #' @export
 doSimulation<-function(phy=NULL, intrinsicFn, extrinsicFn, startingValues, intrinsicValues, extrinsicValues,
 	generation.time=1000, TreeYears=max(branching.times(phy)) * 1e6,
-	timeStep=NULL, saveHistory=FALSE, saveRealParams=FALSE, jobName="", maxAttempts = 100,
+	timeStep=NULL, plot=FALSE, savePlot=FALSE, saveHistory=FALSE, 
+	saveRealParams=FALSE, jobName="", maxAttempts = 100,
 	returnAll = FALSE, verbose=FALSE, reject.NaN=TRUE, taxonDF=NULL, checkTimeStep=TRUE) {
 	#
 	#
@@ -183,7 +184,7 @@ doSimulation<-function(phy=NULL, intrinsicFn, extrinsicFn, startingValues, intri
 		save(RealParams, file=paste0("RealParams", jobName, ".Rdata", sep=""))
 		}
 	#
-	if (saveHistory) {
+	if (plot || savePlot || saveHistory) {
 		startVector<-c()
 		endVector<-c()
 		startTime<-c()
@@ -359,7 +360,7 @@ doSimulation<-function(phy=NULL, intrinsicFn, extrinsicFn, startingValues, intri
 			taxonStates[taxonIndex] <- newState
 			}
 		
-		# now specieate and pass one state to descendant
+		# now speciate and pass one state to descendant
 		if(length(ids.speciating)>0) {
 			for (speciating.taxonIndex in sequence(length(ids.speciating))) {
 				ancestor.row <- which(taxonID==ids.speciating[speciating.taxonIndex])
@@ -367,6 +368,9 @@ doSimulation<-function(phy=NULL, intrinsicFn, extrinsicFn, startingValues, intri
 				taxonStates[descendant.rows] <- taxonStates[ancestor.row]
 				}
 			}
+			
+			
+			
 		#
 		depthfrompresent <- depth.end
 		heightfromroot <- height.end
@@ -391,28 +395,50 @@ doSimulation<-function(phy=NULL, intrinsicFn, extrinsicFn, startingValues, intri
 	final.result.df <- data.frame(states=final.results[[whichStatesCol]])
 	rownames(final.result.df) <- final.results$name
 	
-	#if (plot) {
+	#if(plot){
 	#	#dev.new()
-	#	plot(x=c(min(c(startVector, endVector)), max(c(startVector, endVector))), y=c(0, max(c(startTime, endTime))),
-	#		type="n", ylab="Time", xlab="Trait value", main="", bty="n")
-	#	for (i in 1:length(startVector)) {
-	#		lines(x=c(startVector[i], endVector[i]), y=max(c(startTime, endTime)) - c(startTime[i], endTime[i]))
+	#	plot(x=c(min(c(startVector, endVector)),
+	#			max(c(startVector, endVector))), 
+	#		 y=c(0, max(c(startTime, endTime))),
+	#		 type="n", 
+	#		 ylab="Time", xlab="Trait value", main="", bty="n")
+	#	for (i in 1:length(startVector)){
+	#		lines(x=c(startVector[i], endVector[i]), 
+	#			  y=max(c(startTime, endTime)) - c(startTime[i], endTime[i])
+	#			  )
+	#		}
 	#	}
-	#}
 	#if (savePlot) {
 	#	pdf(paste0("SimTree", jobName, ".pdf", sep=""))	
-	#	plot(x=c(min(c(startVector, endVector)), max(c(startVector, endVector))), y=c(0, max(c(startTime, endTime))),
-	#		type="n", ylab="Time", xlab="Trait value", main="", bty="n")
+	#	plot(x=c(min(c(startVector, endVector)), max(c(startVector, endVector))),
+	#		 y=c(0, max(c(startTime, endTime))),
+	#		 type="n", ylab="Time", xlab="Trait value",
+#		  	 main="", bty="n")
 	#	for (i in 1:length(startVector)) {
-	#		lines(x=c(startVector[i], endVector[i]), y=max(c(startTime, endTime)) - c(startTime[i], endTime[i]))
-	#	}
+	#		lines(x=c(startVector[i], endVector[i]),
+#			  	  y=max(c(startTime, endTime)) - c(startTime[i], endTime[i]))
+	#		}
 	#	dev.off()
-	#}
+	#	}
+	
+	
 	
 	#
 	return(final.result.df)
 	}
 
+	
+	
+	
+			#if (plot || savePlot || saveHistory) {
+			#		startVector<-append(startVector, taxa[[i]]$states)
+			#		endVector <-append(endVector, newvalues)
+			#		startTime <-append(startTime, timefrompresent+timeStep)
+			#		endTime <-append(endTime, timefrompresent)
+			#		if(saveHistory){
+			#			save(startVector, endVector, startTime, endTime, file=paste0("savedHistory", jobName, ".Rdata", sep=""))
+			#		}
+			#	}
 	
 	
 doSimulationForPlotting<-function(phy=NULL, intrinsicFn, extrinsicFn, startingValues, intrinsicValues,
@@ -448,46 +474,53 @@ doSimulationForPlotting<-function(phy=NULL, intrinsicFn, extrinsicFn, startingVa
 		endVector<-c()
 		startTime<-c()
 		endTime<-c()
-	}
-		numberofsteps<-floor(taxonDF[1, 1]/timeStep)
-		mininterval<-min(taxonDF[1:(dim(taxonDF)[1]-1), 1]-taxonDF[2:(dim(taxonDF)[1]), 1])
-		if (numberofsteps<1000) {
-			#warning(paste0("You have only ", numberofsteps, " but should probably have a lot more. Please consider decreasing timeStep to no more than ", taxonDF[1, 1]/1000))
 		}
-		if (floor(mininterval/timeStep)<50) {
-			#warning(paste0("You have only ", floor(mininterval/timeStep), " timeSteps on the shortest branch in this dataset but should probably have a lot more. Please consider decreasing timeStep to no more than ", signif(mininterval/50)))
+		
+	numberofsteps<-floor(taxonDF[1, 1]/timeStep)
+	mininterval<-min(taxonDF[1:(dim(taxonDF)[1]-1), 1]-taxonDF[2:(dim(taxonDF)[1]), 1])
+	if (numberofsteps<1000) {
+		#warning(paste0("You have only ", numberofsteps, " but should probably have a lot more. Please consider decreasing timeStep to no more than ", taxonDF[1, 1]/1000))
+		}
+	if (floor(mininterval/timeStep)<50) {
+		#warning(paste0("You have only ", floor(mininterval/timeStep), " timeSteps on the shortest branch in this dataset but should probably have a lot more. Please consider decreasing timeStep to no more than ", signif(mininterval/50)))
 		}
 	#initial setup
-		timefrompresent=taxonDF[1, 1]
-		taxa<-list(abctaxon(id=taxonDF[1, 3], states=startingValues), abctaxon(id=taxonDF[1, 4], states=startingValues))
-		taxonDF<-taxonDF[2:dim(taxonDF)[1], ] #pop off top value
-		
+	timefrompresent=taxonDF[1, 1]
+	taxa<-list(abctaxon(id=taxonDF[1, 3], states=startingValues), abctaxon(id=taxonDF[1, 4], states=startingValues))
+	taxonDF<-taxonDF[2:dim(taxonDF)[1], ] #pop off top value
+	
 	#start running
-		while(timefrompresent>0) {
-	#message(timefrompresent)
-	#speciation if needed
-			while ((timefrompresent-timeStep)<=taxonDF[1, 1]) { #do speciation. changed from if to while to deal with effectively polytomies
-				originallength<-length(taxa)
-				taxontodelete<-Inf
-				for (i in 1:originallength) {
-					if (taxa[[i]]$id==taxonDF[1, 2]) {
-						taxontodelete<-i
-						taxa[[originallength+1]] <- taxa[[i]]
-						taxa[[originallength+2]] <- taxa[[i]]
-						taxa[[originallength+1]]$id<-taxonDF[1, 3]
-						taxa[[originallength+1]]$timeSinceSpeciation<-0
-						taxa[[originallength+2]]$id<-taxonDF[1, 4]
-						taxa[[originallength+2]]$timeSinceSpeciation<-0
-					}
+	while(timefrompresent>0) {
+		#message(timefrompresent)
+		#speciation if needed
+		while ((timefrompresent-timeStep)<=taxonDF[1, 1]) { #do speciation. changed from if to while to deal with effectively polytomies
+			originallength<-length(taxa)
+			taxontodelete<-Inf
+			for (i in 1:originallength) {
+				if (taxa[[i]]$id==taxonDF[1, 2]) {
+					taxontodelete<-i
+					taxa[[originallength+1]] <- taxa[[i]]
+					taxa[[originallength+2]] <- taxa[[i]]
+					taxa[[originallength+1]]$id<-taxonDF[1, 3]
+					taxa[[originallength+1]]$timeSinceSpeciation<-0
+					taxa[[originallength+2]]$id<-taxonDF[1, 4]
+					taxa[[originallength+2]]$timeSinceSpeciation<-0
 				}
+			}
+			
+			
 	#message("taxontodelete = ", taxontodelete)
+	
+	
 				taxa<-taxa[-1*taxontodelete]
 				if(dim(taxonDF)[1]>1) {
 					taxonDF<-taxonDF[2:(dim(taxonDF)[1]), ] #pop off top value
-				}
-				else {
+				}else{
 					taxonDF[1, ]<-c(-1, 0, 0, 0)
-				}
+					}
+					
+					
+					
 	#message("------------------- speciation -------------------")
 	#message(taxa)
 	#summarizeTaxonStates(taxa)
@@ -531,23 +564,7 @@ doSimulationForPlotting<-function(phy=NULL, intrinsicFn, extrinsicFn, startingVa
 				taxa[[i]]$timeSinceSpeciation<-taxa[[i]]$timeSinceSpeciation+timeStep
 			}
 		}
-		if (plot) {
-			#dev.new()
-			plot(x=c(min(c(startVector, endVector)), max(c(startVector, endVector))), y=c(0, max(c(startTime, endTime))),
-				type="n", ylab="Time", xlab="Trait value", main="", bty="n")
-			for (i in 1:length(startVector)) {
-				lines(x=c(startVector[i], endVector[i]), y=max(c(startTime, endTime)) - c(startTime[i], endTime[i]))
-			}
-		}
-		if (savePlot) {
-			pdf(paste0("SimTree", jobName, ".pdf", sep=""))	
-			plot(x=c(min(c(startVector, endVector)), max(c(startVector, endVector))), y=c(0, max(c(startTime, endTime))),
-				type="n", ylab="Time", xlab="Trait value", main="", bty="n")
-			for (i in 1:length(startVector)) {
-				lines(x=c(startVector[i], endVector[i]), y=max(c(startTime, endTime)) - c(startTime[i], endTime[i]))
-			}
-			dev.off()
-		}
+
 		return(summarizeTaxonStates(taxa))
 	}
 
