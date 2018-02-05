@@ -1,6 +1,6 @@
 #' Discrete-Time Character Simulation
 #' 
-#' The \code{doSimulation} family of functions evolve continuous characters under a discrete time process.
+#' The function \code{doSimulation} evolves continuous characters under a discrete time process.
 #' These functions are mainly used as internal components, generating simulations
 #' within ABC analyses using the \code{\link{doRun}} functions. See \emph{Note} below.
 #' 
@@ -121,22 +121,8 @@
 #' # get realistic edge lengths
 #' tree$edge.length<-tree$edge.length*20
 #' 
-#' # with extinction
-#' 
 #' #Simple Brownian motion
-#' char<-doSimulationWithPossibleExtinction(
-#' 	phy=tree,
-#' 	generation.time=100000,
-#' 	intrinsicFn=brownianIntrinsic,
-#' 	extrinsicFn=nullExtrinsic,
-#' 	startingValues=c(10), #root state
-#' 	intrinsicValues=c(0.01),
-#' 	extrinsicValues=c(0),
-#' 	saveHistory=FALSE)
-#' 
-#' 
-#' #Simple Brownian motion
-#' 
+#'
 #' char<-doSimulation(
 #' 	phy=tree,
 #' 	generation.time=100000,
@@ -148,6 +134,7 @@
 #' 	saveHistory=FALSE)
 #' 
 #' #Character displacement model with minimum bound
+#' 
 #' char<-doSimulation(
 #' 	phy=tree,
 #'  generation.time=100000,
@@ -157,39 +144,12 @@
 #' 	intrinsicValues=c(0.05, 10, 0.01),
 #' 	extrinsicValues=c(0, .1, .25),
 #' 	saveHistory=FALSE)
-#' 
-#' #Simple Brownian motion
-#' char<-doSimulationForPlotting(
-#' 	phy=tree,
-#'  generation.time=100000,
-#' 	intrinsicFn=brownianIntrinsic,
-#' 	extrinsicFn=nullExtrinsic,
-#' 	startingValues=c(10), #root state
-#' 	intrinsicValues=c(0.01),
-#' 	extrinsicValues=c(0),
-#' 	plot=FALSE,
-#' 	saveHistory=FALSE)
-#' 
-#' 
-#' #Character displacement model with minimum bound
-#' char<-doSimulationForPlotting(
-#' 	phy=tree,
-#'  generation.time=100000,
-#' 	intrinsicFn=boundaryMinIntrinsic,
-#' 	extrinsicFn=ExponentiallyDecayingPushExtrinsic,
-#' 	startingValues=c(10), #root state
-#' 	intrinsicValues=c(0.05, 10, 0.01),
-#' 	extrinsicValues=c(0, 0.1, 0.25),
-#' 	plot=TRUE,
-#' 	saveHistory=FALSE)
-#' 
-
 #
 #' }
 
 #' @rdname doSimulation
 #' @export
-doSimulationWithPossibleExtinction<-function(phy=NULL, intrinsicFn, extrinsicFn, startingValues, intrinsicValues, extrinsicValues,
+doSimulation<-function(phy=NULL, intrinsicFn, extrinsicFn, startingValues, intrinsicValues, extrinsicValues,
 	generation.time=1000, TreeYears=max(branching.times(phy)) * 1e6,
 	timeStep=NULL, saveHistory=FALSE, saveRealParams=FALSE, jobName="", maxAttempts = 100,
 	returnAll = FALSE, verbose=FALSE, reject.NaN=TRUE, taxonDF=NULL, checkTimeStep=TRUE) {
@@ -430,156 +390,37 @@ doSimulationWithPossibleExtinction<-function(phy=NULL, intrinsicFn, extrinsicFn,
 	final.results <- subset(taxonDF, taxonTerminal==TRUE)
 	final.result.df <- data.frame(states=final.results[[whichStatesCol]])
 	rownames(final.result.df) <- final.results$name
+	
+	#if (plot) {
+	#	#dev.new()
+	#	plot(x=c(min(c(startVector, endVector)), max(c(startVector, endVector))), y=c(0, max(c(startTime, endTime))),
+	#		type="n", ylab="Time", xlab="Trait value", main="", bty="n")
+	#	for (i in 1:length(startVector)) {
+	#		lines(x=c(startVector[i], endVector[i]), y=max(c(startTime, endTime)) - c(startTime[i], endTime[i]))
+	#	}
+	#}
+	#if (savePlot) {
+	#	pdf(paste0("SimTree", jobName, ".pdf", sep=""))	
+	#	plot(x=c(min(c(startVector, endVector)), max(c(startVector, endVector))), y=c(0, max(c(startTime, endTime))),
+	#		type="n", ylab="Time", xlab="Trait value", main="", bty="n")
+	#	for (i in 1:length(startVector)) {
+	#		lines(x=c(startVector[i], endVector[i]), y=max(c(startTime, endTime)) - c(startTime[i], endTime[i]))
+	#	}
+	#	dev.off()
+	#}
+	
 	#
 	return(final.result.df)
 	}
 
 	
 	
-#' @name doSimulation
-#' @rdname doSimulation
-#' @export
-doSimulation<-function(phy=NULL, intrinsicFn, extrinsicFn, startingValues, intrinsicValues, extrinsicValues,
-	generation.time=1000, TreeYears=max(branching.times(phy)) * 1e6,
-	timeStep=NULL, saveHistory=FALSE, saveRealParams=FALSE, jobName="", taxonDF = NULL) {
-
-	if(!is.ultrametric(phy)){
-		stop("phy must be ultrametric for function doSimulation")
-		}
-	
-	if(is.null(timeStep)){
-		timeStep<-generation.time/TreeYears
-		}
-	
-	if(is.null(taxonDF)){
-		taxonDF<-getSimulationSplits(phy)
-		}
-		
-	#
-	if (saveRealParams){
-		RealParams<-vector("list", 2)
-		names(RealParams)<-c("matrix", "vector")
-		RealParams$vector<-c(startingValues, intrinsicValues, extrinsicValues)
-		maxLength<-(max(length(startingValues), length(intrinsicValues), length(extrinsicValues)))
-		RealParams$matrix<-matrix(ncol=maxLength, nrow=3)
-		rownames(RealParams$matrix)<-c("startingValues", "intrinsicFn", "extrinsicFn")
-		RealParams$matrix[1,]<-c(startingValues, rep(NA, maxLength-length(startingValues)))
-		RealParams$matrix[2,]<-c(intrinsicValues, rep(NA, maxLength-length(intrinsicValues)))
-		RealParams$matrix[3,]<-c(extrinsicValues, rep(NA, maxLength-length(extrinsicValues)))
-		save(RealParams, file=paste0("RealParams", jobName, ".Rdata", sep=""))
-	}
-	if (saveHistory) {
-		startVector<-c()
-		endVector<-c()
-		startTime<-c()
-		endTime<-c()
-	}
-	numberofsteps<-floor(taxonDF[1, 1]/timeStep)
-	mininterval<-min(taxonDF[1:(dim(taxonDF)[1]-1), 1]-taxonDF[2:(dim(taxonDF)[1]), 1])
-
-	#if (numberofsteps<1000) {
-		#warning(paste0("You have only ", numberofsteps, " but should probably have a lot more. Please consider decreasing timeStep to no more than ", taxonDF[1, 1]/1000))
-	#}
-	#if (floor(mininterval/timeStep)<50 {
-		#warning(paste0("You have only ", floor(mininterval/timeStep),
-		#" timeSteps on the shortest branch in this dataset but should probably have a lot more if you expect change on this branch. Please consider decreasing timeStep to no more than ",
-		#	signif(mininterval/50,2)))
-	#}
-
-	#initial setup
-	timefrompresent=taxonDF[1, 1]
-	taxa<-list(abctaxon(id=taxonDF[1, 3], states=startingValues), abctaxon(id=taxonDF[1, 4], states=startingValues))
-	taxonDF<-taxonDF[2:dim(taxonDF)[1], ] #pop off top value
-
-	#start running
-	while(timefrompresent>0) {
-		#message(timefrompresent)
-		#speciation if needed
-		while ((timefrompresent-timeStep)<=taxonDF[1, 1]) { #do speciation. changed from if to while to deal with effectively polytomies
-			originallength<-length(taxa)
-			taxontodelete<-Inf
-			originallength<-length(taxa)
-			taxontodelete<-Inf
-			for (i in 1:originallength) { #need to merge this from my branch still -DG
-				if (taxa[[i]]$id==taxonDF[1, 2]) {
-					taxontodelete<-i
-					taxa[[originallength+1]] <- taxa[[i]]
-					taxa[[originallength+2]] <- taxa[[i]]
-					taxa[[originallength+1]]$id<-taxonDF[1, 3]
-					taxa[[originallength+1]]$timeSinceSpeciation<-0
-					taxa[[originallength+2]]$id<-taxonDF[1, 4]
-					taxa[[originallength+2]]$timeSinceSpeciation<-0
-				}
-			}
-			#message("taxontodelete = ", taxontodelete)
-			taxa<-taxa[-1*taxontodelete]
-			if(dim(taxonDF)[1]>1) {
-				taxonDF<-taxonDF[2:(dim(taxonDF)[1]), ] #pop off top value
-			}
-			else {
-				taxonDF[1, ]<-c(-1, 0, 0, 0)
-			}
-			#message("------------------- speciation -------------------")
-			#message(taxa)
-			#summarizeTaxonStates(taxa)
-		}
-		#trait evolution step
-		otherstatefn<-function(x){
-			taxa[[x]]$states
-		}
-
-		otherMatrix<-function(i){
-			taxvec<-c(1:length(taxa))
-			taxvec<-taxvec[-which(taxvec==i)]
-			#
-			# NOTE this step is slow. Figure out way to make it faster. taxa is a list of abctaxon objects, so taxa$state won't work
-			otherstatesvector<-sapply(taxvec,otherstatefn)
-			#
-			otherstatesmatrix<-matrix(otherstatesvector, ncol=length(taxa[[i]]$states), byrow=TRUE) #each row represents one taxon
-			newvalues<-taxa[[i]]$states+intrinsicFn(params=intrinsicValues, states=taxa[[i]]$states, timefrompresent =timefrompresent)+extrinsicFn(params=extrinsicValues, selfstates=taxa[[i]]$states, otherstates=otherstatesmatrix, timefrompresent =timefrompresent)
-			taxa[[i]]$nextstates<-newvalues
-			if (saveHistory) {
-				startVector<-append(startVector, taxa[[i]]$states)
-				endVector <-append(endVector, newvalues)
-				startTime <-append(startTime, timefrompresent+timeStep)
-				endTime <-append(endTime, timefrompresent)
-				save(startVector, endVector, startTime, endTime, file=paste0("savedHistory", jobName, ".Rdata", sep=""))
-			}
-
-
-			return(taxa[[i]])
-		}
-		taxvec<-c(1:length(taxa))
-		taxa<-lapply(taxvec,otherMatrix)
-
-		stateNextState<-function(i){
-			i$states<-i$nextstates
-			return(i)
-
-		}
-		taxa<-lapply(taxa,stateNextState)
-		#message("------------------- step -------------------")
-		#message(taxa)
-		#summarizeTaxonStates(taxa)
-
-		timefrompresent<-timefrompresent-timeStep
-		timeSinceSp<-function(i) {
-			i$timeSinceSpeciation<-i$timeSinceSpeciation+timeStep
-			return(i)
-		}
-		taxa<-lapply(taxa,timeSinceSp)
-	}
-	return(summarizeTaxonStates(taxa))
-}
-
-#' @rdname doSimulation
-#' @export
 doSimulationForPlotting<-function(phy=NULL, intrinsicFn, extrinsicFn, startingValues, intrinsicValues,
 	extrinsicValues, 	generation.time=1000, TreeYears=max(branching.times(phy)) * 1e6,
 	timeStep=NULL, plot=FALSE, savePlot=FALSE, saveHistory=FALSE, saveRealParams=FALSE, jobName="", taxonDF=NULL) {
 
 	if(!is.ultrametric(phy)){
-		stop("phy must be ultrametric for function doSimulationForPlotting")
+		stop("phy must be ultrametric for function doSimulation")
 		}	
 	
 	if(is.null(timeStep)){
@@ -720,7 +561,7 @@ doSimulationForPlotting<-function(phy=NULL, intrinsicFn, extrinsicFn, startingVa
 #   This function creates a data frame of taxon states while simulating
 #   characters with doSimulation and doSimulationsForPlotting TreEvo functions
 #
-#   Used by TreEvo doSimulation and doSimulationForPlotting functions to
+#   Used by TreEvo doSimulation and doSimulation functions to
 #   summarize a list of objects into a data frame of taxon values
 #
 #   @param taxa a list of objects

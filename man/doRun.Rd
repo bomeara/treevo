@@ -29,7 +29,8 @@ doRun_rej(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
 \arguments{
 \item{phy}{A phylogenetic tree, in package \code{ape}'s \code{phylo} format.}
 
-\item{traits}{Data matrix with rownames identical to \code{phy@tip.label}.}
+\item{traits}{Data matrix with rownames identical to \code{phy@tip.label}. 
+If a vector, \code{traits} will be coerced to a matrix, with element names as rownames.}
 
 \item{intrinsicFn}{Name of (previously-defined) function that governs how
 traits evolve within a lineage, regardless of the trait values of other taxa.}
@@ -169,7 +170,7 @@ simulation, including generation, attempt, id, parentid, distance, weight, and p
 \description{
 The \code{doRun} functions are the main interface for \code{TreEvo} users to do Approximate Bayesian Computation (ABC) analysis,
 effectively wrapping the \code{\link{simulateWithPriors}} functions to perform simulations, which
-themselves are wrappers for the the \code{\link{doSimulation}} functions. The two current \code{doRun}
+themselves are wrappers for the \code{\link{doSimulation}} function. The two current \code{doRun}
 functions are \code{doRun_prc} which applies a partial rejection control(PRC) ABC analysis over multiple generations of simulations,
 and \code{doRun_rej} which performs a full rejection ('rej') ABC analysis.
 }

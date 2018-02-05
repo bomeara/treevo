@@ -2,7 +2,7 @@
 #' 
 #' The \code{doRun} functions are the main interface for \code{TreEvo} users to do Approximate Bayesian Computation (ABC) analysis,
 #' effectively wrapping the \code{\link{simulateWithPriors}} functions to perform simulations, which
-#' themselves are wrappers for the the \code{\link{doSimulation}} functions. The two current \code{doRun}
+#' themselves are wrappers for the \code{\link{doSimulation}} function. The two current \code{doRun}
 #' functions are \code{doRun_prc} which applies a partial rejection control(PRC) ABC analysis over multiple generations of simulations,
 #' and \code{doRun_rej} which performs a full rejection ('rej') ABC analysis.
 #' 
@@ -38,7 +38,8 @@
 #' @inheritParams simulateWithPriors
 #' @inheritParams methodsPLS
 
-#' @param traits Data matrix with rownames identical to \code{phy@tip.label}.
+#' @param traits Data matrix with rownames identical to \code{phy@tip.label}. 
+#' If a vector, \code{traits} will be coerced to a matrix, with element names as rownames.
 
 # @param startingValuesGuess Optional guess of starting values.
 
@@ -228,6 +229,7 @@
 
 
 # ARE each particle-gather interval of the PRC algorithm a GENERATION OR a STEP? PLEASE CLARIFY
+	# what a weird comment - generations are the time increments (in abs time) used for evolving traits along the tree
 
 ##old, from before DWB: This seems to be working if partialResults does not exist.  If checkpoint=TRUE, then run fails.
 	# DWB - I guess I should test that... sigh...
@@ -498,7 +500,7 @@ doRun_prc<-function(
 			#
 			newparticleList[[1]]$distance<-abcDistance(
 				summaryValuesMatrix=summaryStatsLong(phy=phy,
-					traits=doSimulationWithPossibleExtinction(phy=NULL,  taxonDF=taxonDF,
+					traits=doSimulation(phy=NULL,  taxonDF=taxonDF,
 						intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn,
 						startingValues=newparticleList[[1]]$startingValues,
 						intrinsicValues=newparticleList[[1]]$intrinsicValues,

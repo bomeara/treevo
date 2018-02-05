@@ -9,7 +9,8 @@ getBMRatePrior(phy, traits, timeStep, verbose = TRUE)
 \arguments{
 \item{phy}{A phylogenetic tree, in package \code{ape}'s \code{phylo} format.}
 
-\item{traits}{Data matrix with rownames identical to \code{phy@tip.label}.}
+\item{traits}{Data matrix with rownames identical to \code{phy@tip.label}. 
+If a vector, \code{traits} will be coerced to a matrix, with element names as rownames.}
 
 \item{timeStep}{time in a single iteration of the discrete-time simulation}
 

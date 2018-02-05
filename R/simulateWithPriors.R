@@ -1,7 +1,7 @@
 #' Simulate data for initial TreEvo analysis
 #' 
 #' The \code{simulateWithPriors} function pulls parameters from prior distributions and conducts a single simulation of
-#' continuous trait evolution (using \code{\link{doSimulation}} functions), returning useful summary statistics for ABC.
+#' continuous trait evolution (using the \code{\link{doSimulation}} function), returning useful summary statistics for ABC.
 #' \code{parallelSimulateWithPriors} is a wrapper function for \code{simulateWithPriors} that allows for multithreading
 #' and checkpointing. This family of functions is mostly used as internal components, generating simulations
 #' within ABC analyses using the \code{\link{doRun}} functions. See \emph{Note} below.
@@ -9,9 +9,9 @@
 
 #' @note
 #' The \code{\link{simulateWithPriors}} functions are effectively the engine that powers the \code{\link{doRun}}
-#' functions, while the \code{\link{doSimulation}} functions are the pistons within the \code{\link{simulateWithPriors}} engine.
+#' functions, while the \code{\link{doSimulation}} function is the pistons within the \code{\link{simulateWithPriors}} engine.
 #' In general, most users will just drive the car - they will just use \code{\link{doRun}}, but some users may
-#' want to use \code{\link{simulateWithPriors}} or \code{\link{doSimulation}} functions to do various simulations.
+#' want to use \code{\link{simulateWithPriors}} or \code{\link{doSimulation}} to do various simulations.
 
 #' @inheritParams doSimulation
 
@@ -202,7 +202,7 @@ simulateWithPriors<-function(
 		trueFreeValues<-trueInitial[freevector]
 
 		message(".")
-		simTraits<-doSimulationWithPossibleExtinction(phy=phy, taxonDF=taxonDF, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn,
+		simTraits<-doSimulation(phy=phy, taxonDF=taxonDF, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn,
 			startingValues=trueStarting, intrinsicValues=trueIntrinsic, extrinsicValues=trueExtrinsic,
 			timeStep=timeStep, verbose=verbose, checkTimeStep=FALSE)
 		simSumStats<-summaryStatsLong(phy=phy, traits=simTraits
