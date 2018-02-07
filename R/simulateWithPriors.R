@@ -67,6 +67,7 @@
 
 #' @param checkpointFreq Saving frequency for checkpointing
 
+#' @param verboseNested Should looped runs of \code{simulateWithPriors} be verbose?
 
 #' @return Function \code{simulateWithPriors} returns a vector of \code{trueFreeValues},
 #' the true generating parameters used in the simulation
@@ -230,7 +231,7 @@ simulateWithPriors<-function(
 #' @rdname simulateWithPriors
 #' @export
 parallelSimulateWithPriors<-function(
-	nrepSim, multicore, coreLimit, phy,
+	nrepSim, multicore, coreLimit,phy,
 	intrinsicFn, extrinsicFn, startingPriorsFns, startingPriorsValues,
 	intrinsicPriorsFns, intrinsicPriorsValues, extrinsicPriorsFns, extrinsicPriorsValues,
 	generation.time=1000, TreeYears=max(branching.times(phy)) * 1e6, timeStep=NULL, #timeStep=1e-04,

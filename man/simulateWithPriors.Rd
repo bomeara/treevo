@@ -101,6 +101,8 @@ If neither package is installed, this function will fail if \code{multicore=TRUE
 \item{checkpointFile}{Optional file name for checkpointing simulations}
 
 \item{checkpointFreq}{Saving frequency for checkpointing}
+
+\item{verboseNested}{Should looped runs of \code{simulateWithPriors} be verbose?}
 }
 \value{
 Function \code{simulateWithPriors} returns a vector of \code{trueFreeValues},
