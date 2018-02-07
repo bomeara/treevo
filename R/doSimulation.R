@@ -78,8 +78,8 @@
 
 #' @param checkTimeStep If \code{TRUE}, warnings will be issued if \code{TimeStep} is too short.
 
-#' @param saveHistory If \code{TRUE}, saves the character history throughout the simulation.
-#' When \code{saveHistory} is \code{TRUE}, processor time will increase quite a bit.
+# @param saveHistory If \code{TRUE}, saves the character history throughout the simulation.
+# When \code{saveHistory} is \code{TRUE}, processor time will increase quite a bit.
 
 #' @param saveRealParams Saves \code{intrinsicValues} and \code{extrinsicValues} as both a
 #' matrix and a vector to an external .Rdata file.
@@ -130,8 +130,7 @@
 #' 	extrinsicFn=nullExtrinsic,
 #' 	startingValues=c(10), #root state
 #' 	intrinsicValues=c(0.01),
-#' 	extrinsicValues=c(0),
-#' 	saveHistory=FALSE)
+#' 	extrinsicValues=c(0))
 #' 
 #' #Character displacement model with minimum bound
 #' 
@@ -142,8 +141,7 @@
 #' 	extrinsicFn=ExponentiallyDecayingPushExtrinsic,
 #' 	startingValues=c(10), #root state
 #' 	intrinsicValues=c(0.05, 10, 0.01),
-#' 	extrinsicValues=c(0, .1, .25),
-#' 	saveHistory=FALSE)
+#' 	extrinsicValues=c(0, .1, .25))
 #
 #' }
 
@@ -151,7 +149,8 @@
 #' @export
 doSimulation<-function(phy=NULL, intrinsicFn, extrinsicFn, startingValues, intrinsicValues, extrinsicValues,
 	generation.time=1000, TreeYears=max(branching.times(phy)) * 1e6,
-	timeStep=NULL, plot=FALSE, savePlot=FALSE, saveHistory=FALSE, 
+	timeStep=NULL, plot=FALSE, savePlot=FALSE, 
+	#saveHistory=FALSE, plot=FALSE, savePlot=FALSE,
 	saveRealParams=FALSE, jobName="", maxAttempts = 100,
 	returnAll = FALSE, verbose=FALSE, reject.NaN=TRUE, taxonDF=NULL, checkTimeStep=TRUE) {
 	#
@@ -184,12 +183,12 @@ doSimulation<-function(phy=NULL, intrinsicFn, extrinsicFn, startingValues, intri
 		save(RealParams, file=paste0("RealParams", jobName, ".Rdata", sep=""))
 		}
 	#
-	if (plot || savePlot || saveHistory) {
-		startVector<-c()
-		endVector<-c()
-		startTime<-c()
-		endTime<-c()
-		}
+	#if (plot || savePlot || saveHistory) {
+	#	startVector<-c()
+	#	endVector<-c()
+	#	startTime<-c()
+	#	endTime<-c()
+	#	}
 	#
 	numberofsteps<-max(taxonDF$endTime)/timeStep
 	mininterval<-min(taxonDF$endTime - taxonDF$startTime)
@@ -357,7 +356,7 @@ doSimulation<-function(phy=NULL, intrinsicFn, extrinsicFn, startingValues, intri
 					}					
 				}
 			#
-						#if (plot || savePlot || saveHistory) {
+			#	if (plot || savePlot || saveHistory) {
 			#		startVector<-append(startVector, taxa[[i]]$states)
 			#		endVector <-append(endVector, newvalues)
 			#		startTime <-append(startTime, timefrompresent+timeStep)
