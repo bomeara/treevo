@@ -3,7 +3,7 @@ test_that("doSimulation works", {
   tree <- rcoal(5)
   tree$edge.length <- tree$edge.length * 20
 
-  char <- doSimulation(
+  charDoSim <- doSimulation(
 	phy = tree,
 	intrinsicFn = brownianIntrinsic,
     extrinsicFn = nullExtrinsic,
@@ -12,10 +12,10 @@ test_that("doSimulation works", {
 	extrinsicValues = c(0),
 	generation.time=1000000)
 	
-	expect_equal(class(char[,1]), "integer")
-	expect_equal(dim(char)[1], Ntip(tree))
+	expect_equal(class(charDoSim[,1]), "numeric")
+	expect_equal(dim(charDoSim)[1], Ntip(tree))
 	
-  char <- doSimulation(
+  charDoSim <- doSimulation(
 	phy = tree,
 	intrinsicFn = boundaryMinIntrinsic,
     extrinsicFn = ExponentiallyDecayingPushExtrinsic,
@@ -24,8 +24,8 @@ test_that("doSimulation works", {
 	extrinsicValues = c(0, 0.1, 0.25),
 	generation.time=1000000)
 	
-	expect_equal(class(char[,1]), "integer")
-	expect_equal(dim(char)[1], Ntip(tree))
+	expect_equal(class(charDoSim[,1]), "numeric")
+	expect_equal(dim(charDoSim)[1], Ntip(tree))
 	
 })
 

@@ -507,17 +507,17 @@ doRun_prc<-function(
 			#message("dput(newparticleList[[1]]) AFTER MUTATE STATES\n")
 			#dput(newparticleList[[1]])
 			#
-			newparticleList[[1]]$distance<-
-				simTraitsParticle<-doSimulation(phy=NULL,  taxonDF=taxonDF,
-					intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn,
-					startingValues=newparticleList[[1]]$startingValues,
-					intrinsicValues=newparticleList[[1]]$intrinsicValues,
-					extrinsicValues=newparticleList[[1]]$extrinsicValues,
-					timeStep=timeStep, checkTimeStep=FALSE)
-				simSumMat<-summaryStatsLong(phy=phy,traits=simTraitsParticle)
-				abcDistance(summaryValuesMatrix=simSumMat,
-					originalSummaryValues=originalSummaryValues, 
-					pls.model.list=pls.model.list)
+			#
+			simTraitsParticle<-doSimulation(phy=NULL,  taxonDF=taxonDF,
+				intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn,
+				startingValues=newparticleList[[1]]$startingValues,
+				intrinsicValues=newparticleList[[1]]$intrinsicValues,
+				extrinsicValues=newparticleList[[1]]$extrinsicValues,
+				timeStep=timeStep, checkTimeStep=FALSE)
+			simSumMat<-summaryStatsLong(phy=phy,traits=simTraitsParticle)
+			newparticleList[[1]]$distance<-abcDistance(summaryValuesMatrix=simSumMat,
+				originalSummaryValues=originalSummaryValues, 
+				pls.model.list=pls.model.list)
 			#
 			if (plot) {
 				plotcol="grey"
