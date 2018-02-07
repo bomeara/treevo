@@ -7,7 +7,7 @@
 doSimulation(phy = NULL, intrinsicFn, extrinsicFn, startingValues,
   intrinsicValues, extrinsicValues, generation.time = 1000,
   TreeYears = max(branching.times(phy)) * 1e+06, timeStep = NULL,
-  saveHistory = FALSE, saveRealParams = FALSE, jobName = "",
+  plot = FALSE, savePlot = FALSE, saveRealParams = FALSE, jobName = "",
   maxAttempts = 100, returnAll = FALSE, verbose = FALSE,
   reject.NaN = TRUE, taxonDF = NULL, checkTimeStep = TRUE)
 }
@@ -54,8 +54,10 @@ Can be provided a value as an alternative to using arguments \code{generation.ti
 and \code{TreeYears}, which would then be overridden.
 See documentation for \code{\link{doSimulation}} for further details.}
 
-\item{saveHistory}{If \code{TRUE}, saves the character history throughout the simulation.
-When \code{saveHistory} is \code{TRUE}, processor time will increase quite a bit.}
+\item{plot}{Will create a new interactive window that plots character values
+throughout the history of the tree.}
+
+\item{savePlot}{Saves the character tree using \code{jobName}.}
 
 \item{saveRealParams}{Saves \code{intrinsicValues} and \code{extrinsicValues} as both a
 matrix and a vector to an external .Rdata file.}
@@ -76,11 +78,6 @@ Can be supplied as input to spead up repeated calculations, but by default is
 \code{NULL}, which instead forces a calculation from input \code{phy}.}
 
 \item{checkTimeStep}{If \code{TRUE}, warnings will be issued if \code{TimeStep} is too short.}
-
-\item{plot}{Will create a new interactive window that plots character values
-throughout the history of the tree.}
-
-\item{savePlot}{Saves the character tree using \code{jobName}.}
 }
 \value{
 If \code{returnAll = FALSE} (the default), this function returns a data frame of species character (tip)
@@ -103,8 +100,6 @@ an evolutionary change in trait values every 1000 years). Note that the real num
 less, because simulations start ver at each branching node, but intervals between changes should be so fine that this
 should be negligible (related, the results should be independent of your choice for \code{generation.time} or \code{timeStep}).
 We recommend that the effective \code{timeStep} should be  as short as is computationally possible.
-
-When \code{saveHistory} is \code{TRUE}, processor time will increase quite a bit.
 \code{SaveRealParams} is useful for tracking the \emph{real} true values if simulating
 data to test the performance of ABC analyses.  It is not useful for ABC analyses of empirical data.
 }
@@ -130,8 +125,7 @@ char<-doSimulation(
 	extrinsicFn=nullExtrinsic,
 	startingValues=c(10), #root state
 	intrinsicValues=c(0.01),
-	extrinsicValues=c(0),
-	saveHistory=FALSE)
+	extrinsicValues=c(0))
 
 #Character displacement model with minimum bound
 
@@ -142,8 +136,7 @@ char<-doSimulation(
 	extrinsicFn=ExponentiallyDecayingPushExtrinsic,
 	startingValues=c(10), #root state
 	intrinsicValues=c(0.05, 10, 0.01),
-	extrinsicValues=c(0, .1, .25),
-	saveHistory=FALSE)
+	extrinsicValues=c(0, .1, .25))
 }
 }
 \author{

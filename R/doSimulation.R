@@ -13,9 +13,9 @@
 #' less, because simulations start ver at each branching node, but intervals between changes should be so fine that this
 #' should be negligible (related, the results should be independent of your choice for \code{generation.time} or \code{timeStep}).
 #' We recommend that the effective \code{timeStep} should be  as short as is computationally possible.
-
-#' 
-#' When \code{saveHistory} is \code{TRUE}, processor time will increase quite a bit.
+# 
+# When \code{saveHistory} is \code{TRUE}, processor time will increase quite a bit.
+#
 #' \code{SaveRealParams} is useful for tracking the \emph{real} true values if simulating
 #' data to test the performance of ABC analyses.  It is not useful for ABC analyses of empirical data.
 #' 

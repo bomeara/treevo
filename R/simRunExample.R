@@ -78,8 +78,7 @@
 #' 	startingValues=ancState, #root state
 #' 	intrinsicValues=genRate,
 #' 	extrinsicValues=c(0),
-#' 	generation.time=100000,
-#' 	saveHistory=FALSE)
+#' 	generation.time=100000)
 #' 
 #' # clean for use with doRun
 #' simChar<-simCharOut[,"statesmatrix",drop=FALSE]

@@ -17,8 +17,8 @@ parallelSimulateWithPriors(nrepSim, multicore, coreLimit, phy, intrinsicFn,
   intrinsicPriorsValues, extrinsicPriorsFns, extrinsicPriorsValues,
   generation.time = 1000, TreeYears = max(branching.times(phy)) * 1e+06,
   timeStep = NULL, checkpointFile = NULL, checkpointFreq = 24,
-  verbose = FALSE, freevector = NULL, taxonDF = NULL,
-  giveUpAttempts = 10)
+  verbose = TRUE, verboseNested = FALSE, freevector = NULL,
+  taxonDF = NULL, giveUpAttempts = 10)
 }
 \arguments{
 \item{phy}{A phylogenetic tree, in package \code{ape}'s \code{phylo} format.}

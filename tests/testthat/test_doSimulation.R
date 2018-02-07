@@ -10,9 +10,8 @@ test_that("doSimulation works", {
 	startingValues = c(10),
     intrinsicValues = c(0.01),
 	extrinsicValues = c(0),
-	generation.time=1000000,
-	saveHistory = FALSE
-	)
+	generation.time=1000000)
+	
 	expect_equal(class(char[,1]), "integer")
 	expect_equal(dim(char)[1], Ntip(tree))
 	
@@ -23,9 +22,8 @@ test_that("doSimulation works", {
     startingValues = c(10),
 	intrinsicValues = c(0.05,10, 0.01),
 	extrinsicValues = c(0, 0.1, 0.25),
-	generation.time=1000000,
-	saveHistory = FALSE
-	)
+	generation.time=1000000)
+	
 	expect_equal(class(char[,1]), "integer")
 	expect_equal(dim(char)[1], Ntip(tree))
 	
