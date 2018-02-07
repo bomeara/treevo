@@ -356,6 +356,17 @@ doSimulation<-function(phy=NULL, intrinsicFn, extrinsicFn, startingValues, intri
 					stop("where are these NA newStates coming from?? Something is very wrong")
 					}					
 				}
+			#
+						#if (plot || savePlot || saveHistory) {
+			#		startVector<-append(startVector, taxa[[i]]$states)
+			#		endVector <-append(endVector, newvalues)
+			#		startTime <-append(startTime, timefrompresent+timeStep)
+			#		endTime <-append(endTime, timefrompresent)
+			#		if(saveHistory){
+			#			save(startVector, endVector, startTime, endTime, file=paste0("savedHistory", jobName, ".Rdata", sep=""))
+			#		}
+			#	}
+			#
 
 			taxonStates[taxonIndex] <- newState
 			}
@@ -394,7 +405,7 @@ doSimulation<-function(phy=NULL, intrinsicFn, extrinsicFn, startingValues, intri
 	final.results <- subset(taxonDF, taxonTerminal==TRUE)
 	final.result.df <- data.frame(states=final.results[[whichStatesCol]])
 	rownames(final.result.df) <- final.results$name
-	
+	#
 	#if(plot){
 	#	#dev.new()
 	#	plot(x=c(min(c(startVector, endVector)),
@@ -413,16 +424,14 @@ doSimulation<-function(phy=NULL, intrinsicFn, extrinsicFn, startingValues, intri
 	#	plot(x=c(min(c(startVector, endVector)), max(c(startVector, endVector))),
 	#		 y=c(0, max(c(startTime, endTime))),
 	#		 type="n", ylab="Time", xlab="Trait value",
-#		  	 main="", bty="n")
+	#		 main="", bty="n")
 	#	for (i in 1:length(startVector)) {
 	#		lines(x=c(startVector[i], endVector[i]),
-#			  	  y=max(c(startTime, endTime)) - c(startTime[i], endTime[i]))
+	#		y=max(c(startTime, endTime)) - c(startTime[i], endTime[i]))
 	#		}
 	#	dev.off()
 	#	}
-	
-	
-	
+	#
 	#
 	return(final.result.df)
 	}

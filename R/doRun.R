@@ -353,15 +353,15 @@ doRun_prc<-function(
 	summaryValues<-matrix(nrow=0, ncol=length(summaryStatsLong(phy=phy, traits=traits
 		#niter.brown=200, niter.lambda=200, niter.delta=200, niter.OU=200, niter.white=200
 		)))
-	trueFreeValuesANDSummaryValues<-makeQuiet(
-		parallelSimulateWithPriors(
-			nrepSim=nrepSim, coreLimit=coreLimit, phy=phy,  taxonDF=taxonDF,
-			startingPriorsValues=startingPriorsValues, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues,
-			startingPriorsFns=startingPriorsFns, intrinsicPriorsFns=intrinsicPriorsFns, extrinsicPriorsFns=extrinsicPriorsFns,
-			freevector=freevector, timeStep=timeStep, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, multicore=multicore,
-			#niter.brown=niter.brown.g, niter.lambda=niter.lambda.g, niter.delta=niter.delta.g, niter.OU=niter.OU.g, niter.white=niter.white.g
-			)
-		)
+	trueFreeValuesANDSummaryValues<-parallelSimulateWithPriors(	#makeQuiet(
+		nrepSim=nrepSim, coreLimit=coreLimit, phy=phy,  taxonDF=taxonDF,
+		startingPriorsValues=startingPriorsValues, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues,
+		startingPriorsFns=startingPriorsFns, intrinsicPriorsFns=intrinsicPriorsFns, extrinsicPriorsFns=extrinsicPriorsFns,
+		freevector=freevector, timeStep=timeStep, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, multicore=multicore
+		,verbose=FALSE
+		#niter.brown=niter.brown.g, niter.lambda=niter.lambda.g, niter.delta=niter.delta.g, niter.OU=niter.OU.g, niter.white=niter.white.g
+		)	#)
+	#
 	#message("\n\n")
 	#
 	if(saveData){
@@ -507,19 +507,17 @@ doRun_prc<-function(
 			#message("dput(newparticleList[[1]]) AFTER MUTATE STATES\n")
 			#dput(newparticleList[[1]])
 			#
-			newparticleList[[1]]$distance<-abcDistance(
-				summaryValuesMatrix=summaryStatsLong(phy=phy,
-					traits=doSimulation(phy=NULL,  taxonDF=taxonDF,
-						intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn,
-						startingValues=newparticleList[[1]]$startingValues,
-						intrinsicValues=newparticleList[[1]]$intrinsicValues,
-						extrinsicValues=newparticleList[[1]]$extrinsicValues,
-						timeStep=timeStep, checkTimeStep=FALSE)
-					#,niter.brown=niter.brown.g, niter.lambda=niter.lambda.g, niter.delta=niter.delta.g,
-					#niter.OU=niter.OU.g, niter.white=niter.white.g
-					)
-				, originalSummaryValues=originalSummaryValues, pls.model.list=pls.model.list
-				)
+			newparticleList[[1]]$distance<-
+				simTraitsParticle<-doSimulation(phy=NULL,  taxonDF=taxonDF,
+					intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn,
+					startingValues=newparticleList[[1]]$startingValues,
+					intrinsicValues=newparticleList[[1]]$intrinsicValues,
+					extrinsicValues=newparticleList[[1]]$extrinsicValues,
+					timeStep=timeStep, checkTimeStep=FALSE)
+				simSumMat<-summaryStatsLong(phy=phy,traits=simTraitsParticle)
+				abcDistance(summaryValuesMatrix=simSumMat,
+					originalSummaryValues=originalSummaryValues, 
+					pls.model.list=pls.model.list)
 			#
 			if (plot) {
 				plotcol="grey"

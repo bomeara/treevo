@@ -212,8 +212,11 @@ simulateWithPriors<-function(
 		simTrueAndStats <-c(trueFreeValues, simSumStats)
 	}
 	if(n.attempts>1) {
-		warning(paste("Had to run simulateWithPriors()",n.attempts,
-			"times to get results with no NA. This could bias results if runs with certain parameters failed more often and this happens in many attempted simulations"))
+		warning(
+			paste("Had to run simulateWithPriors()",n.attempts,
+			"times to get results with no NA. This could bias results if runs with certain parameters failed more often and this happens in many attempted simulations"
+			)
+		)
 	}
 	if(checks){
 		attr(simTrueAndStats,"freevector")<-freevector
@@ -227,12 +230,11 @@ simulateWithPriors<-function(
 #' @rdname simulateWithPriors
 #' @export
 parallelSimulateWithPriors<-function(
-	nrepSim, multicore, coreLimit,
-	phy,
+	nrepSim, multicore, coreLimit, phy,
 	intrinsicFn, extrinsicFn, startingPriorsFns, startingPriorsValues,
 	intrinsicPriorsFns, intrinsicPriorsValues, extrinsicPriorsFns, extrinsicPriorsValues,
 	generation.time=1000, TreeYears=max(branching.times(phy)) * 1e6, timeStep=NULL, #timeStep=1e-04,
-	checkpointFile=NULL, checkpointFreq=24, verbose=FALSE, freevector=NULL, taxonDF=NULL, giveUpAttempts=10
+	checkpointFile=NULL, checkpointFreq=24, verbose=TRUE, verboseNested=FALSE, freevector=NULL, taxonDF=NULL, giveUpAttempts=10
 	#,niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25
 	) {
 	
@@ -283,19 +285,28 @@ parallelSimulateWithPriors<-function(
 			coreLimit->cores
 			}
 		}
-	message(paste("Using", cores, "core(s) for simulations \n\n"))
-	if (nrepSim %%cores != 0) {
-		warning("The simulation is most efficient if the number of nrepSim is a multiple of the number of cores")
-	}
-
-	message("Doing simulations: ")
+	#
+	# verbosity
+	if(verbose){
+		message(paste("Using", cores, "core(s) for simulations \n\n"))
+		if (nrepSim %%cores != 0) {
+			warning("The simulation is most efficient if the number of nrepSim is a multiple of the number of cores")
+			}
+		message("Doing simulations: ")
+		}
+	#
+	# now run simulations
 	if (is.null(checkpointFile)) {
-		trueFreeValuesANDSummaryValues<-foreach(1:nrepSim, .combine=rbind) %dopar% simulateWithPriors(phy=phy, taxonDF=taxonDF,
-			startingPriorsValues=startingPriorsValues, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues,
-			startingPriorsFns=startingPriorsFns, intrinsicPriorsFns=intrinsicPriorsFns, extrinsicPriorsFns=extrinsicPriorsFns, giveUpAttempts=giveUpAttempts,
-			freevector=freevector, timeStep=timeStep, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, verbose=verbose, checks=FALSE)
-	}
-	else {
+		# no checkpointFile to generate!
+		repSimFE<-foreach(1:nrepSim, .combine=rbind)
+		trueFreeValuesANDSummaryValues<-(makeQuiet(
+			repSimFE %dopar% simulateWithPriors(phy=phy, taxonDF=taxonDF,
+				startingPriorsValues=startingPriorsValues, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues,
+				startingPriorsFns=startingPriorsFns, intrinsicPriorsFns=intrinsicPriorsFns, extrinsicPriorsFns=extrinsicPriorsFns, 
+				giveUpAttempts=giveUpAttempts,freevector=freevector, timeStep=timeStep, 
+				intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, verbose=verboseNested, checks=FALSE)
+			))
+	}else{
 		checkpointFileName<-paste(checkpointFile,".trueFreeValuesANDSummaryValues.Rsave",sep="")
 		trueFreeValuesANDSummaryValues<-c()
 		checkpointFreqAdjusted<-max(cores*round(checkpointFreq/cores),1)
@@ -305,21 +316,21 @@ parallelSimulateWithPriors<-function(
 		numberSimsAfterLastCheckpoint<-nrepSim - numberSimsInCheckpointRuns
 		if (checkpointFreqAdjusted != checkpointFreq ) {
 			warning(paste("Checkpoint frequency adjusted from",checkpointFreq,"to",checkpointFreqAdjusted,"to reduce the wasted time on unused cores"))
-		}
+			}
 		for (rep in sequence(numberLoops)) {
 			trueFreeValuesANDSummaryValues<-rbind(trueFreeValuesANDSummaryValues,
 				foreach(1:numberSimsPerLoop, .combine=rbind) %dopar% simulateWithPriors(phy=phy,  taxonDF=taxonDF,
 					startingPriorsValues=startingPriorsValues, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues,
 					startingPriorsFns=startingPriorsFns, intrinsicPriorsFns=intrinsicPriorsFns, extrinsicPriorsFns=extrinsicPriorsFns,  giveUpAttempts=giveUpAttempts,
-					freevector=freevector, timeStep=timeStep, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, verbose=verbose, checks=FALSE))
+					freevector=freevector, timeStep=timeStep, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, verbose=verboseNested, checks=FALSE))
 			save(trueFreeValuesANDSummaryValues,file=checkpointFileName)
 			message(paste("Just finished",dim(trueFreeValuesANDSummaryValues)[1],"of",nrepSim,"simulations; progress so far saved in",checkpointFileName))
-		}
+			}
 		trueFreeValuesANDSummaryValues<-rbind(trueFreeValuesANDSummaryValues,
 			foreach(1:numberSimsAfterLastCheckpoint, .combine=rbind) %dopar% simulateWithPriors(phy=phy,  taxonDF=taxonDF,
 				startingPriorsValues=startingPriorsValues, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues,
 				startingPriorsFns=startingPriorsFns, intrinsicPriorsFns=intrinsicPriorsFns, extrinsicPriorsFns=extrinsicPriorsFns,  giveUpAttempts=giveUpAttempts,
-				freevector=freevector, timeStep=timeStep, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, verbose=verbose, checks=FALSE))
+				freevector=freevector, timeStep=timeStep, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, verbose=verboseNested, checks=FALSE))
 	}
 	attr(trueFreeValuesANDSummaryValues,"freevector")<-freevector
 	return(trueFreeValuesANDSummaryValues)
