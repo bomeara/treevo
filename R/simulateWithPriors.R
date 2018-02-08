@@ -8,7 +8,7 @@
 #' 
 
 #' @note
-#' The \code{\link{simulateWithPriors}} functions are effectively the engine that powers the \code{\link{doRun}}
+#' The \code{\link{simulateWithPriors}} functions are effectively the engine that powers the  \code{\link{doRun}}
 #' functions, while the \code{\link{doSimulation}} function is the pistons within the \code{\link{simulateWithPriors}} engine.
 #' In general, most users will just drive the car - they will just use \code{\link{doRun}}, but some users may
 #' want to use \code{\link{simulateWithPriors}} or \code{\link{doSimulation}} to do various simulations.
@@ -201,17 +201,19 @@ simulateWithPriors<-function(
 		}
 		trueInitial<-c(trueStarting, trueIntrinsic, trueExtrinsic)
 		trueFreeValues<-trueInitial[freevector]
-
-		message(".")
-		simTraits<-doSimulation(phy=phy, taxonDF=taxonDF, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn,
-			startingValues=trueStarting, intrinsicValues=trueIntrinsic, extrinsicValues=trueExtrinsic,
-			timeStep=timeStep, verbose=verbose, checkTimeStep=FALSE)
+		#
+		#message(".")
+		#
+		simTraits<-doSimulationInternal<-function(
+			taxonDF=taxonDF, timeStep=timeStep, 
+			intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, 
+			startingValue=trueStarting, intrinsicValues=trueIntrinsic, extrinsicValues=trueExtrinsic)		
 		simSumStats<-summaryStatsLong(phy=phy, traits=simTraits
 			#,niter.brown=niter.brown, niter.lambda=niter.lambda, niter.delta=niter.delta,
 			#niter.OU=niter.OU, niter.white=niter.white
 			)
 		simTrueAndStats <-c(trueFreeValues, simSumStats)
-	}
+		}
 	if(n.attempts>1) {
 		warning(
 			paste("Had to run simulateWithPriors()",n.attempts,
