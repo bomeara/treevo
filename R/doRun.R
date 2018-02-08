@@ -489,14 +489,19 @@ doRun_prc<-function(
 				#dput(oldParticleList[particleToSelect])
 				#message("dput(oldParticleList[[particleToSelect]])\n")
 				#dput(oldParticleList[[particleToSelect]])
-				particleToSelect<-which.max(as.vector(rmultinom(1, size = 1, prob=oldParticleWeights)))
 				#message(oldParticleWeights)
-				#message(particleToSelect)
 				#message(length(oldParticleList))
+				#
+				particleToSelect<-which.max(as.vector(rmultinom(1, size = 1, prob=oldParticleWeights)))
+				#
+				#message(particleToSelect)
+				#
 				newparticleList<-list(oldParticleList[[particleToSelect]])
+				#
 				#message("dput(newparticleList[[1]])\n")
 				#dput(newparticleList[[1]])
 				#message("mutateStates\n")
+				#
 				newparticleList[[1]]<-mutateStates(particle=newparticleList[[1]],
 					startingPriorsValues=startingPriorsValues, startingPriorsFns=startingPriorsFns,
 					intrinsicPriorsValues=intrinsicPriorsValues, intrinsicPriorsFns=intrinsicPriorsFns,
@@ -508,16 +513,20 @@ doRun_prc<-function(
 			#dput(newparticleList[[1]])
 			#
 			#
-			simTraitsParticle<-doSimulation(phy=NULL,  taxonDF=taxonDF,
+			
+			
+
+			
+			newparticleList[[1]]$distance<-simSumDistancePRC(
+				phy=phy, taxonDF=taxonDF, timeStep=timeStep, 
 				intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn,
 				startingValues=newparticleList[[1]]$startingValues,
 				intrinsicValues=newparticleList[[1]]$intrinsicValues,
 				extrinsicValues=newparticleList[[1]]$extrinsicValues,
-				timeStep=timeStep, checkTimeStep=FALSE)
-			simSumMat<-summaryStatsLong(phy=phy,traits=simTraitsParticle)
-			newparticleList[[1]]$distance<-abcDistance(summaryValuesMatrix=simSumMat,
 				originalSummaryValues=originalSummaryValues, 
-				pls.model.list=pls.model.list)
+				pls.model.list=pls.model.list)	
+				
+			
 			#
 			if (plot) {
 				plotcol="grey"
@@ -964,6 +973,28 @@ doRun_rej<-function(
 	rejectionResults$HPD<-highestPostDens(res$particleDataFrame)
 
 	return(rejectionResults)
-}
+	}
 
+	
+	
+	
+# internal function for simulating and obtaining ABC distances 
+	# for doRun_PRC
+simSumDistancePRC<-function(phy, taxonDF, timeStep, intrinsicFn, extrinsicFn, 
+		startingValue, intrinsicValues, extrinsicValues,
+		originalSummaryValues, pls.model.list){
+	#
+	#
+	simTraitsParticle<-doSimulationInternal(taxonDF=taxonDF,
+		intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn,
+		startingValues=startingValues,
+		intrinsicValues=intrinsicValues,
+		extrinsicValues=extrinsicValues,
+		timeStep=timeStep,)
+	simSumMat<-summaryStatsLong(phy=phy,traits=simTraitsParticle)
+	simDistance<-abcDistance(summaryValuesMatrix=simSumMat,
+		originalSummaryValues=originalSummaryValues, 
+		pls.model.list=pls.model.list)	
+	return(simDistance)
+	}
 
