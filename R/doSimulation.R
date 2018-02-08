@@ -209,10 +209,10 @@ doSimulation<-function(phy=NULL, intrinsicFn, extrinsicFn, startingValues, intri
 			}
 		}
 	#
-	final.result.df<-doSimulationInternal<-function(
+	final.result.df<-doSimulationInternal(
 		taxonDF=taxonDF, timeStep=timeStep, 
 		intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, 
-		startingValue=startingValues, intrinsicValues=intrinsicValues, extrinsicValues=extrinsicValues)
+		startingValues=startingValues, intrinsicValues=intrinsicValues, extrinsicValues=extrinsicValues)
 	#
 	#
 	#if(plot){
@@ -429,8 +429,9 @@ doSimulationInternal<-function(
 		depthfrompresent <- depth.end
 		heightfromroot <- height.end
 		#
-		if(any(is.nan(taxonStates)) | any(is.na(taxonStates))) {
-				stop(paste0("A simulation run produced a state of NA or NaN - something is probably very wrong"))
+		if(any(is.nan(taxonStates[aliveRows])) | any(is.na(taxonStates[aliveRows]))) {
+				stop(paste0("A simulation run produced a state of NA or NaN - something is probably very wrong\n",
+					"Here are the states for currently living taxa: ",	paste(taxonStates[aliveRows], collapse=" ")))
 				}
 		#				
 		#if(verbose) {

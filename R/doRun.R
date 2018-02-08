@@ -981,7 +981,7 @@ doRun_rej<-function(
 # internal function for simulating and obtaining ABC distances 
 	# for doRun_PRC
 simSumDistancePRC<-function(phy, taxonDF, timeStep, intrinsicFn, extrinsicFn, 
-		startingValue, intrinsicValues, extrinsicValues,
+		startingValues, intrinsicValues, extrinsicValues,
 		originalSummaryValues, pls.model.list){
 	#
 	#
@@ -990,7 +990,7 @@ simSumDistancePRC<-function(phy, taxonDF, timeStep, intrinsicFn, extrinsicFn,
 		startingValues=startingValues,
 		intrinsicValues=intrinsicValues,
 		extrinsicValues=extrinsicValues,
-		timeStep=timeStep,)
+		timeStep=timeStep)
 	simSumMat<-summaryStatsLong(phy=phy,traits=simTraitsParticle)
 	simDistance<-abcDistance(summaryValuesMatrix=simSumMat,
 		originalSummaryValues=originalSummaryValues, 

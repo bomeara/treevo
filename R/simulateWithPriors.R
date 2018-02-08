@@ -204,10 +204,10 @@ simulateWithPriors<-function(
 		#
 		#message(".")
 		#
-		simTraits<-doSimulationInternal<-function(
+		simTraits<-doSimulationInternal(
 			taxonDF=taxonDF, timeStep=timeStep, 
 			intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, 
-			startingValue=trueStarting, intrinsicValues=trueIntrinsic, extrinsicValues=trueExtrinsic)		
+			startingValues=trueStarting, intrinsicValues=trueIntrinsic, extrinsicValues=trueExtrinsic)		
 		simSumStats<-summaryStatsLong(phy=phy, traits=simTraits
 			#,niter.brown=niter.brown, niter.lambda=niter.lambda, niter.delta=niter.delta,
 			#niter.OU=niter.OU, niter.white=niter.white
