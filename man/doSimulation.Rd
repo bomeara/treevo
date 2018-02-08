@@ -7,9 +7,7 @@
 doSimulation(phy = NULL, intrinsicFn, extrinsicFn, startingValues,
   intrinsicValues, extrinsicValues, generation.time = 1000,
   TreeYears = max(branching.times(phy)) * 1e+06, timeStep = NULL,
-  plot = FALSE, savePlot = FALSE, saveRealParams = FALSE, jobName = "",
-  maxAttempts = 100, returnAll = FALSE, verbose = FALSE,
-  reject.NaN = TRUE, taxonDF = NULL, checkTimeStep = TRUE)
+  returnAll = FALSE, taxonDF = NULL, checkTimeStep = TRUE)
 }
 \arguments{
 \item{phy}{A phylogenetic tree, in package \code{ape}'s \code{phylo} format.}
@@ -54,30 +52,30 @@ Can be provided a value as an alternative to using arguments \code{generation.ti
 and \code{TreeYears}, which would then be overridden.
 See documentation for \code{\link{doSimulation}} for further details.}
 
-\item{plot}{Will create a new interactive window that plots character values
-throughout the history of the tree.}
-
-\item{savePlot}{Saves the character tree using \code{jobName}.}
-
-\item{saveRealParams}{Saves \code{intrinsicValues} and \code{extrinsicValues} as both a
-matrix and a vector to an external .Rdata file.}
-
-\item{jobName}{Optional name for the job.}
-
-\item{maxAttempts}{How many attempts should be tried if a run produces an \code{NA} result? If \code{maxAttempts}
-is reached without producing a non-\code{NA} result, the simulation is terminated.}
-
 \item{returnAll}{If \code{TRUE}, the output returned is a \code{data.frame} containing the values at each node from the simulation.}
-
-\item{verbose}{If \code{TRUE}, gives messages about how the simulation is progessing via \code{message}.}
-
-\item{reject.NaN}{If \code{TRUE}, stop run if any simulated value is \code{NaN}.}
 
 \item{taxonDF}{A data.frame containing data on nodes (both tips and internal nodes) output by various internal functions.
 Can be supplied as input to spead up repeated calculations, but by default is
 \code{NULL}, which instead forces a calculation from input \code{phy}.}
 
 \item{checkTimeStep}{If \code{TRUE}, warnings will be issued if \code{TimeStep} is too short.}
+
+\item{maxAttempts}{How many attempts should be tried if a run produces an \code{NA} result? If \code{maxAttempts}
+is reached without producing a non-\code{NA} result, the simulation is terminated.}
+
+\item{saveRealParams}{Saves \code{intrinsicValues} and \code{extrinsicValues} as both a
+matrix and a vector to an external .Rdata file.}
+
+\item{jobName}{Optional name for the job.}
+
+\item{verbose}{If \code{TRUE}, gives messages about how the simulation is progessing via \code{message}.}
+
+\item{reject.NaN}{If \code{TRUE}, stop run if any simulated value is \code{NaN}.}
+
+\item{plot}{Will create a new interactive window that plots character values
+throughout the history of the tree.}
+
+\item{savePlot}{Saves the character tree using \code{jobName}.}
 }
 \value{
 If \code{returnAll = FALSE} (the default), this function returns a data frame of species character (tip)

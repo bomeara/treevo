@@ -122,7 +122,7 @@ and checkpointing. This family of functions is mostly used as internal component
 within ABC analyses using the \code{\link{doRun}} functions. See \emph{Note} below.
 }
 \note{
-The \code{\link{simulateWithPriors}} functions are effectively the engine that powers the \code{\link{doRun}}
+The \code{\link{simulateWithPriors}} functions are effectively the engine that powers the  \code{\link{doRun}}
 functions, while the \code{\link{doSimulation}} function is the pistons within the \code{\link{simulateWithPriors}} engine.
 In general, most users will just drive the car - they will just use \code{\link{doRun}}, but some users may
 want to use \code{\link{simulateWithPriors}} or \code{\link{doSimulation}} to do various simulations.
