@@ -282,10 +282,10 @@ parallelSimulateWithPriors<-function(
 	if (multicore) {
 		if (is.na(coreLimit)){
 			registerMulticoreEnv()
-			getDoParWorkers()->cores
+			cores<-getDoParWorkers()
 		}else{
 			registerMulticoreEnv(coreLimit)
-			coreLimit->cores
+			cores<-coreLimit
 			}
 		}
 	#

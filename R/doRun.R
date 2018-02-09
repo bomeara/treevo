@@ -253,7 +253,8 @@ doRun_prc<-function(
 	#
 	#	
 	generation.time=1000, TreeYears=max(branching.times(phy)) * 1e6,
-	multicore=FALSE, coreLimit=NA, validation="CV", scale=TRUE, variance.cutoff=95,
+	multicore=FALSE, coreLimit=NA, 
+	validation="CV", scale=TRUE, variance.cutoff=95,
 	#niter.goal=5,
 	numParticles=300, standardDevFactor=0.20,
 	StartSims=300, epsilonProportion=0.7, epsilonMultiplier=0.7, nStepsPRC=5,
@@ -515,6 +516,55 @@ doRun_prc<-function(
 			#
 			
 			
+			
+			# need a function for parallel doSimulation
+			
+			
+			nrepSim, 
+		newparticleList[[1]]$distance<-simSumDistancePRCParallel(
+				phy=phy, taxonDF=taxonDF, timeStep=timeStep, 
+				intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn,
+				startingValues=newparticleList[[1]]$startingValues,
+				intrinsicValues=newparticleList[[1]]$intrinsicValues,
+				extrinsicValues=newparticleList[[1]]$extrinsicValues,
+				originalSummaryValues=originalSummaryValues, 
+				pls.model.list=pls.model.list)				
+			
+# check how many particles are needed
+# simulate that number times the apparent rate of success
+# repeat until you have enough particles			
+			
+simSumDistancePRCParallel<-function(
+	nSim, multicore=multicore, coreLimit=coreLimit,
+	
+	
+	){
+	#
+	# multicore
+	cores=1
+	if (multicore) {
+		if (is.na(coreLimit)){
+			registerMulticoreEnv()
+			cores<-min(nSim,getDoParWorkers())
+		}else{
+			registerMulticoreEnv(coreLimit)
+			cores<-c(nSim,coreLimit)
+			}
+		}
+	#
+	
+	
+	newParticleDistances<-
+	
+	simSumDistancePRC(phy=phy, taxonDF=taxonDF, timeStep=timeStep, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, 
+		startingValues=startingValues, intrinsicValues=intrinsicValues, extrinsicValues=extrinsicValues,
+		originalSummaryValues=originalSummaryValues, pls.model.list=pls.model.list)
+	
+	
+	return(newParticleDistances)
+	}	
+			
+
 
 			
 			newparticleList[[1]]$distance<-simSumDistancePRC(
@@ -548,7 +598,6 @@ doRun_prc<-function(
 			if (is.na(newparticleList[[1]]$distance)) {
 				#message("Error with Geiger?  newparticleList[[1]]$distance = NA\n")
 				#while(sink.number()>0) {sink()}
-				#warning("newparticleList[[1]]$distance = NA")
 				warning("newparticleList[[1]]$distance = NA, likely an underflow/overflow problem")
 				newparticleList[[1]]$id <- (-1)
 				newparticleList[[1]]$weight <- 0
