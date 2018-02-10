@@ -16,7 +16,7 @@ Imports:
     fastmatch,
     foreach,
     grDevices,
-    graphics
+    graphics,
     MASS,
     mvtnorm,
     methods,
