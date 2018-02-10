@@ -120,9 +120,9 @@ nearestNeighborDisplacementExtrinsic<-function(params,selfstates,otherstates, ti
 	localsign<-sign(selfstates[1]- repulsorValue)
 	#message(abs((selfstates[1]-repulsorValue)))
 	if(localsign==0) {
-		localsign=sign(rnorm(n=1))	
+		localsign=sign(rpgm.rnorm(n=1))	
 	}
-	newdisplacement<-rnorm(n=1,mean=localsign*min(c(abs(springK/((selfstates[1]-repulsorValue)*(selfstates[1]-repulsorValue))),maxforce),na.rm=TRUE),sd=sd)
+	newdisplacement<-rpgm.rnorm(n=1,mean=localsign*min(c(abs(springK/((selfstates[1]-repulsorValue)*(selfstates[1]-repulsorValue))),maxforce),na.rm=TRUE),sd=sd)
 	return(newdisplacement)
 }
 
@@ -139,11 +139,11 @@ everyoneDisplacementExtrinsic<-function(params,selfstates,otherstates, timefromp
 	for (i in 1:length(otherstates)) {
 			localsign<-sign(selfstates[1]-otherstates[i])
 			if(localsign==0) {
-				localsign=sign(rnorm(n=1))	
+				localsign=sign(rpgm.rnorm(n=1))	
 			}
 			netforce<-netforce+localsign*min(c(abs(springK/((selfstates[1]-otherstates[i])*(selfstates[1]-otherstates[i]))),maxforce),na.rm=TRUE)
 	}
-	newdisplacement<-rnorm(n=1,mean=netforce,sd=sd)
+	newdisplacement<-rpgm.rnorm(n=1,mean=netforce,sd=sd)
 	return(newdisplacement)
 }
 
@@ -161,9 +161,9 @@ ExponentiallyDecayingPushExtrinsic<-function(params,selfstates,otherstates, time
 	rate<-log(2, base = exp(1))/ halfDistance
 	localsign<-sign(selfstates[1]- repulsorValue)
 	if(localsign==0) {  #to deal with case of identical values
-		localsign=sign(rnorm(n=1))	
+		localsign=sign(rpgm.rnorm(n=1))	
 	}
-	newdisplacement<-rnorm(n=1,mean=maxForce*localsign*exp(-1*rate*abs((selfstates[1]-repulsorValue))),sd=sd)
+	newdisplacement<-rpgm.rnorm(n=1,mean=maxForce*localsign*exp(-1*rate*abs((selfstates[1]-repulsorValue))),sd=sd)
 	return(newdisplacement)
 }
 

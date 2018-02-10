@@ -11,20 +11,21 @@ Depends:
     R (>= 2.13.0),
     ape
 Imports:
-    phylolm,
-    pls,
-    stats,
     corpcor,
     coda,
-	fastmatch,
+    fastmatch,
     foreach,
-    partitions,
+    grDevices,
+    graphics
     MASS,
     mvtnorm,
     methods,
-    grDevices,
-    graphics,
-    phytools
+    partitions,
+    phylolm,
+    phytools,
+    pls,
+    rpgm,
+    stats
 Suggests:
     covr,
     doMC,
