@@ -285,10 +285,10 @@ doSimulationInternal<-function(
 		ids.alive.at.start <- taxonID[which(taxonStartTime <= height.start & taxonEndTime > height.start)]
 		ids.alive.at.end <-  taxonID[which(taxonEndTime > height.end & taxonStartTime <= height.end)]
 		ids.only.alive.in.interval <- taxonID[which(taxonStartTime > height.start & taxonEndTime < height.end)]
-		ids.changing.status <-  c(ids.alive.at.start[!(ids.alive.at.start  %fastmatch::fin% ids.alive.at.end)], ids.only.alive.in.interval)
-		ids.speciating <- c(taxonID[which((taxonID %fastmatch::fin% ids.changing.status) & (!taxonTerminal))], ids.only.alive.in.interval)
+		ids.changing.status <-  c(ids.alive.at.start[!(ids.alive.at.start  %fin% ids.alive.at.end)], ids.only.alive.in.interval)
+		ids.speciating <- c(taxonID[which((taxonID %fin% ids.changing.status) & (!taxonTerminal))], ids.only.alive.in.interval)
 		#
-		aliveRows <- which(taxonID %fastmatch::fin% ids.alive.at.start)
+		aliveRows <- which(taxonID %fin% ids.alive.at.start)
 		#
 		#if(any(is.na(aliveRows))){
 		#	stop("some aliveRows are NA")
@@ -300,9 +300,9 @@ doSimulationInternal<-function(
 		#
 		#if(any(is.na(currentStates))) {
 		#	message(paste0("currentStates ",currentStates))
-		#	message(paste0("taxonID %fastmatch::fin% ids.alive.at.start ",paste0(taxonID %fastmatch::fin% ids.alive.at.start,collapse=" ")))
+		#	message(paste0("taxonID %fin% ids.alive.at.start ",paste0(taxonID %fin% ids.alive.at.start,collapse=" ")))
 		#	message(c(height.start,height.end))
-		#	message(taxonDF[taxonID %fastmatch::fin% ids.alive.at.start,])
+		#	message(taxonDF[taxonID %fin% ids.alive.at.start,])
 		#	stop("there are NAs in currentStates! How?? Something is very wrong")
 		#	}
 		#
