@@ -16,6 +16,7 @@ Imports:
     stats,
     corpcor,
     coda,
+	fastmatch,
     foreach,
     partitions,
     MASS,
