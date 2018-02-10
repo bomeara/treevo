@@ -93,6 +93,7 @@
 #' @importFrom pls plsr scores
 #' @importFrom coda effectiveSize HPDinterval as.mcmc
 #' @importFrom foreach foreach getDoParWorkers '%dopar%'
+#' @importFrom fastmatch '%in%'
 #' @importFrom partitions blockparts
 #' @importFrom MASS boxcox
 #' @importFrom graphics curve layout legend lines plot plot.new points polygon rect segments symbols text title
