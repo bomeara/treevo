@@ -75,6 +75,8 @@ See documentation for \code{\link{doSimulation}} for further details.}
 
 \item{giveUpAttempts}{Value for when to stop the analysis if \code{NA} values are present.}
 
+\item{verbose}{If \code{TRUE}, gives messages about how the simulation is progessing via \code{message}.}
+
 \item{checks}{If \code{TRUE}, checks inputs for consistency. This activity is skipped (\code{checks = FALSE})
 when run in parallel by \code{parallelSimulateWithPriors}, and instead is only checked once. This
 argument also controls whether \code{simulateWithPriors} assigns \code{freevector} as an attribute to the

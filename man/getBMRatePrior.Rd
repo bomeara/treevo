@@ -13,6 +13,8 @@ getBMRatePrior(phy, traits, timeStep, verbose = TRUE)
 If a vector, \code{traits} will be coerced to a matrix, with element names as rownames.}
 
 \item{timeStep}{time in a single iteration of the discrete-time simulation}
+
+\item{verbose}{If \code{TRUE}, gives messages about how the simulation is progessing via \code{message}.}
 }
 \value{
 Returns a matrix of prior values
