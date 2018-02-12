@@ -48,8 +48,8 @@
 #' @param extrinsicValues Vector of values corresponding to the parameters of the
 #' extrinsic model.
 
-#' @param maxAttempts How many attempts should be tried if a run produces an \code{NA} result? If \code{maxAttempts}
-#' is reached without producing a non-\code{NA} result, the simulation is terminated.
+# @param maxAttempts How many attempts should be tried if a run produces an \code{NA} result? If \code{maxAttempts}
+# is reached without producing a non-\code{NA} result, the simulation is terminated.
 
 #' @param generation.time The number of years per generation. This sets the coarseness of the simulation; if it's set to 1000,
 #' for example, the population's trait values change every 1000 calender years. Note that this is in calender years (see description
@@ -81,21 +81,21 @@
 # @param saveHistory If \code{TRUE}, saves the character history throughout the simulation.
 # When \code{saveHistory} is \code{TRUE}, processor time will increase quite a bit.
 
-#' @param saveRealParams Saves \code{intrinsicValues} and \code{extrinsicValues} as both a
-#' matrix and a vector to an external .Rdata file.
+# @param saveRealParams Saves \code{intrinsicValues} and \code{extrinsicValues} as both a
+# matrix and a vector to an external .Rdata file.
 
-#' @param jobName Optional name for the job.
+# @param jobName Optional name for the job.
 
 #' @param returnAll If \code{TRUE}, the output returned is a \code{data.frame} containing the values at each node from the simulation.
 
-#' @param verbose If \code{TRUE}, gives messages about how the simulation is progessing via \code{message}.
+# @param verbose If \code{TRUE}, gives messages about how the simulation is progessing via \code{message}.
 
-#' @param reject.NaN If \code{TRUE}, stop run if any simulated value is \code{NaN}.
+# @param reject.NaN If \code{TRUE}, stop run if any simulated value is \code{NaN}.
 
-#' @param plot Will create a new interactive window that plots character values
-#' throughout the history of the tree.
+# @param plot Will create a new interactive window that plots character values
+# throughout the history of the tree.
 
-#' @param savePlot Saves the character tree using \code{jobName}.
+# @param savePlot Saves the character tree using \code{jobName}.
 
 
 

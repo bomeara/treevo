@@ -10,6 +10,7 @@
 #' 
 
 #' @inheritParams doSimulation
+#' @inheritParams simulateWithPriors
 #' @inheritParams doRun
 
 #' @param timeStep time in a single iteration of the discrete-time simulation

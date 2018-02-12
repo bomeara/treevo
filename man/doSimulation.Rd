@@ -59,23 +59,6 @@ Can be supplied as input to spead up repeated calculations, but by default is
 \code{NULL}, which instead forces a calculation from input \code{phy}.}
 
 \item{checkTimeStep}{If \code{TRUE}, warnings will be issued if \code{TimeStep} is too short.}
-
-\item{maxAttempts}{How many attempts should be tried if a run produces an \code{NA} result? If \code{maxAttempts}
-is reached without producing a non-\code{NA} result, the simulation is terminated.}
-
-\item{saveRealParams}{Saves \code{intrinsicValues} and \code{extrinsicValues} as both a
-matrix and a vector to an external .Rdata file.}
-
-\item{jobName}{Optional name for the job.}
-
-\item{verbose}{If \code{TRUE}, gives messages about how the simulation is progessing via \code{message}.}
-
-\item{reject.NaN}{If \code{TRUE}, stop run if any simulated value is \code{NaN}.}
-
-\item{plot}{Will create a new interactive window that plots character values
-throughout the history of the tree.}
-
-\item{savePlot}{Saves the character tree using \code{jobName}.}
 }
 \value{
 If \code{returnAll = FALSE} (the default), this function returns a data frame of species character (tip)

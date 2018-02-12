@@ -164,7 +164,7 @@ mutateState<-function(startingState, standardDevFactor, priorFn, priorValues) {
 	}
 
 	while(!validNewState) {
-		newState<-rnorm(n=1, mean=startingState, sd=sdToUse)
+		newState<-rpgm.rnorm(n=1, mean=startingState, sd=sdToUse)
 		validNewState<-TRUE
 		if(is.na(newState)) {
 			message(paste("MUTATESTATE_ERROR: newState = ",newState," sdToUse=",sdToUse," startingState=",startingState," priorFn=",priorFn," startingState=",startingState," priorValues=\n",sep=""))
