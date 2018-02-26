@@ -435,19 +435,24 @@ doRun_prc<-function(
 		#
 		if(dataGenerationStep==1){
 			#stores weights for each particle. Initially, assume infinite number of possible particles (so might not apply in discrete case)
-			particleWeights<-numeric(length=numParticles)
+			#particleWeights<-numeric(length=numParticles)
 			particleDataFrame<-data.frame()		
 			prevGenParticleList<-prevGenParticleWeights<-NULL			
 		}else{
-			particleWeights<-particleWeights/(sum(particleWeights,na.rm=TRUE)) #normalize to one
-			if(verboseParticles){
-				message("particleWeights\n", paste0(signif(particleWeights,2),collapse=" "), "\n")
-				}
+			#particleWeights<-particleWeights/(sum(particleWeights,na.rm=TRUE)) #normalize to one
+			# why pull particle weights and particle list as this stupid seperate vector - get from particleDataFrame
+			#
+			#if(verboseParticles){
+			#	message("particleWeights\n", paste0(signif(particleWeights,2),collapse=" "), "\n")
+			#	}
+			#
+			
 			prevGenParticleList<-particleList
-			prevGenParticleWeights<-particleWeights
+			
+			#prevGenParticleWeights<-sapply(prevGenParticleList,function(x) x$weight)
 			#stores weights for each particle.
 				#Initially, assume infinite number of possible particles (so might not apply in discrete case)
-			particleWeights<-numeric(length=numParticles)
+			#particleWeights<-numeric(length=numParticles)
 			
 			}
 		#stores parameters in model for each particle
@@ -491,38 +496,13 @@ doRun_prc<-function(
 			
 
 
-			if(dataGenerationStep==1){
+			prevGenParticleList
 				
 
 
-			# can test for dataGenerationStep=1 if prevGenParticleList is NA
-				
 
-		if(is.null(prevGenParticleList)){
-			# i.e. if dataGenerationStep == 1
-				# get new particles from priors
-			newparticleList<-abcparticle(id=NA, generation=1, weight=0)
-			newparticleList<-initializeStatesFromMatrices(
-				particle=newparticleList,
-				startingPriorsValues=startingPriorsValues,
-				startingPriorsFns=startingPriorsFns,
-				intrinsicPriorsValues=intrinsicPriorsValues,
-				intrinsicPriorsFns=intrinsicPriorsFns,
-				extrinsicPriorsValues=extrinsicPriorsValues,
-				extrinsicPriorsFns=extrinsicPriorsFns)							
-		}else{
-			# use particles from PREVIOUS GENERATION to randomly select a particle
-			particleToSelect<-which.max(as.vector(rmultinom(1, size = 1, prob=prevGenParticleWeights)))
-			# get that particle's data
-			newparticleList<-prevGenParticleList[[particleToSelect]]
-			#
-			#
-			newparticleList<-mutateStates(particle=newparticleList,
-				startingPriorsValues=startingPriorsValues, startingPriorsFns=startingPriorsFns,
-				intrinsicPriorsValues=intrinsicPriorsValues, intrinsicPriorsFns=intrinsicPriorsFns,
-				extrinsicPriorsValues=extrinsicPriorsValues, extrinsicPriorsFns=extrinsicPriorsFns,
-				standardDevFactor=standardDevFactor)	
-			}
+					
+					
 					
 					
 				}
@@ -531,6 +511,9 @@ doRun_prc<-function(
 			#dput(newparticleList[[1]])
 			#
 			#
+			
+			
+			
 			
 			
 			
@@ -552,20 +535,45 @@ doRun_prc<-function(
 			
 				
 # internal function for simulating and obtaining ABC distances 
-	# for doRun_PRC (GENERATION 1)
-simParticleDistancePRCGen1<-function(phy, taxonDF, timeStep, intrinsicFn, extrinsicFn, 
-		startingPriorsValues,intrinsicPriorsValues,extrinsicPriorsValues,
-		startngPriorsFns,intrinsicPriorsValues,extrinsicPriorsValues,
-		#startingValues, intrinsicValues, extrinsicValues,
-		originalSummaryValues, pls.model.list){
-		
-		
-		
-		
-
+	# for doRun_PRC
+simParticleDistancePRC<-function(phy, taxonDF, timeStep, intrinsicFn, extrinsicFn, 
+	startingPriorsValues,intrinsicPriorsValues,extrinsicPriorsValues,
+	startngPriorsFns,intrinsicPriorsValues,extrinsicPriorsValues,
+	#startingValues, intrinsicValues, extrinsicValues,
+	originalSummaryValues, pls.model.list){
 	#
-	
-	
+	# get particle parameters
+	#
+	# can test for dataGenerationStep=1 if prevGenParticleList is null
+	if(is.null(prevGenParticleList)){
+		# i.e. if dataGenerationStep == 1
+			# get new particles from priors
+		newparticleList<-abcparticle(id=NA, generation=1, weight=0)
+		newparticleList<-initializeStatesFromMatrices(
+			particle=newparticleList,
+			startingPriorsValues=startingPriorsValues,
+			startingPriorsFns=startingPriorsFns,
+			intrinsicPriorsValues=intrinsicPriorsValues,
+			intrinsicPriorsFns=intrinsicPriorsFns,
+			extrinsicPriorsValues=extrinsicPriorsValues,
+			extrinsicPriorsFns=extrinsicPriorsFns)							
+	}else{
+		prevGenParticleWeights<-sapply(prevGenParticleList,function(x) x$weight)
+		# use particles from PREVIOUS GENERATION to randomly select a particle
+		particleToSelect<-which.max(as.vector(rmultinom(1, size = 1, prob=prevGenParticleWeights)))
+		# get that particle's data
+		newparticleList<-prevGenParticleList[[particleToSelect]]
+		#
+		#
+		newparticleList<-mutateStates(particle=newparticleList,
+			startingPriorsValues=startingPriorsValues, startingPriorsFns=startingPriorsFns,
+			intrinsicPriorsValues=intrinsicPriorsValues, intrinsicPriorsFns=intrinsicPriorsFns,
+			extrinsicPriorsValues=extrinsicPriorsValues, extrinsicPriorsFns=extrinsicPriorsFns,
+			standardDevFactor=standardDevFactor
+			)	
+		}
+	#
+	# do the simulation
 	simTraitsParticle<-doSimulationInternal(
 		taxonDF=taxonDF,
 		intrinsicFn=intrinsicFn,
@@ -573,19 +581,27 @@ simParticleDistancePRCGen1<-function(phy, taxonDF, timeStep, intrinsicFn, extrin
 		startingValues=newparticleList$startingValues,
 		intrinsicValues=newparticleList$intrinsicValues,
 		extrinsicValues=newparticleList$extrinsicValues,
-		timeStep=timeStep)
+		timeStep=timeStep
+		)
+	#
+	# get the summary stats	
 	simSumMat<-summaryStatsLong(phy=phy,traits=simTraitsParticle)
+	# get the distance of the simulation to the original
 	simDistance<-abcDistance(summaryValuesMatrix=simSumMat,
 		originalSummaryValues=originalSummaryValues, 
 		pls.model.list=pls.model.list)	
+	# record the distance
 	newparticleList$distance<-simDistance
 	return(newparticleList)
 	}
 	
 	
 	
-# multicore simSumDistancePRC (for Generation 1)
-simParticleDistancePRCParallelGen1<-function(
+	
+	
+	
+# multicore simSumDistancePRC 
+simParticleDistancePRCParallel-function(
 	nSim, multicore, coreLimit,
 	phy, taxonDF, timeStep, 
 	intrinsicFn, extrinsicFn, 
@@ -822,11 +838,11 @@ testParticleAcceptancePRC<-function(distance,
 		#rejects<-c()
 		#
 		
-		# what the heck is this doing?
-		particleDataFrame[which(particleDataFrame$generation==dataGenerationStep),]$weight <- (
-			particleDataFrame[
-				which(particleDataFrame$generation==dataGenerationStep), ]$weight/(sum(
-					particleDataFrame[which(particleDataFrame$generation==dataGenerationStep), ]$weight))
+		# normalizing the weights for this generation to the sum of the weights
+		#
+		particlesThisGen<-which(particleDataFrame$generation==dataGenerationStep)
+		particleDataFrame[particlesThisGen,]$weight <- particleDataFrame[particlesThisGen, ]$weight/(
+			sum(particleDataFrame[particlesThisGen, ]$weight)
 			)
 		
 		
