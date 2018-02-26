@@ -437,7 +437,7 @@ doRun_prc<-function(
 			#stores weights for each particle. Initially, assume infinite number of possible particles (so might not apply in discrete case)
 			#particleWeights<-numeric(length=numParticles)
 			particleDataFrame<-data.frame()		
-			prevGenParticleList<-prevGenParticleWeights<-NULL			
+			prevGenParticleList<-NULL			#prevGenParticleWeights<-
 		}else{
 			#particleWeights<-particleWeights/(sum(particleWeights,na.rm=TRUE)) #normalize to one
 			# why pull particle weights and particle list as this stupid seperate vector - get from particleDataFrame
@@ -464,6 +464,8 @@ doRun_prc<-function(
 		particleDistance=rep(NA, numParticles)
 		particle<-1
 		attempts<-0		
+		#
+		# create a list where we'll save information for each particle for this generation
 		particleList<-list()
 		#
 		# acceptance rate of particles - reset to 0.5
@@ -507,8 +509,8 @@ doRun_prc<-function(
 					
 				}
 			#
-			#message("dput(newparticleList[[1]]) AFTER MUTATE STATES\n")
-			#dput(newparticleList[[1]])
+			#message("dput(newparticleList) AFTER MUTATE STATES\n")
+			#dput(newparticleList)
 			#
 			#
 			
@@ -525,9 +527,9 @@ doRun_prc<-function(
 					phy=phy, taxonDF=taxonDF, timeStep=timeStep, 
 					intrinsicFn=intrinsicFn, 
 					extrinsicFn=extrinsicFn,
-					startingValues=newparticleList[[1]]$startingValues,
-					intrinsicValues=newparticleList[[1]]$intrinsicValues,
-					extrinsicValues=newparticleList[[1]]$extrinsicValues,
+					startingValues=newparticleList$startingValues,
+					intrinsicValues=newparticleList$intrinsicValues,
+					extrinsicValues=newparticleList$extrinsicValues,
 					originalSummaryValues=originalSummaryValues, 
 					pls.model.list=pls.model.list)	
 			
@@ -647,63 +649,27 @@ simParticleDistancePRCParallel-function(
 simParticleDistance
 	
 			
-# internal function for simulating and obtaining ABC distances 
-	# for doRun_PRC
-simSumDistancePRC_lateGen<-function(phy, taxonDF, timeStep, intrinsicFn, extrinsicFn, 
-		startingValues, intrinsicValues, extrinsicValues,
-		originalSummaryValues, pls.model.list){
-	#
-	#
-	simTraitsParticle<-doSimulationInternal(taxonDF=taxonDF,
-		intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn,
-		startingValues=startingValues,
-		intrinsicValues=intrinsicValues,
-		extrinsicValues=extrinsicValues,
-		timeStep=timeStep)
-	simSumMat<-summaryStatsLong(phy=phy,traits=simTraitsParticle)
-	simDistance<-abcDistance(summaryValuesMatrix=simSumMat,
-		originalSummaryValues=originalSummaryValues, 
-		pls.model.list=pls.model.list)	
-	return(simDistance)
-	}
-			
 
 			
 			
 			
 
-newparticleList[[1]]$distance<-
+newparticleList$distance<-
 
 			
 			newparticleDistances<-simSumDistancePRCParallel(
 				nSim=nSim, multicore=multicore, coreLimit=coreLimit,
 				phy=phy, taxonDF=taxonDF, timeStep=timeStep, 
 				intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn,
-				startingValues=newparticleList[[1]]$startingValues,
-				intrinsicValues=newparticleList[[1]]$intrinsicValues,
-				extrinsicValues=newparticleList[[1]]$extrinsicValues,
+				startingValues=newparticleList$startingValues,
+				intrinsicValues=newparticleList$intrinsicValues,
+				extrinsicValues=newparticleList$extrinsicValues,
 				originalSummaryValues=originalSummaryValues, 
 				pls.model.list=pls.model.list)	
 
 	
 				
-			
-			#
-			#if (plot) {
-			#	plotcol="grey"
-			#	if (newparticleList[[1]]$distance<toleranceVector[dataGenerationStep]) {
-			#		plotcol="black"
-			#		if (dataGenerationStep==length(toleranceVector)) {
-			#			plotcol="red"
-			#			}
-			#		}
-			#	text(x=newparticleList[[1]]$intrinsicValues,
-			#		y=newparticleList[[1]]$distance, labels= dataGenerationStep, col=plotcol)
-			#	}
-			#
-			#message("dput(newparticleList[[1]]) AFTER computeABCDistance\n")
-			#dput(newparticleList[[1]])
-			#
+
 
 particle
 
@@ -729,43 +695,35 @@ testParticleAcceptancePRC<-function(distance,
 		#}else{
 		#
 		# 
-		newparticleList[[1]]$id <- (-1)
-		newparticleList[[1]]$weight <- 0			
+		newparticleList$id <- (-1)
+		newparticleList$weight <- 0			
 		#
 		
 		
 		if ((distance) < toleranceValue) {
-			id <- particle
-			#particle<-particle+1
-			#particleList<-append(particleList, newparticleList)	
+			newparticle$id<-particle
+			particle<-particle+1
 			#
 			if(dataGenerationStep==1){
-				weight<- 1/numParticles
-				particleWeights[particle] <- 1/numParticles
-				particle<-particle+1
-				particleList<-append(particleList, newparticleList)	
+				newparticle$weight<- 1/numParticles
+				particleList<-append(particleList, list(newparticleList))	
 			}else{
-				particle<-particle+1
 				particleList<-append(particleList, newparticleList)	
 				#now get weights, using correction in Sisson et al. 2007
-				newWeight<-sumLogTranProb(prevGenParticleList
-					,newStartingValues = newparticleList[[1]]$startingValues
-					,newIntrinsicValues = newparticleList[[1]]$intrinsicValues
-					,newExtrinsicValues = newparticleList[[1]]$extrinsicValues
+				newparticle$weight<-sumLogTranProb(prevGenParticleList
+					,newStartingValues = newparticleList$startingValues
+					,newIntrinsicValues = newparticleList$intrinsicValues
+					,newExtrinsicValues = newparticleList$extrinsicValues
 					,startingPriorsFns=startingPriorsFns
 					,intrinsicPriorsFns=intrinsicPriorsFns
 					,extrinsicPriorsFns=extrinsicPriorsFns
 					,startingPriorsValues=startingPriorsValues
 					,intrinsicPriorsValues=intrinsicPriorsValues
 					,extrinsicPriorsValues=extrinsicPriorsValues
-					,standardDevFactor=standardDevFactor)
-				weight<- newWeight
-				particleWeights[particle-1]<-newWeight
-				weightScaling<-weightScaling+newWeight
+					,standardDevFactor=standardDevFactor
+					)
 				}
-			# end else() for if dataGenerationStep is larger than 1
-			#}else{  # the else() for the if loop where if(distance < toleranceValue) bracket
-			#actually nothing happens then
+			particleList<-append(particleList, newparticleList)	
 			}
 			
 			
@@ -782,7 +740,8 @@ testParticleAcceptancePRC<-function(distance,
 			
 				
 				
-				
+			#particle<-particle+1
+			#particleList<-append(particleList, newparticleList)					
 		
 				
 				
@@ -792,15 +751,15 @@ testParticleAcceptancePRC<-function(distance,
 			#while(sink.number()>0) {sink()}
 			#message(newparticleList)
 			#
-			vectorForDataFrame<-c(dataGenerationStep, attempts,newparticleList[[1]]$id, particleToSelect,
-				newparticleList[[1]]$distance, newparticleList[[1]]$weight, newparticleList[[1]]$startingValues,
-				newparticleList[[1]]$intrinsicValues, newparticleList[[1]]$extrinsicValues)
+			vectorForDataFrame<-c(dataGenerationStep, attempts,newparticleList$id, particleToSelect,
+				newparticleList$distance, newparticleList$weight, newparticleList$startingValues,
+				newparticleList$intrinsicValues, newparticleList$extrinsicValues)
 			#	
 			if(diagnosticPRCmode){
 				message("\n\nlength of vectorForDataFrame = ", length(vectorForDataFrame), "\n", "length of startingValues = ",
-					length(newparticleList[[1]]$startingValues), "\nlength of intrinsicValues = ", length(newparticleList[[1]]$intrinsicValues),
-					"\nlength of extrinsicValues = ", length(newparticleList[[1]]$extrinsicValues), "\ndistance = ", newparticleList[[1]]$distance,
-					"\nweight = ", newparticleList[[1]]$weight, "\n", vectorForDataFrame, "\n")
+					length(newparticleList$startingValues), "\nlength of intrinsicValues = ", length(newparticleList$intrinsicValues),
+					"\nlength of extrinsicValues = ", length(newparticleList$extrinsicValues), "\ndistance = ", newparticleList$distance,
+					"\nweight = ", newparticleList$weight, "\n", vectorForDataFrame, "\n")
 				}
 			#
 			#NOTE THAT WEIGHTS AREN'T NORMALIZED IN THIS DATAFRAME
@@ -809,15 +768,17 @@ testParticleAcceptancePRC<-function(distance,
 			if(verboseParticles){
 				message(paste(particle-1,"         ", attempts,"        ",
 					floor(numParticles*attempts/particle),"                    ",
-					signif(newparticleList[[1]]$startingValues,2),"  ", signif(newparticleList[[1]]$intrinsicValues,2),"  ",
-					signif(newparticleList[[1]]$extrinsicValues,2),"  ", signif(newparticleList[[1]]$distance,2)))
+					signif(newparticleList$startingValues,2),"  ", signif(newparticleList$intrinsicValues,2),"  ",
+					signif(newparticleList$extrinsicValues,2),"  ", signif(newparticleList$distance,2)))
 				}
 			#
 			
 			
 			
 			
-			
+			particlesThisGen<-which(particleDataFrame$generation==dataGenerationStep)
+		particleDataFrame[particlesThisGen,]$weight <- particleDataFrame[particlesThisGen, ]$weight/(
+			sum(particleDataFrame[particlesThisGen, ]$weight)		
 			
 			
 			
