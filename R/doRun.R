@@ -489,9 +489,8 @@ doRun_prc<-function(
 				nSim<-nSim/particleAcceptanceRate
 				# repeat until you have enough particles			
 				#
-				
-				
-				
+				particleToSelect<-0	
+				#
 				
 
 				
@@ -571,14 +570,14 @@ doRun_prc<-function(
 				
 # internal function for simulating and obtaining ABC distances 
 	# for doRun_PRC (GENERATION 1)
-simSumDistancePRCGen1<-function(phy, taxonDF, timeStep, intrinsicFn, extrinsicFn, 
+simParticleDistancePRCGen1<-function(phy, taxonDF, timeStep, intrinsicFn, extrinsicFn, 
 		startingPriorsValues,intrinsicPriorsValues,extrinsicPriorsValues,
 		startngPriorsFns,intrinsicPriorsValues,extrinsicPriorsValues,
 		#startingValues, intrinsicValues, extrinsicValues,
 		originalSummaryValues, pls.model.list){
 	newparticleList<-list(abcparticle(id=NA, generation=1, weight=0))
-	newparticleList[[1]]<-initializeStatesFromMatrices(
-		particle=newparticleList[[1]],
+	newparticleList<-initializeStatesFromMatrices(
+		particle=newparticleList,
 		startingPriorsValues=startingPriorsValues,
 		startingPriorsFns=startingPriorsFns,
 		intrinsicPriorsValues=intrinsicPriorsValues,
@@ -586,28 +585,32 @@ simSumDistancePRCGen1<-function(phy, taxonDF, timeStep, intrinsicFn, extrinsicFn
 		extrinsicPriorsValues=extrinsicPriorsValues,
 		extrinsicPriorsFns=extrinsicPriorsFns)	
 	#
-	particleToSelect<-0	
-	#
 	simTraitsParticle<-doSimulationInternal(
 		taxonDF=taxonDF,
 		intrinsicFn=intrinsicFn,
 		extrinsicFn=extrinsicFn,
-		startingValues=newparticleList[[1]]$startingValues,
-		intrinsicValues=newparticleList[[1]]$intrinsicValues,
-		extrinsicValues=newparticleList[[1]]$extrinsicValues,
+		startingValues=newparticleList$startingValues,
+		intrinsicValues=newparticleList$intrinsicValues,
+		extrinsicValues=newparticleList$extrinsicValues,
 		timeStep=timeStep)
 	simSumMat<-summaryStatsLong(phy=phy,traits=simTraitsParticle)
 	simDistance<-abcDistance(summaryValuesMatrix=simSumMat,
 		originalSummaryValues=originalSummaryValues, 
 		pls.model.list=pls.model.list)	
-	return(simDistance)
+	newparticleList$distance<-simDistance
+	return(newparticleList)
 	}
 	
-# multicore simSumDistancePRC			
-simSumDistancePRCParallelGen1<-function(
+	
+	
+# multicore simSumDistancePRC (for Generation 1)
+simParticleDistancePRCParallelGen1<-function(
 	nSim, multicore, coreLimit,
-	phy, taxonDF, timeStep, intrinsicFn, extrinsicFn, 
-	startingValues, intrinsicValues, extrinsicValues,
+	phy, taxonDF, timeStep, 
+	intrinsicFn, extrinsicFn, 
+	startingPriorsValues,intrinsicPriorsValues,extrinsicPriorsValues,
+	startngPriorsFns,intrinsicPriorsValues,extrinsicPriorsValues,
+	#startingValues, intrinsicValues, extrinsicValues,
 	originalSummaryValues, pls.model.list){
 	#
 	# set up multicore
@@ -625,18 +628,26 @@ simSumDistancePRCParallelGen1<-function(
 	repDistFE<-foreach(1:nSim, .combine=rbind)
 	#
 	newParticleDistances<-(	#makeQuiet(
-		repDistFE %dopar% simSumDistancePRC(
+		repDistFE %dopar% simParticleDistancePRC(
 			phy=phy, taxonDF=taxonDF, timeStep=timeStep, 
-			intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, 
-			startingValues=startingValues, intrinsicValues=intrinsicValues, extrinsicValues=extrinsicValues,
-			originalSummaryValues=originalSummaryValues, pls.model.list=pls.model.list)
+			intrinsicFn=intrinsicFn, 
+			extrinsicFn=extrinsicFn, 
+			startingPriorsValues=startingPriorsValues,
+			startingPriorsFns=startingPriorsFns,
+			intrinsicPriorsValues=intrinsicPriorsValues,
+			intrinsicPriorsFns=intrinsicPriorsFns,
+			extrinsicPriorsValues=extrinsicPriorsValues,
+			extrinsicPriorsFns=extrinsicPriorsFns
+			originalSummaryValues=originalSummaryValues, 
+			pls.model.list=pls.model.list
+			)
 		#)
 		)
 	return(newParticleDistances)
 	}
 	
 	
-
+simParticleDistance
 	
 			
 # internal function for simulating and obtaining ABC distances 
