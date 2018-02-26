@@ -304,13 +304,15 @@ parallelSimulateWithPriors<-function(
 	if (is.null(checkpointFile)) {
 		# no checkpointFile to generate!
 		repSimFE<-foreach(1:nrepSim, .combine=rbind)
-		trueFreeValuesANDSummaryValues<-(makeQuiet(
-			repSimFE %dopar% simulateWithPriors(phy=phy, taxonDF=taxonDF,
+		trueFreeValuesANDSummaryValues<-(	#makeQuiet(
+			repSimFE %dopar% simulateWithPriors(
+				phy=phy, taxonDF=taxonDF,
 				startingPriorsValues=startingPriorsValues, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues,
 				startingPriorsFns=startingPriorsFns, intrinsicPriorsFns=intrinsicPriorsFns, extrinsicPriorsFns=extrinsicPriorsFns, 
 				giveUpAttempts=giveUpAttempts,freevector=freevector, timeStep=timeStep, 
 				intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, verbose=verboseNested, checks=FALSE)
-			))
+			#)
+			)
 	}else{
 		checkpointFileName<-paste(checkpointFile,".trueFreeValuesANDSummaryValues.Rsave",sep="")
 		trueFreeValuesANDSummaryValues<-c()

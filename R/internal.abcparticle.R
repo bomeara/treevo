@@ -27,8 +27,13 @@
 # @references O'Meara and Banbury, unpublished
 
 abcparticle <- function( id=NA, generation=NA, weight=NA, distance=NA, startingValues=NA, intrinsicValues=NA, extrinsicValues=NA ) {
-	particle <- list(id=id, generation=generation, weight=weight, distance=distance,
-		startingValues=startingValues, intrinsicValues=intrinsicValues,
+	particle <- list(
+		id=id, 
+		generation=generation, 
+		weight=weight, 
+		distance=distance,
+		startingValues=startingValues, 
+		intrinsicValues=intrinsicValues,
 		extrinsicValues=extrinsicValues)
 	class(particle) <- "abcparticle"
 	return(particle)
