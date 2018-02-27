@@ -439,14 +439,7 @@ doRun_prc<-function(
 			particleDataFrame<-data.frame()		
 			prevGenParticleList<-NULL			#prevGenParticleWeights<-
 		}else{
-			#particleWeights<-particleWeights/(sum(particleWeights,na.rm=TRUE)) #normalize to one
 			# why pull particle weights and particle list as this stupid seperate vector - get from particleDataFrame
-			#
-			#if(verboseParticles){
-			#	message("particleWeights\n", paste0(signif(particleWeights,2),collapse=" "), "\n")
-			#	}
-			#
-			
 			prevGenParticleList<-particleList
 			
 			#prevGenParticleWeights<-sapply(prevGenParticleList,function(x) x$weight)
@@ -489,9 +482,7 @@ doRun_prc<-function(
 			# siulate that number times the apparent rate of success
 			nSim<-nSim/particleAcceptanceRate
 			# repeat until you have enough particles			
-			#
-			particleToSelect<-0	
-			#
+
 
 
 			
