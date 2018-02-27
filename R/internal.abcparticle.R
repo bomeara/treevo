@@ -26,12 +26,13 @@
 
 # @references O'Meara and Banbury, unpublished
 
-abcparticle <- function( id=NA, generation=NA, weight=NA, distance=NA, startingValues=NA, intrinsicValues=NA, extrinsicValues=NA ) {
+abcparticle <- function( id=NA, generation=NA, weight=NA, distance=NA, parentid=NA, startingValues=NA, intrinsicValues=NA, extrinsicValues=NA ) {
 	particle <- list(
 		id=id, 
 		generation=generation, 
 		weight=weight, 
 		distance=distance,
+		parentid=parentid,
 		startingValues=startingValues, 
 		intrinsicValues=intrinsicValues,
 		extrinsicValues=extrinsicValues)

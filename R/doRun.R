@@ -500,7 +500,15 @@ doRun_prc<-function(
 
 			prevGenParticleList
 				
-
+newParticleList<-simParticlePRCParallel(
+	nSim, multicore, coreLimit,
+	,phy, taxonDF, timeStep 
+	,intrinsicFn, extrinsicFn 
+	startingPriorsValues,intrinsicPriorsValues,extrinsicPriorsValues
+	,startngPriorsFns,intrinsicPriorsValues,extrinsicPriorsValues
+	#startingValues, intrinsicValues, extrinsicValues
+	,originalSummaryValues, pls.model.list
+	,toleranceValue){
 
 
 					
@@ -536,143 +544,23 @@ doRun_prc<-function(
 			
 			
 				
-# internal function for simulating and obtaining ABC distances 
-	# for doRun_PRC
-simParticleDistancePRC<-function(phy, taxonDF, timeStep, intrinsicFn, extrinsicFn, 
-	startingPriorsValues,intrinsicPriorsValues,extrinsicPriorsValues,
-	startngPriorsFns,intrinsicPriorsFns,extrinsicPriorsFns,
-	#startingValues, intrinsicValues, extrinsicValues,
-	originalSummaryValues, pls.model.list
-	,toleranceValue,){
-	#
-	# get particle parameters
-	#
-	# can test for dataGenerationStep=1 if prevGenParticleList is null
-	if(is.null(prevGenParticleList)){
-		# i.e. if dataGenerationStep == 1
-			# get new particles from priors
-		# for generation = 1, weight all particles the same
-		newparticleList<-abcparticle(id=NA, generation=1, weight=1/numParticles)
-		newparticleList<-initializeStatesFromMatrices(
-			particle=newparticleList,
-			startingPriorsValues=startingPriorsValues,
-			startingPriorsFns=startingPriorsFns,
-			intrinsicPriorsValues=intrinsicPriorsValues,
-			intrinsicPriorsFns=intrinsicPriorsFns,
-			extrinsicPriorsValues=extrinsicPriorsValues,
-			extrinsicPriorsFns=extrinsicPriorsFns)							
-	}else{
-		prevGenParticleWeights<-sapply(prevGenParticleList,function(x) x$weight)
-		# use particles from PREVIOUS GENERATION to randomly select a particle
-		particleToSelect<-which.max(as.vector(rmultinom(1, size = 1, prob=prevGenParticleWeights)))
-		# get that particle's data
-		newparticleList<-prevGenParticleList[[particleToSelect]]
-		#
-		#
-		newparticleList<-mutateStates(particle=newparticleList,
-			startingPriorsValues=startingPriorsValues, startingPriorsFns=startingPriorsFns,
-			intrinsicPriorsValues=intrinsicPriorsValues, intrinsicPriorsFns=intrinsicPriorsFns,
-			extrinsicPriorsValues=extrinsicPriorsValues, extrinsicPriorsFns=extrinsicPriorsFns,
-			standardDevFactor=standardDevFactor
-			)	
-		}
-	#
-	# do the simulation
-	simTraitsParticle<-doSimulationInternal(
-		taxonDF=taxonDF,
-		intrinsicFn=intrinsicFn,
-		extrinsicFn=extrinsicFn,
-		startingValues=newparticleList$startingValues,
-		intrinsicValues=newparticleList$intrinsicValues,
-		extrinsicValues=newparticleList$extrinsicValues,
-		timeStep=timeStep
-		)
-	#
-	# get the summary stats	
-	simSumMat<-summaryStatsLong(phy=phy,traits=simTraitsParticle)
-	# get the distance of the simulation to the original
-	simDistance<-abcDistance(summaryValuesMatrix=simSumMat,
-		originalSummaryValues=originalSummaryValues, 
-		pls.model.list=pls.model.list)	
-	#
-	# get the weights, if it passes the tolerance
-	if ((simDistance) < toleranceValue) {
-		# record the distance
-		newparticleList$distance<-simDistance
-		#newparticle$id<-particle
-		#particle<-particle+1
-		#
-		if(dataGenerationStep==1){
-			#for generation>1 - now get weights, using correction in Sisson et al. 2007
-			newparticle$weight<-sumLogTranProb(prevGenParticleList
-				,newStartingValues = newparticleList$startingValues
-				,newIntrinsicValues = newparticleList$intrinsicValues
-				,newExtrinsicValues = newparticleList$extrinsicValues
-				,startingPriorsFns=startingPriorsFns
-				,intrinsicPriorsFns=intrinsicPriorsFns
-				,extrinsicPriorsFns=extrinsicPriorsFns
-				,startingPriorsValues=startingPriorsValues
-				,intrinsicPriorsValues=intrinsicPriorsValues
-				,extrinsicPriorsValues=extrinsicPriorsValues
-				,standardDevFactor=standardDevFactor
-				)
-			)
-			}else{
-				# particle didn't pass, discard it
-				newparticle<-NULL
-				}	
+
 	
-	
-	return(newparticle)
-	}
+	# will need to count successful particles, 
+	# remove NULLs, 
+	# record saved particle IDs, 
+			newparticle$id<-particle
+	#change particle count value
+			particle<-particle+1
+	# save successful particles to newparticleList
+	particleList<-append(particleList, list(newparticleList))
 	
 	
 	
 	
 	
 	
-# multicore simSumDistancePRC 
-simParticleDistancePRCParallel-function(
-	nSim, multicore, coreLimit,
-	phy, taxonDF, timeStep, 
-	intrinsicFn, extrinsicFn, 
-	startingPriorsValues,intrinsicPriorsValues,extrinsicPriorsValues,
-	startngPriorsFns,intrinsicPriorsValues,extrinsicPriorsValues,
-	#startingValues, intrinsicValues, extrinsicValues,
-	originalSummaryValues, pls.model.list){
-	#
-	# set up multicore
-	cores=1
-	if (multicore) {
-		if (is.na(coreLimit)){
-			registerMulticoreEnv()
-			cores<-min(nSim,getDoParWorkers())
-		}else{
-			registerMulticoreEnv(coreLimit)
-			cores<-c(nSim,coreLimit)
-			}
-		}
-	#		
-	repDistFE<-foreach(1:nSim, .combine=rbind)
-	#
-	newParticleDistances<-(	#makeQuiet(
-		repDistFE %dopar% simParticleDistancePRC(
-			phy=phy, taxonDF=taxonDF, timeStep=timeStep, 
-			intrinsicFn=intrinsicFn, 
-			extrinsicFn=extrinsicFn, 
-			startingPriorsValues=startingPriorsValues,
-			startingPriorsFns=startingPriorsFns,
-			intrinsicPriorsValues=intrinsicPriorsValues,
-			intrinsicPriorsFns=intrinsicPriorsFns,
-			extrinsicPriorsValues=extrinsicPriorsValues,
-			extrinsicPriorsFns=extrinsicPriorsFns
-			originalSummaryValues=originalSummaryValues, 
-			pls.model.list=pls.model.list
-			)
-		#)
-		)
-	return(newParticleDistances)
-	}
+
 	
 	
 simParticleDistance
@@ -710,52 +598,10 @@ testParticleAcceptancePRC<-function(distance,
 	
 	
 		toleranceValue<-toleranceVector[dataGenerationStep]	
-		# test whether to accept particle, if so, accept particle, save it and change weights
-		#id<-(-1)
-		weight<-0
-		if (is.na(distance)) {
-				#message("Error with Geiger?  distance = NA\n")
-				#while(sink.number()>0) {sink()}
-				stop("distance = NA, likely an underflow/overflow problem")
-			}
-		#}else{
-		#if (is.na(toleranceValue)) {
-		#	warning(paste0("toleranceVector[",dataGenerationStep,"] = NA"))
-		#}else{
-		#
-		# 
-		newparticleList$id <- (-1)
-		newparticleList$weight <- 0			
-		#
 		
 		
 		
-		
-		
-		if ((distance) < toleranceValue) {
-			newparticle$id<-particle
-			particle<-particle+1
-			#
-			newparticle$weight<-ifelse(dataGenerationStep==1,
-				# for generation = 1, weight all particles the same
-				1/numParticles,
-				#for generation>1 - now get weights, using correction in Sisson et al. 2007
-				sumLogTranProb(prevGenParticleList
-					,newStartingValues = newparticleList$startingValues
-					,newIntrinsicValues = newparticleList$intrinsicValues
-					,newExtrinsicValues = newparticleList$extrinsicValues
-					,startingPriorsFns=startingPriorsFns
-					,intrinsicPriorsFns=intrinsicPriorsFns
-					,extrinsicPriorsFns=extrinsicPriorsFns
-					,startingPriorsValues=startingPriorsValues
-					,intrinsicPriorsValues=intrinsicPriorsValues
-					,extrinsicPriorsValues=extrinsicPriorsValues
-					,standardDevFactor=standardDevFactor
-					)
-				)
-			particleList<-append(particleList, list(newparticleList))	
-			}
-			
+
 			
 		# end function
 			
@@ -781,7 +627,7 @@ testParticleAcceptancePRC<-function(distance,
 			#while(sink.number()>0) {sink()}
 			#message(newparticleList)
 			#
-			vectorForDataFrame<-c(dataGenerationStep, attempts,newparticleList$id, particleToSelect,
+			vectorForDataFrame<-c(dataGenerationStep, attempts,newparticleList$id, newparticle$parentid,
 				newparticleList$distance, newparticleList$weight, newparticleList$startingValues,
 				newparticleList$intrinsicValues, newparticleList$extrinsicValues)
 			#	
