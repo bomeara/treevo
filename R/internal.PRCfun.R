@@ -8,7 +8,7 @@ simParticlePRC<-function(phy, taxonDF, timeStep, intrinsicFn, extrinsicFn,
 	#startingValues, intrinsicValues, extrinsicValues,
 	originalSummaryValues, pls.model.list
 	,toleranceValue){
-	#
+	# 
 	# get particle parameters
 	#
 	# can test for dataGenerationStep=1 if prevGenParticleList is null

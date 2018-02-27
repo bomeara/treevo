@@ -439,7 +439,7 @@ doRun_prc<-function(
 			particleDataFrame<-data.frame()		
 			prevGenParticleList<-NULL			#prevGenParticleWeights<-
 		}else{
-			# why pull particle weights and particle list as this stupid seperate vector - get from particleDataFrame
+			# why pull particle weights and particle list as this stupid seperate vector - get from particleDataFrame 
 			prevGenParticleList<-particleList
 			
 			#prevGenParticleWeights<-sapply(prevGenParticleList,function(x) x$weight)

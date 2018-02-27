@@ -55,7 +55,7 @@ initializeStatesFromMatrices <- function(particle, startingPriorsValues, startin
 		}
 	return(particle)
 	}
-
+ 
 mutateStates <- function(particle, startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, standardDevFactor) {
 	for (j in sequence(dim(startingPriorsValues)[2])) {
 		particle$startingValues[j] <- mutateState(startingState=particle$startingValues[j], standardDevFactor=standardDevFactor,
@@ -71,11 +71,11 @@ mutateStates <- function(particle, startingPriorsValues, startingPriorsFns, intr
 		}
 	return(particle)
 	}
-
+ 
 # simulateTips <- function(particle, splits, phy, intrinsicFn, extrinsicFn, timeStep) {
 # 	newtips<-convertTaxonFrameToGeigerData(doSimulation(splits, intrinsicFn, extrinsicFn, particle$startingValues, particle$intrinsicValues, particle$extrinsicValues, timeStep), phy)
 # 	return(newtips)
-# }
+# } 
 
 simulateTips <- function(particle, taxonDF, phy, intrinsicFn, extrinsicFn, timeStep) {
 	newtips<-doSimulation(taxonDF=taxonDF,
