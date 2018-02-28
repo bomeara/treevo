@@ -1,4 +1,4 @@
-# internal function for figuring out which multicore approach to use, depending on what the user has installed among suggested packages
+# internal functions for figuring out which multicore approach to use, depending on what the user has installed among suggested packages
 
 
 registerMulticoreEnv<-function(nCore){	
@@ -16,3 +16,20 @@ registerMulticoreEnv<-function(nCore){
 		}
 	}	
 
+setupMulticore<-function(multicore){
+	# set cores to 1 as a placeholder
+	cores<-1
+	if (multicore) {
+		if (is.na(coreLimit)){
+			registerMulticoreEnv()
+			cores<-min(nSim,getDoParWorkers())
+		}else{
+			registerMulticoreEnv(coreLimit)
+			cores<-c(nSim,coreLimit)
+			}
+	}else{
+		# if not multicore, need to setup registerDoSEQ so that foreach doesn't complain
+		registerDoSEQ()
+		}
+	return(cores)
+	}

@@ -69,7 +69,8 @@ simParticlePRC<-function(phy, taxonDF, timeStep, intrinsicFn, extrinsicFn,
 		#
 		if(!is.null(prevGenParticleList))){
 			#for generation>1 - now get weights, using correction in Sisson et al. 2007
-			newparticle$weight<-sumLogTranProb(prevGenParticleList
+			newparticle$weight<-sumLogTranProb(
+				 prevGenParticleList=prevGenParticleList
 				,newStartingValues = newparticle$startingValues
 				,newIntrinsicValues = newparticle$intrinsicValues
 				,newExtrinsicValues = newparticle$extrinsicValues
@@ -91,7 +92,7 @@ simParticlePRC<-function(phy, taxonDF, timeStep, intrinsicFn, extrinsicFn,
 	}
 
 # multicore simSumDistancePRC 
-simParticlePRCParallel-function(
+simParticlePRCParallel<-function(
 	nSim, multicore, coreLimit,
 	,phy, taxonDF, timeStep 
 	,intrinsicFn, extrinsicFn 
@@ -102,22 +103,11 @@ simParticlePRCParallel-function(
 	,toleranceValue){
 	#
 	# set up multicore
-	cores=1
-	if (multicore) {
-		if (is.na(coreLimit)){
-			registerMulticoreEnv()
-			cores<-min(nSim,getDoParWorkers())
-		}else{
-			registerMulticoreEnv(coreLimit)
-			cores<-c(nSim,coreLimit)
-			}
-	}else{
-		registerDoSEQ()
-		}
+	cores<-setupMulticore(multicore)
 	#		
 	repDistFE<-foreach(1:nSim, .combine=list)
 	#
-	newParticleDistances<-(	#makeQuiet(
+	newParticleList<-(	#makeQuiet(
 		repDistFE %dopar% simParticlePRC(
 			phy=phy, taxonDF=taxonDF, timeStep=timeStep, 
 			intrinsicFn=intrinsicFn, 
@@ -133,7 +123,7 @@ simParticlePRCParallel-function(
 			)
 		#)
 		)
-	return(newParticleDistances)
+	return(newParticleList)
 	}	
 
 
@@ -187,23 +177,32 @@ sumLogTranProb<-function(prevGenParticleList
 	for (i in 1:length(prevGenParticleList)) {
 		#
 		LLTPstart<-sapply(length(newStartingValues),
-			function(j) getlnTransitionProb(newvalue = newStartingValues[j],
+			function(j) getlnTransitionProb(
+				newvalue = newStartingValues[j],
 				meantouse = prevGenParticleList[[i]]$startingValues[j],
 				Fn=startingPriorsFns[j],
 				priorValues= startingPriorsValues[,j],
-				stdFactor = standardDevFactor))
+				stdFactor = standardDevFactor
+				)
+			)
 		LLTPintr<-sapply(length(newIntrinsicValues),
-			function(j) getlnTransitionProb(newvalue = newIntrinsicValues[j],
+			function(j) getlnTransitionProb(
+				newvalue = newIntrinsicValues[j],
 				meantouse = prevGenParticleList[[i]]$intrinsicValues[j],
 				Fn=intrinsicPriorsFns[j],
 				priorValues= intrinsicPriorsValues[,j],
-				stdFactor = standardDevFactor))
+				stdFactor = standardDevFactor
+				)
+			)
 		LLTPextr<-sapply(length(newExtrinsicValues),
-			function(j) getlnTransitionProb(newvalue = newExtrinsicValues[j],
+			function(j) getlnTransitionProb(
+				newvalue = newExtrinsicValues[j],
 				meantouse = prevGenParticleList[[i]]$extrinsicValues[j],
 				Fn=extrinsicPriorsFns[j],
 				priorValues= extrinsicPriorsValues[,j],
-				stdFactor = standardDevFactor))
+				stdFactor = standardDevFactor
+				)
+			)
 		#
 		lnTransitionProb=log(1)
 		#

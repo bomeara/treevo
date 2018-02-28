@@ -277,19 +277,10 @@ parallelSimulateWithPriors<-function(
 			signif(mininterval/50,2)," or at the very least ", signif(mininterval/3,2)))
 	#	timeStep <- mininterval/3
 		}
-
-		
+	#	
 	# multicore
-	cores=1
-	if (multicore) {
-		if (is.na(coreLimit)){
-			registerMulticoreEnv()
-			cores<-getDoParWorkers()
-		}else{
-			registerMulticoreEnv(coreLimit)
-			cores<-coreLimit
-			}
-		}
+	# set up multicore
+	cores<-setupMulticore(multicore)
 	#
 	# verbosity
 	if(verbose){
