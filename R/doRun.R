@@ -462,7 +462,7 @@ doRun_prc<-function(
 		particleList<-list()
 		#
 		# acceptance rate of particles - reset to 0.5
-		particleAcceptanceRate<-0.5
+		expParticleAcceptanceRate<-0.5
 		#
 		if(verboseParticles){
 			message("Successes ", "  Attempts ", "  Exp. # of Attempts Req. ", "Params.") #\n
@@ -480,7 +480,7 @@ doRun_prc<-function(
 			# check how many particles are needed
 			nSim<-(numParticles-nAcceptedParticles)
 			# siulate that number times the apparent rate of success
-			nSim<-nSim/particleAcceptanceRate
+			nSim<-nSim/expParticleAcceptanceRate
 			# repeat until you have enough particles			
 
 
@@ -499,10 +499,10 @@ newParticleList<-simParticlePRCParallel(
 	,startngPriorsFns,intrinsicPriorsValues,extrinsicPriorsValues
 	#startingValues, intrinsicValues, extrinsicValues
 	,originalSummaryValues, pls.model.list
-	,toleranceValue){
+	,toleranceValue=toleranceVector[dataGenerationStep]	){
 
 
-					
+		toleranceValue=toleranceVector[dataGenerationStep]			
 					
 					
 					
@@ -537,7 +537,11 @@ newParticleList<-simParticlePRCParallel(
 				
 
 	
-	# will need to count successful particles, 
+	# will need to count successful particles
+	nAcceptedNew<-
+	nFailedNew<-nSim-nAcceptedNew
+	# updated expParticleAcceptanceRate for properly calculate number of necc nSim
+	expParticleAcceptanceRate<-nAcceptednew/(nAcceptedNew+nFailednew)
 	# remove NULLs, 
 	# record saved particle IDs, 
 			newparticle$id<-particle
@@ -588,7 +592,7 @@ testParticleAcceptancePRC<-function(distance,
 	
 	
 	
-		toleranceValue<-toleranceVector[dataGenerationStep]	
+
 		
 		
 		
@@ -747,15 +751,7 @@ testParticleAcceptancePRC<-function(distance,
 	# ######### end of PRC particle collection algorithm loop ##############
 	#
 	names(particleDataFrame)<-nameVector
-	#if(plot) {
-	#	#dev.new()
-	#	plot(x=c(min(intrinsicPriorsValues), max(intrinsicPriorsValues)), y=c(0, 1), type="n")
-	#	for (i in 1:(length(toleranceVector)-1)) {
-	#		graycolor<-gray(0.5*(length(toleranceVector)-i)/length(toleranceVector))
-	#		lines(density(subset(particleDataFrame, particleDataFrame$generation==i)[, 8]), col= graycolor)
-	#		}
-	#	lines(density(subset(particleDataFrame, particleDataFrame$generation==length(toleranceVector))[, 8]), col= "red")
-	#	}
+	#
 	particleTime<-proc.time()[[3]]-particleStartTime
 	message(paste0("Collection of simulation particles under PRC completed in ",particleTime," seconds..."))
 	#---------------------- ABC-PRC (End) --------------------------------
@@ -766,6 +762,7 @@ testParticleAcceptancePRC<-function(distance,
 	time3<-proc.time()[[3]]
 	genTimes<-c(time.per.gen, time3)
 	#
+	# why are we doing this again - DWB 02-27-18
 	prcResults<-vector("list")
 	prcResults$input.data<-input.data
 	prcResults$PriorMatrix<-PriorMatrix

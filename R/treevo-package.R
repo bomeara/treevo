@@ -92,7 +92,7 @@
 #' @importFrom phylolm phylolm
 #' @importFrom pls plsr scores
 #' @importFrom coda effectiveSize HPDinterval as.mcmc
-#' @importFrom foreach foreach getDoParWorkers '%dopar%'
+#' @importFrom foreach foreach getDoParWorkers '%dopar%' registerDoSEQ
 #' @importFrom fastmatch '%fin%'
 #' @importFrom partitions blockparts
 #' @importFrom MASS boxcox

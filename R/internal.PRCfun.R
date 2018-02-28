@@ -84,8 +84,9 @@ simParticlePRC<-function(phy, taxonDF, timeStep, intrinsicFn, extrinsicFn,
 			}
 	}else{
 		# particle didn't pass, discard it
-		newparticle<-NULL
+		newparticle<-NA
 		}	
+	newparticle<-list(newparticle)
 	return(newparticle)
 	}
 
@@ -110,9 +111,11 @@ simParticlePRCParallel-function(
 			registerMulticoreEnv(coreLimit)
 			cores<-c(nSim,coreLimit)
 			}
+	}else{
+		registerDoSEQ()
 		}
 	#		
-	repDistFE<-foreach(1:nSim, .combine=rbind)
+	repDistFE<-foreach(1:nSim, .combine=list)
 	#
 	newParticleDistances<-(	#makeQuiet(
 		repDistFE %dopar% simParticlePRC(
