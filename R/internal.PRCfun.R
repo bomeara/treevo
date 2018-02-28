@@ -1,13 +1,53 @@
 # internal side functions for use in doRun_prc
 
-# internal function for simulating and obtaining ABC distances 
-	# for doRun_PRC
-simParticlePRC<-function(phy, taxonDF, timeStep, intrinsicFn, extrinsicFn, 
+# multicore simSumDistancePRC 
+simParticlePRCParallel<-function(
+	nSim, multicore, coreLimit,
+	,phy, taxonDF, timeStep 
+	,intrinsicFn, extrinsicFn 
+	startingPriorsValues,intrinsicPriorsValues,extrinsicPriorsValues
+	,startngPriorsFns,intrinsicPriorsValues,extrinsicPriorsValues
+	#startingValues, intrinsicValues, extrinsicValues
+	,originalSummaryValues, pls.model.list
+	,toleranceValue,prevGenParticleList){
+	#
+	# set up multicore
+	cores<-setupMulticore(multicore)
+	#		
+	repDistFE<-foreach(1:nSim, .combine=list)
+	#
+	# need a function for parallel doSimulation, and all other associated particle actions
+	newParticleList<-(	#makeQuiet(
+		repDistFE %dopar% simParticlePRC(
+			phy=phy, taxonDF=taxonDF, timeStep=timeStep, 
+			intrinsicFn=intrinsicFn, 
+			extrinsicFn=extrinsicFn, 
+			startingPriorsValues=startingPriorsValues,
+			startingPriorsFns=startingPriorsFns,
+			intrinsicPriorsValues=intrinsicPriorsValues,
+			intrinsicPriorsFns=intrinsicPriorsFns,
+			extrinsicPriorsValues=extrinsicPriorsValues,
+			extrinsicPriorsFns=extrinsicPriorsFns
+			originalSummaryValues=originalSummaryValues, 
+			pls.model.list=pls.model.list,
+			toleranceValue=toleranceValue,
+			prevGenParticleList=prevGenParticleList
+			)
+		#)
+		)
+	return(newParticleList)
+	}	
+
+
+# internal function for simulating and evaulating particles
+	# for doRun_PRC - to be run in parallel
+simParticlePRC<-function(
+	phy, taxonDF, timeStep, intrinsicFn, extrinsicFn, 
 	startingPriorsValues,intrinsicPriorsValues,extrinsicPriorsValues,
 	startngPriorsFns,intrinsicPriorsFns,extrinsicPriorsFns,
 	#startingValues, intrinsicValues, extrinsicValues,
 	originalSummaryValues, pls.model.list
-	,toleranceValue){
+	,toleranceValue,prevGenParticleList){
 	# 
 	# get particle parameters
 	#
@@ -90,42 +130,11 @@ simParticlePRC<-function(phy, taxonDF, timeStep, intrinsicFn, extrinsicFn,
 	newparticle<-list(newparticle)
 	return(newparticle)
 	}
-
-# multicore simSumDistancePRC 
-simParticlePRCParallel<-function(
-	nSim, multicore, coreLimit,
-	,phy, taxonDF, timeStep 
-	,intrinsicFn, extrinsicFn 
-	startingPriorsValues,intrinsicPriorsValues,extrinsicPriorsValues
-	,startngPriorsFns,intrinsicPriorsValues,extrinsicPriorsValues
-	#startingValues, intrinsicValues, extrinsicValues
-	,originalSummaryValues, pls.model.list
-	,toleranceValue){
-	#
-	# set up multicore
-	cores<-setupMulticore(multicore)
-	#		
-	repDistFE<-foreach(1:nSim, .combine=list)
-	#
-	newParticleList<-(	#makeQuiet(
-		repDistFE %dopar% simParticlePRC(
-			phy=phy, taxonDF=taxonDF, timeStep=timeStep, 
-			intrinsicFn=intrinsicFn, 
-			extrinsicFn=extrinsicFn, 
-			startingPriorsValues=startingPriorsValues,
-			startingPriorsFns=startingPriorsFns,
-			intrinsicPriorsValues=intrinsicPriorsValues,
-			intrinsicPriorsFns=intrinsicPriorsFns,
-			extrinsicPriorsValues=extrinsicPriorsValues,
-			extrinsicPriorsFns=extrinsicPriorsFns
-			originalSummaryValues=originalSummaryValues, 
-			pls.model.list=pls.model.list
-			)
-		#)
-		)
-	return(newParticleList)
-	}	
-
+	
+boostNsim<-function(nSims,nCores){
+	newNsim<-nCores*(nSims%/%nCores + as.logical(nSims%%nCores))
+	return(newNsim)
+	}
 
 getlnTransitionProb<-function(newvalue,meantouse,Fn,priorValues,stdFactor){
 		#newvalue = newparticleList[[1]]$startingValues[j],

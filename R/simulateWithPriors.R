@@ -275,7 +275,7 @@ parallelSimulateWithPriors<-function(
 	if (floor(mininterval/timeStep)<3) {
 		message(paste0("You have only ", floor(mininterval/timeStep), " timeSteps on the shortest branch in this dataset but should probably have a lot more if you expect change on this branch. Please consider decreasing timeStep to no more than ",
 			signif(mininterval/50,2)," or at the very least ", signif(mininterval/3,2)))
-	#	timeStep <- mininterval/3
+		#	timeStep <- mininterval/3
 		}
 	#	
 	# multicore

@@ -441,7 +441,6 @@ doRun_prc<-function(
 		}else{
 			# why pull particle weights and particle list as this stupid seperate vector - get from particleDataFrame 
 			prevGenParticleList<-particleList
-			
 			#prevGenParticleWeights<-sapply(prevGenParticleList,function(x) x$weight)
 			#stores weights for each particle.
 				#Initially, assume infinite number of possible particles (so might not apply in discrete case)
@@ -481,61 +480,60 @@ doRun_prc<-function(
 			nSim<-(numParticles-nAcceptedParticles)
 			# siulate that number times the apparent rate of success
 			nSim<-nSim/expParticleAcceptanceRate
+			# round up so its a multiple of the number of cores
+			<-boostNsim(nSims=nSim,nCores=)
 			# repeat until you have enough particles			
-
-
-
-			
-			
-
-
-			prevGenParticleList
-				
-newParticleList<-simParticlePRCParallel(
-	nSim, multicore, coreLimit,
-	,phy, taxonDF, timeStep 
-	,intrinsicFn, extrinsicFn 
-	startingPriorsValues,intrinsicPriorsValues,extrinsicPriorsValues
-	,startngPriorsFns,intrinsicPriorsValues,extrinsicPriorsValues
-	#startingValues, intrinsicValues, extrinsicValues
-	,originalSummaryValues, pls.model.list
-	,toleranceValue=toleranceVector[dataGenerationStep]	){
-
-
-		toleranceValue=toleranceVector[dataGenerationStep]			
-					
-					
-					
-				}
-			#
-			#message("dput(newparticleList) AFTER MUTATE STATES\n")
-			#dput(newparticleList)
-			#
-			#
-			
-			
-			
-			
-			
-			
-			# need a function for parallel doSimulation
-			
-
-				newparticleDistances<-simSumDistancePRCParallel(
-					nSim=nSim, multicore=multicore, coreLimit=coreLimit,
-					phy=phy, taxonDF=taxonDF, timeStep=timeStep, 
-					intrinsicFn=intrinsicFn, 
-					extrinsicFn=extrinsicFn,
+			newParticleList<-simParticlePRCParallel(
+				nSim=nSim, multicore=multicore, coreLimit=coreLimit,
+				phy=phy, taxonDF=taxonDF, timeStep=timeStep, 
+				intrinsicFn=intrinsicFn, 
+				extrinsicFn=extrinsicFn, 
 					startingValues=newparticleList$startingValues,
 					intrinsicValues=newparticleList$intrinsicValues,
 					extrinsicValues=newparticleList$extrinsicValues,
-					originalSummaryValues=originalSummaryValues, 
-					pls.model.list=pls.model.list)	
-			
-			
-			
-				
+				startingPriorsFns=startingPriorsFns,
 
+				intrinsicPriorsFns=intrinsicPriorsFns,
+
+				extrinsicPriorsFns=extrinsicPriorsFns
+				originalSummaryValues=originalSummaryValues, 
+				pls.model.list=pls.model.list,
+				toleranceValue=toleranceVector[dataGenerationStep],
+				prevGenParticleList=prevGenParticleList
+				)			
+						
+
+
+			
+			newparticleDistances<-simSumDistancePRCParallel(
+				nSim=nSim, multicore=multicore, coreLimit=coreLimit,
+				phy=phy, taxonDF=taxonDF, timeStep=timeStep, 
+				intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn,
+				startingValues=newparticleList$startingValues,
+				intrinsicValues=newparticleList$intrinsicValues,
+				extrinsicValues=newparticleList$extrinsicValues,
+				originalSummaryValues=originalSummaryValues, 
+				pls.model.list=pls.model.list)	
+
+	
+				
+			
+
+particle
+
+#ID doesn't need to be set - that's just the ID of the particle...
+
+testParticleAcceptancePRC<-function(distance,
+	){
+	
+	
+	
+
+		
+		
+			
+						
+						
 	
 	# will need to count successful particles
 	nAcceptedNew<-
@@ -552,54 +550,7 @@ newParticleList<-simParticlePRCParallel(
 	
 	
 	
-	
-	
-	
 
-	
-	
-simParticleDistance
-	
-			
-
-			
-			
-			
-
-newparticleList$distance<-
-
-			
-			newparticleDistances<-simSumDistancePRCParallel(
-				nSim=nSim, multicore=multicore, coreLimit=coreLimit,
-				phy=phy, taxonDF=taxonDF, timeStep=timeStep, 
-				intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn,
-				startingValues=newparticleList$startingValues,
-				intrinsicValues=newparticleList$intrinsicValues,
-				extrinsicValues=newparticleList$extrinsicValues,
-				originalSummaryValues=originalSummaryValues, 
-				pls.model.list=pls.model.list)	
-
-	
-				
-
-
-particle
-
-#ID doesn't need to be set - that's just the ID of the particle...
-
-testParticleAcceptancePRC<-function(distance,
-	){
-	
-	
-	
-
-		
-		
-		
-
-			
-		# end function
-			
 			
 			
 			
