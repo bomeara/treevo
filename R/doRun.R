@@ -481,47 +481,29 @@ doRun_prc<-function(
 			# siulate that number times the apparent rate of success
 			nSim<-nSim/expParticleAcceptanceRate
 			# round up so its a multiple of the number of cores
-			<-boostNsim(nSims=nSim,nCores=)
+			nSim<-boostNsim(nSims=nSim,nCores=coreLimit)
 			# repeat until you have enough particles			
 			newParticleList<-simParticlePRCParallel(
-				nSim=nSim, multicore=multicore, coreLimit=coreLimit,
-				phy=phy, taxonDF=taxonDF, timeStep=timeStep, 
+				nSim=nSim, 
+				multicore=multicore, 
+				coreLimit=coreLimit,
+				phy=phy, 
+				taxonDF=taxonDF, 
+				timeStep=timeStep, 
 				intrinsicFn=intrinsicFn, 
 				extrinsicFn=extrinsicFn, 
-					startingValues=newparticleList$startingValues,
-					intrinsicValues=newparticleList$intrinsicValues,
-					extrinsicValues=newparticleList$extrinsicValues,
+				startingPriorsValues=startingPriorsValues,
+				intrinsicPriorsValues=intrinsicPriorsValues,
+				extrinsicPriorsValues=extrinsicPriorsValues,
 				startingPriorsFns=startingPriorsFns,
-
 				intrinsicPriorsFns=intrinsicPriorsFns,
-
-				extrinsicPriorsFns=extrinsicPriorsFns
+				extrinsicPriorsFns=extrinsicPriorsFns,
 				originalSummaryValues=originalSummaryValues, 
 				pls.model.list=pls.model.list,
 				toleranceValue=toleranceVector[dataGenerationStep],
 				prevGenParticleList=prevGenParticleList
 				)			
 						
-
-
-			
-			newparticleDistances<-simSumDistancePRCParallel(
-				nSim=nSim, multicore=multicore, coreLimit=coreLimit,
-				phy=phy, taxonDF=taxonDF, timeStep=timeStep, 
-				intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn,
-				startingValues=newparticleList$startingValues,
-				intrinsicValues=newparticleList$intrinsicValues,
-				extrinsicValues=newparticleList$extrinsicValues,
-				originalSummaryValues=originalSummaryValues, 
-				pls.model.list=pls.model.list)	
-
-	
-				
-			
-
-particle
-
-#ID doesn't need to be set - that's just the ID of the particle...
 
 testParticleAcceptancePRC<-function(distance,
 	){
@@ -534,13 +516,15 @@ testParticleAcceptancePRC<-function(distance,
 			
 						
 						
+	# remove NAs
+	res1<-res[!is.na(res)]
 	
 	# will need to count successful particles
 	nAcceptedNew<-
 	nFailedNew<-nSim-nAcceptedNew
 	# updated expParticleAcceptanceRate for properly calculate number of necc nSim
 	expParticleAcceptanceRate<-nAcceptednew/(nAcceptedNew+nFailednew)
-	# remove NULLs, 
+	 
 	# record saved particle IDs, 
 			newparticle$id<-particle
 	#change particle count value

@@ -6,7 +6,7 @@ simParticlePRCParallel<-function(
 	,phy, taxonDF, timeStep 
 	,intrinsicFn, extrinsicFn 
 	startingPriorsValues,intrinsicPriorsValues,extrinsicPriorsValues
-	,startngPriorsFns,intrinsicPriorsValues,extrinsicPriorsValues
+	,startngPriorsFns,intrinsicPriorsFns,extrinsicPriorsFns
 	#startingValues, intrinsicValues, extrinsicValues
 	,originalSummaryValues, pls.model.list
 	,toleranceValue,prevGenParticleList){
@@ -104,6 +104,7 @@ simParticlePRC<-function(
 	if ((simDistance) < toleranceValue) {
 		# record the distance
 		newparticle$distance<-simDistance
+			#ID doesn't need to be set - that's just the ID of the particle...
 		#newparticle$id<-particle
 		#particle<-particle+1
 		#
