@@ -477,9 +477,9 @@ doRun_prc<-function(
 				}
 			#
 			# check how many particles are needed
-			nSim<-(numParticles-nAcceptedParticles)
+			nParticlesNeeded<-(numParticles-nAcceptedParticles)
 			# siulate that number times the apparent rate of success
-			nSim<-nSim/expParticleAcceptanceRate
+			nSim<-nParticlesNeeded/expParticleAcceptanceRate
 			# round up so its a multiple of the number of cores
 			nSim<-boostNsim(nSims=nSim,nCores=coreLimit)
 			# repeat until you have enough particles			
@@ -502,37 +502,28 @@ doRun_prc<-function(
 				pls.model.list=pls.model.list,
 				toleranceValue=toleranceVector[dataGenerationStep],
 				prevGenParticleList=prevGenParticleList
-				)			
-						
-
-testParticleAcceptancePRC<-function(distance,
-	){
-	
-	
-	
-
-		
-		
+				)		
+			# will need to count successful particles
+			acceptedParticles<-!is.na(newParticleList)
+			nAcceptedNew<-sum(acceptedParticles)
+			nFailedNew<-nSim-nAcceptedNew
+			# updated expParticleAcceptanceRate for properly calculate number of necc nSim
+			expParticleAcceptanceRate<-nAcceptednew/(nAcceptedNew+nFailednew)
+			# remove NAs (failed particles)
+			newParticleList<-newParticleList[acceptedParticles]
+			# remove particles that go beyond the number needed
+			if(length(res)>nParticlesNeeded){
+				res<-res[1:particlesNeeded]}
+			# append particle IDs to each accepted particle
 			
-						
-						
-	# remove NAs
-	res1<-res[!is.na(res)]
-	
-	# will need to count successful particles
-	nAcceptedNew<-
-	nFailedNew<-nSim-nAcceptedNew
-	# updated expParticleAcceptanceRate for properly calculate number of necc nSim
-	expParticleAcceptanceRate<-nAcceptednew/(nAcceptedNew+nFailednew)
-	 
-	# record saved particle IDs, 
-			newparticle$id<-particle
-	#change particle count value
-			particle<-particle+1
-	# save successful particles to newparticleList
-	particleList<-append(particleList, list(newparticleList))
-	
-	
+			
+					newparticle$id<-particle
+			#change particle count value
+					particle<-particle+1
+			# save successful particles to newparticleList
+			particleList<-append(particleList, list(newparticleList))
+			
+			
 	
 
 			
