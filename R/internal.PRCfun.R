@@ -2,10 +2,10 @@
 
 # multicore simSumDistancePRC 
 simParticlePRCParallel<-function(
-	nSim, multicore, coreLimit,
+	nSim, multicore, coreLimit
 	,phy, taxonDF, timeStep 
 	,intrinsicFn, extrinsicFn 
-	startingPriorsValues,intrinsicPriorsValues,extrinsicPriorsValues
+	,startingPriorsValues,intrinsicPriorsValues,extrinsicPriorsValues
 	,startngPriorsFns,intrinsicPriorsFns,extrinsicPriorsFns
 	#startingValues, intrinsicValues, extrinsicValues
 	,originalSummaryValues, pls.model.list
@@ -27,7 +27,7 @@ simParticlePRCParallel<-function(
 			intrinsicPriorsValues=intrinsicPriorsValues,
 			intrinsicPriorsFns=intrinsicPriorsFns,
 			extrinsicPriorsValues=extrinsicPriorsValues,
-			extrinsicPriorsFns=extrinsicPriorsFns
+			extrinsicPriorsFns=extrinsicPriorsFns,
 			originalSummaryValues=originalSummaryValues, 
 			pls.model.list=pls.model.list,
 			toleranceValue=toleranceValue,
@@ -108,7 +108,7 @@ simParticlePRC<-function(
 		#newparticle$id<-particle
 		#particle<-particle+1
 		#
-		if(!is.null(prevGenParticleList))){
+		if(!is.null(prevGenParticleList)){
 			#for generation>1 - now get weights, using correction in Sisson et al. 2007
 			newparticle$weight<-sumLogTranProb(
 				 prevGenParticleList=prevGenParticleList

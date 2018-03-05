@@ -440,7 +440,7 @@ doRun_prc<-function(
 			prevGenParticleList<-NULL			#prevGenParticleWeights<-
 		}else{
 			# why pull particle weights and particle list as this stupid seperate vector - get from particleDataFrame 
-			prevGenParticleList<-particleList
+			prevGenParticleList<-currParticleList
 			#prevGenParticleWeights<-sapply(prevGenParticleList,function(x) x$weight)
 			#stores weights for each particle.
 				#Initially, assume infinite number of possible particles (so might not apply in discrete case)
@@ -458,7 +458,7 @@ doRun_prc<-function(
 		attempts<-0		
 		#
 		# create a list where we'll save information for each particle for this generation
-		particleList<-list()
+		currParticleList<-list()
 		#
 		# acceptance rate of particles - reset to 0.5
 		expParticleAcceptanceRate<-0.5
@@ -469,6 +469,9 @@ doRun_prc<-function(
 		#message("Beginning partial rejection control algorithm...")
 		#
 		start.time<-particleStartTime<-proc.time()[[3]]
+		#
+		# set nAcceptedParticles to 0
+		nAcceptedParticles<-0
 		#
 		while (nAcceptedParticles<=numParticles) {
 			#
@@ -482,7 +485,8 @@ doRun_prc<-function(
 			nSim<-nParticlesNeeded/expParticleAcceptanceRate
 			# round up so its a multiple of the number of cores
 			nSim<-boostNsim(nSims=nSim,nCores=coreLimit)
-			# repeat until you have enough particles			
+			# repeat until you have enough particles
+			newParticleList<-list()
 			newParticleList<-simParticlePRCParallel(
 				nSim=nSim, 
 				multicore=multicore, 
@@ -511,82 +515,43 @@ doRun_prc<-function(
 			expParticleAcceptanceRate<-nAcceptednew/(nAcceptedNew+nFailednew)
 			# remove NAs (failed particles)
 			newParticleList<-newParticleList[acceptedParticles]
+			#
 			# remove particles that go beyond the number needed
-			if(length(res)>nParticlesNeeded){
-				res<-res[1:particlesNeeded]}
-			# append particle IDs to each accepted particle
-			
-			
-					newparticle$id<-particle
+			#if(length(res)>nParticlesNeeded){
+			#	res<-res[1:particlesNeeded]}
+			#       is this really a bad thing??
+			#
 			#change particle count value
-					particle<-particle+1
-			# save successful particles to newparticleList
-			particleList<-append(particleList, list(newparticleList))
-			
-			
-	
-
-			
-			
-			
-		attempts<-attempts+nSim			
-		}
-		
-			
-			
-			
-				
-				
-			#particle<-particle+1
-			#particleList<-append(particleList, newparticleList)					
-		
-				
-				
-				
-			#
-			#
-			#while(sink.number()>0) {sink()}
-			#message(newparticleList)
-			#
-			vectorForDataFrame<-c(dataGenerationStep, attempts,newparticleList$id, newparticle$parentid,
-				newparticleList$distance, newparticleList$weight, newparticleList$startingValues,
-				newparticleList$intrinsicValues, newparticleList$extrinsicValues)
+			nAcceptedParticles<-nAcceptedParticles+length(newParticleList)
+			# save successful particles to currParticleList
+			currParticleList<-append(currParticleList, newparticleList)
+			# updated number of attemped particles so far
+			attempts<-attempts+nSim
+			}
+		# append particle IDs to each accepted particle	
+		for(i in 1:length(currParticleList)){
+			currParticleList[[i]]$id<-i
+			vectorForDataFrame<-c(dataGenerationStep, attempts,currParticleList[[i]]$id, currParticleList[[i]]$parentid,
+				currParticleList[[i]]$distance, currParticleList[[i]]$weight, currParticleList[[i]]$startingValues,
+				currParticleList[[i]]$intrinsicValues, currParticleList[[i]]$extrinsicValues)
 			#	
 			if(diagnosticPRCmode){
 				message("\n\nlength of vectorForDataFrame = ", length(vectorForDataFrame), "\n", "length of startingValues = ",
-					length(newparticleList$startingValues), "\nlength of intrinsicValues = ", length(newparticleList$intrinsicValues),
-					"\nlength of extrinsicValues = ", length(newparticleList$extrinsicValues), "\ndistance = ", newparticleList$distance,
-					"\nweight = ", newparticleList$weight, "\n", vectorForDataFrame, "\n")
+					length(currParticleList[[i]]$startingValues), "\nlength of intrinsicValues = ", length(currParticleList[[i]]$intrinsicValues),
+					"\nlength of extrinsicValues = ", length(currParticleList[[i]]$extrinsicValues), "\ndistance = ", currParticleList[[i]]$distance,
+					"\nweight = ", currParticleList[[i]]$weight, "\n", vectorForDataFrame, "\n")
 				}
 			#
 			#NOTE THAT WEIGHTS AREN'T NORMALIZED IN THIS DATAFRAME
 			particleDataFrame<-rbind(particleDataFrame, vectorForDataFrame)
 			#
 			if(verboseParticles){
-				message(paste(particle-1,"         ", attempts,"        ",
-					floor(numParticles*attempts/particle),"                    ",
-					signif(newparticleList$startingValues,2),"  ", signif(newparticleList$intrinsicValues,2),"  ",
-					signif(newparticleList$extrinsicValues,2),"  ", signif(newparticleList$distance,2)))
-				}
-			#
-			
-			
-			
-			
-			particlesThisGen<-which(particleDataFrame$generation==dataGenerationStep)
-		particleDataFrame[particlesThisGen,]$weight <- particleDataFrame[particlesThisGen, ]$weight/(
-			sum(particleDataFrame[particlesThisGen, ]$weight)		
-			
-			
-			
-			
-			
-			
-			
-			
-			} #while (particle<=numParticles) bracket
-
-			
+				message(paste(i-1,"         ", attempts,"        ",
+					floor(nAcceptedParticles*attempts/i),"                    ",
+					signif(currParticleList[[i]]$startingValues,2),"  ", signif(currParticleList[[i]]$intrinsicValues,2),"  ",
+					signif(currParticleList[[i]]$extrinsicValues,2),"  ", signif(currParticleList[[i]]$distance,2)))
+				}	
+			}			
 		#
 		if(dataGenerationStep==1){
 			names(particleDataFrame)<-nameVector
@@ -602,10 +567,7 @@ doRun_prc<-function(
 		particleDataFrame[particlesThisGen,]$weight <- particleDataFrame[particlesThisGen, ]$weight/(
 			sum(particleDataFrame[particlesThisGen, ]$weight)
 			)
-		
-		
 		#	
-		# dataGenerationStep=1 # removed when I flattened the loop
 		timePRCStep<-proc.time()[[3]]-start.time
 		time.per.gen[dataGenerationStep]<-timePRCStep
 		#rejects.per.gen<-(dim(subset(particleDataFrame, particleDataFrame$id<0))[1])/(

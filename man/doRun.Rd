@@ -15,7 +15,7 @@ doRun_prc(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
   epsilonProportion = 0.7, epsilonMultiplier = 0.7, nStepsPRC = 5,
   stopRule = FALSE, stopValue = 0.05, maxAttempts = Inf,
   diagnosticPRCmode = FALSE, jobName = NA, saveData = FALSE,
-  verboseParticles = TRUE, plot = FALSE)
+  verboseParticles = TRUE)
 
 doRun_rej(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
   startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns,
@@ -122,8 +122,6 @@ the PRC algorithm as it runs.}
 
 \item{verboseParticles}{If \code{TRUE} (the default), a large amount of information about parameter estimates
 and acceptance of particles is output to console via \code{message} as \code{doRun_prc} runs.}
-
-\item{plot}{If \code{TRUE}, plots distance of each simulation.}
 
 \item{abcTolerance}{Proportion of accepted simulations.}
 
