@@ -224,7 +224,6 @@ resultsPRC<-doRun_prc(
   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
   generation.time=100000,
   standardDevFactor=0.2,
-  plot=FALSE,
   StartSims=10,
   epsilonProportion=0.7,
   epsilonMultiplier=0.7,

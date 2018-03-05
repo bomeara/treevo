@@ -188,7 +188,6 @@
 #'   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
 #'   generation.time=100000,
 #'   standardDevFactor=0.2,
-#'   plot=FALSE,
 #'   StartSims=10,
 #'   epsilonProportion=0.7,
 #'   epsilonMultiplier=0.7,
@@ -404,19 +403,6 @@ doRun_prc<-function(
 	message("Beginning partial rejection control algorithm...")
 	#
 	nameVector<-c("generation", "attempt", "id", "parentid", "distance", "weight")
-	if (plot) {
-		plot(x=c(min(intrinsicPriorsValues), max(intrinsicPriorsValues)), y=c(0, 5*max(toleranceVector)), type="n")
-		}
-	#
-	for (i in 1:dim(startingPriorsValues)[2]) {
-		nameVector<-append(nameVector, paste0("StartingStates", i, sep=""))
-		}
-	for (i in 1:dim(intrinsicPriorsValues)[2]) {
-		nameVector<-append(nameVector, paste0("IntrinsicValue", i, sep=""))
-		}
-	for (i in 1:dim(extrinsicPriorsValues)[2]) {
-		nameVector<-append(nameVector, paste0("ExtrinsicValue", i, sep=""))
-		}
 	#
 	# save before initiating PRC procedure
 	if(saveData){
