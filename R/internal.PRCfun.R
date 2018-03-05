@@ -9,7 +9,8 @@ simParticlePRCParallel<-function(
 	,startingPriorsFns,intrinsicPriorsFns,extrinsicPriorsFns
 	#startingValues, intrinsicValues, extrinsicValues
 	,originalSummaryValues, pls.model.list
-	,toleranceValue,prevGenParticleList,numParticles){
+	,toleranceValue,prevGenParticleList
+	,standardDevFactor,numParticles){
 	#
 	# set up multicore
 	cores<-setupMulticore(multicore,nSim=nSim,coreLimit=coreLimit)
