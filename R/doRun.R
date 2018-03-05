@@ -505,14 +505,16 @@ doRun_prc<-function(
 				originalSummaryValues=originalSummaryValues, 
 				pls.model.list=pls.model.list,
 				toleranceValue=toleranceVector[dataGenerationStep],
-				prevGenParticleList=prevGenParticleList
+				prevGenParticleList=prevGenParticleList,
+				standardDevFactor=standardDevFactor,
+				numParticles=numParticles
 				)		
 			# will need to count successful particles
 			acceptedParticles<-!is.na(newParticleList)
 			nAcceptedNew<-sum(acceptedParticles)
 			nFailedNew<-nSim-nAcceptedNew
 			# updated expParticleAcceptanceRate for properly calculate number of necc nSim
-			expParticleAcceptanceRate<-nAcceptednew/(nAcceptedNew+nFailednew)
+			expParticleAcceptanceRate<-nAcceptedNew/(nAcceptedNew+nFailedNew)
 			# remove NAs (failed particles)
 			newParticleList<-newParticleList[acceptedParticles]
 			#
@@ -524,7 +526,7 @@ doRun_prc<-function(
 			#change particle count value
 			nAcceptedParticles<-nAcceptedParticles+length(newParticleList)
 			# save successful particles to currParticleList
-			currParticleList<-append(currParticleList, newparticleList)
+			currParticleList<-append(currParticleList, newParticleList)
 			# updated number of attemped particles so far
 			attempts<-attempts+nSim
 			}

@@ -6,13 +6,13 @@ simParticlePRCParallel<-function(
 	,phy, taxonDF, timeStep 
 	,intrinsicFn, extrinsicFn 
 	,startingPriorsValues,intrinsicPriorsValues,extrinsicPriorsValues
-	,startngPriorsFns,intrinsicPriorsFns,extrinsicPriorsFns
+	,startingPriorsFns,intrinsicPriorsFns,extrinsicPriorsFns
 	#startingValues, intrinsicValues, extrinsicValues
 	,originalSummaryValues, pls.model.list
-	,toleranceValue,prevGenParticleList){
+	,toleranceValue,prevGenParticleList,numParticles){
 	#
 	# set up multicore
-	cores<-setupMulticore(multicore)
+	cores<-setupMulticore(multicore,nSim=nSim,coreLimit=coreLimit)
 	#		
 	repDistFE<-foreach(1:nSim, .combine=list)
 	#
@@ -31,7 +31,9 @@ simParticlePRCParallel<-function(
 			originalSummaryValues=originalSummaryValues, 
 			pls.model.list=pls.model.list,
 			toleranceValue=toleranceValue,
-			prevGenParticleList=prevGenParticleList
+			prevGenParticleList=prevGenParticleList,
+			standardDevFactor=standardDevFactor,
+			numParticles=numParticles
 			)
 		#)
 		)
@@ -44,10 +46,10 @@ simParticlePRCParallel<-function(
 simParticlePRC<-function(
 	phy, taxonDF, timeStep, intrinsicFn, extrinsicFn, 
 	startingPriorsValues,intrinsicPriorsValues,extrinsicPriorsValues,
-	startngPriorsFns,intrinsicPriorsFns,extrinsicPriorsFns,
+	startingPriorsFns,intrinsicPriorsFns,extrinsicPriorsFns,
 	#startingValues, intrinsicValues, extrinsicValues,
 	originalSummaryValues, pls.model.list
-	,toleranceValue,prevGenParticleList){
+	,toleranceValue,prevGenParticleList,standardDevFactor,numParticles){
 	# 
 	# get particle parameters
 	#

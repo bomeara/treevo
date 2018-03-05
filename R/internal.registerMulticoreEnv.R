@@ -16,7 +16,7 @@ registerMulticoreEnv<-function(nCore){
 		}
 	}	
 
-setupMulticore<-function(multicore){
+setupMulticore<-function(multicore,nSim,coreLimit){
 	# set cores to 1 as a placeholder
 	cores<-1
 	if (multicore) {

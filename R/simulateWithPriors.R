@@ -280,7 +280,7 @@ parallelSimulateWithPriors<-function(
 	#	
 	# multicore
 	# set up multicore
-	cores<-setupMulticore(multicore)
+	cores<-setupMulticore(multicore,nSim=nrepSim,coreLimit=coreLimit)
 	#
 	# verbosity
 	if(verbose){
