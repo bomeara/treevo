@@ -501,20 +501,22 @@ doRun_prc<-function(
 			nFailedNew<-nSim-nAcceptedNew
 			# updated expParticleAcceptanceRate for properly calculate number of necc nSim
 			expParticleAcceptanceRate<-nAcceptedNew/(nAcceptedNew+nFailedNew)
-			# remove NAs (failed particles)
-			newParticleList<-newParticleList[acceptedParticles]
-			#
-			# remove particles that go beyond the number needed
-			#if(length(res)>nParticlesNeeded){
-			#	res<-res[1:particlesNeeded]}
-			#       is this really a bad thing??
-			#
-			#change particle count value
-			nAcceptedParticles<-nAcceptedParticles+length(newParticleList)
-			# save successful particles to currParticleList
-			currParticleList<-append(currParticleList, newParticleList)
-			# updated number of attemped particles so far
-			attempts<-attempts+nSim
+			if(nAcceptedNew>1){
+				# remove NAs (failed particles)
+				newParticleList<-newParticleList[acceptedParticles]
+				#
+				# remove particles that go beyond the number needed
+				#if(length(res)>nParticlesNeeded){
+				#	res<-res[1:particlesNeeded]}
+				#       is this really a bad thing??
+				#
+				#change particle count value
+				nAcceptedParticles<-nAcceptedParticles+length(newParticleList)
+				# save successful particles to currParticleList
+				currParticleList<-append(currParticleList, newParticleList)
+				# updated number of attemped particles so far
+				attempts<-attempts+nSim
+				}
 			}
 		# append particle IDs to each accepted particle	
 		for(i in 1:length(currParticleList)){
@@ -536,8 +538,10 @@ doRun_prc<-function(
 			if(verboseParticles){
 				message(paste(i-1,"         ", attempts,"        ",
 					floor(nAcceptedParticles*attempts/i),"                    ",
-					signif(currParticleList[[i]]$startingValues,2),"  ", signif(currParticleList[[i]]$intrinsicValues,2),"  ",
-					signif(currParticleList[[i]]$extrinsicValues,2),"  ", signif(currParticleList[[i]]$distance,2)))
+					signif(currParticleList[[i]]$startingValues,2),"  ", 
+					signif(currParticleList[[i]]$intrinsicValues,2),"  ",
+					signif(currParticleList[[i]]$extrinsicValues,2),"  ", 
+					signif(currParticleList[[i]]$distance,2)))
 				}	
 			}			
 		#
