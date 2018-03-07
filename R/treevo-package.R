@@ -102,6 +102,8 @@
 #' @importFrom rpgm rpgm.rnorm
 #' @importFrom utils capture.output
 
+# @importFrom plotrix listDepth
+
 # @importFrom corpcor pseudoinverse
 # @importFrom mvtnorm dmvnorm
 # @importFrom rgl plot3d title3d rgl.viewpoint open3d rgl.material triangles3d lines3d spheres3d

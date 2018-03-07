@@ -494,7 +494,8 @@ doRun_prc<-function(
 				prevGenParticleList=prevGenParticleList,
 				standardDevFactor=standardDevFactor,
 				numParticles=numParticles
-				)		
+				)
+			#print(newParticleList)
 			# will need to count successful particles
 			acceptedParticles<-!is.na(newParticleList)
 			nAcceptedNew<-sum(acceptedParticles)
@@ -514,10 +515,17 @@ doRun_prc<-function(
 				nAcceptedParticles<-nAcceptedParticles+length(newParticleList)
 				# save successful particles to currParticleList
 				currParticleList<-append(currParticleList, newParticleList)
+				#if( plotrix::listDepth(currParticleList)>2){
+				#	#print(currParticleList)
+				#	print(newParticleList)
+				#	stop()
+				#	}
 				# updated number of attemped particles so far
 				attempts<-attempts+nSim
 				}
 			}
+		print(currParticleList)
+		#
 		# append particle IDs to each accepted particle	
 		for(i in 1:length(currParticleList)){
 			currParticleList[[i]]$id<-i
