@@ -100,7 +100,7 @@
 #' which differ slightly in their content among the two functions. For \code{doRun_prc}, the output is:
 
 #' \describe{
-#' \item{input.data}{Input variables: jobName, number of taxa, nrepSim,
+#' \item{input.data}{Input variables: jobName, number of taxa, StartSims,
 #' generation.time, TreeYears, timeStep, totalGenerations, epsilonProportion,
 #' epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor}
 
@@ -127,7 +127,7 @@
 #' For \code{doRun_rej}, the output is:
 
 #' \describe{
-#' \item{input.data}{Input variables: jobName, number of taxa, nrepSim,
+#' \item{input.data}{Input variables: jobName, number of taxa, StartSims,
 #' generation.time, TreeYears, timeStep, totalGenerations, epsilonProportion,
 #' epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor}
 
@@ -251,14 +251,34 @@ doRun_prc<-function(
 	#startingValuesGuess=c(), intrinsicValuesGuess=c(), extrinsicValuesGuess=c(),
 	#
 	#	
-	generation.time=1000, TreeYears=max(branching.times(phy)) * 1e6,
-	multicore=FALSE, coreLimit=NA, 
-	validation="CV", scale=TRUE, variance.cutoff=95,
+	generation.time=1000, 
+	TreeYears=max(branching.times(phy)) * 1e6,
+	#
+	multicore=FALSE, 
+	coreLimit=NA, 
+	#
+	validation="CV", 
+	scale=TRUE, 
+	variance.cutoff=95,
 	#niter.goal=5,
-	numParticles=300, standardDevFactor=0.20,
-	StartSims=300, epsilonProportion=0.7, epsilonMultiplier=0.7, nStepsPRC=5,
-	stopRule=FALSE, stopValue=0.05, maxAttempts=Inf, diagnosticPRCmode=FALSE,
-	jobName=NA, saveData=FALSE, verboseParticles=TRUE){				#, plot=FALSE
+	#
+	numParticles=300, 
+	standardDevFactor=0.20,
+	#
+	StartSims=NA, 
+	epsilonProportion=0.7, 
+	epsilonMultiplier=0.7, 
+	nStepsPRC=5,
+	#
+	stopRule=FALSE, 
+	stopValue=0.05, 
+	maxAttempts=Inf, 
+	diagnosticPRCmode=FALSE,
+	#
+	jobName=NA, 
+	saveData=FALSE, 
+	verboseParticles=TRUE
+	){								#, plot=FALSE
 	#
 	#
 	functionStartTime<-proc.time()[[3]]
@@ -316,7 +336,13 @@ doRun_prc<-function(
 		namesForPriorMatrix <-append(namesForPriorMatrix, paste0("ExtrinsicValue", c, sep=""))
 		}
 	#
-	PriorMatrix<-rbind(PriorMatrix, cbind(startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues))
+	PriorMatrix<-rbind(
+		PriorMatrix, 
+		cbind(startingPriorsValues, 
+			intrinsicPriorsValues, 
+			extrinsicPriorsValues
+			)
+		)
 	colnames(PriorMatrix)<-namesForPriorMatrix
 	rownames(PriorMatrix)<-c("shape", "value1", "value2")
 	#	
@@ -333,71 +359,13 @@ doRun_prc<-function(
 		StartSims<-1000*numberParametersFree
 		}
 	#
-	#---------------------- Initial Simulations (Start) ------------------------------
-	# See Wegmann et al. Efficient Approximate Bayesian Computation Coupled With Markov Chain Monte Carlo Without Likelihood.
-		# Genetics (2009) vol. 182 (4) pp. 1207-1218 for more on the method.
-	# We are doing pls and scaling built into pls. Unlike Wegmann et al., we are doing PLS for each parameter separately.
-	# Otherwise, the PLS tends to optimize for just one parameter, and estimates for the less-favored one are quite bad
-	# because the summary stats tend to be used for the other.
-	#
-	#Used to be = StartSims*((2^try)/2), If initial simulations are not enough, and we need to try again then new analysis will double number of initial simulations
-	nrepSim<-StartSims
-	#
-	input.data<-rbind(jobName, length(phy[[3]]), nrepSim, generation.time, TreeYears, timeStep, totalGenerations,
+	# save input data for use later
+	input.data<-rbind(jobName, Ntip(phy), StartSims, generation.time, TreeYears, timeStep, totalGenerations,
 		epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor)
-	message(paste0("Number of initial simulations set to ", nrepSim)) #, "\n"
-	message("Doing initial simulations...")
-	Time<-proc.time()[[3]]
-	trueFreeValues<-matrix(nrow=0, ncol= numberParametersFree)
-	#set up initial sum stats as length of SSL of original data
-	summaryValues<-matrix(nrow=0, ncol=length(summaryStatsLong(phy=phy, traits=traits
-		#niter.brown=200, niter.lambda=200, niter.delta=200, niter.OU=200, niter.white=200
-		)))
-	trueFreeValuesANDSummaryValues<-parallelSimulateWithPriors(	#makeQuiet(
-		nrepSim=nrepSim, coreLimit=coreLimit, phy=phy,  taxonDF=taxonDF,
-		startingPriorsValues=startingPriorsValues, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues,
-		startingPriorsFns=startingPriorsFns, intrinsicPriorsFns=intrinsicPriorsFns, extrinsicPriorsFns=extrinsicPriorsFns,
-		freevector=freevector, timeStep=timeStep, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, multicore=multicore
-		,verbose=FALSE
-		#niter.brown=niter.brown.g, niter.lambda=niter.lambda.g, niter.delta=niter.delta.g, niter.OU=niter.OU.g, niter.white=niter.white.g
-		)	#)
 	#
-	#message("\n\n")
-	#
-	if(saveData){
-		save(trueFreeValues,summaryValues,file=paste0("CompletedSimulations",jobName,".Rdata",sep=""))
-		}
-	#
-	simTime<-proc.time()[[3]]-Time
-	message(paste0("Initial simulations took ", round(simTime, digits=3), " seconds")) #, "\n"
-	#
-	#separate the simulation results: true values and the summary values
-	trueFreeValuesMatrix<-trueFreeValuesANDSummaryValues[,1:numberParametersFree]
-	summaryValuesMatrix<-trueFreeValuesANDSummaryValues[,-1:-numberParametersFree]
-	#while(sink.number()>0) {sink()}
-	#
-	#---------------------- Initial Simulations (End) ------------------------------
-	#
-	pls.model.list <- makeQuiet(apply(trueFreeValuesMatrix, 2, returnPLSModel, summaryValuesMatrix=summaryValuesMatrix, validation=validation,
-		scale=scale, variance.cutoff = variance.cutoff))
-	originalSummaryValues <- summaryStatsLong(phy, traits
-		#niter.brown=200, niter.lambda=200, niter.delta=200, niter.OU=200, niter.white=200
-		)
-	#
-	distanceVector<-abcDistance(summaryValuesMatrix, originalSummaryValues, pls.model.list)
-	#
-	#----------------- Find distribution of distances (Start) ----------------------
-	message("Finding distribution of distances...") #\n
-	#this gives the distance such that epsilonProportion of the simulations starting from a given set of values will be rejected
-	epsilonDistance<-quantile(distanceVector, probs=epsilonProportion)
-	toleranceVector<-rep(epsilonDistance, nStepsPRC)
-	#
-	if(nStepsPRC>1){
-		for (step in 2:nStepsPRC) {
-			toleranceVector[step]<-toleranceVector[step-1]*epsilonMultiplier
-			}
-		}
-	#----------------- Find distribution of distances (End) ---------------------
+	
+	
+
 	#
 	#------------------ ABC-PRC (Start) ------------------
 	message("Beginning partial rejection control algorithm...")
@@ -457,7 +425,7 @@ doRun_prc<-function(
 		start.time<-particleStartTime<-proc.time()[[3]]
 		#
 		# set nAcceptedParticles to 0
-		nAcceptedParticles<-0
+		nAcceptedParticles<-nFailedParticles<-0
 		#
 		while (nAcceptedParticles<=numParticles) {
 			#
@@ -500,8 +468,18 @@ doRun_prc<-function(
 			acceptedParticles<-!is.na(newParticleList)
 			nAcceptedNew<-sum(acceptedParticles)
 			nFailedNew<-nSim-nAcceptedNew
+			nAcceptedParticles<-nAcceptedParticles+nAcceptedNew
+			nFailedParticles<-nFailedParticles+nFailedNew
 			# updated expParticleAcceptanceRate for properly calculate number of necc nSim
-			expParticleAcceptanceRate<-nAcceptedNew/(nAcceptedNew+nFailedNew)
+				# but only if its going to be finite, otherwise go with a 0.1 rate
+			if(nAcceptedParticles>0){
+				expParticleAcceptanceRate<-nAcceptedParticles/(nAcceptedParticles+nFailedParticles)
+			}else{
+				expParticleAcceptanceRate<-0.1
+				}
+			#
+			# now, if there are new particles, let's probably clean newParticleList
+				# and add to other saved particles
 			if(nAcceptedNew>1){
 				# remove NAs (failed particles)
 				newParticleList<-newParticleList[acceptedParticles]
@@ -512,7 +490,7 @@ doRun_prc<-function(
 				#       is this really a bad thing??
 				#
 				#change particle count value
-				nAcceptedParticles<-nAcceptedParticles+length(newParticleList)
+				#nAcceptedParticles<-nAcceptedParticles+length(newParticleList)
 				# save successful particles to currParticleList
 				currParticleList<-append(currParticleList, newParticleList)
 				#if( plotrix::listDepth(currParticleList)>2){
@@ -643,9 +621,6 @@ doRun_prc<-function(
 	particleTime<-proc.time()[[3]]-particleStartTime
 	message(paste0("Collection of simulation particles under PRC completed in ",particleTime," seconds..."))
 	#---------------------- ABC-PRC (End) --------------------------------
-	#
-	input.data<-rbind(jobName, length(phy[[3]]), nrepSim, generation.time, TreeYears, timeStep, totalGenerations, epsilonProportion,
-		epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor)
 	#
 	time3<-proc.time()[[3]]
 	genTimes<-c(time.per.gen, time3)

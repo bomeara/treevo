@@ -67,7 +67,8 @@ simParticlePRC<-function(
 			intrinsicPriorsValues=intrinsicPriorsValues,
 			intrinsicPriorsFns=intrinsicPriorsFns,
 			extrinsicPriorsValues=extrinsicPriorsValues,
-			extrinsicPriorsFns=extrinsicPriorsFns)							
+			extrinsicPriorsFns=extrinsicPriorsFns
+			)							
 	}else{
 		prevGenParticleWeights<-sapply(prevGenParticleList,function(x) x$weight)
 		# use particles from PREVIOUS GENERATION to randomly select a particle
