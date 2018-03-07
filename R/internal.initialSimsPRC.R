@@ -10,10 +10,13 @@ initialSimsPRC<-function(
 		nStepsPRC,
 		coreLimit, 
 		multicore,
+		numberParametersFree,
 		originalSummaryValues,
 		epsilonProportion, 
+		epsilonMultiplier,
 		validation="CV", 
-		saveData
+		variance.cutoff,
+		saveData,jobName
 		){		
 	#
 	#	
@@ -37,7 +40,7 @@ initialSimsPRC<-function(
 		ncol=length(originalSummaryValues)
 		)
 	trueFreeValuesANDSummaryValues<-parallelSimulateWithPriors(	#makeQuiet(
-		nrepSim=StartSims, 
+		nrepSim=nrepSim, 
 		phy=phy,  
 		taxonDF=taxonDF,
 		startingPriorsValues=startingPriorsValues, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues,
