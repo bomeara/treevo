@@ -95,24 +95,3 @@ initialSimsPRC<-function(
 	}
 	
 	
-	initialSimsRes<-initialSimsPRC(
-		nrepSim=StartSims, 
-		phy=phy,  
-		taxonDF=taxonDF,
-		startingPriorsValues=startingPriorsValues, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues,
-		startingPriorsFns=startingPriorsFns, intrinsicPriorsFns=intrinsicPriorsFns, extrinsicPriorsFns=extrinsicPriorsFns,
-		freevector=freevector, timeStep=timeStep, 
-		intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, 
-		nStepsPRC=nStepsPRC,
-		coreLimit=coreLimit, 
-		multicore=multicore,
-		originalSummaryValues=originalSummaryValues,
-		epsilonProportion=epsilonProportion,
-		validation=validation,
-		saveData=saveData
-		)
-	
-	
-	initialSimsRes$pls.model.list
-	initialSimsRes$toleranceVector
-	

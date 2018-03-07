@@ -11,7 +11,7 @@ doRun_prc(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
   extrinsicPriorsValues, extrinsicPriorsFns, generation.time = 1000,
   TreeYears = max(branching.times(phy)) * 1e+06, multicore = FALSE,
   coreLimit = NA, validation = "CV", scale = TRUE, variance.cutoff = 95,
-  numParticles = 300, standardDevFactor = 0.2, StartSims = 300,
+  numParticles = 300, standardDevFactor = 0.2, StartSims = NA,
   epsilonProportion = 0.7, epsilonMultiplier = 0.7, nStepsPRC = 5,
   stopRule = FALSE, stopValue = 0.05, maxAttempts = Inf,
   diagnosticPRCmode = FALSE, jobName = NA, saveData = FALSE,
@@ -135,7 +135,7 @@ and acceptance of particles is output to console via \code{message} as \code{doR
 The output of these two functions are lists, composed of multiple objects,
 which differ slightly in their content among the two functions. For \code{doRun_prc}, the output is:
 \describe{
-\item{input.data}{Input variables: jobName, number of taxa, nrepSim,
+\item{input.data}{Input variables: jobName, number of taxa, StartSims,
 generation.time, TreeYears, timeStep, totalGenerations, epsilonProportion,
 epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor}
 \item{PriorMatrix}{Matrix of prior distributions}
@@ -150,7 +150,7 @@ including generation, attempt, id, parentid, distance, weight, and parameter sta
 }
 For \code{doRun_rej}, the output is:
 \describe{
-\item{input.data}{Input variables: jobName, number of taxa, nrepSim,
+\item{input.data}{Input variables: jobName, number of taxa, StartSims,
 generation.time, TreeYears, timeStep, totalGenerations, epsilonProportion,
 epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor}
 \item{PriorMatrix}{Matrix of prior distributions}

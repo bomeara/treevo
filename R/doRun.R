@@ -370,10 +370,30 @@ doRun_prc<-function(
 		#niter.brown=200, niter.lambda=200, niter.delta=200, niter.OU=200, niter.white=200
 		)
 	#	
-		
-	
-	
-	
+	# INITIAL SIMULATIONS
+	initialSimsRes<-initialSimsPRC(
+		nrepSim=StartSims, 
+		phy=phy,  
+		taxonDF=taxonDF,
+		startingPriorsValues=startingPriorsValues, 
+		intrinsicPriorsValues=intrinsicPriorsValues, 
+		extrinsicPriorsValues=extrinsicPriorsValues,
+		startingPriorsFns=startingPriorsFns, 
+		intrinsicPriorsFns=intrinsicPriorsFns, 
+		extrinsicPriorsFns=extrinsicPriorsFns,
+		freevector=freevector, 
+		timeStep=timeStep, 
+		intrinsicFn=intrinsicFn, 
+		extrinsicFn=extrinsicFn, 
+		nStepsPRC=nStepsPRC,
+		coreLimit=coreLimit, 
+		multicore=multicore,
+		originalSummaryValues=originalSummaryValues,
+		epsilonProportion=epsilonProportion,
+		validation=validation,
+		saveData=saveData
+		)		
+	#
 	# pull the PLS model list out
 	pls.model.list<-initialSimsRes$pls.model.list
 	#
