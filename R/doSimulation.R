@@ -296,7 +296,6 @@ doSimulationInternal<-function(
 		#
 		taxonStates<-taxonDF[[whichStatesCol]]
 		currentStates <- taxonStates[aliveRows]
-		
 		#
 		#if(any(is.na(currentStates))) {
 		#	message(paste0("currentStates ",currentStates))
@@ -306,15 +305,19 @@ doSimulationInternal<-function(
 		#	stop("there are NAs in currentStates! How?? Something is very wrong")
 		#	}
 		#
+		#
+		# get vector of ancestors
+		ancestors<-match(taxonAnc[aliveRows],taxonID)	
+		#
 		#first evolve in this interval, then speciate
-		for (taxonIndex in aliveRows) {
+		for (whichTaxon in 1:length(aliveRows)) {
 			# find match within aliveRows for match to currentStates
-			whichTaxon<-which(taxonIndex==aliveRows)
+			taxonIndex<-aliveRows[whichTaxon]
 			taxonState<-taxonStates[taxonIndex]
 			# check if the ancestor is NA
 			if(is.na(taxonState)) {
-				whichAncestor<- which(taxonID==taxonAnc[taxonIndex])
-				taxonState <- taxonStates[whichAncestor]
+				#whichAncestor<- which(taxonID==taxonAnc[taxonIndex])
+				taxonState <- taxonStates[ancestors[whichTaxon]]
 				if(is.na(taxonState)){
 					stop("A taxon's ancestor has an NA character")
 					}
