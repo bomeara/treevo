@@ -1,25 +1,22 @@
-# necc inputs
-
-
-		nrepSim=StartSims, 
-		phy=phy,  
-		taxonDF=taxonDF,
-		startingPriorsValues=startingPriorsValues, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues,
-		startingPriorsFns=startingPriorsFns, intrinsicPriorsFns=intrinsicPriorsFns, extrinsicPriorsFns=extrinsicPriorsFns,
-		freevector=freevector, timeStep=timeStep, 
-		intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, 
-		coreLimit=coreLimit, 
-		multicore=multicore,
-		originalSummaryValues=originalSummaryValues,
-		saveData
-
-
+# internal function for doing initial simulations in doRun_PRC
 initialSimsPRC<-function(
-
-	){		
-		
-
-	
+		nrepSim,
+		phy,  
+		taxonDF,
+		startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues,
+		startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns,
+		freevector, timeStep, 
+		intrinsicFn, extrinsicFn, 
+		nStepsPRC,
+		coreLimit, 
+		multicore,
+		originalSummaryValues,
+		epsilonProportion, 
+		validation="CV", 
+		saveData
+		){		
+	#
+	#	
 	#---------------------- Initial Simulations (Start) ------------------------------
 	# See Wegmann et al. Efficient Approximate Bayesian Computation Coupled With Markov Chain Monte Carlo Without Likelihood.
 		# Genetics (2009) vol. 182 (4) pp. 1207-1218 for more on the method.
@@ -90,20 +87,32 @@ initialSimsPRC<-function(
 			}
 		}
 	#----------------- Find distribution of distances (End) ---------------------
-	
-	# need to provide 
-	simTime
-	pls.model.list
-	toleranceVector
-	
-		
+	#
+	# need to provide simTime, pls.model.list, toleranceVector
 	res<-list(pls.model.list=pls.model.list, toleranceVector=toleranceVector, simTime=simTime)
 	#
 	return(res)
 	}
 	
 	
-		simTime
-	pls.model.list
-	toleranceVector
+	initialSimsRes<-initialSimsPRC(
+		nrepSim=StartSims, 
+		phy=phy,  
+		taxonDF=taxonDF,
+		startingPriorsValues=startingPriorsValues, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues,
+		startingPriorsFns=startingPriorsFns, intrinsicPriorsFns=intrinsicPriorsFns, extrinsicPriorsFns=extrinsicPriorsFns,
+		freevector=freevector, timeStep=timeStep, 
+		intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, 
+		nStepsPRC=nStepsPRC,
+		coreLimit=coreLimit, 
+		multicore=multicore,
+		originalSummaryValues=originalSummaryValues,
+		epsilonProportion=epsilonProportion,
+		validation=validation,
+		saveData=saveData
+		)
+	
+	
+	initialSimsRes$pls.model.list
+	initialSimsRes$toleranceVector
 	

@@ -363,9 +363,19 @@ doRun_prc<-function(
 	input.data<-rbind(jobName, Ntip(phy), StartSims, generation.time, TreeYears, timeStep, totalGenerations,
 		epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor)
 	#
+	# get summary values for observed data
+	originalSummaryValues<-summaryStatsLong(
+		phy=phy, 
+		traits=traits
+		#niter.brown=200, niter.lambda=200, niter.delta=200, niter.OU=200, niter.white=200
+		)
+	#	
+		
 	
 	
-
+	
+	# pull the PLS model list out
+	pls.model.list<-initialSimsRes$pls.model.list
 	#
 	#------------------ ABC-PRC (Start) ------------------
 	message("Beginning partial rejection control algorithm...")
@@ -427,6 +437,10 @@ doRun_prc<-function(
 		# set nAcceptedParticles to 0
 		nAcceptedParticles<-nFailedParticles<-0
 		#
+		# get tolerance value
+		toleranceValue<-initialSimsRes$toleranceVector[dataGenerationStep]
+		
+		#
 		while (nAcceptedParticles<=numParticles) {
 			#
 			if(attempts>maxAttempts){
@@ -458,7 +472,7 @@ doRun_prc<-function(
 				extrinsicPriorsFns=extrinsicPriorsFns,
 				originalSummaryValues=originalSummaryValues, 
 				pls.model.list=pls.model.list,
-				toleranceValue=toleranceVector[dataGenerationStep],
+				toleranceValue=toleranceValue,
 				prevGenParticleList=prevGenParticleList,
 				standardDevFactor=standardDevFactor,
 				numParticles=numParticles
@@ -595,20 +609,18 @@ doRun_prc<-function(
 		#
 		if(saveData){
 			save.image(file=paste0("WS", jobName, ".Rdata", sep=""))
-			}
-		#
-		prcResults<-vector("list")
-		prcResults$input.data<-input.data
-		prcResults$PriorMatrix<-PriorMatrix
-		prcResults$particleDataFrame<-particleDataFrame
-		names(prcResults$particleDataFrame)<-nameVector
-		prcResults$toleranceVector<-toleranceVector
-		prcResults$phy<-phy
-		prcResults$traits<-traits
-		prcResults$simTime
-		prcResults$time.per.gen<-time.per.gen
-		#
-		if(saveData){
+			#
+			prcResults<-list()
+			prcResults$input.data<-input.data
+			prcResults$PriorMatrix<-PriorMatrix
+			prcResults$particleDataFrame<-particleDataFrame
+			names(prcResults$particleDataFrame)<-nameVector
+			prcResults$toleranceVector<-initialSimsRes$toleranceVector
+			prcResults$phy<-phy
+			prcResults$traits<-traits
+			prcResults$simTime<-initialSimsRes$simTime
+			prcResults$time.per.gen<-time.per.gen
+			#
 			save(prcResults, file=paste0("partialResults", jobName, ".txt", sep=""))
 			}
 		#
@@ -625,15 +637,16 @@ doRun_prc<-function(
 	time3<-proc.time()[[3]]
 	genTimes<-c(time.per.gen, time3)
 	#
-	# why are we doing this again - DWB 02-27-18
-	prcResults<-vector("list")
+	# save them to prcResults (this hasn't been done yet if save.data=FALSE)
+	prcResults<-list()
 	prcResults$input.data<-input.data
 	prcResults$PriorMatrix<-PriorMatrix
 	prcResults$particleDataFrame<-particleDataFrame
-	prcResults$toleranceVector<-toleranceVector
+	#names(prcResults$particleDataFrame)<-nameVector
+	prcResults$toleranceVector<-initialSimsRes$toleranceVector
 	prcResults$phy<-phy
 	prcResults$traits<-traits
-	prcResults$simTime<-simTime
+	prcResults$simTime<-initialSimsRes$simTime
 	prcResults$time.per.gen<-genTimes
 	prcResults$credibleInt <-credibleInt(particleDataFrame)
 	prcResults$HPD <-highestPostDens(particleDataFrame)
