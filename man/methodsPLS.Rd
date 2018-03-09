@@ -7,7 +7,7 @@
 \title{Fitting Univariate Partial Least Squares Models to Free Parameters in ABC}
 \usage{
 returnPLSModel(trueFreeValuesMatrix, summaryValuesMatrix, validation = "CV",
-  scale = TRUE, variance.cutoff = 95, ...)
+  scale = TRUE, variance.cutoff = 95, verbose = TRUE, ...)
 
 PLSTransform(summaryValuesMatrix, pls.model)
 }
@@ -28,6 +28,8 @@ scaling by the standard deviation is done for every segment.}
 \item{variance.cutoff}{Minimum threshold percentage of variance explained for the
 number of components included in the final PLS model fit. This value is a
 percentage and must be between 0 and 100. Default is 95 percent.}
+
+\item{verbose}{If \code{TRUE}, helpful warning messages will be made when you make questionable decisions.}
 
 \item{...}{Additional arguments, passed to \code{\link{plsr}}. In particular, if the number of observations is less than
 10 (such as for the example below), it may be necessary to pass a revised \code{segments} argument, which

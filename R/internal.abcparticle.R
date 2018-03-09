@@ -82,7 +82,7 @@ simulateTips <- function(particle, taxonDF, phy, intrinsicFn, extrinsicFn, timeS
 		intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, startingValues=particle$startingValues,
 		intrinsicValues=particle$intrinsicValues, extrinsicValues=particle$extrinsicValues, timeStep=timeStep)
 	return(newtips)
-}
+	}
 
 #  Mutate Character State
 #

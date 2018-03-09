@@ -72,7 +72,7 @@ initialSimsPRC<-function(
 			returnPLSModel, 
 			summaryValuesMatrix=summaryValuesMatrix, 
 			validation=validation,
-			scale=scale, variance.cutoff = variance.cutoff
+			scale=scale, variance.cutoff = variance.cutoff,verbose=FALSE
 			))
 		#)
 		#

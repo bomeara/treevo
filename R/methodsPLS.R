@@ -34,6 +34,8 @@
 #' than observations). Note that this should be an atypical situation outside of examples, as the number of observations
 #' should often be much greater than 10.
 
+#' @param verbose If \code{TRUE}, helpful warning messages will be made when you make questionable decisions.
+
 # for \code{pls.model.list} # Used in doc for both scale and variance.cutoff
 	# I HAVE NO IDEA WHAT THIS MEANS? WHAT IS pls.model.list???
 
@@ -99,11 +101,11 @@
 #' @name methodsPLS
 #' @rdname methodsPLS
 #' @export
-returnPLSModel<-function(trueFreeValuesMatrix, summaryValuesMatrix, validation="CV", scale=TRUE, variance.cutoff=95, ...) {
+returnPLSModel<-function(trueFreeValuesMatrix, summaryValuesMatrix, validation="CV", scale=TRUE, variance.cutoff=95, verbose=TRUE, ...) {
   #note that this assumes that trueFreeValues is for a single param at a time, which works MUCH better
 
   trueFreeValuesMatrix<-trueFreeValuesMatrix
-  if (dim(summaryValuesMatrix)[2]>1) {
+  if (dim(summaryValuesMatrix)[2]>1 & verbose) {
     warning("in practice, doing PLS works best if you do each free parameter separately, so one parameter does not dominate")
   }
   if (class(trueFreeValuesMatrix)!="matrix") {

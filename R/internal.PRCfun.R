@@ -132,7 +132,7 @@ simParticlePRC<-function(
 		# particle didn't pass, discard it
 		newparticle<-NA
 		}	
-	newparticle<-list(newparticle)
+	#newparticle<-list(newparticle)
 	return(newparticle)
 	}
 	
