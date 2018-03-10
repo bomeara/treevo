@@ -532,8 +532,8 @@ doRun_prc<-function(
 				# save successful particles to currParticleList
 				currParticleList<-append(currParticleList, newParticleList)
 				#if( plotrix::listDepth(currParticleList)>2){
-				#	#print(currParticleList)
 				#	print(newParticleList)
+				#	print(currParticleList)
 				#	stop()
 				#	}
 				# updated number of attemped particles so far

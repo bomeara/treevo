@@ -15,7 +15,7 @@ simParticlePRCParallel<-function(
 	# set up multicore
 	cores<-setupMulticore(multicore,nSim=nSim,coreLimit=coreLimit)
 	#		
-	repDistFE<-foreach(1:nSim, .combine=list)
+	repDistFE<-foreach(1:nSim, .combine=c)
 	#
 	# need a function for parallel doSimulation, and all other associated particle actions
 	newParticleList<-(	#makeQuiet(
