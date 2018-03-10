@@ -21,6 +21,8 @@ test_that("doRun_prc runs correctly", {
 	  nStepsPRC=2,
 	  numParticles=10,
 	  jobName="exampleRun",
+	  diagnosticPRCmode=TRUE,
+	  verboseParticles=TRUE,
 	  stopRule=FALSE,
 	  multicore=FALSE,
 	  coreLimit=1
