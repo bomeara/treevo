@@ -479,6 +479,7 @@ doRun_prc<-function(
 			nSim<-boostNsim(nSims=nSim,nCores=coreLimit)
 			# repeat until you have enough particles
 			newParticleList<-list()
+			print(nSim)
 			newParticleList<-simParticlePRCParallel(
 				nSim=nSim, 
 				multicore=multicore, 
@@ -501,6 +502,7 @@ doRun_prc<-function(
 				standardDevFactor=standardDevFactor,
 				numParticles=numParticles
 				)
+			print("ended")
 			#print(newParticleList)
 			# will need to count successful particles
 			acceptedParticles<-!is.na(newParticleList)

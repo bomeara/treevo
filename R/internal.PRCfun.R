@@ -86,6 +86,7 @@ simParticlePRC<-function(
 		newparticle$parentid<-particleToSelect
 		}
 	#
+	print("startSim")
 	# do the simulation
 	simTraitsParticle<-doSimulationInternal(
 		taxonDF=taxonDF,
@@ -96,6 +97,7 @@ simParticlePRC<-function(
 		extrinsicValues=newparticle$extrinsicValues,
 		timeStep=timeStep
 		)
+	print("endSim")
 	#
 	# get the summary stats	
 	simSumMat<-summaryStatsLong(phy=phy,traits=simTraitsParticle)
