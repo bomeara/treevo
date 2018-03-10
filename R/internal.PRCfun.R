@@ -41,6 +41,46 @@ simParticlePRCParallel<-function(
 	return(newParticleList)
 	}	
 
+	
+# multicore simSumDistancePRC 
+simParticlePRCNotParallel<-function(
+	nSim, multicore, coreLimit
+	,phy, taxonDF, timeStep 
+	,intrinsicFn, extrinsicFn 
+	,startingPriorsValues,intrinsicPriorsValues,extrinsicPriorsValues
+	,startingPriorsFns,intrinsicPriorsFns,extrinsicPriorsFns
+	#startingValues, intrinsicValues, extrinsicValues
+	,originalSummaryValues, pls.model.list
+	,toleranceValue,prevGenParticleList
+	,standardDevFactor,numParticles){
+	#
+	newParticleList<-list()
+	#
+	for(i in 1:nSim){
+		newParticleList<-c(newParticleList,
+			simParticlePRC(
+				phy=phy, taxonDF=taxonDF, timeStep=timeStep, 
+				intrinsicFn=intrinsicFn, 
+				extrinsicFn=extrinsicFn, 
+				startingPriorsValues=startingPriorsValues,
+				startingPriorsFns=startingPriorsFns,
+				intrinsicPriorsValues=intrinsicPriorsValues,
+				intrinsicPriorsFns=intrinsicPriorsFns,
+				extrinsicPriorsValues=extrinsicPriorsValues,
+				extrinsicPriorsFns=extrinsicPriorsFns,
+				originalSummaryValues=originalSummaryValues, 
+				pls.model.list=pls.model.list,
+				toleranceValue=toleranceValue,
+				prevGenParticleList=prevGenParticleList,
+				standardDevFactor=standardDevFactor,
+				numParticles=numParticles
+				)
+			)
+		}
+	#
+	return(newParticleList)
+	}	
+	
 
 # internal function for simulating and evaulating particles
 	# for doRun_PRC - to be run in parallel
@@ -86,7 +126,7 @@ simParticlePRC<-function(
 		newparticle$parentid<-particleToSelect
 		}
 	#
-	print("startSim")
+	#print("startSim")
 	# do the simulation
 	simTraitsParticle<-doSimulationInternal(
 		taxonDF=taxonDF,
@@ -97,7 +137,7 @@ simParticlePRC<-function(
 		extrinsicValues=newparticle$extrinsicValues,
 		timeStep=timeStep
 		)
-	print("endSim")
+	#print("endSim")
 	#
 	# get the summary stats	
 	simSumMat<-summaryStatsLong(phy=phy,traits=simTraitsParticle)

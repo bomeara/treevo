@@ -479,30 +479,55 @@ doRun_prc<-function(
 			nSim<-boostNsim(nSims=nSim,nCores=coreLimit)
 			# repeat until you have enough particles
 			newParticleList<-list()
-			print(nSim)
-			newParticleList<-simParticlePRCParallel(
-				nSim=nSim, 
-				multicore=multicore, 
-				coreLimit=coreLimit,
-				phy=phy, 
-				taxonDF=taxonDF, 
-				timeStep=timeStep, 
-				intrinsicFn=intrinsicFn, 
-				extrinsicFn=extrinsicFn, 
-				startingPriorsValues=startingPriorsValues,
-				intrinsicPriorsValues=intrinsicPriorsValues,
-				extrinsicPriorsValues=extrinsicPriorsValues,
-				startingPriorsFns=startingPriorsFns,
-				intrinsicPriorsFns=intrinsicPriorsFns,
-				extrinsicPriorsFns=extrinsicPriorsFns,
-				originalSummaryValues=originalSummaryValues, 
-				pls.model.list=pls.model.list,
-				toleranceValue=toleranceValue,
-				prevGenParticleList=prevGenParticleList,
-				standardDevFactor=standardDevFactor,
-				numParticles=numParticles
-				)
-			print("ended")
+			#print(nSim)
+			if(multicore){
+				newParticleList<-simParticlePRCParallel(
+					nSim=nSim, 
+					multicore=multicore, 
+					coreLimit=coreLimit,
+					phy=phy, 
+					taxonDF=taxonDF, 
+					timeStep=timeStep, 
+					intrinsicFn=intrinsicFn, 
+					extrinsicFn=extrinsicFn, 
+					startingPriorsValues=startingPriorsValues,
+					intrinsicPriorsValues=intrinsicPriorsValues,
+					extrinsicPriorsValues=extrinsicPriorsValues,
+					startingPriorsFns=startingPriorsFns,
+					intrinsicPriorsFns=intrinsicPriorsFns,
+					extrinsicPriorsFns=extrinsicPriorsFns,
+					originalSummaryValues=originalSummaryValues, 
+					pls.model.list=pls.model.list,
+					toleranceValue=toleranceValue,
+					prevGenParticleList=prevGenParticleList,
+					standardDevFactor=standardDevFactor,
+					numParticles=numParticles
+					)
+			}else{
+				newParticleList<-simParticlePRCNotParallel(
+					nSim=nSim, 
+					multicore=multicore, 
+					coreLimit=coreLimit,
+					phy=phy, 
+					taxonDF=taxonDF, 
+					timeStep=timeStep, 
+					intrinsicFn=intrinsicFn, 
+					extrinsicFn=extrinsicFn, 
+					startingPriorsValues=startingPriorsValues,
+					intrinsicPriorsValues=intrinsicPriorsValues,
+					extrinsicPriorsValues=extrinsicPriorsValues,
+					startingPriorsFns=startingPriorsFns,
+					intrinsicPriorsFns=intrinsicPriorsFns,
+					extrinsicPriorsFns=extrinsicPriorsFns,
+					originalSummaryValues=originalSummaryValues, 
+					pls.model.list=pls.model.list,
+					toleranceValue=toleranceValue,
+					prevGenParticleList=prevGenParticleList,
+					standardDevFactor=standardDevFactor,
+					numParticles=numParticles
+					)			
+				}
+			#print("ended")
 			#print(newParticleList)
 			# will need to count successful particles
 			acceptedParticles<-!is.na(newParticleList)
@@ -551,6 +576,10 @@ doRun_prc<-function(
 				currParticleList[[i]]$distance, currParticleList[[i]]$weight, currParticleList[[i]]$startingValues,
 				currParticleList[[i]]$intrinsicValues, currParticleList[[i]]$extrinsicValues)
 			#	
+			print(i)
+			print(currParticleList[[i]])
+			print(currParticleList[[i]]$distance)
+			print(signif(currParticleList[[i]]$distance,2))
 			if(diagnosticPRCmode){
 				message("\n\nlength of vectorForDataFrame = ", length(vectorForDataFrame), "\n", "length of startingValues = ",
 					length(currParticleList[[i]]$startingValues), "\nlength of intrinsicValues = ", length(currParticleList[[i]]$intrinsicValues),
