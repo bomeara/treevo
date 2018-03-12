@@ -93,6 +93,9 @@
 #' @param diagnosticPRCmode If \code{TRUE} (\emph{not} the default), the function will be very noisy about characteristics of
 #' the PRC algorithm as it runs.
 
+#' @param multicoreSuppress Argument to suppress multicore code and use a plain vanilla \code{fore()} loop instead
+#' of \code{doPar}. Mainly to be used for developer diagnostic purposes.
+
 # param niter.goal Adjust number of starting points for package \code{geiger} to return the best parameter estimates this number of times on average.
 
 #' @return
@@ -234,6 +237,8 @@
 	# DWB - I guess I should test that... sigh...
 
 
+	
+	
 #' @name doRun
 #' @rdname doRun
 #' @export
@@ -256,6 +261,7 @@ doRun_prc<-function(
 	#
 	multicore=FALSE, 
 	coreLimit=NA, 
+	multicoreSuppress=FALSE,
 	#
 	validation="CV", 
 	scale=TRUE, 
@@ -480,7 +486,7 @@ doRun_prc<-function(
 			# repeat until you have enough particles
 			newParticleList<-list()
 			#print(nSim)
-			if(multicore){
+			if(!multicoreSuppress){
 				newParticleList<-simParticlePRCParallel(
 					nSim=nSim, 
 					multicore=multicore, 

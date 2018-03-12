@@ -10,12 +10,12 @@ doRun_prc(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
   startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns,
   extrinsicPriorsValues, extrinsicPriorsFns, generation.time = 1000,
   TreeYears = max(branching.times(phy)) * 1e+06, multicore = FALSE,
-  coreLimit = NA, validation = "CV", scale = TRUE, variance.cutoff = 95,
-  numParticles = 300, standardDevFactor = 0.2, StartSims = NA,
-  epsilonProportion = 0.7, epsilonMultiplier = 0.7, nStepsPRC = 5,
-  stopRule = FALSE, stopValue = 0.05, maxAttempts = Inf,
-  diagnosticPRCmode = FALSE, jobName = NA, saveData = FALSE,
-  verboseParticles = TRUE)
+  coreLimit = NA, multicoreSuppress = FALSE, validation = "CV",
+  scale = TRUE, variance.cutoff = 95, numParticles = 300,
+  standardDevFactor = 0.2, StartSims = NA, epsilonProportion = 0.7,
+  epsilonMultiplier = 0.7, nStepsPRC = 5, stopRule = FALSE,
+  stopValue = 0.05, maxAttempts = Inf, diagnosticPRCmode = FALSE,
+  jobName = NA, saveData = FALSE, verboseParticles = TRUE)
 
 doRun_rej(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
   startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns,
@@ -76,6 +76,9 @@ two suggested packages must be installed, either \code{doMC} (for UNIX systems) 
 If neither package is installed, this function will fail if \code{multicore=TRUE}.}
 
 \item{coreLimit}{Maximum number of cores to be used.}
+
+\item{multicoreSuppress}{Argument to suppress multicore code and use a plain vanilla \code{fore()} loop instead
+of \code{doPar}. Mainly to be used for developer diagnostic purposes.}
 
 \item{validation}{Character argument controlling what validation procedure is used by \code{\link{plsr}}.
 Default is \code{"CV"} for cross-validation.}

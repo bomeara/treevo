@@ -36,11 +36,23 @@ abcparticle <- function( id=NA, generation=NA, weight=NA, distance=NA, parentid=
 		startingValues=startingValues, 
 		intrinsicValues=intrinsicValues,
 		extrinsicValues=extrinsicValues)
+	#
+	#
+	# note that the Priors Values are matrices, where each column is a different model parameter,
+		# and the rows represent different parameters of the prior for that parameter
+	#
 	class(particle) <- "abcparticle"
 	return(particle)
 	}
 
-initializeStatesFromMatrices <- function(particle, startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns) {
+initializeStatesFromMatrices <- function(particle, 
+	startingPriorsValues, startingPriorsFns, 
+	intrinsicPriorsValues, intrinsicPriorsFns, 
+	extrinsicPriorsValues, extrinsicPriorsFns) {
+	#
+	# note that the Priors Values are matrices, where each column is a different model parameter,
+		# and the rows represent different parameters of the prior for that parameter
+	#
 	particle$startingValues  <- rep(NA,length=dim(startingPriorsValues)[2])
 	particle$intrinsicValues <- rep(NA,length=dim(intrinsicPriorsValues)[2])
 	particle$extrinsicValues <- rep(NA,length=dim(extrinsicPriorsValues)[2])
@@ -56,7 +68,15 @@ initializeStatesFromMatrices <- function(particle, startingPriorsValues, startin
 	return(particle)
 	}
  
-mutateStates <- function(particle, startingPriorsValues, startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, standardDevFactor) {
+mutateStates <- function(particle, 
+	startingPriorsValues, startingPriorsFns, 
+	intrinsicPriorsValues, intrinsicPriorsFns, 
+	extrinsicPriorsValues, extrinsicPriorsFns, 
+	standardDevFactor) {
+	#
+	# note that the Priors Values are matrices, where each column is a different model parameter,
+		# and the rows represent different parameters of the prior for that parameter
+	#
 	for (j in sequence(dim(startingPriorsValues)[2])) {
 		particle$startingValues[j] <- mutateState(startingState=particle$startingValues[j], standardDevFactor=standardDevFactor,
 			priorValues=startingPriorsValues[, j], priorFn=startingPriorsFns[j])
@@ -77,12 +97,12 @@ mutateStates <- function(particle, startingPriorsValues, startingPriorsFns, intr
 # 	return(newtips)
 # } 
 
-simulateTips <- function(particle, taxonDF, phy, intrinsicFn, extrinsicFn, timeStep) {
-	newtips<-doSimulation(taxonDF=taxonDF,
-		intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, startingValues=particle$startingValues,
-		intrinsicValues=particle$intrinsicValues, extrinsicValues=particle$extrinsicValues, timeStep=timeStep)
-	return(newtips)
-	}
+#simulateTips <- function(particle, taxonDF, phy, intrinsicFn, extrinsicFn, timeStep) {
+#	newtips<-doSimulation(taxonDF=taxonDF,
+#		intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, startingValues=particle$startingValues,
+#		intrinsicValues=particle$intrinsicValues, extrinsicValues=particle$extrinsicValues, timeStep=timeStep)
+#	return(newtips)
+#	}
 
 #  Mutate Character State
 #
@@ -122,60 +142,78 @@ mutateState<-function(startingState, standardDevFactor, priorFn, priorValues) {
 	maxBound=Inf
 	validNewState<-FALSE  #was lowercase, but not recognised
 	priorFn<-match.arg(arg=priorFn,
-		choices=c("fixed", "uniform", "normal", "lognormal", "gamma", "exponential"),several.ok=FALSE);
+		choices=c("fixed", "uniform", "normal",
+		"lognormal", "gamma", "exponential"),
+		several.ok=FALSE)
 	if (priorFn=="fixed" || priorFn=="uniform") {
 		minBound<-min(priorValues)
 		maxBound<-max(priorValues)
-	}
-	else if (priorFn=="lognormal" || priorFn=="gamma" || priorFn=="exponential") {
-		minBound<-0
-	}
-	
+	}else{
+		if (priorFn=="lognormal" || priorFn=="gamma" || priorFn=="exponential") {
+			minBound<-0
+			}
+		}
+	#
 	sdToUse<-standardDevFactor
 	if (priorFn=="fixed") {
-		sdToUse<-0
-	}
-	else if (priorFn=="uniform") {
-		sdToUse<-standardDevFactor*(abs(max(priorValues)-min(priorValues)))
-			if (sdToUse<0){
-				message(paste("priorFN=", priorFn, "standardDevFactor=", standardDevFactor, "range(priorValues)=", range(priorValues)))
+		sdToUse<-0	
+	}else{
+		if (priorFn=="uniform") {
+			sdToUse<-standardDevFactor*(abs(max(priorValues)-min(priorValues)))
+			#if (sdToUse<0){
+			#	message(paste("priorFN=", priorFn, 
+			#		"standardDevFactor=", standardDevFactor, "range(priorValues)=", range(priorValues)))
+			#		}
+				}
+		if (priorFn=="normal") {
+			sdToUse<-standardDevFactor*priorValues[2]
+			#if (sdToUse<0){
+			#	message(paste("priorFN=", priorFn, 
+			#		"standardDevFactor=", standardDevFactor, "range(priorValues)=", range(priorValues)))
+			#	}
+			}	
+		if (priorFn=="lognormal") {
+			sdToUse<-standardDevFactor*priorValues[2]
+			#if (sdToUse<0){
+			#	message(paste("priorFN=", priorFn, 
+			#		"standardDevFactor=", standardDevFactor, "range(priorValues)=", range(priorValues)))
+			#	}
 			}
-	}
-	else if (priorFn=="normal") {
-		sdToUse<-standardDevFactor*priorValues[2]
-			if (sdToUse<0){
-				message(paste("priorFN=", priorFn, "standardDevFactor=", standardDevFactor, "range(priorValues)=", range(priorValues)))
+		if (priorFn=="gamma") {
+			sdToUse<-standardDevFactor*sqrt(priorValues[1]*priorValues[2]*priorValues[2])
+			#if (sdToUse<0){
+			#	message(paste("priorFN=", priorFn, 
+			#		"standardDevFactor=", standardDevFactor, "range(priorValues)=", range(priorValues)))
+			#	}
 			}
-	}
-	else if (priorFn=="lognormal") {
-		sdToUse<-standardDevFactor*priorValues[2]
-			if (sdToUse<0){
-				message(paste("priorFN=", priorFn, "standardDevFactor=", standardDevFactor, "range(priorValues)=", range(priorValues)))
-			}
-	}
-	else if (priorFn=="gamma") {
-		sdToUse<-standardDevFactor*sqrt(priorValues[1]*priorValues[2]*priorValues[2])
-			if (sdToUse<0){
-				message(paste("priorFN=", priorFn, "standardDevFactor=", standardDevFactor, "range(priorValues)=", range(priorValues)))
-			}
-	}
-	else if (priorFn=="exponential") {
+		if (priorFn=="exponential") {
 		sdToUse<-standardDevFactor/priorValues[1]
-			if (sdToUse<0){
-				message(paste("priorFN=", priorFn, "standardDevFactor=", standardDevFactor, "range(priorValues)=", range(priorValues)))
+			#if (sdToUse<0){
+			#	message(paste("priorFN=", priorFn, 
+			#		"standardDevFactor=", standardDevFactor, 
+			#		"range(priorValues)=", range(priorValues)))
+			#	}
 			}
-	}
-	else {
+		}
+	if(is.null(sdToUse)){
 		stop(priorFn," was not a recognized prior function")
-	}
+		}
 
 	while(!validNewState) {
-		newState<-rpgm.rnorm(n=1, mean=startingState, sd=sdToUse)
+		#
+		# using rpgm.rnorm seems to result in a hard freeze when function is 'fixed' (and thus sdToUse = 0)
+		# why are we doing this anyway? Doesn't seem like how the prior sampling should be handled (treating everything as rnorm)
+		#
+		newState<-rnorm(n=1, mean=startingState, sd=sdToUse)
 		validNewState<-TRUE
 		if(is.na(newState)) {
-			message(paste("MUTATESTATE_ERROR: newState = ",newState," sdToUse=",sdToUse," startingState=",startingState," priorFn=",priorFn," startingState=",startingState," priorValues=\n",sep=""))
+			message(
+				paste("MUTATESTATE_ERROR: newState = ",newState,
+					" sdToUse=",sdToUse," startingState=",startingState,
+					" priorFn=",priorFn," startingState=",startingState,
+					" priorValues=\n",sep=""))
 			message(priorValues)
-		}
+			}
 		if (newState<minBound){
 			validNewState<-FALSE
 			}
@@ -183,9 +221,8 @@ mutateState<-function(startingState, standardDevFactor, priorFn, priorValues) {
 			validNewState<-FALSE
 			}	
 #		if (!validNewState)	{
-			#message("newState ",newState," does not fit into one of the bounds (", minBound, "--", maxBound, ")\n")
+#			#message("newState ",newState," does not fit into one of the bounds (", minBound, "--", maxBound, ")\n")
 #		}	
 	}
-	
-newState
-}
+	newState
+	}

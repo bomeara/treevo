@@ -110,23 +110,33 @@ simParticlePRC<-function(
 			extrinsicPriorsFns=extrinsicPriorsFns
 			)							
 	}else{
+		#print("check 1 - get weighted params for gen >1")
 		prevGenParticleWeights<-sapply(prevGenParticleList,function(x) x$weight)
 		# use particles from PREVIOUS GENERATION to randomly select a particle
 		particleToSelect<-which.max(as.vector(rmultinom(1, size = 1, prob=prevGenParticleWeights)))
 		# get that particle's data
-		newparticle<-prevGenParticleList[[particleToSelect]]
+		oldparticle<-prevGenParticleList[[particleToSelect]]
 		#
-		#
-		newparticle<-mutateStates(particle=newparticle,
+		print("check 1b - mutate")
+		print(list(particle=oldparticle,
+			startingPriorsValues=startingPriorsValues, startingPriorsFns=startingPriorsFns,
+			intrinsicPriorsValues=intrinsicPriorsValues, intrinsicPriorsFns=intrinsicPriorsFns,
+			extrinsicPriorsValues=extrinsicPriorsValues, extrinsicPriorsFns=extrinsicPriorsFns,
+			standardDevFactor=standardDevFactor
+			))
+		#	
+		newparticle<-mutateStates(particle=oldparticle,
 			startingPriorsValues=startingPriorsValues, startingPriorsFns=startingPriorsFns,
 			intrinsicPriorsValues=intrinsicPriorsValues, intrinsicPriorsFns=intrinsicPriorsFns,
 			extrinsicPriorsValues=extrinsicPriorsValues, extrinsicPriorsFns=extrinsicPriorsFns,
 			standardDevFactor=standardDevFactor
 			)
 		newparticle$parentid<-particleToSelect
+		print("check 2a - finished mutate")
 		}
 	#
-	#print("startSim")
+	#print("check 2B - startSim")
+	#
 	# do the simulation
 	simTraitsParticle<-doSimulationInternal(
 		taxonDF=taxonDF,
@@ -137,7 +147,8 @@ simParticlePRC<-function(
 		extrinsicValues=newparticle$extrinsicValues,
 		timeStep=timeStep
 		)
-	#print("endSim")
+	#
+	#print("check 3 - endSim")
 	#
 	# get the summary stats	
 	simSumMat<-summaryStatsLong(phy=phy,traits=simTraitsParticle)
@@ -145,6 +156,8 @@ simParticlePRC<-function(
 	simDistance<-abcDistance(summaryValuesMatrix=simSumMat,
 		originalSummaryValues=originalSummaryValues, 
 		pls.model.list=pls.model.list)	
+	#
+	#print("check 4 - got sumstat")
 	#
 	# get the weights, if it passes the tolerance
 	if ((simDistance) < toleranceValue) {
