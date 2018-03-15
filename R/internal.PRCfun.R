@@ -117,13 +117,13 @@ simParticlePRC<-function(
 		# get that particle's data
 		oldparticle<-prevGenParticleList[[particleToSelect]]
 		#
-		print("check 1b - mutate")
-		print(list(particle=oldparticle,
-			startingPriorsValues=startingPriorsValues, startingPriorsFns=startingPriorsFns,
-			intrinsicPriorsValues=intrinsicPriorsValues, intrinsicPriorsFns=intrinsicPriorsFns,
-			extrinsicPriorsValues=extrinsicPriorsValues, extrinsicPriorsFns=extrinsicPriorsFns,
-			standardDevFactor=standardDevFactor
-			))
+		#print("check 1b - mutate")
+		#print(list(particle=oldparticle,
+		#	startingPriorsValues=startingPriorsValues, startingPriorsFns=startingPriorsFns,
+		#	intrinsicPriorsValues=intrinsicPriorsValues, intrinsicPriorsFns=intrinsicPriorsFns,
+		#	extrinsicPriorsValues=extrinsicPriorsValues, extrinsicPriorsFns=extrinsicPriorsFns,
+		#	standardDevFactor=standardDevFactor
+		#	))
 		#	
 		newparticle<-mutateStates(particle=oldparticle,
 			startingPriorsValues=startingPriorsValues, startingPriorsFns=startingPriorsFns,
@@ -132,7 +132,7 @@ simParticlePRC<-function(
 			standardDevFactor=standardDevFactor
 			)
 		newparticle$parentid<-particleToSelect
-		print("check 2a - finished mutate")
+		#print("check 2a - finished mutate")
 		}
 	#
 	#print("check 2B - startSim")

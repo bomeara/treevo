@@ -573,7 +573,7 @@ doRun_prc<-function(
 				attempts<-attempts+nSim
 				}
 			}
-		print(currParticleList)
+		#print(currParticleList)
 		#
 		# append particle IDs to each accepted particle	
 		for(i in 1:length(currParticleList)){
@@ -582,10 +582,11 @@ doRun_prc<-function(
 				currParticleList[[i]]$distance, currParticleList[[i]]$weight, currParticleList[[i]]$startingValues,
 				currParticleList[[i]]$intrinsicValues, currParticleList[[i]]$extrinsicValues)
 			#	
-			print(i)
-			print(currParticleList[[i]])
-			print(currParticleList[[i]]$distance)
-			print(signif(currParticleList[[i]]$distance,2))
+			#print(i)
+			#print(currParticleList[[i]])
+			#print(currParticleList[[i]]$distance)
+			#print(signif(currParticleList[[i]]$distance,2))
+			#
 			if(diagnosticPRCmode){
 				message("\n\nlength of vectorForDataFrame = ", length(vectorForDataFrame), "\n", "length of startingValues = ",
 					length(currParticleList[[i]]$startingValues), "\nlength of intrinsicValues = ", length(currParticleList[[i]]$intrinsicValues),
@@ -717,7 +718,7 @@ doRun_prc<-function(
 		}
 	#
 	functionTime<-proc.time()[[3]]-functionStartTime
-	message(paste0("Function completed in ",functionTime," seconds."))
+	message(paste0("Function completed in ",signif(functionTime,2)," seconds."))
 	#
 	#message(prcResults)
 	return(prcResults)
