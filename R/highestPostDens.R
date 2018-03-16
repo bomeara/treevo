@@ -35,10 +35,16 @@ highestPostDens<-function(particleDataFrame, percent=0.95, returnData=FALSE){
 	#generation<-NULL #to appease R CMD CHECK
 	# yes??? I think this is right, not sure
 	generation<-particleDataFrame$generation
-	
+	maxGen<-max(particleDataFrame$generation)
 #	library(coda, quietly=TRUE)
 	summary<-vector("list")
-	subpDF<-as.data.frame(subset(particleDataFrame[which(particleDataFrame$weight>0),], generation==max(particleDataFrame$generation))[7:dim(particleDataFrame)[2]])
+	# find particles from the last generation
+	subpDF<-particleDataFrame[particleDataFrame$generation==maxGen
+		& particleDataFrame$weight>0,]
+	#
+	# now only get the parameter estimates
+	subpDF<-as.data.frame(subpDF[,7:dim(particleDataFrame)[2]])
+	#
 	for(i in 1:dim(subpDF)[2]){
 		if(length(subpDF[,i])>1){
 			if(sd(subpDF[,i], na.rm=TRUE) == 0) {
@@ -64,7 +70,9 @@ highestPostDens<-function(particleDataFrame, percent=0.95, returnData=FALSE){
 		}
 	if(returnData){
 		summary$summary<-Ints
-		return(summary)
+		res<-summary
+	}else{
+		res<-as.data.frame(Ints)
+		}
+	return(res)
 	}
-	else{return(as.data.frame(Ints))}
-}

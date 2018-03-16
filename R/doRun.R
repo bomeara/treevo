@@ -325,6 +325,7 @@ doRun_prc<-function(
 						extrinsicPriorsFns=extrinsicPriorsFns, extrinsicPriorsValues=extrinsicPriorsValues)
 	numberParametersTotal<-length(freevector)
 	numberParametersFree<-sum(freevector)
+	namesParFree<-names(freevector)[freevector]
 	#
 	#create PriorMatrix
 	namesForPriorMatrix<-c()
@@ -366,8 +367,11 @@ doRun_prc<-function(
 		}
 	#
 	# save input data for use later
-	input.data<-rbind(jobName, Ntip(phy), StartSims, generation.time, TreeYears, timeStep, totalGenerations,
-		epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor)
+	input.data<-rbind(jobName=jobName, nTaxa=Ntip(phy), nInitialSims=StartSims,
+		generation.time=generation.time, TreeYears=TreeYears, timeStep=timeStep,
+		totalGenerations=totalGenerations, epsilonProportion=epsilonProportion,
+		epsilonMultiplier=epsilonMultiplier, nStepsPRC=nStepsPRC,
+		numParticles=numParticles, standardDevFactor=standardDevFactor)
 	#
 	# get summary values for observed data
 	originalSummaryValues<-summaryStatsLong(
@@ -410,7 +414,7 @@ doRun_prc<-function(
 	#------------------ ABC-PRC (Start) ------------------
 	message("Beginning partial rejection control algorithm...")
 	#
-	nameVector<-c("generation", "attempt", "id", "parentid", "distance", "weight")
+	nameVector<-c("generation", "attempt", "id", "parentid", "distance", "weight",namesParFree)
 	#
 	# save before initiating PRC procedure
 	if(saveData){
@@ -588,9 +592,11 @@ doRun_prc<-function(
 			#print(signif(currParticleList[[i]]$distance,2))
 			#
 			if(diagnosticPRCmode){
-				message("\n\nlength of vectorForDataFrame = ", length(vectorForDataFrame), "\n", "length of startingValues = ",
-					length(currParticleList[[i]]$startingValues), "\nlength of intrinsicValues = ", length(currParticleList[[i]]$intrinsicValues),
-					"\nlength of extrinsicValues = ", length(currParticleList[[i]]$extrinsicValues), "\ndistance = ", currParticleList[[i]]$distance,
+				message("\n\nlength of vectorForDataFrame = ", length(vectorForDataFrame), 
+					"\n", "length of startingValues = ", length(currParticleList[[i]]$startingValues), 
+					"\nlength of intrinsicValues = ", length(currParticleList[[i]]$intrinsicValues),
+					"\nlength of extrinsicValues = ", length(currParticleList[[i]]$extrinsicValues), 
+					"\ndistance = ", currParticleList[[i]]$distance,
 					"\nweight = ", currParticleList[[i]]$weight, "\n", vectorForDataFrame, "\n")
 				}
 			#
