@@ -28,6 +28,7 @@ test_that("doRun_prc runs correctly", {
 	  coreLimit=1
 	  )
 	  )
+	expect_output(print(results))
 	expect_is(results, "list")
 	expect_warning(expect_false(any(is.na(pairwiseESS(results$particleDataFrame)))))
 })
