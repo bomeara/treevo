@@ -1,3 +1,7 @@
+Version - 0.6.0 - 03-19-18
+-Extensive modularization of doRun_prc code
+-Full parellization of PRC algorithm for doRun_prc
+
 Version - 0.5.0 - 01-14-18
 -Seemed reasonable to bump version to 0.5 given great change in infrastructure
 

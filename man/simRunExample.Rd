@@ -9,7 +9,6 @@
 \alias{resultsBound}
 \alias{genRate}
 \alias{ancState}
-\alias{simCharOut}
 \title{Example Analysis Output of a Simulated Dataset}
 \format{Loading the \code{simRunExample} example dataset adds seven new objects to the namespace:
 
@@ -19,9 +18,8 @@
 used for generating the simulated continuous trait data.}
 \item{\code{genRate}}{The true rate of trait change under Brownian Motion,
 used for generating the simulated continuous trait data.}
-\item{\code{simCharOut}}{The raw output of \code{\link{doSimulation}} on \code{simPhy},
-under the model \code{\link{brownianIntrinsic}}.}
-\item{\code{simChar}}{A modified version of \code{simCharOut}, composed of just the simulated
+\item{\code{simChar}}{The output of \code{\link{doSimulation}} on \code{simPhy}, 
+ under the model \code{\link{brownianIntrinsic}}. composed of just the simulated
 trait values as a one-column matrix with row names indicating tip labels, as desired by \code{doRun} functions.}
 \item{\code{results}}{The results of \code{\link{doRun_prc}}, under the generating model of \code{\link{brownianIntrinsic}}}
 \item{\code{resultsBound}}{The results of \code{\link{doRun_prc}}, under the incorrect model of \code{\link{boundaryMinIntrinsic}}}
@@ -64,7 +62,7 @@ genRate<-c(0.001)
 ancState<-c(10)
 
 #Simple Brownian motion
-simCharOut<-doSimulation(
+simChar<-doSimulation(
 	phy=simPhy,
 	intrinsicFn=brownianIntrinsic,
 	extrinsicFn=nullExtrinsic,
@@ -72,9 +70,6 @@ simCharOut<-doSimulation(
 	intrinsicValues=genRate,
 	extrinsicValues=c(0),
 	generation.time=100000)
-
-# clean for use with doRun
-rownames(simChar)<-simPhy$tip.label[simCharOut$taxonid]
 
 results<-doRun_prc(
   phy = simPhy,
@@ -89,7 +84,6 @@ results<-doRun_prc(
   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
   generation.time=100000,
   standardDevFactor=0.2,
-  plot=FALSE,
   StartSims=10,
   epsilonProportion=0.7,
   epsilonMultiplier=0.7,
@@ -115,7 +109,6 @@ resultsBound<-doRun_prc(
   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
   generation.time=100000,
   standardDevFactor=0.2,
-  plot=FALSE,
   StartSims=10,
   epsilonProportion=0.7,
   epsilonMultiplier=0.7,

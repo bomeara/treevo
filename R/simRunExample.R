@@ -8,7 +8,8 @@
 #' 
 #' @name simRunExample
 
-#' @aliases simRunExample simPhy simChar results resultsBound genRate ancState simCharOut
+#' @aliases simRunExample simPhy simChar results resultsBound genRate ancState 
+#simCharOut
 
 #' @docType data
 
@@ -25,10 +26,11 @@
 #' \item{\code{genRate}}{The true rate of trait change under Brownian Motion,
 #' used for generating the simulated continuous trait data.}
 
-#' \item{\code{simCharOut}}{The raw output of \code{\link{doSimulation}} on \code{simPhy},
-#' under the model \code{\link{brownianIntrinsic}}.}
+# \item{\code{simCharOut}}{The raw output of \code{\link{doSimulation}} on \code{simPhy},
+# under the model \code{\link{brownianIntrinsic}}.}
 
-#' \item{\code{simChar}}{A modified version of \code{simCharOut}, composed of just the simulated
+#' \item{\code{simChar}}{The output of \code{\link{doSimulation}} on \code{simPhy}, 
+#'  under the model \code{\link{brownianIntrinsic}}. composed of just the simulated
 #' trait values as a one-column matrix with row names indicating tip labels, as desired by \code{doRun} functions.}
 
 #' \item{\code{results}}{The results of \code{\link{doRun_prc}}, under the generating model of \code{\link{brownianIntrinsic}}}
@@ -71,7 +73,7 @@
 #' ancState<-c(10)
 #' 
 #' #Simple Brownian motion
-#' simCharOut<-doSimulation(
+#' simChar<-doSimulation(
 #' 	phy=simPhy,
 #' 	intrinsicFn=brownianIntrinsic,
 #' 	extrinsicFn=nullExtrinsic,
@@ -79,10 +81,10 @@
 #' 	intrinsicValues=genRate,
 #' 	extrinsicValues=c(0),
 #' 	generation.time=100000)
-#' 
-#' # clean for use with doRun
+# 
+# # clean for use with doRun
 # simChar<-simCharOut[,"statesmatrix",drop=FALSE]
-#' rownames(simChar)<-simPhy$tip.label[simCharOut$taxonid]
+# rownames(simChar)<-simPhy$tip.label[simCharOut$taxonid]
 #' 
 #' results<-doRun_prc(
 #'   phy = simPhy,
@@ -97,7 +99,7 @@
 #'   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
 #'   generation.time=100000,
 #'   standardDevFactor=0.2,
-#'   plot=FALSE,
+#   plot=FALSE,
 #'   StartSims=10,
 #'   epsilonProportion=0.7,
 #'   epsilonMultiplier=0.7,
@@ -123,7 +125,7 @@
 #'   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
 #'   generation.time=100000,
 #'   standardDevFactor=0.2,
-#'   plot=FALSE,
+#   plot=FALSE,
 #'   StartSims=10,
 #'   epsilonProportion=0.7,
 #'   epsilonMultiplier=0.7,
