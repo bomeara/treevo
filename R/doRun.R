@@ -327,38 +327,22 @@ doRun_prc<-function(
 	numberParametersFree<-sum(freevector)
 	namesParFree<-names(freevector)[freevector]
 	#
-	#create PriorMatrix
-	namesForPriorMatrix<-c()
-	PriorMatrix<-matrix(c(startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns), nrow=1, ncol=numberParametersTotal)
-	for (a in 1:dim(startingPriorsValues)[2]){
-		namesForPriorMatrix<-c(paste0("StartingStates", a, sep=""))
-		}
-	#
-	for (b in 1:dim(intrinsicPriorsValues)[2]){
-		namesForPriorMatrix<-append(namesForPriorMatrix, paste0("IntrinsicValue", b, sep=""))
-		}
-	#
-	#message(extrinsicPriorsValues)
-	for (c in 1:dim(extrinsicPriorsValues)[2]){
-		namesForPriorMatrix <-append(namesForPriorMatrix, paste0("ExtrinsicValue", c, sep=""))
-		}
-	#
-	PriorMatrix<-rbind(
-		PriorMatrix, 
-		cbind(startingPriorsValues, 
-			intrinsicPriorsValues, 
-			extrinsicPriorsValues
-			)
-		)
-	colnames(PriorMatrix)<-namesForPriorMatrix
-	rownames(PriorMatrix)<-c("shape", "value1", "value2")
-	#	
+	# get prior matrix
+	PriorMatrix<-getPriorMatrix(
+		startingPriorsValues=startingPriorsValues,
+		intrinsicPriorsValues=intrinsicPriorsValues,
+		extrinsicPriorsValues=extrinsicPriorsValues,
+		startingPriorsFns=startingPriorsFns,
+		intrinsicPriorsFns=intrinsicPriorsFns,
+		extrinsicPriorsFns=extrinsicPriorsFns,
+		numberParametersTotal=numberParametersTotal)
+	##	
 	#initialize weighted mean sd matrices
 	weightedMeanParam<-matrix(nrow=nStepsPRC, ncol=numberParametersTotal)
-	colnames(weightedMeanParam)<-namesForPriorMatrix
+	colnames(weightedMeanParam)<-colnames(PriorMatrix)
 	rownames(weightedMeanParam)<-paste0("Gen ", c(1: nStepsPRC), sep="")
 	param.stdev<-matrix(nrow=nStepsPRC, ncol=numberParametersTotal)
-	colnames(param.stdev)<-namesForPriorMatrix
+	colnames(param.stdev)<-colnames(PriorMatrix)
 	rownames(param.stdev)<-paste0("Gen ", c(1: nStepsPRC), sep="")
 	#
 	#
@@ -421,7 +405,7 @@ doRun_prc<-function(
 		save.image(file=paste0("WS", jobName, ".Rdata", sep=""))
 		}
 	#
-	# here I removed the initial loop
+	# here I removed the initial loop (DWB, December 2017)
 	#
 	time.per.gen<-time.per.Step<-numeric(length=nStepsPRC)	
 	for(dataGenerationStep in 1:nStepsPRC) {

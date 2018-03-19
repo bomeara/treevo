@@ -44,6 +44,7 @@ highestPostDens<-function(particleDataFrame, percent=0.95, returnData=FALSE){
 	#
 	# now only get the parameter estimates
 	subpDF<-as.data.frame(subpDF[,7:dim(particleDataFrame)[2]])
+	#parNames<-colnames(subpDF)
 	#
 	for(i in 1:dim(subpDF)[2]){
 		if(length(subpDF[,i])>1){

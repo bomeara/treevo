@@ -81,7 +81,7 @@
 #' 	generation.time=100000)
 #' 
 #' # clean for use with doRun
-#' simChar<-simCharOut[,"statesmatrix",drop=FALSE]
+# simChar<-simCharOut[,"statesmatrix",drop=FALSE]
 #' rownames(simChar)<-simPhy$tip.label[simCharOut$taxonid]
 #' 
 #' results<-doRun_prc(

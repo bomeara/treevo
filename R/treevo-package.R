@@ -46,7 +46,7 @@
 #' 	generation.time=100000)
 #' 
 #' # clean for use with doRun
-#' simChar<-simCharOut[,"statesmatrix",drop=FALSE]
+# simChar<-simCharOut[,"statesmatrix",drop=FALSE]
 #' rownames(simChar)<-tree$tip.label[simCharOut$taxonid]
 #' 
 #' # NOTE: the example analyses below sample too few particles,
