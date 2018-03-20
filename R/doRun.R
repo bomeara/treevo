@@ -446,7 +446,9 @@ doRun_prc<-function(
 		expParticleAcceptanceRate<-0.5
 		#
 		if(verboseParticles){
-			message("Successes ", "  Attempts ", "  Exp. # of Attempts Req. ", "Params.") #\n
+			message("Successes ", "  Attempts ",
+				#"  Exp. # of Attempts Req. ",
+				"Params.") #\n
 			}		
 		#message("Beginning partial rejection control algorithm...")
 		#
@@ -589,7 +591,7 @@ doRun_prc<-function(
 			#
 			if(verboseParticles){
 				message(paste(i-1,"         ", attempts,"        ",
-					floor(nAcceptedParticles*attempts/i),"                    ",
+					#floor(nAcceptedParticles*attempts/i),"                    ",
 					signif(currParticleList[[i]]$startingValues,2),"  ", 
 					signif(currParticleList[[i]]$intrinsicValues,2),"  ",
 					signif(currParticleList[[i]]$extrinsicValues,2),"  ", 
