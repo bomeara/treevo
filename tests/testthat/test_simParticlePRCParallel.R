@@ -24,7 +24,7 @@ test_that("simParticlePRCParallel run correctly", {
 	multicore=FALSE
 	coreLimit=1
 	TreeYears=max(branching.times(phy)) * 1e6
-	taxonDF <- TreEvo:::getTaxonDFWithPossibleExtinction(phy)
+	taxonDF <- getTaxonDFWithPossibleExtinction(phy)
 	timeStep<-generation.time/TreeYears
 	edgesRescaled<-phy$edge.length/max(node.depth.edgelength(phy))
 	totalGenerations<-sum(sapply(edgesRescaled,function(x) floor(x/timeStep)))
@@ -38,14 +38,14 @@ test_that("simParticlePRCParallel run correctly", {
 	################
 	# CODE TO FUNCTION
 	################
-	freevector<-TreEvo:::getFreeVector(startingPriorsFns=startingPriorsFns, startingPriorsValues=startingPriorsValues,
+	freevector<-getFreeVector(startingPriorsFns=startingPriorsFns, startingPriorsValues=startingPriorsValues,
 						intrinsicPriorsFns=intrinsicPriorsFns, intrinsicPriorsValues=intrinsicPriorsValues,
 						extrinsicPriorsFns=extrinsicPriorsFns, extrinsicPriorsValues=extrinsicPriorsValues)
 	numberParametersTotal<-length(freevector)
 	numberParametersFree<-sum(freevector)
 	#
 	# get prior matrix
-	PriorMatrix<-TreEvo:::getPriorMatrix(
+	PriorMatrix<-getPriorMatrix(
 		startingPriorsValues=startingPriorsValues,
 		intrinsicPriorsValues=intrinsicPriorsValues,
 		extrinsicPriorsValues=extrinsicPriorsValues,
@@ -73,14 +73,14 @@ test_that("simParticlePRCParallel run correctly", {
 		epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor)
 	#
 	# get summary values for observed data
-	originalSummaryValues<-TreEvo:::summaryStatsLong(
+	originalSummaryValues<-summaryStatsLong(
 		phy=phy, 
 		traits=traits
 		#niter.brown=200, niter.lambda=200, niter.delta=200, niter.OU=200, niter.white=200
 		)
 	#	
 	# INITIAL SIMULATIONS
-	initialSimsRes<-TreEvo:::initialSimsPRC(
+	initialSimsRes<-initialSimsPRC(
 		nrepSim=StartSims, 
 		phy=phy,  
 		taxonDF=taxonDF,
@@ -113,7 +113,7 @@ test_that("simParticlePRCParallel run correctly", {
 	toleranceValue<-initialSimsRes$toleranceVector[dataGenerationStep]
 	#
 	#
-	results <- TreEvo:::simParticlePRCParallel(
+	results <- simParticlePRCParallel(
 		nSim=3
 		,multicore=FALSE
 		,coreLimit=1
@@ -165,7 +165,7 @@ test_that("simParticlePRC run correctly", {
 	multicore=FALSE
 	coreLimit=1
 	TreeYears=max(branching.times(phy)) * 1e6
-	taxonDF <- TreEvo:::getTaxonDFWithPossibleExtinction(phy)
+	taxonDF <- getTaxonDFWithPossibleExtinction(phy)
 	timeStep<-generation.time/TreeYears
 	edgesRescaled<-phy$edge.length/max(node.depth.edgelength(phy))
 	totalGenerations<-sum(sapply(edgesRescaled,function(x) floor(x/timeStep)))
@@ -179,14 +179,14 @@ test_that("simParticlePRC run correctly", {
 	################
 	# CODE TO FUNCTION
 	################
-	freevector<-TreEvo:::getFreeVector(startingPriorsFns=startingPriorsFns, startingPriorsValues=startingPriorsValues,
+	freevector<-getFreeVector(startingPriorsFns=startingPriorsFns, startingPriorsValues=startingPriorsValues,
 						intrinsicPriorsFns=intrinsicPriorsFns, intrinsicPriorsValues=intrinsicPriorsValues,
 						extrinsicPriorsFns=extrinsicPriorsFns, extrinsicPriorsValues=extrinsicPriorsValues)
 	numberParametersTotal<-length(freevector)
 	numberParametersFree<-sum(freevector)
 	#
 	# get prior matrix
-	PriorMatrix<-TreEvo:::getPriorMatrix(
+	PriorMatrix<-getPriorMatrix(
 		startingPriorsValues=startingPriorsValues,
 		intrinsicPriorsValues=intrinsicPriorsValues,
 		extrinsicPriorsValues=extrinsicPriorsValues,
@@ -214,14 +214,14 @@ test_that("simParticlePRC run correctly", {
 		epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor)
 	#
 	# get summary values for observed data
-	originalSummaryValues<-TreEvo:::summaryStatsLong(
+	originalSummaryValues<-summaryStatsLong(
 		phy=phy, 
 		traits=traits
 		#niter.brown=200, niter.lambda=200, niter.delta=200, niter.OU=200, niter.white=200
 		)
 	#	
 	# INITIAL SIMULATIONS
-	initialSimsRes<-TreEvo:::initialSimsPRC(
+	initialSimsRes<-initialSimsPRC(
 		nrepSim=StartSims, 
 		phy=phy,  
 		taxonDF=taxonDF,
@@ -255,7 +255,7 @@ test_that("simParticlePRC run correctly", {
 	#
 	#
 	# now test simParticle PRC
-	results <- TreEvo:::simParticlePRC<-function(
+	results <- simParticlePRC<-function(
 		phy=phy
 		,taxonDF=taxonDF
 		, timeStep=timeStep
