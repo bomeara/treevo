@@ -446,9 +446,13 @@ doRun_prc<-function(
 		expParticleAcceptanceRate<-0.5
 		#
 		if(verboseParticles){
-			message("Successes ", "  Attempts ",
+			message("Successes ",
+				"  Attempts ",
+				"  Distance ",
+				paste0(namesParFree,"  ",collapse="")
 				#"  Exp. # of Attempts Req. ",
-				"Params.") #\n
+				#"Params." #\n
+				)
 			}		
 		#message("Beginning partial rejection control algorithm...")
 		#
@@ -590,12 +594,18 @@ doRun_prc<-function(
 			particleDataFrame<-rbind(particleDataFrame, vectorForDataFrame)
 			#
 			if(verboseParticles){
-				message(paste(i-1,"         ", attempts,"        ",
-					#floor(nAcceptedParticles*attempts/i),"                    ",
-					signif(currParticleList[[i]]$startingValues,2),"  ", 
-					signif(currParticleList[[i]]$intrinsicValues,2),"  ",
-					signif(currParticleList[[i]]$extrinsicValues,2),"  ", 
-					signif(currParticleList[[i]]$distance,2)))
+				message(
+					paste(
+						i-1,"         ", attempts,"        "
+						#floor(nAcceptedParticles*attempts/i),"                    ",
+						,paste0(signif(currParticleList[[i]]$distance,2),collapse="    "),"    "
+						,paste0(signif(currParticleList[[i]]$startingValues,2),collapse="    "),"   "
+						,paste0(signif(currParticleList[[i]]$intrinsicValues,2),collapse="    "),"   "
+						,paste0(signif(currParticleList[[i]]$extrinsicValues,2),collapse="    "),"   "
+												
+						#,signif(currParticleList[[i]]$distance,2)
+						)
+					)
 				}	
 			}			
 		#
