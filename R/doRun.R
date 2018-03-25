@@ -596,7 +596,7 @@ doRun_prc<-function(
 			if(verboseParticles){
 				message(
 					paste(
-						i-1,"         ", attempts,"       "
+						i,"         ", attempts,"       "
 						#floor(nAcceptedParticles*attempts/i),"                    ",
 						,signif(currParticleList[[i]]$distance,2),"      "
 						,if(!identical(startingPriorsFns,"fixed")){
