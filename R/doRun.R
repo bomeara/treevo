@@ -596,18 +596,18 @@ doRun_prc<-function(
 			if(verboseParticles){
 				message(
 					paste(
-						i-1,"         ", attempts,"        "
+						i-1,"         ", attempts,"       "
 						#floor(nAcceptedParticles*attempts/i),"                    ",
-						,paste0(signif(currParticleList[[i]]$distance,2),collapse="    "),"      "
+						,signif(currParticleList[[i]]$distance,2),"      "
 						,if(!identical(startingPriorsFns,"fixed")){
-							paste0(signif(currParticleList[[i]]$startingValues,2),collapse="    ")
-							},"   "
+							paste0(signif(currParticleList[[i]]$startingValues,2),collapse="       ")
+							},"       "
 						,if(!identical(intrinsicPriorsFns,"fixed")){
-							paste0(signif(currParticleList[[i]]$intrinsicValues,2),collapse="    ")
-							},"   "
+							paste0(signif(currParticleList[[i]]$intrinsicValues,2),collapse="        ")
+							},"        "
 						,if(!identical(extrinsicPriorsFns,"fixed")){
-							paste0(signif(currParticleList[[i]]$extrinsicValues,2),collapse="    ")
-							},"   "
+							paste0(signif(currParticleList[[i]]$extrinsicValues,2),collapse="        ")
+							},"        "
 												
 						#,signif(currParticleList[[i]]$distance,2)
 						)
