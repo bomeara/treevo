@@ -90,7 +90,7 @@ data(simRunExample)
 priorKernal<-getUnivariatePriorCurve(priorFn="normal", priorVariables=c(28,2),
 	nPoints=100000, from=NULL, to=NULL, prob=0.95)
 
-postKernal<-getUnivariatePosteriorCurve(acceptedValues=results$particleDataFrame$StartingStates1,
+postKernal<-getUnivariatePosteriorCurve(acceptedValues=results$particleDataFrame$starting_1,
 	from=NULL, to=NULL, prob=0.95)
 
 priorKernal

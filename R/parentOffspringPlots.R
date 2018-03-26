@@ -36,8 +36,8 @@
 #' @export
 parentOffspringPlots<-function(particleDataFrame){
 
-	x<-particleDataFrame
-	nparams<-dim(x)[2]-6
+	
+	nparams<-dim(particleDataFrame)[2]-6
 	nb<-2*nparams
 	nf<-layout(matrix(1:nb, nrow=2, byrow=TRUE), respect=TRUE)
 	#layout.show(nf)
@@ -45,23 +45,23 @@ parentOffspringPlots<-function(particleDataFrame){
 	for (param in 1:nparams) {
 		param.position<-param+6
 				
-		plot(x[,param.position], x$generation, xlab=colnames(x)[param.position], ylab="Generation", type="n")
+		plot(particleDataFrame[,param.position], particleDataFrame$generation, xlab=colnames(particleDataFrame)[param.position], ylab="Generation", type="n")
 		title("size as measure of distance")
-		#kept<-subset(x[which(x$id>0),])[,]	
-		#reject<-subset(x[which(x$id<0),])[,]
+		#kept<-subset(particleDataFrame[which(particleDataFrame$id>0),])[,]	
+		#reject<-subset(particleDataFrame[which(particleDataFrame$id<0),])[,]
 		#
-		kept<-x[x$id>0,]
+		kept<-particleDataFrame[particleDataFrame$id>0,]
 		short.kept<-kept[kept$generation>1,]
 
 		#for (i in 1:(dim(reject)[1])) {
-		#	circle.size<-(reject[i, 5]/max(reject[,5]))*(0.05*(max(x[,param.position])-min(x[,param.position])))
-		#	symbols(x=reject[i, param.position], y=reject[i, 1], circles=circle.size, inches=FALSE, add=TRUE, fg="gray")
+		#	circle.size<-(reject[i, 5]/max(reject[,5]))*(0.05*(max(particleDataFrame[,param.position])-min(particleDataFrame[,param.position])))
+		#	symbols(particleDataFrame=reject[i, param.position], y=reject[i, 1], circles=circle.size, inches=FALSE, add=TRUE, fg="gray")
 		#}	
 		
 		for (j in 1:(dim(kept)[1])) {
-			#circle.size<-(kept[j, 5]/max(kept[,5]))*mean(x[,param.position])
+			#circle.size<-(kept[j, 5]/max(kept[,5]))*mean(particleDataFrame[,param.position])
 			circle.size<-(kept[j, 5]/max(kept[,5]))*(0.05*(max(kept[,param.position])-min(kept[,param.position])))
-			symbols(x=kept[j, param.position], y=kept[j, 1], circles=circle.size, inches=FALSE, add=TRUE, fg="black")
+			symbols(particleDataFrame=kept[j, param.position], y=kept[j, 1], circles=circle.size, inches=FALSE, add=TRUE, fg="black")
 		}		
 		
 		for (k in 1:(dim(short.kept)[1])) {
@@ -78,21 +78,21 @@ parentOffspringPlots<-function(particleDataFrame){
 	for (param in 1:nparams) {
 		param.position<-param+6
 
-		plot(x[,param.position], x$generation, 
-			xlab=colnames(x)[param.position], ylab="Generation", type="n")
+		plot(particleDataFrame[,param.position], particleDataFrame$generation, 
+			xlab=colnames(particleDataFrame)[param.position], ylab="Generation", type="n")
 		title("size as measure of particle weights")
 		
-		#kept<-subset(x[which(x$id>0),])[,]	
-		#reject<-subset(x[which(x$id<0),])[,]
+		#kept<-subset(particleDataFrame[which(particleDataFrame$id>0),])[,]	
+		#reject<-subset(particleDataFrame[which(particleDataFrame$id<0),])[,]
 		#short.kept<-subset(kept[which(kept$generation>1),])[,]
 
 		#for (i in 1:(dim(reject)[1])) {
-		#	points(x=reject[i, param.position], y=reject[i, 1], col="gray", pch=8)
+		#	points(particleDataFrame=reject[i, param.position], y=reject[i, 1], col="gray", pch=8)
 		#}	
 		
 		for (j in 1:(dim(kept)[1])) {
 			circle.size<-(kept[j, 6]/max(kept[,6]))*(0.05*(max(kept[,param.position])-min(kept[,param.position])))
-			symbols(x=kept[j, param.position], y=kept[j, 1], circles=circle.size, inches=FALSE, add=TRUE, fg="black")
+			symbols(particleDataFrame=kept[j, param.position], y=kept[j, 1], circles=circle.size, inches=FALSE, add=TRUE, fg="black")
 		}	
 		
 		for (k in 1:(dim(short.kept)[1])) {

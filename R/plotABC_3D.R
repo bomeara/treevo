@@ -8,6 +8,9 @@
 #' distance, plotting particle parantage, and plotting the real parameter
 #' values (if known).
 #' 
+#' As of version 0.6.0, rejected particles are not saved for outputting by the parallelized algorithm,
+#' and thus they are no longer displayed by this function, unlike previous versions.
+
 
 #' @note
 #' This function requires access functions \code{triangulate} and the \code{as} method for
@@ -158,7 +161,7 @@ plotABC_3D<-function(particleDataFrame, parameter, show.particles="none",
 		#reject<-subset(particleDataFrame[which(particleDataFrame$id<0),])[,]
 		#short.kept<-subset(kept[which(kept$generation>1),])[,]
 		#
-		kept<-x[x$id>0,]
+		kept<-particleDataFrame[particleDataFrame$id>0,]
 		short.kept<-kept[kept$generation>1,]
 
 		if (show.particles=="none"){

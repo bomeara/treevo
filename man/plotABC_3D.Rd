@@ -34,6 +34,9 @@ density distribution of accepted particles from each generation.  Several
 options are available to add to the plot: plotting particles by weight or
 distance, plotting particle parantage, and plotting the real parameter
 values (if known).
+
+As of version 0.6.0, rejected particles are not saved for outputting by the parallelized algorithm,
+and thus they are no longer displayed by this function, unlike previous versions.
 }
 \note{
 This function requires access functions \code{triangulate} and the \code{as} method for
