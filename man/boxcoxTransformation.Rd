@@ -35,8 +35,8 @@ data(simRunExample)
 
 # example simulation
 
-simDataParallel<-parallelSimulateWithPriors( 
-  nrepSim=5, multicore=FALSE, coreLimit=1, 
+simDataParallel<-parallelSimulateWithPriors(
+  nrepSim=5, multicore=FALSE, coreLimit=1,
   phy=simPhy,
   intrinsicFn=brownianIntrinsic,
   extrinsicFn=nullExtrinsic,
@@ -45,11 +45,11 @@ simDataParallel<-parallelSimulateWithPriors(
   intrinsicPriorsFns=c("exponential"),
   intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
   extrinsicPriorsFns=c("fixed"),
-  extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE), 
+  extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
   generation.time=100000,
   checkpointFile=NULL, checkpointFreq=24,
   verbose=FALSE,
-  freevector=NULL, taxon.df=NULL)
+  freevector=NULL, taxonDF=NULL)
 
 nParFree<-sum(attr(simDataParallel,"freevector"))
 

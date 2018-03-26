@@ -15,18 +15,20 @@ test_that("doRun_prc runs correctly", {
 	  extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
 	  generation.time=1000000,
 	  standardDevFactor=0.2,
-	  plot=FALSE,
 	  StartSims=10,
 	  epsilonProportion=0.7,
 	  epsilonMultiplier=0.7,
 	  nStepsPRC=2,
 	  numParticles=10,
 	  jobName="exampleRun",
+	  diagnosticPRCmode=TRUE,
+	  verboseParticles=TRUE,
 	  stopRule=FALSE,
 	  multicore=FALSE,
 	  coreLimit=1
 	  )
 	  )
+	expect_output(print(results))
 	expect_is(results, "list")
 	expect_warning(expect_false(any(is.na(pairwiseESS(results$particleDataFrame)))))
 })

@@ -109,41 +109,35 @@
 #' tree$edge.length<-tree$edge.length*20
 #' 
 #' #Simple Brownian motion Intrinsic Model
-#' char<-doSimulationForPlotting(
+#' char<-doSimulation(
 #' 	phy=tree,
 #' 	intrinsicFn=brownianIntrinsic,
 #' 	extrinsicFn=nullExtrinsic,
 #' 	startingValues=c(10), #root state
 #' 	intrinsicValues=c(0.01),
 #' 	extrinsicValues=c(0),
-#' 	generation.time=100000,
-#' 	plot=TRUE,
-#' 	saveHistory=FALSE)
+#' 	generation.time=100000)
 #' 
 #' # Simple model with BM, but a minimum bound at 0, max bound at 15
-#' char<-doSimulationForPlotting(
+#' char<-doSimulation(
 #' 	phy=tree,
 #' 	intrinsicFn=boundaryIntrinsic,
 #' 	extrinsicFn=nullExtrinsic,
 #' 	startingValues=c(10), #root state
 #' 	intrinsicValues=c(0.01,0,15),
 #' 	extrinsicValues=c(0),
-#' 	generation.time=100000,
-#' 	plot=TRUE,
-#' 	saveHistory=FALSE)
+#' 	generation.time=100000)
 #' 
 #' # Autoregressive (Ornstein-Uhlenbeck) model
 #'		# with minimum bound at 0
-#' char<-doSimulationForPlotting(
+#' char<-doSimulation(
 #' 	phy=tree,
 #' 	intrinsicFn=minBoundaryAutoregressiveIntrinsic,
 #' 	extrinsicFn=nullExtrinsic,
 #' 	startingValues=c(10), #root state
 #' 	intrinsicValues=c(0.01,3,0.1,0),
 #' 	extrinsicValues=c(0),
-#' 	generation.time=100000,
-#' 	plot=TRUE,
-#' 	saveHistory=FALSE)
+#' 	generation.time=100000)
 #
 #' }
 
@@ -160,7 +154,7 @@ nullIntrinsic<-function(params,states, timefrompresent) {
 #' @rdname intrinsicModels
 #' @export
 brownianIntrinsic<-function(params,states, timefrompresent) {
-	newdisplacement<-rnorm(n=length(states),mean=0,sd=params) #mean=0 because we ADD this to existing values
+	newdisplacement<-rpgm.rnorm(n=length(states),mean=0,sd=params) #mean=0 because we ADD this to existing values
 	return(newdisplacement)
 	}
 
@@ -168,7 +162,7 @@ brownianIntrinsic<-function(params,states, timefrompresent) {
 #' @export
 boundaryIntrinsic<-function(params, states, timefrompresent) {
 	#params[1] is sd, params[2] is min, params[3] is max. params[2] could be 0 or -Inf, for example
-	newdisplacement<-rnorm(n=length(states),mean=0,sd=params[1])
+	newdisplacement<-rpgm.rnorm(n=length(states),mean=0,sd=params[1])
 	for (i in length(newdisplacement)) {
 		newstate<-newdisplacement[i]+states[i]
 		if (newstate<params[2]) { #newstate less than min
@@ -185,7 +179,7 @@ boundaryIntrinsic<-function(params, states, timefrompresent) {
 #' @export
 boundaryMinIntrinsic <-function(params, states, timefrompresent) {
 	#params[1] is sd, params[2] is min boundary
-	newdisplacement<-rnorm(n=length(states),mean=0,sd=params[1])
+	newdisplacement<-rpgm.rnorm(n=length(states),mean=0,sd=params[1])
 	for (i in length(newdisplacement)) {
 		newstate<-newdisplacement[i]+states[i]
 		if (newstate<params[2]) { #newstate less than min
@@ -203,7 +197,7 @@ autoregressiveIntrinsic<-function(params,states, timefrompresent) {
 	sd<-params[1]
 	attractor<-params[2]
 	attraction<-params[3]	#in this model, this should be between zero and one
-	newdisplacement<-rnorm(n=length(states),mean=(attractor-states)*attraction,sd=sd) #subtract current states because we want displacement
+	newdisplacement<-rpgm.rnorm(n=length(states),mean=(attractor-states)*attraction,sd=sd) #subtract current states because we want displacement
 	return(newdisplacement)
 	}
 
@@ -216,7 +210,7 @@ minBoundaryAutoregressiveIntrinsic<-function(params,states, timefrompresent) {
 	attractor<-params[2]
 	attraction<-params[3]	#in this model, this should be between zero and one
 	minBound<-params[4]
-	newdisplacement<-rnorm(n=length(states),mean=(attractor-states)*attraction,sd=sd) #subtract current states because we want displacement
+	newdisplacement<-rpgm.rnorm(n=length(states),mean=(attractor-states)*attraction,sd=sd) #subtract current states because we want displacement
 	#message(newdisplacement)
 	for (i in length(newdisplacement)) {
 		newstate<-newdisplacement[i] + states[i]
@@ -258,7 +252,7 @@ autoregressiveIntrinsicTimeSlices<-function(params,states, timefrompresent) {
 		}
 	}
 	#message(paste("sd = ",sd," attractor = ",attractor, " attraction = ", attraction))
-	newdisplacement<-rnorm(n=length(states),mean=(attractor-states)*attraction,sd=sd)
+	newdisplacement<-rpgm.rnorm(n=length(states),mean=(attractor-states)*attraction,sd=sd)
 	return(newdisplacement)
 	}
 
@@ -287,7 +281,7 @@ autoregressiveIntrinsicTimeSlicesConstantMean<-function(params,states, timefromp
 		}
 		previousThresholdTime<-thresholdTime
 	}
-	newdisplacement<-rnorm(n=length(states),mean=attraction*states + attractor,sd=sd)-states
+	newdisplacement<-rpgm.rnorm(n=length(states),mean=attraction*states + attractor,sd=sd)-states
 	return(newdisplacement)
 	}
 
@@ -329,7 +323,7 @@ autoregressiveIntrinsicTimeSlicesConstantSigma<-function(params,states, timefrom
 		}
 	}
 	#message(paste("sd = ",sd," attractor = ",attractor, " attraction = ", attraction))
-	newdisplacement<-rnorm(n=length(states),mean=(attractor-states)*attraction,sd=sd)
+	newdisplacement<-rpgm.rnorm(n=length(states),mean=(attractor-states)*attraction,sd=sd)
 	return(newdisplacement)
 	}
 
@@ -366,7 +360,7 @@ varyingBoundariesFixedSigmaIntrinsic<-function(params,states, timefrompresent) {
 		}
 	}
 	#message(paste("sd = ",sd," attractor = ",attractor, " attraction = ", attraction))
-	newdisplacement<-rnorm(n=length(states),mean=0,sd=sd)
+	newdisplacement<-rpgm.rnorm(n=length(states),mean=0,sd=sd)
 		for (i in length(newdisplacement)) {
 		newstate<-newdisplacement[i]+states[i]
 		if (newstate<minBound) { #newstate less than min
@@ -411,7 +405,7 @@ varyingBoundariesVaryingSigmaIntrinsic<-function(params,states, timefrompresent)
 		}
 	}
 	#message(paste("sd = ",sd," attractor = ",attractor, " attraction = ", attraction))
-	newdisplacement<-rnorm(n=length(states),mean=0,sd=sd)
+	newdisplacement<-rpgm.rnorm(n=length(states),mean=0,sd=sd)
 		for (i in length(newdisplacement)) {
 		newstate<-newdisplacement[i]+states[i]
 		if (newstate<minBound) { #newstate less than min
@@ -432,7 +426,7 @@ genomeDuplicationAttraction<-function(params, states, timefrompresent) {
 	attractor<-params[2]
 	attraction<-params[3]	#in this model, this should be between zero and one
 	doubling.prob<-params[4]
-	newdisplacement<-rnorm(n=length(states),mean=(attractor-states)*attraction,sd=sd) #subtract current states because we want displacement
+	newdisplacement<-rpgm.rnorm(n=length(states),mean=(attractor-states)*attraction,sd=sd) #subtract current states because we want displacement
 	for (i in length(newdisplacement)) {
 		newstate<-newdisplacement[i]+states[i]
 		if (newstate<0) { #newstate less than min
@@ -453,7 +447,7 @@ genomeDuplicationAttractionLogScale<-function(params, states, timefrompresent) {
 	attractor<-params[2]
 	attraction<-params[3]	#in this model, this should be between zero and one
 	doubling.prob<-params[4]
-	newdisplacement<-rnorm(n=length(states),mean=(attractor-states)*attraction,sd=sd) #subtract current states because we want displacement
+	newdisplacement<-rpgm.rnorm(n=length(states),mean=(attractor-states)*attraction,sd=sd) #subtract current states because we want displacement
 	if (runif(1,0,1)<doubling.prob) { #we double
 		newdisplacement<-log(2*exp(states))-states
 	}
@@ -469,7 +463,7 @@ genomeDuplicationPartialDoublingLogScale<-function(params, states, timefromprese
 	sd<-params[1]
 	beta.shape1<-params[2] #the larger this is, the more the duplication is exactly a doubling. To see what this looks like, plot(density(1+rbeta(10000, beta.shape1, 1)))
 	duplication.prob<-params[3]
-	newdisplacement<-rnorm(n=length(states),mean=0,sd=sd)
+	newdisplacement<-rpgm.rnorm(n=length(states),mean=0,sd=sd)
 	if (runif(1,0,1)<duplication.prob) { #we duplicate
 		newdisplacement<-log((1+rbeta(1,beta.shape1,1))*exp(states))-states
 	}

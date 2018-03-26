@@ -46,7 +46,7 @@
 #    timeStep=10^-6,
 #    checkpointFile=NULL, checkpointFreq=24,
 #    verbose=FALSE,
-#    freevector=NULL, taxon.df=NULL,
+#    freevector=NULL, taxonDF=NULL,
 #    niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25)
 #
 #  nParFree<-sum(attr(simDataParallel,"freevector"))
@@ -77,7 +77,8 @@ abcDistance<-function(summaryValuesMatrix, originalSummaryValues, pls.model.list
   abcDistancesRaw<-sapply(sequence(length(pls.model.list)),
 	SingleParameterPLSDistanceSquaredFixedPLS,
 		pls.model.list=pls.model.list, summaryValuesMatrix=summaryValuesMatrix,
-		originalSummaryValues=originalSummaryValues, scale=scale)
+		originalSummaryValues=originalSummaryValues, scale=scale
+		)
   if (class(abcDistancesRaw)!="matrix") { #it must be a vector, but apply likes matrices
   	abcDistancesRaw<-matrix(abcDistancesRaw, nrow=1)
   }

@@ -3,13 +3,22 @@ title: "Analyzing Trait Evolution with Approximate Bayesian Computation in TreEv
 author: "David W. Bapst"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
-#          fig_caption:: yes
 
 vignette: >
   %\VignetteIndexEntry{Analyzing Trait Evolution with Approximate Bayesian Computation in TreEvo}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+  
+  
 ---
+
+```{r}
+# Control Box
+multicore<-TRUE
+coreLimit<-4
+# as of 01-18-18, gen times of 1000000 complete relatively quickly, smaller do not!
+generation.time<-1000000
+```  
 
 ```{r,echo=FALSE}
 library(paleotree)
@@ -18,40 +27,33 @@ set.seed(444)
 
 ```
 
- Let's read in the trees from Raia et al 2015, AmNat
- following is taken from their supplemental appendix, available at AmNat
+For this vignette, we will use the tree of ammonite genera, and the continuous character data for those ammonites, taken from Raia et al. (2015, American Naturalist). This data is taken from their supplemental appendix, available at the American Naturalist website, and is available as an example dataset in R package `paleotree`. 
 
- they all appear to be trees dated to the last appearance times
- *and* specifically the end-boundary of the interval containing the last appearance
+The trees for the three groups examined in this paper all appear to be trees dated to the last appearance times (as opposed to the first appearance time) *and* specifically the end-boundary of the interval containing the last appearance.
 
-
- ammonite genera
-
-
- now let's plot the tree
+First, let's plot the tree:
 
 ```{r}
 plot(ladderize(ammoniteTreeRaia));axisPhylo()
 ```
 
-
-
-this tree has polytomies - will have to deal with that
+This tree has polytomies - we will have to deal with that. Let's randomly resolve tree using `multi2di` from ape, and then use function `addTermBranchLength` from package `paleotree`
 
 ```{r}
-tree<-multi2di(ammoniteTreeRaia) #randomly resolve tree
+tree<-multi2di(ammoniteTreeRaia)
 tree<-addTermBranchLength(tree,0.01)
-
 plot(ladderize(tree));axisPhylo()
 ```
 
+Because we aren't adjust the internal edges at all, `multi2di` has just inserted a number of zero-length internal edges between internodes within the tree. This means that alternative resolutions of the tree (as multi2di is stochastic) won't create meaningfully different variance-covariance matrices, so we likely don't need to worry about resolving multiple trees in this case (because we're taking the trees used by Raia et al. at total face-value, which perhaps is the truly unsupported assumption).
 
-plot with traits
+
+Let's plot a traitgram of the data.
 
  maybe use phytools rather than mine?
 
 
-```{r}
+```{r, echo=FALSE, fig.show='hold'}
 plotTraitgram(tree=tree, trait=sutureComplexity,
 	 conf.int=FALSE, main="Ammonite Suture Complexity")
 
@@ -75,7 +77,9 @@ rownames(charData)<-names(sutureComplexity)
 
 Let's analyze it with ordinary BM
 
-```{r, eval=FALSE}
+```{r eval=FALSE}
+
+
 results<-doRun_prc(
   phy = tree,
   traits = charData,
@@ -87,7 +91,7 @@ results<-doRun_prc(
   intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
   extrinsicPriorsFns=c("fixed"),
   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
-  generation.time=100000,
+  generation.time=generation.time,
   standardDevFactor=0.2,
   plot=FALSE,
   StartSims=10,
@@ -95,17 +99,20 @@ results<-doRun_prc(
   epsilonMultiplier=0.7,
   nStepsPRC=3,
   numParticles=20,
-  jobName="examplerun_prc",
+  jobName="typicalBMrun",
   stopRule=FALSE,
-  multicore=FALSE,
-  coreLimit=1,
-  verboseParticles=FALSE
+  multicore=multicore,
+  coreLimit=coreLimit,
+  verboseParticles=TRUE
   )
+
 ```
 
 Let's analyze it with ordinary BM with a bound
+  
+```{r eval=FALSE}
 
-```{r, eval=FALSE}
+
 resultsBound<-doRun_prc(
   phy = tree,
   traits = charData,
@@ -117,7 +124,7 @@ resultsBound<-doRun_prc(
   intrinsicPriorsValues=matrix(c(10, 10, -10, 1), nrow=2, byrow=FALSE),
   extrinsicPriorsFns=c("fixed"),
   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
-  generation.time=100000,
+  generation.time=generation.time,
   standardDevFactor=0.2,
   plot=FALSE,
   StartSims=10,
@@ -125,12 +132,13 @@ resultsBound<-doRun_prc(
   epsilonMultiplier=0.7,
   nStepsPRC=3,
   numParticles=20,
-  jobName="examplerun_prc",
+  jobName="BMwithBoundRun",
   stopRule=FALSE,
-  multicore=TRUE,
-  coreLimit=3,
+  multicore=multicore,
+  coreLimit=coreLimit,
   verboseParticles=FALSE
   )
+
 
 ```
 
@@ -139,23 +147,5 @@ resultsBound<-doRun_prc(
 
 save.image(file="treevo_vignette_workspace.Rdata")
 
-```
-
-
-
-
-
-
-
-
-
-
-
-
-The figure sizes have been customised so that you can easily put two images side-by-side. 
-
-```{r, fig.show='hold'}
-plot(1:10)
-plot(10:1)
 ```
 

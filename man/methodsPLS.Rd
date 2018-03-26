@@ -7,7 +7,7 @@
 \title{Fitting Univariate Partial Least Squares Models to Free Parameters in ABC}
 \usage{
 returnPLSModel(trueFreeValuesMatrix, summaryValuesMatrix, validation = "CV",
-  scale = TRUE, variance.cutoff = 95, ...)
+  scale = TRUE, variance.cutoff = 95, verbose = TRUE, ...)
 
 PLSTransform(summaryValuesMatrix, pls.model)
 }
@@ -19,18 +19,20 @@ PLSTransform(summaryValuesMatrix, pls.model)
 \item{validation}{Character argument controlling what validation procedure is used by \code{\link{plsr}}.
 Default is \code{"CV"} for cross-validation.}
 
-\item{scale}{This argument is passed to \code{\link{plsr}}.  It may be a numeric vector, or logical. If numeric vector, 
-the input is scaled by dividing each variable with the corresponding element of scale. 
-If \code{scale = TRUE}, the inpus is scaled by dividing each variable by its sample standard deviation. 
+\item{scale}{This argument is passed to \code{\link{plsr}}.  It may be a numeric vector, or logical. If numeric vector,
+the input is scaled by dividing each variable with the corresponding element of scale.
+If \code{scale = TRUE}, the inpus is scaled by dividing each variable by its sample standard deviation.
 If cross-validation is selected (the default for \code{returnPLSModel}),
 scaling by the standard deviation is done for every segment.}
 
 \item{variance.cutoff}{Minimum threshold percentage of variance explained for the
-number of components included in the final PLS model fit. This value is a 
+number of components included in the final PLS model fit. This value is a
 percentage and must be between 0 and 100. Default is 95 percent.}
 
+\item{verbose}{If \code{TRUE}, helpful warning messages will be made when you make questionable decisions.}
+
 \item{...}{Additional arguments, passed to \code{\link{plsr}}. In particular, if the number of observations is less than
-10 (such as for the example below), it may be necessary to pass a revised \code{segments} argument, which 
+10 (such as for the example below), it may be necessary to pass a revised \code{segments} argument, which
 \code{plsr} passes to \code{\link{mvrCv}}, as the default \code{segments} value is 10 (and there cannot be more segments
 than observations). Note that this should be an atypical situation outside of examples, as the number of observations
 should often be much greater than 10.}
@@ -41,7 +43,7 @@ should often be much greater than 10.}
 Function \code{returnPLSModel} returns a PLS model, and function \code{PLSTransform} returns transformed summary statistics.
 }
 \description{
-Function \code{returnPLSModel} fits a PLS regression (using 
+Function \code{returnPLSModel} fits a PLS regression (using
 \code{\link{plsr}}) individually to each freely varying parameter of a model, unlike
 a true multivariate PLS regression. A secondary step than limits the number
 of components to those that explain some minimum cumulative percentage
@@ -62,10 +64,10 @@ simPhy$edge.length <- simPhy$edge.length * 20
 
 nSimulations<-6
 
-simDataParallel<-parallelSimulateWithPriors( 
-  nrepSim=nSimulations, 
+simDataParallel<-parallelSimulateWithPriors(
+  nrepSim=nSimulations,
   multicore=FALSE,
-  coreLimit=1, 
+  coreLimit=1,
   phy=simPhy,
   intrinsicFn=brownianIntrinsic,
   extrinsicFn=nullExtrinsic,
@@ -74,12 +76,12 @@ simDataParallel<-parallelSimulateWithPriors(
   intrinsicPriorsFns=c("exponential"),
   intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
   extrinsicPriorsFns=c("fixed"),
-  extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE), 
-  generation.time=100000,
-  checkpointFile=NULL, 
+  extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
+  generation.time=10000,
+  checkpointFile=NULL,
   checkpointFreq=24,
   verbose=FALSE,
-  freevector=NULL, taxon.df=NULL)
+  freevector=NULL, taxonDF=NULL)
 
 nParFree<-sum(attr(simDataParallel,"freevector"))
 
@@ -94,7 +96,7 @@ PLSmodel<-returnPLSModel(trueFreeValuesMatrix=trueFreeValuesMat,
 PLSmodel
 
 PLSTransform(summaryValuesMatrix=summaryValuesMat, pls.model=PLSmodel)
-} 
+}
 
 }
 \seealso{

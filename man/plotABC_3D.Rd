@@ -34,6 +34,9 @@ density distribution of accepted particles from each generation.  Several
 options are available to add to the plot: plotting particles by weight or
 distance, plotting particle parantage, and plotting the real parameter
 values (if known).
+
+As of version 0.6.0, rejected particles are not saved for outputting by the parallelized algorithm,
+and thus they are no longer displayed by this function, unlike previous versions.
 }
 \note{
 This function requires access functions \code{triangulate} and the \code{as} method for
@@ -51,7 +54,7 @@ if(requireNamespace("gpclib", quietly = TRUE) & requireNamespace("rgl", quietly 
 
  data(simRunExample)
  plotABC_3D(particleDataFrame=results$particleDataFrame, parameter=7,
-     show.particles="none", plot.parent=FALSE, realParam=FALSE, realParamValues=NA) 
+     show.particles="none", plot.parent=FALSE, realParam=FALSE, realParamValues=NA)
 
 }
 }

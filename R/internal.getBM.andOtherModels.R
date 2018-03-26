@@ -101,6 +101,7 @@ getWhite<-function(phy,dat){		#,niterN,niter.goal=NA
 	#
 	star<-stree(Ntip(phy))
 	star$edge.length<-rep(1,nrow(star$edge))
+	star$tip.label<-phy$tip.label
 	fit<-phylolm::phylolm(formula=dat~1,phy=star,model="BM")	
 	#
 	res$lnl<-as.numeric(fit$logLik)

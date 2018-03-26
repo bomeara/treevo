@@ -1,17 +1,17 @@
 #' Simulate data for initial TreEvo analysis
 #' 
 #' The \code{simulateWithPriors} function pulls parameters from prior distributions and conducts a single simulation of
-#' continuous trait evolution (using \code{\link{doSimulation}} functions), returning useful summary statistics for ABC.
+#' continuous trait evolution (using the \code{\link{doSimulation}} function), returning useful summary statistics for ABC.
 #' \code{parallelSimulateWithPriors} is a wrapper function for \code{simulateWithPriors} that allows for multithreading
 #' and checkpointing. This family of functions is mostly used as internal components, generating simulations
 #' within ABC analyses using the \code{\link{doRun}} functions. See \emph{Note} below.
 #' 
 
 #' @note
-#' The \code{\link{simulateWithPriors}} functions are effectively the engine that powers the \code{\link{doRun}}
-#' functions, while the \code{\link{doSimulation}} functions are the pistons within the \code{\link{simulateWithPriors}} engine.
+#' The \code{\link{simulateWithPriors}} functions are effectively the engine that powers the  \code{\link{doRun}}
+#' functions, while the \code{\link{doSimulation}} function is the pistons within the \code{\link{simulateWithPriors}} engine.
 #' In general, most users will just drive the car - they will just use \code{\link{doRun}}, but some users may
-#' want to use \code{\link{simulateWithPriors}} or \code{\link{doSimulation}} functions to do various simulations.
+#' want to use \code{\link{simulateWithPriors}} or \code{\link{doSimulation}} to do various simulations.
 
 #' @inheritParams doSimulation
 
@@ -67,6 +67,9 @@
 
 #' @param checkpointFreq Saving frequency for checkpointing
 
+#' @param verbose If \code{TRUE}, gives messages about how the simulation is progessing via \code{message}.
+
+#' @param verboseNested Should looped runs of \code{simulateWithPriors} be verbose?
 
 #' @return Function \code{simulateWithPriors} returns a vector of \code{trueFreeValues},
 #' the true generating parameters used in the simulation
@@ -124,7 +127,7 @@
 #'   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
 #'   generation.time=100000,
 #'   checkpointFile=NULL, checkpointFreq=24,
-#'   verbose=TRUE, freevector=NULL, taxon.df=NULL)
+#'   verbose=TRUE, freevector=NULL, taxonDF=NULL)
 #' 
 #' simDataParallel
 #' 
@@ -140,12 +143,12 @@ simulateWithPriors<-function(
 	phy=NULL, intrinsicFn, extrinsicFn, startingPriorsFns, startingPriorsValues,
 	intrinsicPriorsFns, intrinsicPriorsValues, extrinsicPriorsFns, extrinsicPriorsValues,
 	generation.time=1000, TreeYears=max(branching.times(phy)) * 1e6, timeStep=NULL,
-	giveUpAttempts=10, verbose=FALSE, checks=TRUE, taxon.df=NULL, freevector=NULL
+	giveUpAttempts=10, verbose=FALSE, checks=TRUE, taxonDF=NULL, freevector=NULL
 	#,niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25
 	) {
 
-	if(is.null(taxon.df)){
-		taxon.df <- getTaxonDFWithPossibleExtinction(phy)
+	if(is.null(taxonDF)){
+		taxonDF <- getTaxonDFWithPossibleExtinction(phy)
 		}
 		
 	if(is.null(timeStep)){
@@ -157,8 +160,8 @@ simulateWithPriors<-function(
 		#checkNiter(niter.brown=niter.brown, niter.lambda=niter.lambda,
 		#	niter.delta=niter.delta, niter.OU=niter.OU, niter.white=niter.white)
 		# check TimeStep
-		numberofsteps<-max(taxon.df$endTime)/timeStep
-		mininterval<-min(taxon.df$endTime - taxon.df$startTime)
+		numberofsteps<-max(taxonDF$endTime)/timeStep
+		mininterval<-min(taxonDF$endTime - taxonDF$startTime)
 		#
 		if (floor(mininterval/timeStep)<50 & floor(mininterval/timeStep)>=3) {
 			warning(paste0("You have only ", floor(mininterval/timeStep),
@@ -200,20 +203,25 @@ simulateWithPriors<-function(
 		}
 		trueInitial<-c(trueStarting, trueIntrinsic, trueExtrinsic)
 		trueFreeValues<-trueInitial[freevector]
-
-		message(".")
-		simTraits<-doSimulationWithPossibleExtinction(phy=phy, taxon.df=taxon.df, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn,
-			startingValues=trueStarting, intrinsicValues=trueIntrinsic, extrinsicValues=trueExtrinsic,
-			timeStep=timeStep, verbose=verbose, checkTimeStep=FALSE)
+		#
+		#message(".")
+		#
+		simTraits<-doSimulationInternal(
+			taxonDF=taxonDF, timeStep=timeStep, 
+			intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, 
+			startingValues=trueStarting, intrinsicValues=trueIntrinsic, extrinsicValues=trueExtrinsic)		
 		simSumStats<-summaryStatsLong(phy=phy, traits=simTraits
 			#,niter.brown=niter.brown, niter.lambda=niter.lambda, niter.delta=niter.delta,
 			#niter.OU=niter.OU, niter.white=niter.white
 			)
 		simTrueAndStats <-c(trueFreeValues, simSumStats)
-	}
+		}
 	if(n.attempts>1) {
-		warning(paste("Had to run simulateWithPriors()",n.attempts,
-			"times to get results with no NA. This could bias results if runs with certain parameters failed more often and this happens in many attempted simulations"))
+		warning(
+			paste("Had to run simulateWithPriors()",n.attempts,
+			"times to get results with no NA. This could bias results if runs with certain parameters failed more often and this happens in many attempted simulations"
+			)
+		)
 	}
 	if(checks){
 		attr(simTrueAndStats,"freevector")<-freevector
@@ -227,12 +235,11 @@ simulateWithPriors<-function(
 #' @rdname simulateWithPriors
 #' @export
 parallelSimulateWithPriors<-function(
-	nrepSim, multicore, coreLimit,
-	phy,
+	nrepSim, multicore, coreLimit, phy,
 	intrinsicFn, extrinsicFn, startingPriorsFns, startingPriorsValues,
 	intrinsicPriorsFns, intrinsicPriorsValues, extrinsicPriorsFns, extrinsicPriorsValues,
 	generation.time=1000, TreeYears=max(branching.times(phy)) * 1e6, timeStep=NULL, #timeStep=1e-04,
-	checkpointFile=NULL, checkpointFreq=24, verbose=FALSE, freevector=NULL, taxon.df=NULL, giveUpAttempts=10
+	checkpointFile=NULL, checkpointFreq=24, verbose=TRUE, verboseNested=FALSE, freevector=NULL, taxonDF=NULL, giveUpAttempts=10
 	#,niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25
 	) {
 	
@@ -253,13 +260,13 @@ parallelSimulateWithPriors<-function(
 					extrinsicPriorsFns=extrinsicPriorsFns, extrinsicPriorsValues=extrinsicPriorsValues)
 		}
 	
-	if(is.null(taxon.df)){
-		taxon.df <- getTaxonDFWithPossibleExtinction(phy)
+	if(is.null(taxonDF)){
+		taxonDF <- getTaxonDFWithPossibleExtinction(phy)
 		}
 
 	# check TimeStep
-	numberofsteps<-max(taxon.df$endTime)/timeStep
-	mininterval<-min(taxon.df$endTime - taxon.df$startTime)
+	numberofsteps<-max(taxonDF$endTime)/timeStep
+	mininterval<-min(taxonDF$endTime - taxonDF$startTime)
 	#
 	if (floor(mininterval/timeStep)<50 & floor(mininterval/timeStep)>=3) {
 		message(paste0("You have only ", floor(mininterval/timeStep), " timeSteps on the shortest branch in this dataset but should probably have a lot more if you expect change on this branch. Please consider decreasing timeStep to no more than ",
@@ -268,34 +275,36 @@ parallelSimulateWithPriors<-function(
 	if (floor(mininterval/timeStep)<3) {
 		message(paste0("You have only ", floor(mininterval/timeStep), " timeSteps on the shortest branch in this dataset but should probably have a lot more if you expect change on this branch. Please consider decreasing timeStep to no more than ",
 			signif(mininterval/50,2)," or at the very least ", signif(mininterval/3,2)))
-	#	timeStep <- mininterval/3
+		#	timeStep <- mininterval/3
 		}
-
-		
+	#	
 	# multicore
-	cores=1
-	if (multicore) {
-		if (is.na(coreLimit)){
-			registerMulticoreEnv()
-			getDoParWorkers()->cores
-		}else{
-			registerMulticoreEnv(coreLimit)
-			coreLimit->cores
+	# set up multicore
+	cores<-setupMulticore(multicore,nSim=nrepSim,coreLimit=coreLimit)
+	#
+	# verbosity
+	if(verbose){
+		message(paste("Using", cores, "core(s) for simulations \n\n"))
+		if (nrepSim %%cores != 0) {
+			warning("The simulation is most efficient if the number of nrepSim is a multiple of the number of cores")
 			}
+		message("Doing simulations: ")
 		}
-	message(paste("Using", cores, "core(s) for simulations \n\n"))
-	if (nrepSim %%cores != 0) {
-		warning("The simulation is most efficient if the number of nrepSim is a multiple of the number of cores")
-	}
-
-	message("Doing simulations: ")
+	#
+	# now run simulations
 	if (is.null(checkpointFile)) {
-		trueFreeValuesANDSummaryValues<-foreach(1:nrepSim, .combine=rbind) %dopar% simulateWithPriors(phy=phy, taxon.df=taxon.df,
-			startingPriorsValues=startingPriorsValues, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues,
-			startingPriorsFns=startingPriorsFns, intrinsicPriorsFns=intrinsicPriorsFns, extrinsicPriorsFns=extrinsicPriorsFns, giveUpAttempts=giveUpAttempts,
-			freevector=freevector, timeStep=timeStep, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, verbose=verbose, checks=FALSE)
-	}
-	else {
+		# no checkpointFile to generate!
+		repSimFE<-foreach(1:nrepSim, .combine=rbind)
+		trueFreeValuesANDSummaryValues<-(	#makeQuiet(
+			repSimFE %dopar% simulateWithPriors(
+				phy=phy, taxonDF=taxonDF,
+				startingPriorsValues=startingPriorsValues, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues,
+				startingPriorsFns=startingPriorsFns, intrinsicPriorsFns=intrinsicPriorsFns, extrinsicPriorsFns=extrinsicPriorsFns, 
+				giveUpAttempts=giveUpAttempts,freevector=freevector, timeStep=timeStep, 
+				intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, verbose=verboseNested, checks=FALSE)
+			#)
+			)
+	}else{
 		checkpointFileName<-paste(checkpointFile,".trueFreeValuesANDSummaryValues.Rsave",sep="")
 		trueFreeValuesANDSummaryValues<-c()
 		checkpointFreqAdjusted<-max(cores*round(checkpointFreq/cores),1)
@@ -305,21 +314,21 @@ parallelSimulateWithPriors<-function(
 		numberSimsAfterLastCheckpoint<-nrepSim - numberSimsInCheckpointRuns
 		if (checkpointFreqAdjusted != checkpointFreq ) {
 			warning(paste("Checkpoint frequency adjusted from",checkpointFreq,"to",checkpointFreqAdjusted,"to reduce the wasted time on unused cores"))
-		}
+			}
 		for (rep in sequence(numberLoops)) {
 			trueFreeValuesANDSummaryValues<-rbind(trueFreeValuesANDSummaryValues,
-				foreach(1:numberSimsPerLoop, .combine=rbind) %dopar% simulateWithPriors(phy=phy,  taxon.df=taxon.df,
+				foreach(1:numberSimsPerLoop, .combine=rbind) %dopar% simulateWithPriors(phy=phy,  taxonDF=taxonDF,
 					startingPriorsValues=startingPriorsValues, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues,
 					startingPriorsFns=startingPriorsFns, intrinsicPriorsFns=intrinsicPriorsFns, extrinsicPriorsFns=extrinsicPriorsFns,  giveUpAttempts=giveUpAttempts,
-					freevector=freevector, timeStep=timeStep, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, verbose=verbose, checks=FALSE))
+					freevector=freevector, timeStep=timeStep, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, verbose=verboseNested, checks=FALSE))
 			save(trueFreeValuesANDSummaryValues,file=checkpointFileName)
 			message(paste("Just finished",dim(trueFreeValuesANDSummaryValues)[1],"of",nrepSim,"simulations; progress so far saved in",checkpointFileName))
-		}
+			}
 		trueFreeValuesANDSummaryValues<-rbind(trueFreeValuesANDSummaryValues,
-			foreach(1:numberSimsAfterLastCheckpoint, .combine=rbind) %dopar% simulateWithPriors(phy=phy,  taxon.df=taxon.df,
+			foreach(1:numberSimsAfterLastCheckpoint, .combine=rbind) %dopar% simulateWithPriors(phy=phy,  taxonDF=taxonDF,
 				startingPriorsValues=startingPriorsValues, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues,
 				startingPriorsFns=startingPriorsFns, intrinsicPriorsFns=intrinsicPriorsFns, extrinsicPriorsFns=extrinsicPriorsFns,  giveUpAttempts=giveUpAttempts,
-				freevector=freevector, timeStep=timeStep, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, verbose=verbose, checks=FALSE))
+				freevector=freevector, timeStep=timeStep, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, verbose=verboseNested, checks=FALSE))
 	}
 	attr(trueFreeValuesANDSummaryValues,"freevector")<-freevector
 	return(trueFreeValuesANDSummaryValues)

@@ -29,21 +29,16 @@ genRate<-c(0.01)
 ancState<-c(10)
 
 #Simple Brownian motion
-simCharOut<-doSimulation(
+simChar<-doSimulation(
 	phy=tree,
 	intrinsicFn=brownianIntrinsic,
 	extrinsicFn=nullExtrinsic,
 	startingValues=ancState, #root state
 	intrinsicValues=genRate,
 	extrinsicValues=c(0),
-	generation.time=100000,
-	saveHistory=FALSE)
+	generation.time=100000)
 
-# clean for use with doRun
-simChar<-simCharOut[,"statesmatrix",drop=FALSE]
-rownames(simChar)<-tree$tip.label[simCharOut$taxonid]
-
-# NOTE: the example analyses below sample too few particles, 
+# NOTE: the example analyses below sample too few particles,
 	# over too few steps, with too few starting simulations
 	# - all for the sake of examples that reasonably test the functions
 
@@ -62,7 +57,6 @@ results<-doRun_prc(
   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
   generation.time=100000,
   standardDevFactor=0.2,
-  plot=FALSE,
   StartSims=10,
   epsilonProportion=0.7,
   epsilonMultiplier=0.7,

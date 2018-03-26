@@ -41,7 +41,7 @@ test_that("simulateWithPriors works", {
     checkpointFreq = 24,
 	verbose = FALSE,
 	freevector = NULL,
-    taxon.df = NULL
+    taxonDF = NULL
 	#,niter.brown = 25, niter.lambda = 25,niter.delta = 25, niter.OU = 25, niter.white = 25
 	)
 	#)

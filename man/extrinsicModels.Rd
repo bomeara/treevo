@@ -57,7 +57,7 @@ The input parameters for this model are:
 \code{everyoneDisplacementExtrinsic} params = sd, springK, maximum force
 
 \code{ExponentiallyDecayingPushExtrinsic} describes a model of extrinsic trait evolution where the character
-values of a focal taxon is 'pushed' away from other taxa with similar values, but the force of that 'push' 
+values of a focal taxon is 'pushed' away from other taxa with similar values, but the force of that 'push'
 exponentially decays as lineages diverge and their character values become less similar.
 
 The input parameters for this model are:
@@ -73,43 +73,37 @@ tree$edge.length<-tree$edge.length*20
 
 #No trait evolution except due to
 	# character displacement due to nearest neighbor taxon
-char<-doSimulationForPlotting(
+char<-doSimulation(
 	phy=tree,
 	intrinsicFn=nullIntrinsic,
 	extrinsicFn=nearestNeighborDisplacementExtrinsic,
 	startingValues=c(10), #root state
 	intrinsicValues=c(0),
 	extrinsicValues=c(0.1,0.1,0.1),
- generation.time=100000,
-	plot=TRUE,
-	saveHistory=FALSE)
+ generation.time=100000)
 
 #Similarly, no trait evolution except due to
 	# character displacement from all other taxa in the clade
-char<-doSimulationForPlotting(
+char<-doSimulation(
 	phy=tree,
 	intrinsicFn=nullIntrinsic,
 	extrinsicFn=everyoneDisplacementExtrinsic,
 	startingValues=c(10), #root state
 	intrinsicValues=c(0),
 	extrinsicValues=c(0.1,0.1,0.1),
-	generation.time=100000,
-	plot=TRUE,
-	saveHistory=FALSE)
+	generation.time=100000)
 
 # A variant where force of character displacement decays exponentially
 		# as lineages become more different
-char<-doSimulationForPlotting(
+char<-doSimulation(
 	phy=tree,
 	intrinsicFn=nullIntrinsic,
 	extrinsicFn=ExponentiallyDecayingPushExtrinsic,
 	startingValues=c(10), #root state
 	intrinsicValues=c(0),
 	extrinsicValues=c(0.1,0.1,2),
-	generation.time=100000,
-	plot=TRUE,
-	saveHistory=FALSE)
-} 
+	generation.time=100000)
+}
 }
 \author{
 Brian O'Meara and Barb Banbury

@@ -61,7 +61,7 @@ pairwiseESS<-function(particleDataFrame) {
 					runNames<-append(runNames, run)
 				}
 			}
-			ESS[[combination]]<-effectiveSize(data2[,7:dim(data2)[2]])
+			ESS[[combination]]<-coda::effectiveSize(data2[,7:dim(data2)[2]])
 			names(ESS)[[combination]]<-paste(runNames, collapse=".")
 			ESSmatrix[,combination]<-c(as.numeric(ESS[[combination]]))
 			colnames(ESSmatrix)[combination]<-paste(runNames, collapse=".")

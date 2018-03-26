@@ -9,7 +9,7 @@ simulateWithPriors(phy = NULL, intrinsicFn, extrinsicFn, startingPriorsFns,
   startingPriorsValues, intrinsicPriorsFns, intrinsicPriorsValues,
   extrinsicPriorsFns, extrinsicPriorsValues, generation.time = 1000,
   TreeYears = max(branching.times(phy)) * 1e+06, timeStep = NULL,
-  giveUpAttempts = 10, verbose = FALSE, checks = TRUE, taxon.df = NULL,
+  giveUpAttempts = 10, verbose = FALSE, checks = TRUE, taxonDF = NULL,
   freevector = NULL)
 
 parallelSimulateWithPriors(nrepSim, multicore, coreLimit, phy, intrinsicFn,
@@ -17,8 +17,8 @@ parallelSimulateWithPriors(nrepSim, multicore, coreLimit, phy, intrinsicFn,
   intrinsicPriorsValues, extrinsicPriorsFns, extrinsicPriorsValues,
   generation.time = 1000, TreeYears = max(branching.times(phy)) * 1e+06,
   timeStep = NULL, checkpointFile = NULL, checkpointFreq = 24,
-  verbose = FALSE, freevector = NULL, taxon.df = NULL,
-  giveUpAttempts = 10)
+  verbose = TRUE, verboseNested = FALSE, freevector = NULL,
+  taxonDF = NULL, giveUpAttempts = 10)
 }
 \arguments{
 \item{phy}{A phylogenetic tree, in package \code{ape}'s \code{phylo} format.}
@@ -48,7 +48,7 @@ use for extrinsic function parameters: can be one of \code{"fixed"}, \code{"unif
 \item{extrinsicPriorsValues}{Matrix with number of columns equal to the number of parameters to pass
 to the extrinsic function and number of rows equal to two (representing two parameters to pass to prior distribution).}
 
-\item{generation.time}{The number of years per generation. This sets the coarseness of the simulation; if it's set to 1000, 
+\item{generation.time}{The number of years per generation. This sets the coarseness of the simulation; if it's set to 1000,
 for example, the population's trait values change every 1000 calender years. Note that this is in calender years (see description
 for argument \code{TreeYears}), and not in millions of years (as is typical for dated trees in macroevolutionary studies).
 Thus, if a branch is 1 million-year time-unit long, and a user applies the default \code{generation.time = 1000},
@@ -65,12 +65,12 @@ See documentation for \code{\link{doSimulation}} for further details.}
 simulated along branches, relative to a rescaled tree where the root to furthest tip distance is 1. For example,
 \code{timeStep = 0.01} of would mean 100 (i.e., 1 / 0.01) evolutionary changes would be expected to occur from
 the root to the furthest tip. (Note that the real number simulated will be much less, because simulations start
-over at each branching node.) Ideally, \code{timeStep} (or its effective value, via other arguments) should be 
+over at each branching node.) Ideally, \code{timeStep} (or its effective value, via other arguments) should be
 as short as is computationally possible.
 Typically \code{NULL} by default and
 determined internally as follows: \code{timeStep = generation.time / TreeYears}.
 Can be provided a value as an alternative to using arguments \code{generation.time}
-and \code{TreeYears}, which would then be overridden. 
+and \code{TreeYears}, which would then be overridden.
 See documentation for \code{\link{doSimulation}} for further details.}
 
 \item{giveUpAttempts}{Value for when to stop the analysis if \code{NA} values are present.}
@@ -82,7 +82,7 @@ when run in parallel by \code{parallelSimulateWithPriors}, and instead is only c
 argument also controls whether \code{simulateWithPriors} assigns \code{freevector} as an attribute to the
 output produced.}
 
-\item{taxon.df}{A data.frame containing data on nodes (both tips and internal nodes) output by various internal functions.
+\item{taxonDF}{A data.frame containing data on nodes (both tips and internal nodes) output by various internal functions.
 Can be supplied as input to spead up repeated calculations, but by default is
 \code{NULL}, which instead forces a calculation from input \code{phy}.}
 
@@ -101,6 +101,8 @@ If neither package is installed, this function will fail if \code{multicore=TRUE
 \item{checkpointFile}{Optional file name for checkpointing simulations}
 
 \item{checkpointFreq}{Saving frequency for checkpointing}
+
+\item{verboseNested}{Should looped runs of \code{simulateWithPriors} be verbose?}
 }
 \value{
 Function \code{simulateWithPriors} returns a vector of \code{trueFreeValues},
@@ -108,22 +110,22 @@ the true generating parameters used in the simulation
 (a set of values as long as the number of freely varying parameters), concatenated with a set of summary statistics for
 the simulation. Function \code{parallelSimulateWithPriors} returns a matrix of such vectors bound
 together, with each row representing a different simulation. By default,
-both functions also assign a logical vector named \code{freevector}, indicating the total number of 
+both functions also assign a logical vector named \code{freevector}, indicating the total number of
 parameters and which parameters are freely-varying (have \code{TRUE} values), as an attribute of
 the output.
 }
 \description{
 The \code{simulateWithPriors} function pulls parameters from prior distributions and conducts a single simulation of
-continuous trait evolution (using \code{\link{doSimulation}} functions), returning useful summary statistics for ABC.
+continuous trait evolution (using the \code{\link{doSimulation}} function), returning useful summary statistics for ABC.
 \code{parallelSimulateWithPriors} is a wrapper function for \code{simulateWithPriors} that allows for multithreading
 and checkpointing. This family of functions is mostly used as internal components, generating simulations
 within ABC analyses using the \code{\link{doRun}} functions. See \emph{Note} below.
 }
 \note{
-The \code{\link{simulateWithPriors}} functions are effectively the engine that powers the \code{\link{doRun}}
-functions, while the \code{\link{doSimulation}} functions are the pistons within the \code{\link{simulateWithPriors}} engine.
+The \code{\link{simulateWithPriors}} functions are effectively the engine that powers the  \code{\link{doRun}}
+functions, while the \code{\link{doSimulation}} function is the pistons within the \code{\link{simulateWithPriors}} engine.
 In general, most users will just drive the car - they will just use \code{\link{doRun}}, but some users may
-want to use \code{\link{simulateWithPriors}} or \code{\link{doSimulation}} functions to do various simulations.
+want to use \code{\link{simulateWithPriors}} or \code{\link{doSimulation}} to do various simulations.
 }
 \examples{
 \donttest{
@@ -137,7 +139,7 @@ tree$edge.length<-tree$edge.length*20
 # NOTE: the example analyses involve too few simulations, with coarse time-units
 	# - all for the sake of examples that reasonably test the functions
 	
-simData<-simulateWithPriors(phy=tree, 
+simData<-simulateWithPriors(phy=tree,
   intrinsicFn=brownianIntrinsic,
   extrinsicFn=nullExtrinsic,
   startingPriorsFns="normal",
@@ -148,13 +150,13 @@ simData<-simulateWithPriors(phy=tree,
   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
   generation.time=100000,
 	 freevector=NULL, 	
-	 giveUpAttempts=10, 
-	 verbose=TRUE) 
+	 giveUpAttempts=10,
+	 verbose=TRUE)
 
 simData
 
-simDataParallel<-parallelSimulateWithPriors( 
-  nrepSim=2, multicore=FALSE, coreLimit=1, 
+simDataParallel<-parallelSimulateWithPriors(
+  nrepSim=2, multicore=FALSE, coreLimit=1,
   phy=tree,
   intrinsicFn=brownianIntrinsic,
   extrinsicFn=nullExtrinsic,
@@ -163,13 +165,13 @@ simDataParallel<-parallelSimulateWithPriors(
   intrinsicPriorsFns=c("exponential"),
   intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
   extrinsicPriorsFns=c("fixed"),
-  extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE), 
+  extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
   generation.time=100000,
   checkpointFile=NULL, checkpointFreq=24,
-  verbose=TRUE, freevector=NULL, taxon.df=NULL) 
+  verbose=TRUE, freevector=NULL, taxonDF=NULL)
 
 simDataParallel
- 
+
 }
 
 }

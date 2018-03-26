@@ -23,12 +23,12 @@ test_that("methodsPLS works", {
 	extrinsicPriorsFns = c("fixed"),
     extrinsicPriorsValues = matrix(c(0, 0), nrow = 2,
       byrow = FALSE),
-	generation.time = 100000,
+	generation.time = 300000,
 	checkpointFile = NULL,
     checkpointFreq = 24,
 	verbose = FALSE,
 	freevector = NULL,
-    taxon.df = NULL
+    taxonDF = NULL
 	#,niter.brown = 25,
 	#niter.lambda = 25,
     #niter.delta = 25,

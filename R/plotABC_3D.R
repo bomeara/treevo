@@ -8,6 +8,9 @@
 #' distance, plotting particle parantage, and plotting the real parameter
 #' values (if known).
 #' 
+#' As of version 0.6.0, rejected particles are not saved for outputting by the parallelized algorithm,
+#' and thus they are no longer displayed by this function, unlike previous versions.
+
 
 #' @note
 #' This function requires access functions \code{triangulate} and the \code{as} method for
@@ -83,21 +86,24 @@ plotABC_3D<-function(particleDataFrame, parameter, show.particles="none",
 		
 	x<-particleDataFrame	
 	param.position<-parameter
-	nParticles<-dim(subset(particleDataFrame[which(particleDataFrame$weight>0),], generation==max(particleDataFrame$generation)))[1]
+	pdfMaxGen<-particleDataFrame[particleDataFrame$weight>0  & particleDataFrame$generation==max(particleDataFrame$generation),]
+	nParticles<-dim(pdfMaxGen)[1]
 	nparams<-dim(x)[2]-6
-	
+	#
 	q<-vector() #vector of x vals
 	r<-vector() #vector of y vals
 	s<-vector() #generation each x-y coord is found
-
-	if (max(subset(particleDataFrame[which(particleDataFrame$weight>0),])[,param.position])-min(
-		subset(particleDataFrame[which(particleDataFrame$weight>0),])[,param.position])!=0) {
+	#
+	rangeParam<-(max(particleDataFrame[particleDataFrame$weight>0,param.position])
+		-min(particleDataFrame[particleDataFrame$weight>0,param.position]))
+	#
+	if (rangeParam != 0) {
 			v<-vector("list", max(particleDataFrame$generation))
 			for (i in 1:max(particleDataFrame$generation)){
 				which.gen<-(i+1)-1 # the hell is this?
-				v[[i]]<-density(subset(particleDataFrame[which(particleDataFrame$weight>0),], generation==i)[,param.position],
-					weights=nParticles*subset(particleDataFrame[which(particleDataFrame$weight>0),],
-					generation==i)[,6]/sum(nParticles*subset(particleDataFrame[which(particleDataFrame$weight>0),], generation==i)[,6]))
+				pdfParam<-particleDataFrame[(particleDataFrame$weight>0 & particleDataFrame$generation==i),param.position]
+				pdfSix<-particleDataFrame[particleDataFrame$weight>0 & particleDataFrame$generation==i,6]
+				v[[i]]<-density(pdfParam,weights=nParticles*pdfSix/sum(nParticles*pdfSix))
 				q<-c(q, v[[i]]$x)
 				r<-c(r, v[[i]]$y)
 				#s<-c(s, v[[i]]$x)	# return a$generation which v[[i]]
@@ -151,9 +157,12 @@ plotABC_3D<-function(particleDataFrame, parameter, show.particles="none",
 		
 			
 		show.particles<-match.arg(arg=show.particles, choices=c("none", "weights", "distance"),several.ok=FALSE)
-		kept<-subset(particleDataFrame[which(particleDataFrame$id>0),])[,]	
-		reject<-subset(particleDataFrame[which(particleDataFrame$id<0),])[,]
-		short.kept<-subset(kept[which(kept$generation>1),])[,]
+		#kept<-subset(particleDataFrame[which(particleDataFrame$id>0),])[,]	
+		#reject<-subset(particleDataFrame[which(particleDataFrame$id<0),])[,]
+		#short.kept<-subset(kept[which(kept$generation>1),])[,]
+		#
+		kept<-particleDataFrame[particleDataFrame$id>0,]
+		short.kept<-kept[kept$generation>1,]
 
 		if (show.particles=="none"){
 			message("Note: Currently not plotting particles.  To plot particles modify the show.particles= argument.")

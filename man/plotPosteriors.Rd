@@ -15,9 +15,9 @@ be layered over each other to check for repeatability.  The relative grayscale o
 posterior distributions in the plot depends on their total number of runs.}
 
 \item{priorsMat}{A \code{PriorMatrix} object s returned by TreEvo \code{\link{doRun}} functions. Can be a single such matrix
-or a list of matrices from a series of analyses. 
+or a list of matrices from a series of analyses.
 If the \code{PriorMatrix} is a list of matrices, only the first matrix will be
-evaluated, and all other matrices will be ignored.  
+evaluated, and all other matrices will be ignored.
 In other words, prior matrices are expected to be identical for all runs considered to the first matrix given.}
 
 \item{realParam}{If \code{TRUE}, this function will plot line segments where real

@@ -2,28 +2,12 @@
 % Please edit documentation in R/doSimulation.R
 \name{doSimulation}
 \alias{doSimulation}
-\alias{doSimulationForPlotting}
-\alias{doSimulationWithPossibleExtinction}
 \title{Discrete-Time Character Simulation}
 \usage{
 doSimulation(phy = NULL, intrinsicFn, extrinsicFn, startingValues,
   intrinsicValues, extrinsicValues, generation.time = 1000,
   TreeYears = max(branching.times(phy)) * 1e+06, timeStep = NULL,
-  saveHistory = FALSE, saveRealParams = FALSE, jobName = "",
-  taxon.df = NULL)
-
-doSimulationForPlotting(phy = NULL, intrinsicFn, extrinsicFn, startingValues,
-  intrinsicValues, extrinsicValues, generation.time = 1000,
-  TreeYears = max(branching.times(phy)) * 1e+06, timeStep = NULL,
-  plot = FALSE, savePlot = FALSE, saveHistory = FALSE,
-  saveRealParams = FALSE, jobName = "", taxon.df = NULL)
-
-doSimulationWithPossibleExtinction(phy = NULL, intrinsicFn, extrinsicFn,
-  startingValues, intrinsicValues, extrinsicValues, generation.time = 1000,
-  TreeYears = max(branching.times(phy)) * 1e+06, timeStep = NULL,
-  saveHistory = FALSE, saveRealParams = FALSE, jobName = "",
-  maxAttempts = 100, returnAll = FALSE, verbose = FALSE,
-  reject.NaN = TRUE, taxon.df = NULL, checkTimeStep = TRUE)
+  returnAll = FALSE, taxonDF = NULL, checkTimeStep = TRUE)
 }
 \arguments{
 \item{phy}{A phylogenetic tree, in package \code{ape}'s \code{phylo} format.}
@@ -43,7 +27,7 @@ intrinsic model.}
 \item{extrinsicValues}{Vector of values corresponding to the parameters of the
 extrinsic model.}
 
-\item{generation.time}{The number of years per generation. This sets the coarseness of the simulation; if it's set to 1000, 
+\item{generation.time}{The number of years per generation. This sets the coarseness of the simulation; if it's set to 1000,
 for example, the population's trait values change every 1000 calender years. Note that this is in calender years (see description
 for argument \code{TreeYears}), and not in millions of years (as is typical for dated trees in macroevolutionary studies).
 Thus, if a branch is 1 million-year time-unit long, and a user applies the default \code{generation.time = 1000},
@@ -60,39 +44,19 @@ See documentation for \code{\link{doSimulation}} for further details.}
 simulated along branches, relative to a rescaled tree where the root to furthest tip distance is 1. For example,
 \code{timeStep = 0.01} of would mean 100 (i.e., 1 / 0.01) evolutionary changes would be expected to occur from
 the root to the furthest tip. (Note that the real number simulated will be much less, because simulations start
-over at each branching node.) Ideally, \code{timeStep} (or its effective value, via other arguments) should be 
+over at each branching node.) Ideally, \code{timeStep} (or its effective value, via other arguments) should be
 as short as is computationally possible.
 Typically \code{NULL} by default and
 determined internally as follows: \code{timeStep = generation.time / TreeYears}.
 Can be provided a value as an alternative to using arguments \code{generation.time}
-and \code{TreeYears}, which would then be overridden. 
+and \code{TreeYears}, which would then be overridden.
 See documentation for \code{\link{doSimulation}} for further details.}
-
-\item{saveHistory}{If \code{TRUE}, saves the character history throughout the simulation.
-When \code{saveHistory} is \code{TRUE}, processor time will increase quite a bit.}
-
-\item{saveRealParams}{Saves \code{intrinsicValues} and \code{extrinsicValues} as both a
-matrix and a vector to an external .Rdata file.}
-
-\item{jobName}{Optional name for the job.}
-
-\item{taxon.df}{A data.frame containing data on nodes (both tips and internal nodes) output by various internal functions.
-Can be supplied as input to spead up repeated calculations, but by default is
-\code{NULL}, which instead forces a calculation from input \code{phy}.}
-
-\item{plot}{Will create a new interactive window that plots character values
-throughout the history of the tree.}
-
-\item{savePlot}{Saves the character tree using \code{jobName}.}
-
-\item{maxAttempts}{How many attempts should be tried if a run produces an \code{NA} result? If \code{maxAttempts}
-is reached without producing a non-\code{NA} result, the simulation is terminated.}
 
 \item{returnAll}{If \code{TRUE}, the output returned is a \code{data.frame} containing the values at each node from the simulation.}
 
-\item{verbose}{If \code{TRUE}, gives messages about how the simulation is progessing via \code{message}.}
-
-\item{reject.NaN}{If \code{TRUE}, stop run if any simulated value is \code{NaN}.}
+\item{taxonDF}{A data.frame containing data on nodes (both tips and internal nodes) output by various internal functions.
+Can be supplied as input to spead up repeated calculations, but by default is
+\code{NULL}, which instead forces a calculation from input \code{phy}.}
 
 \item{checkTimeStep}{If \code{TRUE}, warnings will be issued if \code{TimeStep} is too short.}
 }
@@ -103,7 +67,7 @@ the most recent divergence event for that lineage), and \code{statesmatrix} (the
 If \code{returnAll = TRUE}, the raw \code{data.frame} from the simulation will instead be returned.
 }
 \description{
-The \code{doSimulation} family of functions evolve continuous characters under a discrete time process.
+The function \code{doSimulation} evolves continuous characters under a discrete time process.
 These functions are mainly used as internal components, generating simulations
 within ABC analyses using the \code{\link{doRun}} functions. See \emph{Note} below.
 }
@@ -117,8 +81,6 @@ an evolutionary change in trait values every 1000 years). Note that the real num
 less, because simulations start ver at each branching node, but intervals between changes should be so fine that this
 should be negligible (related, the results should be independent of your choice for \code{generation.time} or \code{timeStep}).
 We recommend that the effective \code{timeStep} should be  as short as is computationally possible.
-
-When \code{saveHistory} is \code{TRUE}, processor time will increase quite a bit.
 \code{SaveRealParams} is useful for tracking the \emph{real} true values if simulating
 data to test the performance of ABC analyses.  It is not useful for ABC analyses of empirical data.
 }
@@ -136,17 +98,18 @@ tree<-rcoal(20)
 tree$edge.length<-tree$edge.length*20
 
 #Simple Brownian motion
+
 char<-doSimulation(
 	phy=tree,
- generation.time=100000,
+	generation.time=100000,
 	intrinsicFn=brownianIntrinsic,
 	extrinsicFn=nullExtrinsic,
 	startingValues=c(10), #root state
 	intrinsicValues=c(0.01),
-	extrinsicValues=c(0),
-	saveHistory=FALSE)
+	extrinsicValues=c(0))
 
 #Character displacement model with minimum bound
+
 char<-doSimulation(
 	phy=tree,
  generation.time=100000,
@@ -154,47 +117,7 @@ char<-doSimulation(
 	extrinsicFn=ExponentiallyDecayingPushExtrinsic,
 	startingValues=c(10), #root state
 	intrinsicValues=c(0.05, 10, 0.01),
-	extrinsicValues=c(0, .1, .25),
-	saveHistory=FALSE)
-
-#Simple Brownian motion
-char<-doSimulationForPlotting(
-	phy=tree,
- generation.time=100000,
-	intrinsicFn=brownianIntrinsic,
-	extrinsicFn=nullExtrinsic,
-	startingValues=c(10), #root state
-	intrinsicValues=c(0.01),
-	extrinsicValues=c(0),
-	plot=FALSE,
-	saveHistory=FALSE)
-
-
-#Character displacement model with minimum bound
-char<-doSimulationForPlotting(
-	phy=tree,
- generation.time=100000,
-	intrinsicFn=boundaryMinIntrinsic,
-	extrinsicFn=ExponentiallyDecayingPushExtrinsic,
-	startingValues=c(10), #root state
-	intrinsicValues=c(0.05, 10, 0.01),
-	extrinsicValues=c(0, 0.1, 0.25),
-	plot=TRUE,
-	saveHistory=FALSE)
-
-
-# with extinction
-
-#Simple Brownian motion
-char<-doSimulationWithPossibleExtinction(
-	phy=tree,
- generation.time=100000,
-	intrinsicFn=brownianIntrinsic,
-	extrinsicFn=nullExtrinsic,
-	startingValues=c(10), #root state
-	intrinsicValues=c(0.01),
-	extrinsicValues=c(0),
-	saveHistory=FALSE)
+	extrinsicValues=c(0, .1, .25))
 }
 }
 \author{
