@@ -38,6 +38,9 @@ simParticlePRCParallel<-function(
 			)
 		#)
 		)
+	# stop multicore processes
+	foreach::registerDoSEQ()
+	#
 	return(newParticleList)
 	}	
 

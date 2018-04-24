@@ -6,30 +6,39 @@ registerMulticoreEnv<-function(nCore){
     hasDoMC<-requireNamespace("doMC", quietly = TRUE)			
 	#
 	if(hasDoMC){
-		doMC::registerDoMC(nCore)	#set number of cores back to 1
+		cluster<-doMC::registerDoMC(nCore)	#set number of cores back to 1
 	}else{
 		if(hasDoParallel){
-			doParallel::registerDoParallel(nCore)
+			cluster<-doParallel::registerDoParallel(nCore)
 		}else{
 			stop("Argument multicore requires either suggested package 'doMC' or package 'doParallel' installed")
 			}
 		}
+	#endFun<-function(){
+	#	parallel:stopCluster(nCore)
+	#	foreach::registerDoSEQ()
+	#	}
 	}	
 
 setupMulticore<-function(multicore,nSim,coreLimit){
 	# set cores to 1 as a placeholder
 	cores<-1
+	#
 	if (multicore) {
 		if (is.na(coreLimit)){
-			registerMulticoreEnv()
-			cores<-min(nSim,getDoParWorkers())
+			cores<-c(nSim,parallel:detectCores()) #getDoParWorkers()
 		}else{
-			registerMulticoreEnv(coreLimit)
-			cores<-c(nSim,coreLimit)
+			# don't allow it to take more cores than exist
+			cores<-c(nSim,coreLimit,parallel:detectCores())
 			}
+		cores<-min(cores)
+		}
+	#
+	if(cores>1){
+		registerMulticoreEnv(cores)
 	}else{
 		# if not multicore, need to setup registerDoSEQ so that foreach doesn't complain
-		registerDoSEQ()
+		foreach::registerDoSEQ()
 		}
 	return(cores)
 	}
