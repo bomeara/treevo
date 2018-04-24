@@ -35,6 +35,11 @@ setupMulticore<-function(multicore,nSim,coreLimit){
 		}
 	#
 	if(cores>1){
+		platform<-.Platform$GUI
+		if(.Platform$GUI!="Rterm"){
+			warning(paste0("Your platform appears to be ",.Platform$GUI,
+				"\n Multicore processes are ideally done in Rterm, preferably in BATCH")
+			}
 		registerMulticoreEnv(cores)
 	}else{
 		# if not multicore, need to setup registerDoSEQ so that foreach doesn't complain
