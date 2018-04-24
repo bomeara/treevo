@@ -15,7 +15,7 @@ registerMulticoreEnv<-function(nCore){
 			}
 		}
 	#endFun<-function(){
-	#	parallel:stopCluster(nCore)
+	#	parallel::stopCluster(nCore)
 	#	foreach::registerDoSEQ()
 	#	}
 	}	
@@ -26,19 +26,19 @@ setupMulticore<-function(multicore,nSim,coreLimit){
 	#
 	if (multicore) {
 		if (is.na(coreLimit)){
-			cores<-c(nSim,parallel:detectCores()) #getDoParWorkers()
+			cores<-c(nSim,parallel::detectCores()) #getDoParWorkers()
 		}else{
 			# don't allow it to take more cores than exist
-			cores<-c(nSim,coreLimit,parallel:detectCores())
+			cores<-c(nSim,coreLimit,parallel::detectCores())
 			}
 		cores<-min(cores)
 		}
 	#
 	if(cores>1){
 		platform<-.Platform$GUI
-		if(.Platform$GUI!="Rterm"){
-			warning(paste0("Your platform appears to be ",.Platform$GUI,
-				"\n Multicore processes are ideally done in Rterm, preferably in BATCH")
+		if(platform!="Rterm"){
+			warning(paste0("Your platform appears to be ",platform,
+				"\n Multicore processes are ideally done in Rterm, preferably in BATCH"))
 			}
 		registerMulticoreEnv(cores)
 	}else{
