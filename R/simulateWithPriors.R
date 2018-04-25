@@ -330,6 +330,11 @@ parallelSimulateWithPriors<-function(
 				startingPriorsFns=startingPriorsFns, intrinsicPriorsFns=intrinsicPriorsFns, extrinsicPriorsFns=extrinsicPriorsFns,  giveUpAttempts=giveUpAttempts,
 				freevector=freevector, timeStep=timeStep, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, verbose=verboseNested, checks=FALSE))
 	}
+	if(multicore){
+		# stop multicore processes
+		foreach::registerDoSEQ()
+		}
+	#
 	attr(trueFreeValuesANDSummaryValues,"freevector")<-freevector
 	return(trueFreeValuesANDSummaryValues)
 }
