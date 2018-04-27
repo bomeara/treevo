@@ -121,7 +121,7 @@ doRun_rej<-function(
 		startingPriorsValues=startingPriorsValues, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues,
 		startingPriorsFns=startingPriorsFns, intrinsicPriorsFns=intrinsicPriorsFns, extrinsicPriorsFns=extrinsicPriorsFns,
 		freevector=freevector, timeStep=timeStep, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn,
-		multicore=multicore, checkpointFile=checkpointFile, checkpointFreq=checkpointFreq,
+		multicore=multicore, checkpointFile=checkpointFile, checkpointFreq=checkpointFreq, 
 		#niter.brown=niter.brown.g, niter.lambda=niter.lambda.g, niter.delta=niter.delta.g, niter.OU=niter.OU.g, niter.white=niter.white.g
 		)
 	#

@@ -239,43 +239,45 @@ parallelSimulateWithPriors<-function(
 	intrinsicFn, extrinsicFn, startingPriorsFns, startingPriorsValues,
 	intrinsicPriorsFns, intrinsicPriorsValues, extrinsicPriorsFns, extrinsicPriorsValues,
 	generation.time=1000, TreeYears=max(branching.times(phy)) * 1e6, timeStep=NULL, #timeStep=1e-04,
-	checkpointFile=NULL, checkpointFreq=24, verbose=TRUE, verboseNested=FALSE, freevector=NULL, taxonDF=NULL, giveUpAttempts=10
+	checkpointFile=NULL, checkpointFreq=24, verbose=TRUE, checkTimeStep=TRUE,
+	verboseNested=FALSE, freevector=NULL, taxonDF=NULL, giveUpAttempts=10
 	#,niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25
 	) {
-	
+	#
 	#library(doMC, quietly=TRUE)
 	#library(foreach, quietly=TRUE)
-	
+	#
+	# #get values for arguments that can be NULL if not provided
+	#
 	if(is.null(timeStep)){
 		timeStep<-generation.time/TreeYears
 		}
-	
-	# checks
-	#checkNiter(niter.brown=niter.brown, niter.lambda=niter.lambda,
-	#	niter.delta=niter.delta, niter.OU=niter.OU, niter.white=niter.white)
-		
+	#
 	if(is.null(freevector)){
 		freevector<-getFreeVector(startingPriorsFns=startingPriorsFns, startingPriorsValues=startingPriorsValues,
 					intrinsicPriorsFns=intrinsicPriorsFns, intrinsicPriorsValues=intrinsicPriorsValues,
 					extrinsicPriorsFns=extrinsicPriorsFns, extrinsicPriorsValues=extrinsicPriorsValues)
 		}
-	
+	#
 	if(is.null(taxonDF)){
 		taxonDF <- getTaxonDFWithPossibleExtinction(phy)
 		}
-
-	# check TimeStep
-	numberofsteps<-max(taxonDF$endTime)/timeStep
-	mininterval<-min(taxonDF$endTime - taxonDF$startTime)
 	#
-	if (floor(mininterval/timeStep)<50 & floor(mininterval/timeStep)>=3) {
-		message(paste0("You have only ", floor(mininterval/timeStep), " timeSteps on the shortest branch in this dataset but should probably have a lot more if you expect change on this branch. Please consider decreasing timeStep to no more than ",
-			signif(mininterval/50,2)))
+	#################################################
+	# check TimeStep
+	if(checkTimeStep){
+		numberofsteps<-max(taxonDF$endTime)/timeStep
+		mininterval<-min(taxonDF$endTime - taxonDF$startTime)
+		#
+		if (floor(mininterval/timeStep)<50 & floor(mininterval/timeStep)>=3) {
+			message(paste0("You have only ", floor(mininterval/timeStep), " timeSteps on the shortest branch in this dataset but should probably have a lot more if you expect change on this branch. Please consider decreasing timeStep to no more than ",
+				signif(mininterval/50,2)))
 		}
-	if (floor(mininterval/timeStep)<3) {
-		message(paste0("You have only ", floor(mininterval/timeStep), " timeSteps on the shortest branch in this dataset but should probably have a lot more if you expect change on this branch. Please consider decreasing timeStep to no more than ",
-			signif(mininterval/50,2)," or at the very least ", signif(mininterval/3,2)))
-		#	timeStep <- mininterval/3
+		if (floor(mininterval/timeStep)<3) {
+			message(paste0("You have only ", floor(mininterval/timeStep), " timeSteps on the shortest branch in this dataset but should probably have a lot more if you expect change on this branch. Please consider decreasing timeStep to no more than ",
+				signif(mininterval/50,2)," or at the very least ", signif(mininterval/3,2)))
+			#	timeStep <- mininterval/3
+			}
 		}
 	#	
 	# multicore

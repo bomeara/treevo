@@ -303,18 +303,31 @@ doRun_prc<-function(
 	#
 	edgesRescaled<-phy$edge.length/max(node.depth.edgelength(phy))
 	message("Rescaling edge lengths relative to maximum tip-to-root distance...")
+
+	#
+	minEdgeRescaled<-min(edgesRescaled)
+	minEdgeRescaledNZ<-min(edgesRescaled[edgesRescaled>0])
+	#
+	if(minEdgeRescaled==0){
+		message("The smallest edge length on input tree is ZERO LENGTH...")
+		message(paste0("Edge with smallest rescaled NON-ZERO length on tree is ",minEdgeRescaledNZ," as a proportion of tip-to-root distance"))
+		message(paste0("  This is ",minEdgeRescaledNZ*TreeYears," in the same TreeYears units as used by the input generation.time"))
+	}else{
+		message(paste0("The smallest edge length on input tree is",minEdgeRescaled))
+		message(paste0("  This is ",minEdgeRescaled*TreeYears," in the same TreeYears units as used by the input generation.time"))
+		}
 	#
 	if(max(edgesRescaled) < timeStep) {
 		stop("Tree has *NO* rescaled branches longer than generation.time/TreeYears, no simulated evol change can occur!")
 		}
 	#
-	if(min(edgesRescaled) < timeStep) {
-		warning("Tree has rescaled branches shorter than generation.time/TreeYears; no evol change can be assigned to these, and ML summary stat functions may fail!")
+	if(minEdgeRescaled < timeStep) {
+		warning("Tree has rescaled branches shorter than generation.time/TreeYears; no trait evolution will be simulated on these branches, and thus ML summary stat functions may fail or produce unexpected results.")
 		#message("Tree has zero or nearly zero length branches")
 		}
 	#
 	totalGenerations<-sum(sapply(edgesRescaled,function(x) floor(x/timeStep)))
-	message("Given generation time, a total of ",round(totalGenerations)," generations will occur over this tree")
+	message("Given generation time, a total of ",round(totalGenerations)," generations are expected to occur over this tree")
 	#
 	#splits<-getSimulationSplits(phy) #initialize this info
 	taxonDF <- getTaxonDFWithPossibleExtinction(phy)

@@ -49,8 +49,8 @@ initialSimsPRC<-function(
 		intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, 
 		coreLimit=coreLimit, 
 		multicore=multicore,
-		verbose=FALSE
-		#niter.brown=niter.brown.g, niter.lambda=niter.lambda.g, niter.delta=niter.delta.g, niter.OU=niter.OU.g, niter.white=niter.white.g
+		verbose=FALSE,  
+		checkTimeStep=FALSE
 		)	#)
 	#
 	if(saveData){

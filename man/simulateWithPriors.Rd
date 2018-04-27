@@ -17,8 +17,8 @@ parallelSimulateWithPriors(nrepSim, multicore, coreLimit, phy, intrinsicFn,
   intrinsicPriorsValues, extrinsicPriorsFns, extrinsicPriorsValues,
   generation.time = 1000, TreeYears = max(branching.times(phy)) * 1e+06,
   timeStep = NULL, checkpointFile = NULL, checkpointFreq = 24,
-  verbose = TRUE, verboseNested = FALSE, freevector = NULL,
-  taxonDF = NULL, giveUpAttempts = 10)
+  verbose = TRUE, checkTimeStep = TRUE, verboseNested = FALSE,
+  freevector = NULL, taxonDF = NULL, giveUpAttempts = 10)
 }
 \arguments{
 \item{phy}{A phylogenetic tree, in package \code{ape}'s \code{phylo} format.}
@@ -101,6 +101,8 @@ If neither package is installed, this function will fail if \code{multicore=TRUE
 \item{checkpointFile}{Optional file name for checkpointing simulations}
 
 \item{checkpointFreq}{Saving frequency for checkpointing}
+
+\item{checkTimeStep}{If \code{TRUE}, warnings will be issued if \code{TimeStep} is too short.}
 
 \item{verboseNested}{Should looped runs of \code{simulateWithPriors} be verbose?}
 }
