@@ -29,9 +29,12 @@ data(RaiaCopesRule)
 ```
 
 ```{r,echo=FALSE}
-load.image("treevo_vignette_workspace_presaved.Rdata")
+load("treevo_vignette_workspace_presaved.Rdata")
 ```
 
+```{r}
+ls()
+```
 
 The trees for the three groups examined in this paper all appear to be trees dated to the last appearance times (as opposed to the first appearance time) *and* specifically the end-boundary of the interval containing the last appearance.
 
@@ -64,6 +67,19 @@ plotTraitgram(tree=tree, trait=sutureComplexity,
 plotTraitgram(tree=tree, trait=shellSize,
 	 conf.int=FALSE, main="Ammonite Shell Diameter")
 ```
+
+how small is the smallest branch length, even after extending terminal branches?
+
+```{r}
+
+brlen<-tree$edge.length
+min(brlen)
+
+# in years
+min(brlen)*10^6
+
+```
+
 
 Let's use TreEvo!
 
