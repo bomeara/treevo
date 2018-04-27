@@ -189,7 +189,7 @@
 #'   intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
 #'   extrinsicPriorsFns=c("fixed"),
 #'   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
-#'   generation.time=100000,
+#'   generation.time=10000,
 #'   standardDevFactor=0.2,
 #'   StartSims=10,
 #'   epsilonProportion=0.7,
@@ -217,7 +217,7 @@
 #' 	intrinsicPriorsValues = matrix(c(10, 10), nrow=2, byrow=FALSE), #grep for normal in pkg
 #' 	extrinsicPriorsFns = c("fixed"),
 #' 	extrinsicPriorsValues = matrix(c(0, 0), nrow=2, byrow=FALSE),
-#'	generation.time=100000,
+#'	generation.time=10000,
 #' 	StartSims = 10,
 #' 	jobName = "examplerun_rej",
 #' 	abcTolerance = 0.05,
@@ -309,12 +309,12 @@ doRun_prc<-function(
 	minEdgeRescaledNZ<-min(edgesRescaled[edgesRescaled>0])
 	#
 	if(minEdgeRescaled==0){
-		message("The smallest edge length on input tree is ZERO LENGTH...")
-		message(paste0("Edge with smallest rescaled NON-ZERO length on tree is ",minEdgeRescaledNZ," as a proportion of tip-to-root distance"))
-		message(paste0("  This is ",minEdgeRescaledNZ*TreeYears," in the same TreeYears units as used by the input generation.time"))
+		message("The smallest edge length on the input tree is ZERO LENGTH...")
+		message(paste0("Edge with smallest rescaled NON-ZERO length on tree is ",signif(minEdgeRescaledNZ,2)," as a proportion of tip-to-root distance"))
+		message(paste0("(This is ",signif(minEdgeRescaledNZ*TreeYears,2)," in the same TreeYears units as used for the input generation.time (=",generation.time,"))"))
 	}else{
-		message(paste0("The smallest edge length on input tree is",minEdgeRescaled))
-		message(paste0("  This is ",minEdgeRescaled*TreeYears," in the same TreeYears units as used by the input generation.time"))
+		message(paste0("The smallest edge length on the input tree is ",signif(minEdgeRescaled,2)))
+		message(paste0("(This is ",signif(minEdgeRescaled*TreeYears,2)," in the same TreeYears units as used for the input generation.time (=",generation.time,"))"))
 		}
 	#
 	if(max(edgesRescaled) < timeStep) {

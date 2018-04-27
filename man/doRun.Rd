@@ -225,7 +225,7 @@ resultsPRC<-doRun_prc(
   intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
   extrinsicPriorsFns=c("fixed"),
   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
-  generation.time=100000,
+  generation.time=10000,
   standardDevFactor=0.2,
   StartSims=10,
   epsilonProportion=0.7,
@@ -253,7 +253,7 @@ resultsRej<-doRun_rej(
 	intrinsicPriorsValues = matrix(c(10, 10), nrow=2, byrow=FALSE), #grep for normal in pkg
 	extrinsicPriorsFns = c("fixed"),
 	extrinsicPriorsValues = matrix(c(0, 0), nrow=2, byrow=FALSE),
-generation.time=100000,
+generation.time=10000,
 	StartSims = 10,
 	jobName = "examplerun_rej",
 	abcTolerance = 0.05,
