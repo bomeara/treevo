@@ -12,7 +12,7 @@
 
 <meta name="author" content="David W. Bapst" />
 
-<meta name="date" content="2018-04-27" />
+<meta name="date" content="2018-04-30" />
 
 <title>Analyzing Trait Evolution with Approximate Bayesian Computation in TreEvo</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Analyzing Trait Evolution with Approximate Bayesian Computation in TreEvo</h1>
 <h4 class="author"><em>David W. Bapst</em></h4>
-<h4 class="date"><em>2018-04-27</em></h4>
+<h4 class="date"><em>2018-04-30</em></h4>
 
 
 
@@ -170,6 +170,976 @@ charData&lt;-<span class="kw">matrix</span>(sutureComplexity,<span class="dt">nc
   <span class="dt">coreLimit=</span>coreLimit,
   <span class="dt">verboseParticles=</span><span class="ot">FALSE</span>
   )</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">results</code></pre></div>
+<pre><code>## $input.data
+##                   [,1]                 
+## jobName           &quot;typicalBMrun&quot;       
+## nTaxa             &quot;241&quot;                
+## nInitialSims      &quot;10&quot;                 
+## generation.time   &quot;20000&quot;              
+## TreeYears         &quot;18110011&quot;           
+## timeStep          &quot;0.00110436156002335&quot;
+## totalGenerations  &quot;17760&quot;              
+## epsilonProportion &quot;0.7&quot;                
+## epsilonMultiplier &quot;0.7&quot;                
+## nStepsPRC         &quot;3&quot;                  
+## numParticles      &quot;20&quot;                 
+## standardDevFactor &quot;0.2&quot;                
+## 
+## $PriorMatrix
+##        starting_1          intrinsic_1   extrinsic_1
+## shape  &quot;normal&quot;            &quot;exponential&quot; &quot;fixed&quot;    
+## value1 &quot;1.3024979253112&quot;   &quot;10&quot;          &quot;0&quot;        
+## value2 &quot;0.188218935561784&quot; &quot;10&quot;          &quot;0&quot;        
+## 
+## $particleDataFrame
+##    generation attempt id parentid  distance      weight starting_1
+## 1           1      40  1       NA  8426.665 0.034482759  1.1655131
+## 2           1      40  2       NA  8489.655 0.034482759  1.2160060
+## 3           1      40  3       NA  5464.808 0.034482759  1.3437052
+## 4           1      40  4       NA  7780.494 0.034482759  1.2671553
+## 5           1      40  5       NA  7993.291 0.034482759  1.2091248
+## 6           1      40  6       NA  7229.035 0.034482759  1.3514894
+## 7           1      40  7       NA 10015.117 0.034482759  1.5634469
+## 8           1      40  8       NA  2779.405 0.034482759  1.4768583
+## 9           1      40  9       NA  2952.374 0.034482759  1.3345853
+## 10          1      40 10       NA  5567.454 0.034482759  0.9712869
+## 11          1      40 11       NA  8466.564 0.034482759  1.5520201
+## 12          1      40 12       NA  9305.448 0.034482759  1.4150639
+## 13          1      40 13       NA  6418.512 0.034482759  1.1625517
+## 14          1      40 14       NA  6768.811 0.034482759  1.4317917
+## 15          1      40 15       NA  5102.959 0.034482759  1.5818588
+## 16          1      40 16       NA  9941.944 0.034482759  1.1021125
+## 17          1      40 17       NA  4739.182 0.034482759  0.9428870
+## 18          1      40 18       NA  6182.901 0.034482759  1.1557663
+## 19          1      40 19       NA  2529.757 0.034482759  1.2104801
+## 20          1      40 20       NA  6837.571 0.034482759  1.1321435
+## 21          1      40 21       NA  5947.720 0.034482759  1.3192978
+## 22          1      40 22       NA  7375.213 0.034482759  1.6585922
+## 23          1      40 23       NA  2511.568 0.034482759  1.5438885
+## 24          1      40 24       NA  8785.863 0.034482759  1.1830148
+## 25          1      40 25       NA  8107.953 0.034482759  1.1943977
+## 26          1      40 26       NA  9945.926 0.034482759  1.2978358
+## 27          1      40 27       NA  9470.193 0.034482759  1.2601064
+## 28          1      40 28       NA 10089.834 0.034482759  1.6007095
+## 29          1      40 29       NA  9945.367 0.034482759  1.0089308
+## 30          2      40  1        6  4806.549 0.038337506  1.3842490
+## 31          2      40  2       15  7379.516 0.052962462  1.5594072
+## 32          2      40  3        6  7127.592 0.060798856  1.3166730
+## 33          2      40  4       22  6480.722 0.032171752  1.6210048
+## 34          2      40  5       10  5209.463 0.022122689  0.9380700
+## 35          2      40  6       23  6163.569 0.046667241  1.5929628
+## 36          2      40  7       21  6787.901 0.067339779  1.2389923
+## 37          2      40  8        9  6155.512 0.059678270  1.3318040
+## 38          2      40  9       17  5428.683 0.023844472  0.9435136
+## 39          2      40 10        8  5625.886 0.039305652  1.3815419
+## 40          2      40 11       19  4063.006 0.060006266  1.2570060
+## 41          2      40 12       10  5341.683 0.026416135  0.9925646
+## 42          2      40 13        4  3822.517 0.057625580  1.2860715
+## 43          2      40 14        5  7083.263 0.064718069  1.1383190
+## 44          2      40 15       10  3539.500 0.026019451  0.9945831
+## 45          2      40 16        3  7023.737 0.058044897  1.3386185
+## 46          2      40 17        6  6326.845 0.060106367  1.3292311
+## 47          2      40 18        5  6395.265 0.089564820  1.1868471
+## 48          2      40 19       21  1525.620 0.053733838  1.3502690
+## 49          2      40 20       23  2530.000 0.027031538  1.4933806
+## 50          2      40 21       14  7091.333 0.033504360  1.4067374
+## 51          3      80  1       18  3865.015 0.037654870  1.1713548
+## 52          3      80  2       12   314.398 0.008285978  1.0353639
+## 53          3      80  3       19  2320.963 0.091560042  1.3245024
+## 54          3      80  4       11  3988.456 0.058155294  1.2578094
+## 55          3      80  5        7  2921.916 0.040300796  1.1851160
+## 56          3      80  6       17  4532.012 0.063102955  1.3800519
+## 57          3      80  7        2  1635.183 0.028442886  1.5812502
+## 58          3      80  8        1  4723.443 0.038341406  1.4065693
+## 59          3      80  9       21  4464.385 0.067868725  1.3750517
+## 60          3      80 10        6  3796.149 0.028228598  1.5897294
+## 61          3      80 11       17  4695.944 0.092301939  1.3302581
+## 62          3      80 12        4  4739.026 0.027365694  1.5972745
+## 63          3      80 13       17  4870.627 0.092045597  1.3273594
+## 64          3      80 14       19  4102.297 0.072109120  1.3704606
+## 65          3      80 15       14  3851.609 0.016763934  1.1124740
+## 66          3      80 16       12  2195.847 0.007930808  1.0868275
+## 67          3      80 17       19  4558.423 0.053043645  1.3904692
+## 68          3      80 18       18  4153.026 0.023748151  1.1289179
+## 69          3      80 19        6  1168.474 0.028155776  1.5757066
+## 70          3      80 20       11  1802.430 0.052956225  1.2427438
+## 71          3      80 21       13  2522.590 0.071637564  1.2855899
+##     intrinsic_1 NA
+## 1  0.0444616372  0
+## 2  0.0435826332  0
+## 3  0.0097742055  0
+## 4  0.0323274492  0
+## 5  0.0353000453  0
+## 6  0.0251825972  0
+## 7  0.1149119147  0
+## 8  0.0028862793  0
+## 9  0.0031559684  0
+## 10 0.0123118615  0
+## 11 0.0515009562  0
+## 12 0.0726806513  0
+## 13 0.0179041804  0
+## 14 0.0219785998  0
+## 15 0.0094750676  0
+## 16 0.1018721146  0
+## 17 0.0078602859  0
+## 18 0.0155429016  0
+## 19 0.0025214648  0
+## 20 0.0194956333  0
+## 21 0.0128283156  0
+## 22 0.0269296894  0
+## 23 0.0023745308  0
+## 24 0.0544255823  0
+## 25 0.0382431977  0
+## 26 0.1094535555  0
+## 27 0.0790982046  0
+## 28 0.1255418264  0
+## 29 0.1008009739  0
+## 30 0.0078323072  0
+## 31 0.0303066767  0
+## 32 0.0255101198  0
+## 33 0.0180952455  0
+## 34 0.0094807731  0
+## 35 0.0141432877  0
+## 36 0.0197281812  0
+## 37 0.0150554176  0
+## 38 0.0113973353  0
+## 39 0.0117866260  0
+## 40 0.0050444347  0
+## 41 0.0099749237  0
+## 42 0.0047626910  0
+## 43 0.0233176904  0
+## 44 0.0041054707  0
+## 45 0.0240224970  0
+## 46 0.0182336195  0
+## 47 0.0176432798  0
+## 48 0.0014983916  0
+## 49 0.0026041507  0
+## 50 0.0282816179  0
+## 51 0.0045616496  0
+## 52 0.0006122672  0
+## 53 0.0020168454  0
+## 54 0.0054767576  0
+## 55 0.0030626089  0
+## 56 0.0064607071  0
+## 57 0.0015863520  0
+## 58 0.0081125637  0
+## 59 0.0062750922  0
+## 60 0.0049777026  0
+## 61 0.0067797685  0
+## 62 0.0070165282  0
+## 63 0.0074484070  0
+## 64 0.0058273979  0
+## 65 0.0050654295  0
+## 66 0.0019467053  0
+## 67 0.0067456513  0
+## 68 0.0056284785  0
+## 69 0.0004150827  0
+## 70 0.0017191558  0
+## 71 0.0025306531  0
+## 
+## $toleranceVector
+##       70%       70%       70% 
+## 10542.531  7379.772  5165.840 
+## 
+## $phy
+## 
+## Phylogenetic tree with 241 tips and 240 internal nodes.
+## 
+## Tip labels:
+##  Araxoceras, Eoaraxoceras, Pseudaspidites, Dieneroceras, Tardicolumbites, Cowboyiceras, ...
+## Node labels:
+##  clade_1, clade_2, clade_3, Ceratitida, , , ...
+## 
+## Rooted; includes branch lengths.
+## 
+## $traits
+##                      [,1]
+## Aconeceras          1.469
+## Acrocanites         1.167
+## Acrochordiceras     1.218
+## Adabofoloceras      1.693
+## Adnethiceras        1.544
+## Adrianites          1.152
+## Agoniatites         1.131
+## Amaltheus           1.541
+## Ammonellipsites     1.067
+## Ammonitoceras       1.680
+## Amphipopanoceras    1.244
+## Anadesmoceras       1.519
+## Anahoplites         1.404
+## Anarcestes          1.102
+## Anetoceras          1.084
+## Antegoniatites      1.083
+## Araxoceras          1.145
+## Archoceras          1.132
+## Arcthoplites        1.393
+## Arctoceras          1.209
+## Argonauticeras      1.752
+## Artinskia           1.331
+## Audaxlytoceras      1.469
+## Balatonites         1.150
+## Bamyaniceras        1.328
+## Barremites          1.617
+## Becanites           1.140
+## Beloceras           1.220
+## Berriasella         1.490
+## Beudanticeras       1.512
+## Bodrakiceras        1.402
+## Borissiakoceras     1.147
+## Bradyia             1.268
+## Branneroceras       1.192
+## Burckhardtites      1.402
+## Busnardoites        1.689
+## Campylotoxia        1.362
+## Carteria            1.294
+## Celaeceras          1.126
+## Cheiloceras         1.115
+## Cibolites           1.133
+## Cleoniceras         1.405
+## Clymenia            1.157
+## Coroniceras         1.492
+## Costidiscus         1.654
+## Courtilloticeras    1.180
+## Cowboyiceras        1.311
+## Cyrtoclymenia       1.101
+## Daraelites          1.202
+## Darkaoceras         1.060
+## Desmoceras          1.683
+## Deweveria           1.319
+## Diaboloceras        1.162
+## Dieneroceras        1.114
+## Dimeroceras         1.142
+## Dimorphoplites      1.485
+## Discoclymenia       1.147
+## Dombarocanites      1.174
+## Dzhaprakoceras      1.094
+## Ectocentrites       1.686
+## Engonoceras         1.243
+## Eoaraxoceras        1.126
+## Eocanites           1.167
+## Eogaudryceras       1.694
+## Eogymnotoceras      1.172
+## Epicanites          1.184
+## Epihoplites         1.317
+## Epileymeriella      1.407
+## Epitornoceras       1.150
+## Eschericeratites    1.369
+## Eulytoceras         1.695
+## Eurites             1.104
+## Falciferella        1.245
+## Falcitornoceras     1.376
+## Favreticeras        1.195
+## Follotites          1.090
+## Forbesiceras        1.512
+## Galaticeras         1.535
+## Gastroplites        1.220
+## Gaudemerites        1.324
+## Gaudryceras         1.637
+## Globacrochordiceras 1.315
+## Glochiceras         1.350
+## Gogoceras           1.064
+## Goricanites         1.294
+## Grambergia          1.158
+## Grycia              1.431
+## Guexites            1.179
+## Gymnotoceras        1.264
+## Gyroceratites       1.078
+## Habadraites         1.077
+## Helicocyclus        1.174
+## Holcolytoceras      1.344
+## Holcophylloceras    1.405
+## Hoplites            1.318
+## Hypophylloceras     1.591
+## Hyporbulites        1.720
+## Imitoceras          1.089
+## Inyoites            1.133
+## Jaubertella         1.621
+## Jdaidites           1.115
+## Jerania             1.077
+## Juraphyllites       1.546
+## Juvenites           1.086
+## Karakaschiceras     1.497
+## Kargalites          1.276
+## Kazakhstania        1.108
+## Keuppites           1.061
+## Kingoceras          1.172
+## Knemiceras          1.297
+## Kusinia             1.062
+## Lanceolites         1.312
+## Leiophylloceras     1.508
+## Leymeriella         1.331
+## Lobotornoceras      1.120
+## Lunupharciceras     1.152
+## Luppovella          1.450
+## Lytoceras           1.654
+## Macroscaphites      1.654
+## Maeneceras          1.239
+## Malbosiceras        1.608
+## Mammites            1.380
+## Mantelliceras       1.435
+## Manticoceras        1.111
+## Medlicottia         1.291
+## Meekoceras          1.190
+## Megaphyllites       1.441
+## Megatyloceras       1.465
+## Meitianoceras       1.188
+## Melchiorites        1.614
+## Merocanites         1.292
+## Mesobeloceras       1.179
+## Metalegoceras       1.197
+## Mixomanticoceras    1.104
+## Mortoniceras        1.430
+## Mouydiria           1.106
+## Muensteroceras      1.076
+## Nathorstites        1.330
+## Neopronorites       1.182
+## Neoptychites        1.372
+## Nevadaphyllites     1.552
+## Nevadoceras         1.105
+## Nodopericyclus      1.114
+## Otohoplites         1.609
+## Ouaoufilalites      1.089
+## Owenites            1.140
+## Oxynoticeras        1.447
+## Oxytropidoceras     1.445
+## Paraceltites        1.156
+## Paracrochordiceras  1.315
+## Paradolphia         1.483
+## Paralegoceras       1.179
+## Paranannites        1.128
+## Paratornoceras      1.158
+## Parengonoceras      1.402
+## Parussuria          1.343
+## Pericycloceras      1.190
+## Pericyclus          1.100
+## Pharciceras         1.158
+## Phylloceras         1.636
+## Pintoceras          1.201
+## Placites            1.465
+## Platiknemiceras     1.363
+## Platyclymenia       1.476
+## Pleuroacanthites    1.585
+## Polonoceras         1.147
+## Polyptychites       1.400
+## Pomeliceras         1.568
+## Popanoceras         1.270
+## Posttornoceras      1.140
+## Praedaraelites      1.178
+## Praeglyphiloceras   1.137
+## Preflorianites      1.095
+## Primogoniatites     1.069
+## Prionoceras         1.237
+## Proarcestes         1.569
+## Probeloceras        1.137
+## Progoniatites       1.098
+## Prolecanites        1.173
+## Propinacoceras      1.384
+## Prosphingites       1.131
+## Protaconeceras      1.367
+## Protetragonites     1.574
+## Proteusites         1.183
+## Protornoceras       1.015
+## Protoxyclymenia     1.170
+## Pseudaspidites      1.351
+## Pseudoclymenia      1.135
+## Pseudohaploceras    1.536
+## Pseudoprobeloceras  1.088
+## Pseudosaynella      1.516
+## Pseudosilesites     1.555
+## Pterolytoceras      1.661
+## Ptychites           1.511
+## Ptychophylloceras   1.522
+## Puzosia             1.572
+## Raymondiceras       1.125
+## Riedelites          1.312
+## Rotopericyclus      1.088
+## Saghalinites        1.525
+## Sakmarites          1.217
+## Salfeldiella        1.550
+## Sanmartinoceras     1.476
+## Schistoceras        1.247
+## Sobolewia           1.053
+## Sonneratia          1.564
+## Sphaeromanticoceras 1.101
+## Sporadoceras        1.142
+## Stacheoceras        1.251
+## Stenopharciceras    1.109
+## Stoliczkaia         1.455
+## Surites             1.311
+## Synartinskia        1.317
+## Synpharciceras      1.180
+## Tapponnierites      1.324
+## Tardicolumbites     1.372
+## Tegoceras           1.369
+## Teicherticeras      1.119
+## Temertassetia       1.097
+## Tetragonites        1.614
+## Timanites           1.145
+## Togaticeras         1.522
+## Torleyoceras        1.125
+## Tornoceras          1.160
+## Tragophylloceras    1.520
+## Triimitoceras       1.095
+## Uddenites           1.231
+## Uhligella           1.523
+## Uraloceras          1.194
+## Valdedorsella       1.533
+## Vascoceras          1.338
+## Veruzhites          1.097
+## Waagenoceras        1.491
+## Wellerites          1.282
+## Werneroceras        1.018
+## Winslowoceras       1.139
+## Xenodiscus          1.154
+## Xinjiangites        1.091
+## Zelandites          1.571
+## Zuercherella        1.415
+## Zugodactylites      1.253
+## 
+## $simTime
+## [1] 297.17
+## 
+## $time.per.gen
+## [1] 1305.01 1402.09 2747.52 5772.17
+## 
+## $credibleInt
+##                    mean          sd      LowerCI     UpperCI
+## starting_1  1.321660965 0.169013837 1.0610956727 1.593501928
+## intrinsic_1 0.004488848 0.002413546 0.0005136749 0.007780485
+## &lt;NA&gt;                 NA          NA           NA          NA
+## 
+## $HPD
+##                    mean          sd LowerHPD_0.95 UpperHPD_0.95
+## starting_1  1.321660965 0.169013837  1.0353638828   1.597274468
+## intrinsic_1 0.004488848 0.002413546  0.0004150827   0.008112564</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">resultsBound</code></pre></div>
+<pre><code>## $input.data
+##                   [,1]                 
+## jobName           &quot;BMwithBoundRun&quot;     
+## nTaxa             &quot;241&quot;                
+## nInitialSims      &quot;10&quot;                 
+## generation.time   &quot;20000&quot;              
+## TreeYears         &quot;18110011&quot;           
+## timeStep          &quot;0.00110436156002335&quot;
+## totalGenerations  &quot;17760&quot;              
+## epsilonProportion &quot;0.7&quot;                
+## epsilonMultiplier &quot;0.7&quot;                
+## nStepsPRC         &quot;3&quot;                  
+## numParticles      &quot;20&quot;                 
+## standardDevFactor &quot;0.2&quot;                
+## 
+## $PriorMatrix
+##        starting_1          intrinsic_1   intrinsic_2 extrinsic_1
+## shape  &quot;normal&quot;            &quot;exponential&quot; &quot;normal&quot;    &quot;fixed&quot;    
+## value1 &quot;1.3024979253112&quot;   &quot;10&quot;          &quot;-10&quot;       &quot;0&quot;        
+## value2 &quot;0.188218935561784&quot; &quot;10&quot;          &quot;1&quot;         &quot;0&quot;        
+## 
+## $particleDataFrame
+##     generation attempt id parentid   distance       weight starting_1
+## 1            1      40  1       NA 7369.75152 0.0500000000  1.0592610
+## 2            1      40  2       NA 6229.57594 0.0500000000  1.3862369
+## 3            1      40  3       NA 7245.72586 0.0500000000  1.2846804
+## 4            1      40  4       NA 4096.30147 0.0500000000  1.3002952
+## 5            1      40  5       NA 5878.18666 0.0500000000  1.4414072
+## 6            1      40  6       NA 7677.98801 0.0500000000  1.3532960
+## 7            1      40  7       NA 7784.76735 0.0500000000  1.4654748
+## 8            1      40  8       NA 8164.78528 0.0500000000  1.1239678
+## 9            1      40  9       NA 6154.57696 0.0500000000  1.2790860
+## 10           1      40 10       NA 7186.97480 0.0500000000  1.2107859
+## 11           1      40 11       NA 3267.88222 0.0500000000  1.2487583
+## 12           1      40 12       NA 6502.86979 0.0500000000  1.0898067
+## 13           1      40 13       NA 4583.76207 0.0500000000  1.2139972
+## 14           1      40 14       NA 7805.63666 0.0500000000  1.3837516
+## 15           1      40 15       NA 7706.32347 0.0500000000  0.9777654
+## 16           1      40 16       NA 7157.73670 0.0500000000  1.3917386
+## 17           1      40 17       NA 4240.10922 0.0500000000  1.6815074
+## 18           1      40 18       NA 7942.26957 0.0500000000  1.6280224
+## 19           1      40 19       NA 6978.39889 0.0500000000  1.3283120
+## 20           1      40 20       NA  763.02604 0.0500000000  1.3263045
+## 21           2      65  1        5 5748.93148 0.0044831101  1.4352139
+## 22           2      65  2       11 4006.27489 0.1269607684  1.2576812
+## 23           2      65  3       18 5710.44033 0.0083504225  1.5936788
+## 24           2      65  4       10 5258.90342 0.0118531562  1.2063306
+## 25           2      65  5       16 5694.21271 0.0660319419  1.4240485
+## 26           2      65  6       20 4427.85000 0.0349544807  1.4234949
+## 27           2      65  7        9 4740.92619 0.1274329671  1.2997888
+## 28           2      65  8       20 5650.72545 0.0703272085  1.3557277
+## 29           2      65  9       20 4388.29493 0.0638983669  1.3506496
+## 30           2      65 10       12 2876.36690 0.0751368068  1.0905771
+## 31           2      65 11       13 4888.14706 0.0016708012  1.1979092
+## 32           2      65 12       12 4322.64053 0.0814516096  1.0634629
+## 33           2      65 13       19 5084.13077 0.0226094614  1.3172595
+## 34           2      65 14       11 3606.14958 0.0185471568  1.1579393
+## 35           2      65 15       20 5708.12765 0.0461406803  1.4005900
+## 36           2      65 16       13 4904.83002 0.0168485993  1.2665309
+## 37           2      65 17       16 5610.73422 0.0759357347  1.3928844
+## 38           2      65 18        5 4615.52392 0.0298791742  1.4196705
+## 39           2      65 19        4 3570.34002 0.0287855276  1.3647722
+## 40           2      65 20       12 2135.09484 0.0887020260  1.0768638
+## 41           3     400  1        7 3118.35547 0.0108179052  1.3527173
+## 42           3     400  2       10 2907.45576 0.0183460264  1.0693667
+## 43           3     400  3       12 3322.05990 0.0215289073  1.1175624
+## 44           3     400  4        2 3580.58422 0.0161777070  1.2349126
+## 45           3     400  5       20 2715.32601 0.0304357740  1.0549209
+## 46           3     400  6        2 3515.96648 0.0149116263  1.2837064
+## 47           3     400  7       12 3519.97138 0.0086439534  1.0317796
+## 48           3     400  8       18 3684.49559 0.0043863083  1.4007422
+## 49           3     400  9       13 1732.86923 0.0032340745  1.3016243
+## 50           3     400 10       18 3577.92618 0.0045994066  1.4089016
+## 51           3     400 11       17 2909.18553 0.0226212606  1.3657837
+## 52           3     400 12        9 3250.35607 0.0225047886  1.3365473
+## 53           3     400 13        2  676.50109 0.0061946409  1.1965860
+## 54           3     400 14       20 2935.03063 0.0151469912  1.1149084
+## 55           3     400 15        7 3741.43312 0.0298496871  1.2875489
+## 56           3     400 16       14  740.43787 0.0093468687  1.1468798
+## 57           3     400 17       20 1505.57882 0.0048872357  1.1588436
+## 58           3     400 18       15 3081.82877 0.0189117350  1.3685711
+## 59           3     400 19       10 1553.10744 0.0306480440  1.0627846
+## 60           3     400 20        8 3313.51523 0.0216645412  1.4244182
+## 61           3     400 21       20 1601.54751 0.0070833456  1.0609534
+## 62           3     400 22        6 3522.36603 0.0057849377  1.4425251
+## 63           3     400 23       12 3801.39265 0.0195648378  1.0398964
+## 64           3     400 24       16 3942.23780 0.0009723908  1.2579801
+## 65           3     400 25       12 3026.21710 0.0138979407  1.0691351
+## 66           3     400 26       12 3828.81666 0.0012079609  0.9758091
+## 67           3     400 27        4 3061.19978 0.0002194946  1.1731486
+## 68           3     400 28       10 2905.78097 0.0121938117  1.0579509
+## 69           3     400 29       10  411.84541 0.0118716931  1.1089079
+## 70           3     400 30        8 3749.74257 0.0263822299  1.3482634
+## 71           3     400 31       10 1248.76617 0.0027505068  1.1496614
+## 72           3     400 32       20 1193.72808 0.0057671086  1.1258235
+## 73           3     400 33        2 3850.74857 0.0211252944  1.2893427
+## 74           3     400 34        7 2192.83154 0.0077999847  1.3219530
+## 75           3     400 35       20 1017.29095 0.0301236749  1.0671482
+## 76           3     400 36        7 2023.23733 0.0070199479  1.2620406
+## 77           3     400 37        9 1327.16874 0.0011739404  1.2634567
+## 78           3     400 38        7 3671.37490 0.0148373744  1.3397361
+## 79           3     400 39       19 1097.28423 0.0054809541  1.3606601
+## 80           3     400 40       20   64.31586 0.0022707571  1.0280343
+## 81           3     400 41        7 1821.98938 0.0203612049  1.3136742
+## 82           3     400 42        9 2932.10627 0.0164397028  1.3750582
+## 83           3     400 43        2  501.21560 0.0155007968  1.2395894
+## 84           3     400 44        8 2095.06504 0.0242885854  1.3401333
+## 85           3     400 45        5 2884.01137 0.0068968867  1.4683857
+## 86           3     400 46       19 1244.32714 0.0061623551  1.3451844
+## 87           3     400 47       10  808.30545 0.0111585276  1.0292760
+## 88           3     400 48        5  880.94153 0.0015753979  1.4993859
+## 89           3     400 49        9 2329.21851 0.0300819835  1.3914157
+## 90           3     400 50        2 3244.28166 0.0059907394  1.2615301
+## 91           3     400 51       18 1923.86880 0.0003888190  1.3505091
+## 92           3     400 52       10 3398.60485 0.0105469022  1.0516767
+## 93           3     400 53       12 2806.82632 0.0049348444  1.0352018
+## 94           3     400 54       12  511.59916 0.0022662511  1.1121557
+## 95           3     400 55       12 3304.67575 0.0033095257  1.0087993
+## 96           3     400 56        2 3993.17218 0.0046806733  1.1916375
+## 97           3     400 57        5 4032.50568 0.0195074051  1.3731316
+## 98           3     400 58        2 3331.79901 0.0216388138  1.2382882
+## 99           3     400 59       15 1843.23291 0.0138534295  1.3952963
+## 100          3     400 60        8 3666.42249 0.0184191809  1.3378739
+## 101          3     400 61       20 2607.98409 0.0217101242  1.0410989
+## 102          3     400 62        8 3959.80048 0.0155707172  1.3546833
+## 103          3     400 63        7  568.07676 0.0138684400  1.3412956
+## 104          3     400 64       12 2150.54957 0.0299669779  1.0955621
+## 105          3     400 65        9 3794.38856 0.0258845364  1.3914431
+## 106          3     400 66       10 3394.84991 0.0302264185  1.0732137
+## 107          3     400 67        5 2393.97263 0.0187425408  1.4128355
+## 108          3     400 68        2 2519.53357 0.0162651296  1.2804059
+## 109          3     400 69        2 3883.30656 0.0143650856  1.2665018
+## 110          3     400 70       20  982.96073 0.0261370474  1.0541996
+## 111          3     400 71        7 3142.27433 0.0132439530  1.4115937
+## 112          3     400 72       12 2334.14116 0.0236313363  1.0434925
+##      intrinsic_1 intrinsic_2 NA
+## 1   5.237725e-02  -10.073201  0
+## 2   2.455795e-02  -10.602162  0
+## 3   5.509950e-02   -9.650758  0
+## 4   7.168322e-03   -9.498171  0
+## 5   1.929077e-02  -11.047748  0
+## 6   5.839776e-02   -9.585281  0
+## 7   6.225769e-02  -10.290889  0
+## 8   8.298479e-02  -10.129347  0
+## 9   2.299223e-02   -9.610480  0
+## 10  4.362957e-02  -10.348989  0
+## 11  4.467369e-03   -9.661260  0
+## 12  2.906289e-02  -10.245508  0
+## 13  9.432918e-03   -8.893526  0
+## 14  5.980105e-02  -10.497062  0
+## 15  5.980829e-02  -10.846610  0
+## 16  4.164018e-02  -10.058752  0
+## 17  7.988143e-03  -11.021609  0
+## 18  6.866882e-02  -11.820918  0
+## 19  4.149705e-02   -7.747103  0
+## 20  1.022247e-03  -10.142407  0
+## 21  1.695561e-02  -11.473340  0
+## 22  6.677608e-03   -9.555421  0
+## 23  1.770136e-02  -11.503646  0
+## 24  1.360969e-02  -10.672767  0
+## 25  1.709638e-02  -10.481591  0
+## 26  7.693530e-03   -9.948703  0
+## 27  9.326870e-03   -9.720415  0
+## 28  1.736438e-02  -10.456655  0
+## 29  7.396995e-03  -10.498200  0
+## 30  3.585269e-03  -10.006493  0
+## 31  1.114059e-02   -8.389673  0
+## 32  7.871068e-03  -10.184661  0
+## 33  1.221225e-02   -7.969119  0
+## 34  5.299090e-03   -9.881457  0
+## 35  1.837410e-02   -9.933379  0
+## 36  1.077226e-02   -8.956405  0
+## 37  1.658245e-02  -10.317217  0
+## 38  8.659654e-03  -11.183653  0
+## 39  9.488149e-05   -9.333547  0
+## 40  2.344550e-03  -10.086543  0
+## 41  4.208249e-03   -9.663054  0
+## 42  3.295932e-03   -9.855684  0
+## 43  4.128894e-03  -10.088847  0
+## 44  5.004339e-03   -9.734837  0
+## 45  3.272352e-03  -10.102768  0
+## 46  4.593852e-03   -9.367322  0
+## 47  5.190401e-03  -10.379978  0
+## 48  5.266982e-03  -11.166018  0
+## 49  1.804533e-03   -7.925172  0
+## 50  5.546207e-03  -11.257806  0
+## 51  3.674089e-03  -10.602391  0
+## 52  4.187188e-03  -10.500296  0
+## 53  4.985381e-04   -9.544425  0
+## 54  3.662113e-03  -10.261283  0
+## 55  5.322844e-03   -9.723512  0
+## 56  4.543723e-04  -10.002880  0
+## 57  2.895978e-04  -10.144866  0
+## 58  3.912132e-03  -10.174735  0
+## 59  3.019423e-04  -10.014208  0
+## 60  4.367773e-03  -10.378497  0
+## 61  1.777830e-03   -9.729867  0
+## 62  4.605014e-03   -9.750027  0
+## 63  6.258542e-03  -10.234339  0
+## 64  6.122429e-03   -8.670014  0
+## 65  3.915984e-03  -10.386761  0
+## 66  6.115454e-03  -10.227774  0
+## 67  3.746452e-03  -11.048670  0
+## 68  4.042006e-03   -9.809974  0
+## 69  7.903069e-04   -9.798909  0
+## 70  5.582263e-03  -10.499266  0
+## 71  1.532875e-03   -9.651478  0
+## 72  3.678794e-04   -9.723038  0
+## 73  5.650754e-03   -9.453015  0
+## 74  2.380107e-03  -10.148522  0
+## 75  4.036064e-04   -9.988238  0
+## 76  2.301136e-03   -9.989572  0
+## 77  1.436824e-03  -10.270863  0
+## 78  5.813844e-03   -9.678020  0
+## 79  1.370751e-03   -9.308201  0
+## 80  6.992147e-04   -9.697477  0
+## 81  1.943163e-03   -9.819110  0
+## 82  4.061361e-03  -10.102850  0
+## 83  9.738040e-04   -9.776592  0
+## 84  2.249030e-04  -10.425193  0
+## 85  3.480014e-03  -10.423405  0
+## 86  1.304579e-03   -9.323481  0
+## 87  1.077135e-03   -9.923169  0
+## 88  4.378788e-04  -10.512274  0
+## 89  2.519296e-03  -10.445582  0
+## 90  4.590697e-03   -9.201833  0
+## 91  2.082588e-03  -11.463402  0
+## 92  5.250189e-03   -9.805160  0
+## 93  3.323966e-03  -10.472798  0
+## 94  9.178882e-04  -10.538097  0
+## 95  4.190724e-03  -10.409451  0
+## 96  6.899068e-03   -9.496803  0
+## 97  6.621658e-03  -10.171187  0
+## 98  4.482480e-03   -9.552744  0
+## 99  1.907898e-03   -9.910539  0
+## 100 5.508271e-03  -10.600122  0
+## 101 3.098873e-03  -10.200428  0
+## 102 6.455025e-03  -10.168755  0
+## 103 9.257214e-04   -9.639992  0
+## 104 2.226899e-03  -10.157284  0
+## 105 6.121484e-03  -10.537546  0
+## 106 4.745047e-03   -9.975342  0
+## 107 2.716170e-03  -10.148109  0
+## 108 2.837408e-03   -9.895531  0
+## 109 6.118945e-03   -9.346236  0
+## 110 1.054038e-03   -9.993083  0
+## 111 3.830504e-03   -9.880634  0
+## 112 2.418982e-03  -10.180533  0
+## 
+## $toleranceVector
+##      70%      70%      70% 
+## 8244.233 5770.963 4039.674 
+## 
+## $phy
+## 
+## Phylogenetic tree with 241 tips and 240 internal nodes.
+## 
+## Tip labels:
+##  Araxoceras, Eoaraxoceras, Pseudaspidites, Dieneroceras, Tardicolumbites, Cowboyiceras, ...
+## Node labels:
+##  clade_1, clade_2, clade_3, Ceratitida, , , ...
+## 
+## Rooted; includes branch lengths.
+## 
+## $traits
+##                      [,1]
+## Aconeceras          1.469
+## Acrocanites         1.167
+## Acrochordiceras     1.218
+## Adabofoloceras      1.693
+## Adnethiceras        1.544
+## Adrianites          1.152
+## Agoniatites         1.131
+## Amaltheus           1.541
+## Ammonellipsites     1.067
+## Ammonitoceras       1.680
+## Amphipopanoceras    1.244
+## Anadesmoceras       1.519
+## Anahoplites         1.404
+## Anarcestes          1.102
+## Anetoceras          1.084
+## Antegoniatites      1.083
+## Araxoceras          1.145
+## Archoceras          1.132
+## Arcthoplites        1.393
+## Arctoceras          1.209
+## Argonauticeras      1.752
+## Artinskia           1.331
+## Audaxlytoceras      1.469
+## Balatonites         1.150
+## Bamyaniceras        1.328
+## Barremites          1.617
+## Becanites           1.140
+## Beloceras           1.220
+## Berriasella         1.490
+## Beudanticeras       1.512
+## Bodrakiceras        1.402
+## Borissiakoceras     1.147
+## Bradyia             1.268
+## Branneroceras       1.192
+## Burckhardtites      1.402
+## Busnardoites        1.689
+## Campylotoxia        1.362
+## Carteria            1.294
+## Celaeceras          1.126
+## Cheiloceras         1.115
+## Cibolites           1.133
+## Cleoniceras         1.405
+## Clymenia            1.157
+## Coroniceras         1.492
+## Costidiscus         1.654
+## Courtilloticeras    1.180
+## Cowboyiceras        1.311
+## Cyrtoclymenia       1.101
+## Daraelites          1.202
+## Darkaoceras         1.060
+## Desmoceras          1.683
+## Deweveria           1.319
+## Diaboloceras        1.162
+## Dieneroceras        1.114
+## Dimeroceras         1.142
+## Dimorphoplites      1.485
+## Discoclymenia       1.147
+## Dombarocanites      1.174
+## Dzhaprakoceras      1.094
+## Ectocentrites       1.686
+## Engonoceras         1.243
+## Eoaraxoceras        1.126
+## Eocanites           1.167
+## Eogaudryceras       1.694
+## Eogymnotoceras      1.172
+## Epicanites          1.184
+## Epihoplites         1.317
+## Epileymeriella      1.407
+## Epitornoceras       1.150
+## Eschericeratites    1.369
+## Eulytoceras         1.695
+## Eurites             1.104
+## Falciferella        1.245
+## Falcitornoceras     1.376
+## Favreticeras        1.195
+## Follotites          1.090
+## Forbesiceras        1.512
+## Galaticeras         1.535
+## Gastroplites        1.220
+## Gaudemerites        1.324
+## Gaudryceras         1.637
+## Globacrochordiceras 1.315
+## Glochiceras         1.350
+## Gogoceras           1.064
+## Goricanites         1.294
+## Grambergia          1.158
+## Grycia              1.431
+## Guexites            1.179
+## Gymnotoceras        1.264
+## Gyroceratites       1.078
+## Habadraites         1.077
+## Helicocyclus        1.174
+## Holcolytoceras      1.344
+## Holcophylloceras    1.405
+## Hoplites            1.318
+## Hypophylloceras     1.591
+## Hyporbulites        1.720
+## Imitoceras          1.089
+## Inyoites            1.133
+## Jaubertella         1.621
+## Jdaidites           1.115
+## Jerania             1.077
+## Juraphyllites       1.546
+## Juvenites           1.086
+## Karakaschiceras     1.497
+## Kargalites          1.276
+## Kazakhstania        1.108
+## Keuppites           1.061
+## Kingoceras          1.172
+## Knemiceras          1.297
+## Kusinia             1.062
+## Lanceolites         1.312
+## Leiophylloceras     1.508
+## Leymeriella         1.331
+## Lobotornoceras      1.120
+## Lunupharciceras     1.152
+## Luppovella          1.450
+## Lytoceras           1.654
+## Macroscaphites      1.654
+## Maeneceras          1.239
+## Malbosiceras        1.608
+## Mammites            1.380
+## Mantelliceras       1.435
+## Manticoceras        1.111
+## Medlicottia         1.291
+## Meekoceras          1.190
+## Megaphyllites       1.441
+## Megatyloceras       1.465
+## Meitianoceras       1.188
+## Melchiorites        1.614
+## Merocanites         1.292
+## Mesobeloceras       1.179
+## Metalegoceras       1.197
+## Mixomanticoceras    1.104
+## Mortoniceras        1.430
+## Mouydiria           1.106
+## Muensteroceras      1.076
+## Nathorstites        1.330
+## Neopronorites       1.182
+## Neoptychites        1.372
+## Nevadaphyllites     1.552
+## Nevadoceras         1.105
+## Nodopericyclus      1.114
+## Otohoplites         1.609
+## Ouaoufilalites      1.089
+## Owenites            1.140
+## Oxynoticeras        1.447
+## Oxytropidoceras     1.445
+## Paraceltites        1.156
+## Paracrochordiceras  1.315
+## Paradolphia         1.483
+## Paralegoceras       1.179
+## Paranannites        1.128
+## Paratornoceras      1.158
+## Parengonoceras      1.402
+## Parussuria          1.343
+## Pericycloceras      1.190
+## Pericyclus          1.100
+## Pharciceras         1.158
+## Phylloceras         1.636
+## Pintoceras          1.201
+## Placites            1.465
+## Platiknemiceras     1.363
+## Platyclymenia       1.476
+## Pleuroacanthites    1.585
+## Polonoceras         1.147
+## Polyptychites       1.400
+## Pomeliceras         1.568
+## Popanoceras         1.270
+## Posttornoceras      1.140
+## Praedaraelites      1.178
+## Praeglyphiloceras   1.137
+## Preflorianites      1.095
+## Primogoniatites     1.069
+## Prionoceras         1.237
+## Proarcestes         1.569
+## Probeloceras        1.137
+## Progoniatites       1.098
+## Prolecanites        1.173
+## Propinacoceras      1.384
+## Prosphingites       1.131
+## Protaconeceras      1.367
+## Protetragonites     1.574
+## Proteusites         1.183
+## Protornoceras       1.015
+## Protoxyclymenia     1.170
+## Pseudaspidites      1.351
+## Pseudoclymenia      1.135
+## Pseudohaploceras    1.536
+## Pseudoprobeloceras  1.088
+## Pseudosaynella      1.516
+## Pseudosilesites     1.555
+## Pterolytoceras      1.661
+## Ptychites           1.511
+## Ptychophylloceras   1.522
+## Puzosia             1.572
+## Raymondiceras       1.125
+## Riedelites          1.312
+## Rotopericyclus      1.088
+## Saghalinites        1.525
+## Sakmarites          1.217
+## Salfeldiella        1.550
+## Sanmartinoceras     1.476
+## Schistoceras        1.247
+## Sobolewia           1.053
+## Sonneratia          1.564
+## Sphaeromanticoceras 1.101
+## Sporadoceras        1.142
+## Stacheoceras        1.251
+## Stenopharciceras    1.109
+## Stoliczkaia         1.455
+## Surites             1.311
+## Synartinskia        1.317
+## Synpharciceras      1.180
+## Tapponnierites      1.324
+## Tardicolumbites     1.372
+## Tegoceras           1.369
+## Teicherticeras      1.119
+## Temertassetia       1.097
+## Tetragonites        1.614
+## Timanites           1.145
+## Togaticeras         1.522
+## Torleyoceras        1.125
+## Tornoceras          1.160
+## Tragophylloceras    1.520
+## Triimitoceras       1.095
+## Uddenites           1.231
+## Uhligella           1.523
+## Uraloceras          1.194
+## Valdedorsella       1.533
+## Vascoceras          1.338
+## Veruzhites          1.097
+## Waagenoceras        1.491
+## Wellerites          1.282
+## Werneroceras        1.018
+## Winslowoceras       1.139
+## Xenodiscus          1.154
+## Xinjiangites        1.091
+## Zelandites          1.571
+## Zuercherella        1.415
+## Zugodactylites      1.253
+## 
+## $simTime
+## [1] 359.39
+## 
+## $time.per.gen
+## [1]  1425.82  2442.97 12492.03 22494.47
+## 
+## $credibleInt
+##                     mean          sd       LowerCI      UpperCI
+## starting_1    1.23036196 0.143112884  1.023706e+00  1.448343770
+## intrinsic_1   0.00330892 0.001959555  2.991648e-04  0.006492517
+## intrinsic_2 -10.02013709 0.540529027 -1.118667e+01 -9.082173439
+## &lt;NA&gt;                  NA          NA            NA           NA
+## 
+## $HPD
+##                     mean          sd LowerHPD_0.95 UpperHPD_0.95
+## starting_1    1.23036196 0.143112884   1.008799313   1.442525136
+## intrinsic_1   0.00330892 0.001959555   0.000224903   0.006258542
+## intrinsic_2 -10.02013709 0.540529027 -11.257805923  -9.201832653</code></pre>
 
 
 

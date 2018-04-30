@@ -36,9 +36,9 @@ setupMulticore<-function(multicore,nSim,coreLimit){
 	#
 	if(cores>1){
 		platform<-.Platform$GUI
-		if(platform!="Rterm"){
+		if(identical(platform,"RTerm")){
 			warning(paste0("Your platform appears to be ",platform,
-				"\n Multicore processes are ideally done in Rterm, preferably in BATCH"))
+				"\n Multicore processes are ideally done in RTerm, preferably via 'R CMD BATCH'"))
 			}
 		registerMulticoreEnv(cores)
 	}else{
