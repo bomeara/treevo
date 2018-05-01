@@ -48,7 +48,11 @@ This tree has polytomies - we will have to deal with that. Let's randomly resolv
 
 ```{r}
 tree<-multi2di(ammoniteTreeRaia)
+
+# let's apply ATBL
 tree<-addTermBranchLength(tree,0.01)
+
+
 plot(ladderize(tree));axisPhylo()
 ```
 
@@ -75,16 +79,50 @@ how small is the smallest branch length, even after extending terminal branches?
 brlen<-tree$edge.length
 min(brlen)
 
-# in years
-min(brlen)*10^6
+# zero-length branches!
+```
 
+
+```{r}
+# what about not zero-length branches?
+min(brlen[brlen!=0])
+
+# in years
+min(brlen[brlen!=0])*10^6
+
+# let's look at the distribution of these edge lengths, ignoring zero-length
+hist(brlen[brlen!=0])
+```
+
+
+
+```{r}
+# total number of zero-length branches
+sum(brlen==0)
+
+# proportion of edges that are zero-length
+sum(brlen==0)/length(brlen)
+
+```
+
+Yeesh - nearly a quarter of branches on this tree are zero-length branches. Not looking so good.
+
+
+
+```{r}
+
+# number of zero-length internal branches
+sum(brlen==0 & tree$edge[,2]>Ntip(tree))
+
+# number of zero-length terminal branches 
+  # (shouldn't be any because of our application of ATBL)
+sum(brlen==0 & tree$edge[,2]<=Ntip(tree))
 ```
 
 
 Let's use TreEvo!
 
 ```{r}
-
 library(TreEvo)
 
 # character data for doRun must be in matrix form
@@ -92,7 +130,6 @@ library(TreEvo)
 
 charData<-matrix(sutureComplexity,ncol=1)
 rownames(charData)<-names(sutureComplexity)
-
 ```
 
 Let's analyze it with ordinary BM
