@@ -41,7 +41,8 @@ The trees for the three groups examined in this paper all appear to be trees dat
 First, let's plot the tree:
 
 ```{r}
-plot(ladderize(ammoniteTreeRaia));axisPhylo()
+plot(ladderize(ammoniteTreeRaia), show.tip.label=FALSE)
+axisPhylo()
 ```
 
 This tree has polytomies - we will have to deal with that. Let's randomly resolve tree using `multi2di` from ape, and then use function `addTermBranchLength` from package `paleotree`
@@ -52,8 +53,9 @@ tree<-multi2di(ammoniteTreeRaia)
 # let's apply ATBL
 tree<-addTermBranchLength(tree,0.01)
 
-
-plot(ladderize(tree));axisPhylo()
+# let's try plotting it again
+plot(ladderize(tree), show.tip.label=FALSE)
+axisPhylo()
 ```
 
 Because we aren't adjust the internal edges at all, `multi2di` has just inserted a number of zero-length internal edges between internodes within the tree. This means that alternative resolutions of the tree (as multi2di is stochastic) won't create meaningfully different variance-covariance matrices, so we likely don't need to worry about resolving multiple trees in this case (because we're taking the trees used by Raia et al. at total face-value, which perhaps is the truly unsupported assumption).
@@ -137,7 +139,7 @@ Let's analyze it with ordinary BM
 ```{r eval=FALSE}
 
 
-results<-doRun_prc(
+resultsBM<-doRun_prc(
   phy = tree,
   traits = charData,
   intrinsicFn=brownianIntrinsic,
@@ -199,14 +201,52 @@ resultsBound<-doRun_prc(
 
 ```
 
+```{r}
+resultsBM<-results
+```
+
+The function `highestPostDens` provides us with the  weighted mean, standard deviation, upper and lower highest posterior density (HPD) for each free parameter in the posterior sample. 
 
 ```{r}
 
-results
+highestPostDens(resultsBM$particleDataFrame, percent=0.95, returnData=FALSE)
 
-resultsBound
+highestPostDens(resultsBound$particleDataFrame, percent=0.95, returnData=FALSE)
 
 ```
+
+
+
+```{r }
+
+# This function calculates Effective Sample Size (ESS) on results.  
+# Performs the best when results are from multiple runs.
+
+# ESS for single runs
+pairwiseESS(resultsBM$particleDataFrame)
+
+pairwiseESS(resultsBound$particleDataFrame)
+
+# ESS for parameters shared between BM and bound
+#pairwiseESS(list(resultsBM$particleDataFrame,resultsBound$particleDataFrame))
+
+
+```
+
+
+```{r fig.width = 7, fig.asp=0.4}
+
+# plotPosteriors
+	# for each free parameter in the posterior, a plot is made of the distribution of values estimate in the last generation
+
+plotPosteriors(particleDataFrame=resultsBM$particleDataFrame,
+   priorsMat=resultsBM$PriorMatrix)
+
+plotPosteriors(particleDataFrame=resultsBound$particleDataFrame,
+   priorsMat=resultsBound$PriorMatrix)
+```
+
+
 
 
 ```{r, eval=FALSE, echo=FALSE}
@@ -214,4 +254,5 @@ resultsBound
 save.image(file="treevo_vignette_workspace.Rdata")
 
 ```
+
 

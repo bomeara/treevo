@@ -30,8 +30,7 @@ parameter (including fixed values). Otherwise should be \code{NA}.}
 Returns a plot for each free parameter.
 }
 \description{
-This function plots posterior distributions from the last generation of each
-free parameter.
+For each free parameter in the posterior, this function creates a plot of the distribution of values estimated in the last generation.
 }
 \note{
 \code{realParam} and \code{realParamValues} should only be used with simulated data, where
