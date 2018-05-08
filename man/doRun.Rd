@@ -148,7 +148,6 @@ which differ slightly in their content among the two functions. For \code{doRun_
 \item{input.data}{Input variables: jobName, number of taxa, StartSims,
 generation.time, TreeYears, timeStep, totalGenerations, epsilonProportion,
 epsilonMultiplier, nRuns, nStepsPRC, numParticles, standardDevFactor}
-\item{PriorMatrix}{Matrix of prior distributions}
 \item{particleDataFrame}{DataFrame with information from each simulation,
 including generation, attempt, id, parentid, distance, weight, and parameter states}
 \item{toleranceVector}{Final tolerance vector}
@@ -166,7 +165,6 @@ For \code{doRun_rej}, the output is:
 \item{input.data}{Input variables: jobName, number of taxa, StartSims,
 generation.time, TreeYears, timeStep, totalGenerations, epsilonProportion,
 epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor}
-\item{PriorMatrix}{Matrix of prior distributions}
 \item{phy}{Input phylogeny}
 \item{traits}{Input traits}
 \item{trueFreeValuesANDSummaryValues}{Parameter estimates and summary stats from all sims}

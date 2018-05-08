@@ -114,7 +114,7 @@
 #' generation.time, TreeYears, timeStep, totalGenerations, epsilonProportion,
 #' epsilonMultiplier, nRuns, nStepsPRC, numParticles, standardDevFactor}
 
-#' \item{PriorMatrix}{Matrix of prior distributions}
+# \item{PriorMatrix}{Matrix of prior distributions}
 
 #' \item{particleDataFrame}{DataFrame with information from each simulation,
 #' including generation, attempt, id, parentid, distance, weight, and parameter states}
@@ -144,7 +144,7 @@
 #' generation.time, TreeYears, timeStep, totalGenerations, epsilonProportion,
 #' epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor}
 
-#' \item{PriorMatrix}{Matrix of prior distributions}
+# \item{PriorMatrix}{Matrix of prior distributions}
 
 #' \item{phy}{Input phylogeny}
 
@@ -390,6 +390,7 @@ doRun_prc<-function(
 		)
 	#
 	results<-list()
+	class(results)<-c("multiRun_doRun_prc",class(results))
 	#
 	for(runID in 1:nRuns){
 		# INITIAL SIMULATIONS
@@ -492,7 +493,6 @@ doRun_prc<-function(
 			#
 			# get tolerance value
 			toleranceValue<-initialSimsRes$toleranceVector[dataGenerationStep]
-			
 			#
 			while (nAcceptedParticles<=numParticles) {
 				#
@@ -715,7 +715,7 @@ doRun_prc<-function(
 				#
 				prcResults<-list()
 				prcResults$input.data<-input.data
-				prcResults$PriorMatrix<-PriorMatrix
+				#prcResults$PriorMatrix<-PriorMatrix
 				prcResults$particleDataFrame<-particleDataFrame
 				names(prcResults$particleDataFrame)<-nameVector
 				prcResults$toleranceVector<-initialSimsRes$toleranceVector
@@ -743,7 +743,7 @@ doRun_prc<-function(
 		# save them to prcResults (this hasn't been done yet if save.data=FALSE)
 		prcResults<-list()
 		prcResults$input.data<-input.data
-		prcResults$PriorMatrix<-PriorMatrix
+		#prcResults$PriorMatrix<-PriorMatrix
 		prcResults$particleDataFrame<-particleDataFrame
 		#names(prcResults$particleDataFrame)<-nameVector
 		prcResults$toleranceVector<-initialSimsRes$toleranceVector
