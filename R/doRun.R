@@ -200,10 +200,7 @@
 #'   extrinsicPriorsFns=c("fixed"),
 #'   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
 #'   generation.time=10000,
-#'   standardDevFactor=0.2,
-#'   StartSims=10,
-#'   epsilonProportion=0.7,
-#'   epsilonMultiplier=0.7,
+#'   nRuns=2,
 #'   nStepsPRC=3,
 #'   numParticles=20,
 #'   jobName="examplerun_prc",
@@ -267,7 +264,7 @@ doRun_prc<-function(
 	#
 	numParticles=300, 
 	nStepsPRC=5,
-	nRuns=1,
+	nRuns=2,
 	#
 	generation.time=1000, 
 	TreeYears=max(branching.times(phy)) * 1e6,
@@ -355,22 +352,22 @@ doRun_prc<-function(
 	namesParFree<-names(freevector)[freevector]
 	#
 	# get prior matrix
-	PriorMatrix<-getPriorMatrix(
-		startingPriorsValues=startingPriorsValues,
-		intrinsicPriorsValues=intrinsicPriorsValues,
-		extrinsicPriorsValues=extrinsicPriorsValues,
-		startingPriorsFns=startingPriorsFns,
-		intrinsicPriorsFns=intrinsicPriorsFns,
-		extrinsicPriorsFns=extrinsicPriorsFns,
-		numberParametersTotal=numberParametersTotal
-		)
+	#PriorMatrix<-getPriorMatrix(
+	#	startingPriorsValues=startingPriorsValues,
+	#	intrinsicPriorsValues=intrinsicPriorsValues,
+	#	extrinsicPriorsValues=extrinsicPriorsValues,
+	#	startingPriorsFns=startingPriorsFns,
+	#	intrinsicPriorsFns=intrinsicPriorsFns,
+	#	extrinsicPriorsFns=extrinsicPriorsFns,
+	#	numberParametersTotal=numberParametersTotal
+	#	)
 	##	
 	#initialize weighted mean sd matrices
-	weightedMeanParam<-matrix(nrow=nStepsPRC, ncol=numberParametersTotal)
-	colnames(weightedMeanParam)<-colnames(PriorMatrix)
+	weightedMeanParam<-matrix(nrow=nStepsPRC, ncol=numberParametersFree)
+	colnames(weightedMeanParam)<-namesParFree
 	rownames(weightedMeanParam)<-paste0("Gen ", c(1: nStepsPRC), sep="")
-	param.stdev<-matrix(nrow=nStepsPRC, ncol=numberParametersTotal)
-	colnames(param.stdev)<-colnames(PriorMatrix)
+	param.stdev<-matrix(nrow=nStepsPRC, ncol=numberParametersFree)
+	colnames(param.stdev)<-namesParFree
 	rownames(param.stdev)<-paste0("Gen ", c(1: nStepsPRC), sep="")
 	#
 	#
@@ -607,7 +604,7 @@ doRun_prc<-function(
 				parVector<-c(currParticleList[[i]]$startingValues,
 					currParticleList[[i]]$intrinsicValues, currParticleList[[i]]$extrinsicValues)
 				# keep only free parameters
-				parVector<-parVector[freeVector]
+				parVector<-parVector[freevector]
 				vectorForDataFrame<-c(dataGenerationStep, attempts,currParticleList[[i]]$id, currParticleList[[i]]$parentid,
 					currParticleList[[i]]$distance, currParticleList[[i]]$weight, parVector)
 				#	
@@ -677,7 +674,7 @@ doRun_prc<-function(
 			#
 			sub1<-subset(particleDataFrame, particleDataFrame$generation==dataGenerationStep)
 			sub2<-subset(sub1, sub1$id>0)
-			for (i in 1:numberParametersTotal){
+			for (i in 1:numberParametersFree){
 				param.stdev[dataGenerationStep,i]<-c(sd(sub2[,6+i]))
 				weightedMeanParam[dataGenerationStep,i]<-weighted.mean(sub2[,6+i], sub2[,6])
 				#c(mean(subset(particleDataFrame, X3>0)[,7:dim(particleDataFrame)[2]])/subset(particleDataFrame, X3>0)[,6])
