@@ -31,6 +31,7 @@ Returns a plot for each free parameter.
 }
 \description{
 For each free parameter in the posterior, this function creates a plot of the distribution of values estimated in the last generation.
+This function can also be used to visually compare against true (generating) parameter values in a simulation.
 }
 \note{
 \code{realParam} and \code{realParamValues} should only be used with simulated data, where
