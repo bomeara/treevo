@@ -10,7 +10,7 @@
 #' observed trait data set (\code{traits}), models (\code{intrinsicFn}, \code{extrinsicFn}), and priors
 #' (\code{startingPriorsValues}, \code{startingPriorsFns}, \code{intrinsicPriorsValues},
 #' \code{intrinsicPriorsFns}, \code{extrinsicPriorsValues}, \code{extrinsicPriorsFns}). Pulling from
-#' the priors, it simulates an initial set of simulations (\code{StartSims}). This set of simulations is
+#' the priors, it simulates an initial set of simulations (\code{nInitialSims}). This set of simulations is
 #' boxcox transformed ,and a PLS regression (see \code{\link{methodsPLS}}) is performed for each free parameter
 #' to determine the most informative summary statistics (using \code{variance.cutoff}). The euclidean distance is calculated
 #' between each each initial simulation's most informative summary statistics and the input observed data.
@@ -53,7 +53,7 @@
 
 #' @param standardDevFactor Standard deviation for mutating states each time a new particle is generated in a PRC generation.
 
-#' @param StartSims Number of initial simulations.
+#' @param nInitialSims Number of initial simulations used to calibrate particle rejection control algorithm.
 
 # @param plot If \code{TRUE}, plots distance of each simulation.
 
@@ -66,7 +66,12 @@
 #' @param nRuns Number of independent PRC runs to be performed, each consisting of independent sets of
 #' initial simulations and PRC generations. Note that runs are run \emph{sequentially}, and not in parallel,
 #' as the generation of particles within each run makes use of the multicore functionality.
-#' If \code{nRuns} is greater than 1, the output from \code{doRun_prc} will be a list object composed of multiple output lists, as described.
+#' If \code{nRuns} is greater than 1, the output from \code{doRun_prc} will be a list object composed of
+#' multiple output lists, as described.
+
+#' @param nInitialSimsPerParam If \code{nInitialSims} is not given by the user, the number of initial simulations
+#' performed to calibrate the particle rejection algorithm will instead be the number of free parameters
+#' in the model multiplied by \code{nInitialSimsPerParam}.
 
 #' @param jobName Optional job name.
 
@@ -110,7 +115,7 @@
 #' which differ slightly in their content among the two functions. For \code{doRun_prc}, the output is:
 
 #' \describe{
-#' \item{input.data}{Input variables: jobName, number of taxa, StartSims,
+#' \item{input.data}{Input variables: jobName, number of taxa, nInitialSims,
 #' generation.time, TreeYears, timeStep, totalGenerations, epsilonProportion,
 #' epsilonMultiplier, nRuns, nStepsPRC, numParticles, standardDevFactor}
 
@@ -140,7 +145,7 @@
 #' For \code{doRun_rej}, the output is:
 
 #' \describe{
-#' \item{input.data}{Input variables: jobName, number of taxa, StartSims,
+#' \item{input.data}{Input variables: jobName, number of taxa, nInitialSims,
 #' generation.time, TreeYears, timeStep, totalGenerations, epsilonProportion,
 #' epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor}
 
@@ -203,6 +208,7 @@
 #'   nRuns=2,
 #'   nStepsPRC=3,
 #'   numParticles=20,
+#'   nInitialSimsPerParam = 10,
 #'   jobName="examplerun_prc",
 #'   stopRule=FALSE,
 #'   multicore=FALSE,
@@ -225,7 +231,7 @@
 #' 	extrinsicPriorsFns = c("fixed"),
 #' 	extrinsicPriorsValues = matrix(c(0, 0), nrow=2, byrow=FALSE),
 #'	generation.time=10000,
-#' 	StartSims = 10,
+#' 	nInitialSimsPerParam = 10,
 #' 	jobName = "examplerun_rej",
 #' 	abcTolerance = 0.05,
 #' 	multicore = FALSE,
@@ -262,10 +268,11 @@ doRun_prc<-function(
 	#
 	#startingValuesGuess=c(), intrinsicValuesGuess=c(), extrinsicValuesGuess=c(),
 	#
-	StartSims=NA, 
 	numParticles=300, 
 	nStepsPRC=5,
 	nRuns=2,
+	nInitialSims=NA, 
+	nInitialSimsPerParam=100,
 	#
 	generation.time=1000, 
 	TreeYears=max(branching.times(phy)) * 1e6,
@@ -372,14 +379,15 @@ doRun_prc<-function(
 	rownames(param.stdev)<-paste0("Gen ", c(1: nStepsPRC), sep="")
 	#
 	#
-	if (is.na(StartSims)) {
-		StartSims<-50*numberParametersFree	#modified from 1000, which is computationally abusive
-		message(paste0("Number of initial simulations to be performed (StartSims) not given\n",
-			"using default of 50 * the number of free parameters (=",StartSims," initial simulations)"))
+	if (is.na(nInitialSims)) {
+		nInitialSims<-nInitialSimsPerParam*numberParametersFree	#modified from 1000, which is rather computationally abusive
+		message(paste0("Number of initial simulations to be performed (nInitialSims) not given\n",
+			"Number of initial simulations will instead be product of the number of free parameters multipled by ",nInitialSimsPerParam,
+			"\n(=",nInitialSims," initial simulations)"))
 		}
 	#
 	# save input data for use later
-	input.data<-rbind(jobName=jobName, nTaxa=Ntip(phy), nInitialSims=StartSims,
+	input.data<-rbind(jobName=jobName, nTaxa=Ntip(phy), nInitialSims=nInitialSims,
 		generation.time=generation.time, TreeYears=TreeYears, timeStep=timeStep,
 		totalGenerations=totalGenerations, epsilonProportion=epsilonProportion,
 		epsilonMultiplier=epsilonMultiplier, nRuns=nRuns, nStepsPRC=nStepsPRC, 
@@ -401,7 +409,7 @@ doRun_prc<-function(
 			}
 		# INITIAL SIMULATIONS
 		initialSimsRes<-initialSimsPRC(
-			nrepSim=StartSims, 
+			nrepSim=nInitialSims, 
 			phy=phy,  
 			taxonDF=taxonDF,
 			startingPriorsValues=startingPriorsValues, 

@@ -70,6 +70,7 @@
 #'   nRuns=2,
 #'   nStepsPRC=3,
 #'   numParticles=20,
+#' 	 nInitialSimsPerParam=10,
 #'   jobName="examplerun_prc",
 #'   stopRule=FALSE,
 #'   multicore=FALSE,

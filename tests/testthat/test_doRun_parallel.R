@@ -15,6 +15,7 @@ test_that("doRun_prc runs correctly in parallel", {
 	  extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
 	  generation.time=1000000,
 	  nRuns=2,
+	  startSimsPerParam=5,
 	  nStepsPRC=2,
 	  numParticles=5,
 	  jobName="exampleRun",
