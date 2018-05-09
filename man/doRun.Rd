@@ -8,15 +8,14 @@
 \usage{
 doRun_prc(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
   startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns,
-  extrinsicPriorsValues, extrinsicPriorsFns, numParticles = 300,
-  nStepsPRC = 5, nRuns = 2, generation.time = 1000,
+  extrinsicPriorsValues, extrinsicPriorsFns, StartSims = NA,
+  numParticles = 300, nStepsPRC = 5, nRuns = 2, generation.time = 1000,
   TreeYears = max(branching.times(phy)) * 1e+06, multicore = FALSE,
   coreLimit = NA, multicoreSuppress = FALSE, standardDevFactor = 0.2,
-  StartSims = NA, epsilonProportion = 0.7, epsilonMultiplier = 0.7,
-  validation = "CV", scale = TRUE, variance.cutoff = 95,
-  stopRule = FALSE, stopValue = 0.05, maxAttempts = Inf,
-  diagnosticPRCmode = FALSE, jobName = NA, saveData = FALSE,
-  verboseParticles = TRUE)
+  epsilonProportion = 0.7, epsilonMultiplier = 0.7, validation = "CV",
+  scale = TRUE, variance.cutoff = 95, stopRule = FALSE,
+  stopValue = 0.05, maxAttempts = Inf, diagnosticPRCmode = FALSE,
+  jobName = NA, saveData = FALSE, verboseParticles = TRUE)
 
 doRun_rej(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
   startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns,
@@ -58,6 +57,8 @@ to the extrinsic function and number of rows equal to two (representing two para
 \item{extrinsicPriorsFns}{Vector containing names of prior distributions to
 use for extrinsic function parameters: can be one of \code{"fixed"}, \code{"uniform"}, \code{"normal"},}
 
+\item{StartSims}{Number of initial simulations.}
+
 \item{numParticles}{Number of accepted particles per PRC generation.}
 
 \item{nStepsPRC}{Number of PRC generations to run.}
@@ -91,8 +92,6 @@ If neither package is installed, this function will fail if \code{multicore=TRUE
 of \code{doPar}. Mainly to be used for developer diagnostic purposes.}
 
 \item{standardDevFactor}{Standard deviation for mutating states each time a new particle is generated in a PRC generation.}
-
-\item{StartSims}{Number of initial simulations.}
 
 \item{epsilonProportion}{Sets tolerance for initial simulations.}
 
@@ -148,6 +147,7 @@ which differ slightly in their content among the two functions. For \code{doRun_
 \item{input.data}{Input variables: jobName, number of taxa, StartSims,
 generation.time, TreeYears, timeStep, totalGenerations, epsilonProportion,
 epsilonMultiplier, nRuns, nStepsPRC, numParticles, standardDevFactor}
+\item{PriorMatrix}{Matrix of prior distributions. This is used for doing post-analysis comparisons between prior and posterior distributions, such as with function \code{plotPosteriors}}
 \item{particleDataFrame}{DataFrame with information from each simulation,
 including generation, attempt, id, parentid, distance, weight, and parameter states}
 \item{toleranceVector}{Final tolerance vector}
@@ -165,6 +165,7 @@ For \code{doRun_rej}, the output is:
 \item{input.data}{Input variables: jobName, number of taxa, StartSims,
 generation.time, TreeYears, timeStep, totalGenerations, epsilonProportion,
 epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor}
+\item{PriorMatrix}{Matrix of prior distributions. This is used for doing post-analysis comparisons between prior and posterior distributions, such as with function \code{plotPosteriors}}
 \item{phy}{Input phylogeny}
 \item{traits}{Input traits}
 \item{trueFreeValuesANDSummaryValues}{Parameter estimates and summary stats from all sims}

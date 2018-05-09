@@ -114,7 +114,7 @@
 #' generation.time, TreeYears, timeStep, totalGenerations, epsilonProportion,
 #' epsilonMultiplier, nRuns, nStepsPRC, numParticles, standardDevFactor}
 
-# \item{PriorMatrix}{Matrix of prior distributions}
+#' \item{PriorMatrix}{Matrix of prior distributions. This is used for doing post-analysis comparisons between prior and posterior distributions, such as with function \code{plotPosteriors}}
 
 #' \item{particleDataFrame}{DataFrame with information from each simulation,
 #' including generation, attempt, id, parentid, distance, weight, and parameter states}
@@ -144,7 +144,7 @@
 #' generation.time, TreeYears, timeStep, totalGenerations, epsilonProportion,
 #' epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor}
 
-# \item{PriorMatrix}{Matrix of prior distributions}
+#' \item{PriorMatrix}{Matrix of prior distributions. This is used for doing post-analysis comparisons between prior and posterior distributions, such as with function \code{plotPosteriors}}
 
 #' \item{phy}{Input phylogeny}
 
@@ -262,6 +262,7 @@ doRun_prc<-function(
 	#
 	#startingValuesGuess=c(), intrinsicValuesGuess=c(), extrinsicValuesGuess=c(),
 	#
+	StartSims=NA, 
 	numParticles=300, 
 	nStepsPRC=5,
 	nRuns=2,
@@ -274,7 +275,6 @@ doRun_prc<-function(
 	multicoreSuppress=FALSE,
 	#
 	standardDevFactor=0.20,
-	StartSims=NA, 
 	epsilonProportion=0.7, 
 	epsilonMultiplier=0.7, 
 
@@ -352,18 +352,19 @@ doRun_prc<-function(
 	namesParFree<-names(freevector)[freevector]
 	#
 	# get prior matrix
-	#PriorMatrix<-getPriorMatrix(
-	#	startingPriorsValues=startingPriorsValues,
-	#	intrinsicPriorsValues=intrinsicPriorsValues,
-	#	extrinsicPriorsValues=extrinsicPriorsValues,
-	#	startingPriorsFns=startingPriorsFns,
-	#	intrinsicPriorsFns=intrinsicPriorsFns,
-	#	extrinsicPriorsFns=extrinsicPriorsFns,
-	#	numberParametersTotal=numberParametersTotal
-	#	)
+	PriorMatrix<-getPriorMatrix(
+		startingPriorsValues=startingPriorsValues,
+		intrinsicPriorsValues=intrinsicPriorsValues,
+		extrinsicPriorsValues=extrinsicPriorsValues,
+		startingPriorsFns=startingPriorsFns,
+		intrinsicPriorsFns=intrinsicPriorsFns,
+		extrinsicPriorsFns=extrinsicPriorsFns,
+		numberParametersTotal=numberParametersTotal
+		)
 	##	
 	#initialize weighted mean sd matrices
-	weightedMeanParam<-matrix(nrow=nStepsPRC, ncol=numberParametersFree)
+	weightedMeanParam<-matrix(nrow=nStepsPRC, 
+		ncol=numberParametersFree)
 	colnames(weightedMeanParam)<-namesParFree
 	rownames(weightedMeanParam)<-paste0("Gen ", c(1: nStepsPRC), sep="")
 	param.stdev<-matrix(nrow=nStepsPRC, ncol=numberParametersFree)
@@ -372,7 +373,9 @@ doRun_prc<-function(
 	#
 	#
 	if (is.na(StartSims)) {
-		StartSims<-1000*numberParametersFree
+		StartSims<-50*numberParametersFree	#modified from 1000, which is computationally abusive
+		message(paste0("Number of initial simulations to be performed (StartSims) not given\n",
+			"using default of 50 * the number of free parameters (=",StartSims," initial simulations)"))
 		}
 	#
 	# save input data for use later
@@ -393,6 +396,9 @@ doRun_prc<-function(
 	class(results)<-c("multiRun_doRun_prc",class(results))
 	#
 	for(runID in 1:nRuns){
+		if(nRuns>1){
+			message(paste0("Beginning PRC Run ",runID," out of a total of ",nRuns,"..."))
+			}
 		# INITIAL SIMULATIONS
 		initialSimsRes<-initialSimsPRC(
 			nrepSim=StartSims, 
@@ -715,7 +721,7 @@ doRun_prc<-function(
 				#
 				prcResults<-list()
 				prcResults$input.data<-input.data
-				#prcResults$PriorMatrix<-PriorMatrix
+				prcResults$PriorMatrix<-PriorMatrix
 				prcResults$particleDataFrame<-particleDataFrame
 				names(prcResults$particleDataFrame)<-nameVector
 				prcResults$toleranceVector<-initialSimsRes$toleranceVector
@@ -743,7 +749,7 @@ doRun_prc<-function(
 		# save them to prcResults (this hasn't been done yet if save.data=FALSE)
 		prcResults<-list()
 		prcResults$input.data<-input.data
-		#prcResults$PriorMatrix<-PriorMatrix
+		prcResults$PriorMatrix<-PriorMatrix
 		prcResults$particleDataFrame<-particleDataFrame
 		#names(prcResults$particleDataFrame)<-nameVector
 		prcResults$toleranceVector<-initialSimsRes$toleranceVector

@@ -21,7 +21,7 @@ This function calculates credible interval for each free parameter.
 \examples{
 
 data(simRunExample)
-credibleInt(results$particleDataFrame)
+credibleInt(results[[1]]$particleDataFrame)
 
 }
 \author{

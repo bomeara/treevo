@@ -18,7 +18,7 @@
 #' @examples
 #' 
 #' data(simRunExample)
-#' credibleInt(results$particleDataFrame)
+#' credibleInt(results[[1]]$particleDataFrame)
 #' 
 
 # was named CredInt originally

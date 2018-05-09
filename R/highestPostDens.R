@@ -24,7 +24,7 @@
 #' 
 #' data(simRunExample)
 #' 
-#' highestPostDens(results$particleDataFrame, percent=0.95, returnData=FALSE)
+#' highestPostDens(results[[1]]$particleDataFrame, percent=0.95, returnData=FALSE)
 #' 
 
 #' @name highestPostDens

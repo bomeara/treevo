@@ -30,7 +30,7 @@ and thus they are no longer displayed by this function.
 \examples{
 
 data(simRunExample)
-parentOffspringPlots(results$particleDataFrame)
+parentOffspringPlots(results[[1]]$particleDataFrame)
 
 }
 \author{

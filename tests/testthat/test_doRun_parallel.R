@@ -16,7 +16,7 @@ test_that("doRun_prc runs correctly in parallel", {
 	  generation.time=1000000,
 	  nRuns=2,
 	  nStepsPRC=2,
-	  numParticles=10,
+	  numParticles=5,
 	  jobName="exampleRun",
 	  diagnosticPRCmode=TRUE,
 	  verboseParticles=TRUE,
@@ -29,7 +29,7 @@ test_that("doRun_prc runs correctly in parallel", {
 	expect_is(results, "list")
 	expect_warning(expect_false(any(is.na(pairwiseESS(results[[1]]$particleDataFrame)))))
 	expect_false(any(is.na(pairwiseESS(list(results[[1]]$particleDataFrame,results[[2]]$particleDataFrame)))))
-	expect_false(any(is.na(pairwiseESS(list(results)))))
+	expect_false(any(is.na(pairwiseESS(results))))
 })
 
 

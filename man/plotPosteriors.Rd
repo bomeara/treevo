@@ -23,7 +23,7 @@ In other words, prior matrices are expected to be identical for all runs conside
 \item{realParam}{If \code{TRUE}, this function will plot line segments where real
 parameter values are known. (Usually only true when simulated data is analyzed.)}
 
-\item{realParamValues}{Values for real paramters, include a value for each
+\item{realParamValues}{Values for real parameters, include a value for each
 parameter (including fixed values). Otherwise should be \code{NA}.}
 }
 \value{
@@ -40,8 +40,8 @@ the true values are known.
 \examples{
 data(simRunExample)
 
-plotPosteriors(particleDataFrame=results$particleDataFrame,
-   priorsMat=results$PriorMatrix,
+plotPosteriors(particleDataFrame=results[[1]]$particleDataFrame,
+   priorsMat=results[[1]]$PriorMatrix,
    realParam=TRUE, realParamValues=c(ancState,genRate))
 }
 \seealso{
