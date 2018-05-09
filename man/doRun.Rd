@@ -8,8 +8,9 @@
 \usage{
 doRun_prc(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
   startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns,
-  extrinsicPriorsValues, extrinsicPriorsFns, StartSims = NA,
-  numParticles = 300, nStepsPRC = 5, nRuns = 2, generation.time = 1000,
+  extrinsicPriorsValues, extrinsicPriorsFns, numParticles = 300,
+  nStepsPRC = 5, nRuns = 2, nInitialSims = NA,
+  nInitialSimsPerParam = 100, generation.time = 1000,
   TreeYears = max(branching.times(phy)) * 1e+06, multicore = FALSE,
   coreLimit = NA, multicoreSuppress = FALSE, standardDevFactor = 0.2,
   epsilonProportion = 0.7, epsilonMultiplier = 0.7, validation = "CV",
@@ -57,8 +58,6 @@ to the extrinsic function and number of rows equal to two (representing two para
 \item{extrinsicPriorsFns}{Vector containing names of prior distributions to
 use for extrinsic function parameters: can be one of \code{"fixed"}, \code{"uniform"}, \code{"normal"},}
 
-\item{StartSims}{Number of initial simulations.}
-
 \item{numParticles}{Number of accepted particles per PRC generation.}
 
 \item{nStepsPRC}{Number of PRC generations to run.}
@@ -66,7 +65,14 @@ use for extrinsic function parameters: can be one of \code{"fixed"}, \code{"unif
 \item{nRuns}{Number of independent PRC runs to be performed, each consisting of independent sets of
 initial simulations and PRC generations. Note that runs are run \emph{sequentially}, and not in parallel,
 as the generation of particles within each run makes use of the multicore functionality.
-If \code{nRuns} is greater than 1, the output from \code{doRun_prc} will be a list object composed of multiple output lists, as described.}
+If \code{nRuns} is greater than 1, the output from \code{doRun_prc} will be a list object composed of
+multiple output lists, as described.}
+
+\item{nInitialSims}{Number of initial simulations used to calibrate particle rejection control algorithm.}
+
+\item{nInitialSimsPerParam}{If \code{nInitialSims} is not given by the user, the number of initial simulations
+performed to calibrate the particle rejection algorithm will instead be the number of free parameters
+in the model multiplied by \code{nInitialSimsPerParam}.}
 
 \item{generation.time}{The number of years per generation. This sets the coarseness of the simulation; if it's set to 1000,
 for example, the population's trait values change every 1000 calender years. Note that this is in calender years (see description
@@ -144,7 +150,7 @@ and acceptance of particles is output to console via \code{message} as \code{doR
 The output of these two functions are lists, composed of multiple objects,
 which differ slightly in their content among the two functions. For \code{doRun_prc}, the output is:
 \describe{
-\item{input.data}{Input variables: jobName, number of taxa, StartSims,
+\item{input.data}{Input variables: jobName, number of taxa, nInitialSims,
 generation.time, TreeYears, timeStep, totalGenerations, epsilonProportion,
 epsilonMultiplier, nRuns, nStepsPRC, numParticles, standardDevFactor}
 \item{PriorMatrix}{Matrix of prior distributions. This is used for doing post-analysis comparisons between prior and posterior distributions, such as with function \code{plotPosteriors}}
@@ -162,7 +168,7 @@ If \code{nRuns} is greater than 1, the output from \code{doRun_prc} will be a li
 
 For \code{doRun_rej}, the output is:
 \describe{
-\item{input.data}{Input variables: jobName, number of taxa, StartSims,
+\item{input.data}{Input variables: jobName, number of taxa, nInitialSims,
 generation.time, TreeYears, timeStep, totalGenerations, epsilonProportion,
 epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor}
 \item{PriorMatrix}{Matrix of prior distributions. This is used for doing post-analysis comparisons between prior and posterior distributions, such as with function \code{plotPosteriors}}
@@ -189,7 +195,7 @@ Both \code{doRun} functions take an input phylogeny (\code{phy}),
 observed trait data set (\code{traits}), models (\code{intrinsicFn}, \code{extrinsicFn}), and priors
 (\code{startingPriorsValues}, \code{startingPriorsFns}, \code{intrinsicPriorsValues},
 \code{intrinsicPriorsFns}, \code{extrinsicPriorsValues}, \code{extrinsicPriorsFns}). Pulling from
-the priors, it simulates an initial set of simulations (\code{StartSims}). This set of simulations is
+the priors, it simulates an initial set of simulations (\code{nInitialSims}). This set of simulations is
 boxcox transformed ,and a PLS regression (see \code{\link{methodsPLS}}) is performed for each free parameter
 to determine the most informative summary statistics (using \code{variance.cutoff}). The euclidean distance is calculated
 between each each initial simulation's most informative summary statistics and the input observed data.
@@ -238,6 +244,7 @@ resultsPRC<-doRun_prc(
   nRuns=2,
   nStepsPRC=3,
   numParticles=20,
+  nInitialSimsPerParam = 10,
   jobName="examplerun_prc",
   stopRule=FALSE,
   multicore=FALSE,
@@ -260,7 +267,7 @@ resultsRej<-doRun_rej(
 	extrinsicPriorsFns = c("fixed"),
 	extrinsicPriorsValues = matrix(c(0, 0), nrow=2, byrow=FALSE),
 generation.time=10000,
-	StartSims = 10,
+	nInitialSimsPerParam = 10,
 	jobName = "examplerun_rej",
 	abcTolerance = 0.05,
 	multicore = FALSE,

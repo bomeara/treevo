@@ -87,6 +87,7 @@ results<-doRun_prc(
 	nRuns=2,
 	nStepsPRC=3,
 	numParticles=20,
+	nInitialSimsPerParam=10,
 	jobName="examplerun_prc",
 	stopRule=FALSE,
 	multicore=FALSE,
@@ -109,6 +110,7 @@ resultsBound<-doRun_prc(
 	nRuns=2
 	nStepsPRC=3,
 	numParticles=20,
+	nInitialSimsPerParam=10,
 	jobName="examplerun_prc_bound",
 	stopRule=FALSE,
 	multicore=FALSE,

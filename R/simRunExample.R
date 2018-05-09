@@ -104,6 +104,7 @@
 #' 	nRuns=2,
 #' 	nStepsPRC=3,
 #' 	numParticles=20,
+#' 	nInitialSimsPerParam=10,
 #' 	jobName="examplerun_prc",
 #' 	stopRule=FALSE,
 #' 	multicore=FALSE,
@@ -126,6 +127,7 @@
 #' 	nRuns=2
 #' 	nStepsPRC=3,
 #' 	numParticles=20,
+#' 	nInitialSimsPerParam=10,
 #' 	jobName="examplerun_prc_bound",
 #' 	stopRule=FALSE,
 #' 	multicore=FALSE,
