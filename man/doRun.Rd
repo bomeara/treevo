@@ -8,12 +8,13 @@
 \usage{
 doRun_prc(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
   startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns,
-  extrinsicPriorsValues, extrinsicPriorsFns, generation.time = 1000,
+  extrinsicPriorsValues, extrinsicPriorsFns, numParticles = 300,
+  nStepsPRC = 5, nRuns = 2, nInitialSims = NA,
+  nInitialSimsPerParam = 100, generation.time = 1000,
   TreeYears = max(branching.times(phy)) * 1e+06, multicore = FALSE,
-  coreLimit = NA, multicoreSuppress = FALSE, validation = "CV",
-  scale = TRUE, variance.cutoff = 95, numParticles = 300,
-  standardDevFactor = 0.2, StartSims = NA, epsilonProportion = 0.7,
-  epsilonMultiplier = 0.7, nStepsPRC = 5, stopRule = FALSE,
+  coreLimit = NA, multicoreSuppress = FALSE, standardDevFactor = 0.2,
+  epsilonProportion = 0.7, epsilonMultiplier = 0.7, validation = "CV",
+  scale = TRUE, variance.cutoff = 95, stopRule = FALSE,
   stopValue = 0.05, maxAttempts = Inf, diagnosticPRCmode = FALSE,
   jobName = NA, saveData = FALSE, verboseParticles = TRUE)
 
@@ -22,7 +23,7 @@ doRun_rej(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
   extrinsicPriorsValues, extrinsicPriorsFns, generation.time = 1000,
   TreeYears = max(branching.times(phy)) * 1e+06, multicore = FALSE,
   coreLimit = NA, validation = "CV", scale = TRUE, variance.cutoff = 95,
-  standardDevFactor = 0.2, StartSims = NA, jobName = NA,
+  standardDevFactor = 0.2, nInitialSims = NA, jobName = NA,
   abcTolerance = 0.1, checkpointFile = NULL, checkpointFreq = 24,
   savesims = FALSE)
 }
@@ -57,6 +58,22 @@ to the extrinsic function and number of rows equal to two (representing two para
 \item{extrinsicPriorsFns}{Vector containing names of prior distributions to
 use for extrinsic function parameters: can be one of \code{"fixed"}, \code{"uniform"}, \code{"normal"},}
 
+\item{numParticles}{Number of accepted particles per PRC generation.}
+
+\item{nStepsPRC}{Number of PRC generations to run.}
+
+\item{nRuns}{Number of independent PRC runs to be performed, each consisting of independent sets of
+initial simulations and PRC generations. Note that runs are run \emph{sequentially}, and not in parallel,
+as the generation of particles within each run makes use of the multicore functionality.
+If \code{nRuns} is greater than 1, the output from \code{doRun_prc} will be a list object composed of
+multiple output lists, as described.}
+
+\item{nInitialSims}{Number of initial simulations used to calibrate particle rejection control algorithm.}
+
+\item{nInitialSimsPerParam}{If \code{nInitialSims} is not given by the user, the number of initial simulations
+performed to calibrate the particle rejection algorithm will instead be the number of free parameters
+in the model multiplied by \code{nInitialSimsPerParam}.}
+
 \item{generation.time}{The number of years per generation. This sets the coarseness of the simulation; if it's set to 1000,
 for example, the population's trait values change every 1000 calender years. Note that this is in calender years (see description
 for argument \code{TreeYears}), and not in millions of years (as is typical for dated trees in macroevolutionary studies).
@@ -80,6 +97,12 @@ If neither package is installed, this function will fail if \code{multicore=TRUE
 \item{multicoreSuppress}{Argument to suppress multicore code and use a plain vanilla \code{fore()} loop instead
 of \code{doPar}. Mainly to be used for developer diagnostic purposes.}
 
+\item{standardDevFactor}{Standard deviation for mutating states each time a new particle is generated in a PRC generation.}
+
+\item{epsilonProportion}{Sets tolerance for initial simulations.}
+
+\item{epsilonMultiplier}{Sets tolerance on subsequent PRC generations.}
+
 \item{validation}{Character argument controlling what validation procedure is used by \code{\link{plsr}}.
 Default is \code{"CV"} for cross-validation.}
 
@@ -92,18 +115,6 @@ scaling by the standard deviation is done for every segment.}
 \item{variance.cutoff}{Minimum threshold percentage of variance explained for the
 number of components included in the final PLS model fit. This value is a
 percentage and must be between 0 and 100. Default is 95 percent.}
-
-\item{numParticles}{Number of accepted particles per generation.}
-
-\item{standardDevFactor}{Standard deviation for mutating states.}
-
-\item{StartSims}{Number of initial simulations.}
-
-\item{epsilonProportion}{Sets tolerance for initial simulations.}
-
-\item{epsilonMultiplier}{Sets tolerance on subsequent generations.}
-
-\item{nStepsPRC}{Number of generations to run.}
 
 \item{stopRule}{If \code{TRUE}, an analysis will be terminated prior to set number
 of generations if the ratio of all parameters from one generation to the
@@ -121,7 +132,8 @@ the PRC algorithm as it runs.}
 
 \item{jobName}{Optional job name.}
 
-\item{saveData}{Option to save various run information during the analysis, including summary statistics from analyses, output to external .Rdata and .txt files.}
+\item{saveData}{Option to save various run information during the analysis,
+including summary statistics from analyses, output to external .Rdata and .txt files.}
 
 \item{verboseParticles}{If \code{TRUE} (the default), a large amount of information about parameter estimates
 and acceptance of particles is output to console via \code{message} as \code{doRun_prc} runs.}
@@ -138,10 +150,10 @@ and acceptance of particles is output to console via \code{message} as \code{doR
 The output of these two functions are lists, composed of multiple objects,
 which differ slightly in their content among the two functions. For \code{doRun_prc}, the output is:
 \describe{
-\item{input.data}{Input variables: jobName, number of taxa, StartSims,
+\item{input.data}{Input variables: jobName, number of taxa, nInitialSims,
 generation.time, TreeYears, timeStep, totalGenerations, epsilonProportion,
-epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor}
-\item{PriorMatrix}{Matrix of prior distributions}
+epsilonMultiplier, nRuns, nStepsPRC, numParticles, standardDevFactor}
+\item{PriorMatrix}{Matrix of prior distributions. This is used for doing post-analysis comparisons between prior and posterior distributions, such as with function \code{plotPosteriors}}
 \item{particleDataFrame}{DataFrame with information from each simulation,
 including generation, attempt, id, parentid, distance, weight, and parameter states}
 \item{toleranceVector}{Final tolerance vector}
@@ -151,12 +163,15 @@ including generation, attempt, id, parentid, distance, weight, and parameter sta
 \item{credibleInt}{Credible Interval calculation for each free parameter of the final generation}
 \item{HPD}{Highest Posterior Density calculation each free parameter of the final generation}
 }
+
+If \code{nRuns} is greater than 1, the output from \code{doRun_prc} will be a list object composed of multiple output lists, as described.
+
 For \code{doRun_rej}, the output is:
 \describe{
-\item{input.data}{Input variables: jobName, number of taxa, StartSims,
+\item{input.data}{Input variables: jobName, number of taxa, nInitialSims,
 generation.time, TreeYears, timeStep, totalGenerations, epsilonProportion,
 epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor}
-\item{PriorMatrix}{Matrix of prior distributions}
+\item{PriorMatrix}{Matrix of prior distributions. This is used for doing post-analysis comparisons between prior and posterior distributions, such as with function \code{plotPosteriors}}
 \item{phy}{Input phylogeny}
 \item{traits}{Input traits}
 \item{trueFreeValuesANDSummaryValues}{Parameter estimates and summary stats from all sims}
@@ -180,7 +195,7 @@ Both \code{doRun} functions take an input phylogeny (\code{phy}),
 observed trait data set (\code{traits}), models (\code{intrinsicFn}, \code{extrinsicFn}), and priors
 (\code{startingPriorsValues}, \code{startingPriorsFns}, \code{intrinsicPriorsValues},
 \code{intrinsicPriorsFns}, \code{extrinsicPriorsValues}, \code{extrinsicPriorsFns}). Pulling from
-the priors, it simulates an initial set of simulations (\code{StartSims}). This set of simulations is
+the priors, it simulates an initial set of simulations (\code{nInitialSims}). This set of simulations is
 boxcox transformed ,and a PLS regression (see \code{\link{methodsPLS}}) is performed for each free parameter
 to determine the most informative summary statistics (using \code{variance.cutoff}). The euclidean distance is calculated
 between each each initial simulation's most informative summary statistics and the input observed data.
@@ -226,12 +241,10 @@ resultsPRC<-doRun_prc(
   extrinsicPriorsFns=c("fixed"),
   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
   generation.time=10000,
-  standardDevFactor=0.2,
-  StartSims=10,
-  epsilonProportion=0.7,
-  epsilonMultiplier=0.7,
+  nRuns=2,
   nStepsPRC=3,
   numParticles=20,
+  nInitialSimsPerParam = 10,
   jobName="examplerun_prc",
   stopRule=FALSE,
   multicore=FALSE,
@@ -254,7 +267,7 @@ resultsRej<-doRun_rej(
 	extrinsicPriorsFns = c("fixed"),
 	extrinsicPriorsValues = matrix(c(0, 0), nrow=2, byrow=FALSE),
 generation.time=10000,
-	StartSims = 10,
+	nInitialSims = 10,
 	jobName = "examplerun_rej",
 	abcTolerance = 0.05,
 	multicore = FALSE,

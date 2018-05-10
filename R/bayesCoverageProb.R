@@ -26,7 +26,7 @@
 #' # real (generating) parameters
 #' genPar<-c(ancState,genRate)
 #' 
-#' HPDs<-list(results$HPD,resultsBound$HPD)
+#' HPDs<-list(results[[1]]$HPD,resultsBound[[1]]$HPD)
 #' 
 #' bayesCoverageProb(RealParam=genPar, HPD=HPDs, verbose=TRUE)
 #' 

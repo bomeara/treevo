@@ -454,9 +454,9 @@ doSimulationInternal<-function(
 	#if(returnAll) {
 	#	return(taxonDF)
 	#	}
-	final.results <- subset(taxonDF, taxonTerminal==TRUE)
-	final.result.df <- data.frame(states=final.results[[whichStatesCol]])
-	rownames(final.result.df) <- final.results$name
+	final.result <- subset(taxonDF, taxonTerminal==TRUE)
+	final.result.df <- data.frame(states=final.result[[whichStatesCol]])
+	rownames(final.result.df) <- final.result$name
 	return(final.result.df)
 	}	
 

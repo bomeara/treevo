@@ -27,8 +27,9 @@ initialSimsPRC<-function(
 	# Otherwise, the PLS tends to optimize for just one parameter, and estimates for the less-favored one are quite bad
 	# because the summary stats tend to be used for the other.
 	#
-	#Used to be = StartSims*((2^try)/2), If initial simulations are not enough, and we need to try again then new analysis will double number of initial simulations
-	#nrepSim<-StartSims
+	#Used to be = nInitialSims*((2^try)/2), If initial simulations are not enough, 
+		# and we need to try again - then new analysis will double number of initial simulations
+	#nrepSim<-nInitialSims
 	#
 	message(paste0("Number of initial simulations set to ", nrepSim)) #, "\n"
 	message("Doing initial simulations...")

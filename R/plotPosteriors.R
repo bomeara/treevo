@@ -23,7 +23,7 @@
 #' @param realParam If \code{TRUE}, this function will plot line segments where real
 #' parameter values are known. (Usually only true when simulated data is analyzed.)
 
-#' @param realParamValues Values for real paramters, include a value for each
+#' @param realParamValues Values for real parameters, include a value for each
 #' parameter (including fixed values). Otherwise should be \code{NA}.
 
 #' @return Returns a plot for each free parameter.
@@ -40,8 +40,8 @@
 #' @examples
 #' data(simRunExample)
 #' 
-#' plotPosteriors(particleDataFrame=results$particleDataFrame,
-#'    priorsMat=results$PriorMatrix,
+#' plotPosteriors(particleDataFrame=results[[1]]$particleDataFrame,
+#'    priorsMat=results[[1]]$PriorMatrix,
 #'    realParam=TRUE, realParamValues=c(ancState,genRate))
 
 

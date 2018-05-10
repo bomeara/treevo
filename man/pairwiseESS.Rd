@@ -4,10 +4,10 @@
 \alias{pairwiseESS}
 \title{Pairwise Effective Sample Size}
 \usage{
-pairwiseESS(particleDataFrame)
+pairwiseESS(inputData)
 }
 \arguments{
-\item{particleDataFrame}{particleDataFrame can be a single data frame or a
+\item{inputData}{inputData can be a single data frame or a
 list of data frames}
 }
 \value{
@@ -21,7 +21,16 @@ from multiple runs.
 
 data(simRunExample)
 
-pairwiseESS(results$particleDataFrame)
+# this will give a warning
+pairwiseESS(results[[1]]$particleDataFrame)
+
+# ESS should be calculated over multiple runs
+pairwiseESS(results)
+
+# you can also manually assemble a list of particleDataFrame tables
+    # and use this as the input
+inputList<-list(results[[2]]$particleDataFrame,results[[1]]$particleDataFrame)
+pairwiseESS(inputList)
 }
 \author{
 Brian O'Meara and Barb Banbury

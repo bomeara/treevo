@@ -82,10 +82,12 @@
 #' 	extrinsicValues=c(0),
 #' 	generation.time=10000
 #' 	)
+
 # 
 # # clean for use with doRun
 # simChar<-simCharOut[,"statesmatrix",drop=FALSE]
 # rownames(simChar)<-simPhy$tip.label[simCharOut$taxonid]
+
 #' 
 #' results<-doRun_prc(
 #' 	phy = simPhy,
@@ -99,12 +101,10 @@
 #' 	extrinsicPriorsFns=c("fixed"),
 #' 	extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
 #' 	generation.time=10000,
-#' 	standardDevFactor=0.2,
-#' 	StartSims=10,
-#' 	epsilonProportion=0.7,
-#' 	epsilonMultiplier=0.7,
+#' 	nRuns=2,
 #' 	nStepsPRC=3,
 #' 	numParticles=20,
+#' 	nInitialSimsPerParam=10,
 #' 	jobName="examplerun_prc",
 #' 	stopRule=FALSE,
 #' 	multicore=FALSE,
@@ -124,12 +124,10 @@
 #' 	extrinsicPriorsFns=c("fixed"),
 #' 	extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
 #' 	generation.time=10000,
-#' 	standardDevFactor=0.2,
-#' 	StartSims=10,
-#' 	epsilonProportion=0.7,
-#' 	epsilonMultiplier=0.7,
+#' 	nRuns=2,
 #' 	nStepsPRC=3,
 #' 	numParticles=20,
+#' 	nInitialSimsPerParam=10,
 #' 	jobName="examplerun_prc_bound",
 #' 	stopRule=FALSE,
 #' 	multicore=FALSE,

@@ -15,7 +15,7 @@ doRun_rej<-function(
 	scale=TRUE,
 	variance.cutoff=95,
 	#niter.goal=5,
-	standardDevFactor=0.20, StartSims=NA, jobName=NA, abcTolerance=0.1,
+	standardDevFactor=0.20, nInitialSims=NA, jobName=NA, abcTolerance=0.1,
 	checkpointFile=NULL, checkpointFreq=24, savesims=FALSE) {	
 	
 	
@@ -90,13 +90,13 @@ doRun_rej<-function(
 	#	}
 	#}
 	#
-	if (is.na(StartSims)) {
-		StartSims<-1000*numberParametersFree
+	if (is.na(nInitialSims)) {
+		nInitialSims<-100*numberParametersFree
 		}
 	#
-	#Used to be multiple tries where nrepSim = StartSims*((2^try)/2).
+	#Used to be multiple tries where nrepSim = nInitialSims*((2^try)/2).
 		#If initial simulations are not enough, and we need to try again then new analysis will double number of initial simulations
-	nrepSim<-StartSims
+	nrepSim<-nInitialSims
 	message(paste0("Number of initial simulations set to ", nrepSim)) 	#, "\n"
 	if(!is.null(checkpointFile)) {
 		save(list=ls(),file=paste0(checkpointFile,".intialsettings.Rsave",sep=""))
@@ -141,7 +141,7 @@ doRun_rej<-function(
 		phy=phy, traits=traits, abcTolerance=abcTolerance))
 	
 	#save(abcDistancesRaw, abcDistancesRawTotal, abcDistances, abcResults, particleDataFrame, file="")
-	input.data<-rbind(jobName, length(phy[[3]]), generation.time, TreeYears, timeStep, totalGenerations, StartSims, standardDevFactor, abcTolerance)
+	input.data<-rbind(jobName, length(phy[[3]]), generation.time, TreeYears, timeStep, totalGenerations, nInitialSims, standardDevFactor, abcTolerance)
 	#message(res)
 	
 	rejectionResults<-vector("list")

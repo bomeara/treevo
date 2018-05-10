@@ -51,7 +51,7 @@
 #' if(requireNamespace("gpclib", quietly = TRUE) & requireNamespace("rgl", quietly = TRUE)){
 #' 
 #'  data(simRunExample)
-#'  plotABC_3D(particleDataFrame=results$particleDataFrame, parameter=7,
+#'  plotABC_3D(particleDataFrame=results[[1]]$particleDataFrame, parameter=7,
 #'      show.particles="none", plot.parent=FALSE, realParam=FALSE, realParamValues=NA)
 #' 
 #' }
