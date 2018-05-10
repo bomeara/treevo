@@ -17,7 +17,7 @@ test_that("doRun_prc runs correctly", {
 	  nRuns=1,
 	  nStepsPRC=2,
 	  numParticles=10,
-	  startSimsPerParam=5,
+	  nInitialSimsPerParam=5,
 	  jobName="exampleRun",
 	  diagnosticPRCmode=TRUE,
 	  verboseParticles=TRUE,

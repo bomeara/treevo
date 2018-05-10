@@ -387,7 +387,8 @@ doRun_prc<-function(
 		}
 	#
 	# save input data for use later
-	input.data<-rbind(jobName=jobName, nTaxa=Ntip(phy), nInitialSims=nInitialSims,
+	input.data<-rbind(jobName=jobName, nTaxa=Ntip(phy), 
+		nInitialSims=nInitialSims, nInitialSimsPerParam=nInitialSimsPerParam,
 		generation.time=generation.time, TreeYears=TreeYears, timeStep=timeStep,
 		totalGenerations=totalGenerations, epsilonProportion=epsilonProportion,
 		epsilonMultiplier=epsilonMultiplier, nRuns=nRuns, nStepsPRC=nStepsPRC, 

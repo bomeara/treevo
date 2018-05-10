@@ -107,7 +107,7 @@ resultsBound<-doRun_prc(
 	extrinsicPriorsFns=c("fixed"),
 	extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
 	generation.time=10000,
-	nRuns=2
+	nRuns=2,
 	nStepsPRC=3,
 	numParticles=20,
 	nInitialSimsPerParam=10,
