@@ -14,7 +14,7 @@ test_that("simParticlePRCParallel run correctly", {
 	extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE)
 	generation.time=1000000
 	standardDevFactor=0.2
-	StartSims=10
+	nInitialSims=10
 	epsilonProportion=0.7
 	epsilonMultiplier=0.7
 	nStepsPRC=2
@@ -63,13 +63,8 @@ test_that("simParticlePRCParallel run correctly", {
 	colnames(param.stdev)<-colnames(PriorMatrix)
 	rownames(param.stdev)<-paste0("Gen ", c(1: nStepsPRC), sep="")
 	#
-	#
-	if (is.na(StartSims)) {
-		StartSims<-1000*numberParametersFree
-		}
-	#
 	# save input data for use later
-	input.data<-rbind(jobName, Ntip(phy), StartSims, generation.time, TreeYears, timeStep, totalGenerations,
+	input.data<-rbind(jobName, Ntip(phy), nInitialSims, generation.time, TreeYears, timeStep, totalGenerations,
 		epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor)
 	#
 	# get summary values for observed data
@@ -81,7 +76,7 @@ test_that("simParticlePRCParallel run correctly", {
 	#	
 	# INITIAL SIMULATIONS
 	initialSimsRes<-initialSimsPRC(
-		nrepSim=StartSims, 
+		nrepSim=nInitialSims, 
 		phy=phy,  
 		taxonDF=taxonDF,
 		startingPriorsValues=startingPriorsValues, 
@@ -155,7 +150,7 @@ test_that("simParticlePRC run correctly", {
 	extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE)
 	generation.time=1000000
 	standardDevFactor=0.2
-	StartSims=10
+	nInitialSims=10
 	epsilonProportion=0.7
 	epsilonMultiplier=0.7
 	nStepsPRC=2
@@ -204,13 +199,8 @@ test_that("simParticlePRC run correctly", {
 	colnames(param.stdev)<-colnames(PriorMatrix)
 	rownames(param.stdev)<-paste0("Gen ", c(1: nStepsPRC), sep="")
 	#
-	#
-	if (is.na(StartSims)) {
-		StartSims<-1000*numberParametersFree
-		}
-	#
 	# save input data for use later
-	input.data<-rbind(jobName, Ntip(phy), StartSims, generation.time, TreeYears, timeStep, totalGenerations,
+	input.data<-rbind(jobName, Ntip(phy), nInitialSims, generation.time, TreeYears, timeStep, totalGenerations,
 		epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor)
 	#
 	# get summary values for observed data
@@ -222,7 +212,7 @@ test_that("simParticlePRC run correctly", {
 	#	
 	# INITIAL SIMULATIONS
 	initialSimsRes<-initialSimsPRC(
-		nrepSim=StartSims, 
+		nrepSim=nInitialSims, 
 		phy=phy,  
 		taxonDF=taxonDF,
 		startingPriorsValues=startingPriorsValues, 

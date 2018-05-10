@@ -23,7 +23,7 @@ doRun_rej(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
   extrinsicPriorsValues, extrinsicPriorsFns, generation.time = 1000,
   TreeYears = max(branching.times(phy)) * 1e+06, multicore = FALSE,
   coreLimit = NA, validation = "CV", scale = TRUE, variance.cutoff = 95,
-  standardDevFactor = 0.2, StartSims = NA, jobName = NA,
+  standardDevFactor = 0.2, nInitialSims = NA, jobName = NA,
   abcTolerance = 0.1, checkpointFile = NULL, checkpointFreq = 24,
   savesims = FALSE)
 }
