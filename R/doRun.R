@@ -231,7 +231,7 @@
 #' 	extrinsicPriorsFns = c("fixed"),
 #' 	extrinsicPriorsValues = matrix(c(0, 0), nrow=2, byrow=FALSE),
 #'	generation.time=10000,
-#' 	nInitialSimsPerParam = 10,
+#' 	nInitialSims = 10,
 #' 	jobName = "examplerun_rej",
 #' 	abcTolerance = 0.05,
 #' 	multicore = FALSE,
