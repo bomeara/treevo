@@ -1,5 +1,5 @@
 #################
-# 
+# cd C:\Users\notDave\Desktop\remoteWorkplace && R CMD BATCH --no-save --no-restore https://raw.githubusercontent.com/bomeara/treevo/vignette_third_try/vignettes/.constructing_treevo_vignette.R
 #####################################################
 # cd C:\Users\notDave\Desktop\remoteWorkplace && R CMD BATCH --no-save --no-restore treevo_ABC_vignette.R 
 ################
@@ -11,10 +11,12 @@ setwd("C:/Users/notDave/Desktop/remoteWorkplace")
 
 multicore<-TRUE
 coreLimit<-6
-generation.time<-10000
-nStepsPRC=3
-numParticles=100
 
+nStepsPRC<-3
+numParticles<-100
+InitialSimsPerParam <- 100
+nRuns<-3
+generation.time<-10000
 
 ## ----echo=FALSE----------------------------------------------------------
 library(paleotree)
@@ -23,7 +25,7 @@ set.seed(444)
 
 
 ## ------------------------------------------------------------------------
-plot(ladderize(ammoniteTreeRaia));axisPhylo()
+#plot(ladderize(ammoniteTreeRaia));axisPhylo()
 
 ## ------------------------------------------------------------------------
 tree<-multi2di(ammoniteTreeRaia)
@@ -66,7 +68,8 @@ resultsBM<-doRun_prc(
   extrinsicPriorsFns=c("fixed"),
   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
   generation.time=generation.time,
-  nRuns=3,
+  nInitialSimsPerParam = nInitialSimsPerParam,  
+  nRuns=nRuns,
   nStepsPRC=nStepsPRC,
   numParticles=numParticles,
   jobName="typicalBMrun",
@@ -79,6 +82,8 @@ resultsBM<-doRun_prc(
  save.image(file="treevo_vignette_workspace.Rdata")
 
 
+
+ 
 
 ## ------------------------------------------------------------------------
 
@@ -94,7 +99,8 @@ resultsBound<-doRun_prc(
   extrinsicPriorsFns=c("fixed"),
   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
   generation.time=generation.time,
-  nRuns=3,
+  nInitialSimsPerParam = nInitialSimsPerParam,  
+  nRuns=nRuns,
   nStepsPRC=nStepsPRC,
   numParticles=numParticles,
   jobName="BMwithBoundRun",
