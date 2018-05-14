@@ -1,5 +1,5 @@
 #################
-# cd C:\Users\notDave\Desktop\remoteWorkplace && R CMD BATCH --no-save --no-restore https://raw.githubusercontent.com/bomeara/treevo/vignette_third_try/vignettes/.constructing_treevo_vignette.R
+# cd C:\Users\notDave\Desktop\remoteWorkplace && powershell -Command "(New-Object Net.WebClient).DownloadFile('https://raw.githubusercontent.com/bomeara/treevo/vignette_third_try/vignettes/.constructing_treevo_vignette.R','constructVignette.R')" && R CMD BATCH --no-save --no-restore constructVignette.R
 #####################################################
 # cd C:\Users\notDave\Desktop\remoteWorkplace && R CMD BATCH --no-save --no-restore treevo_ABC_vignette.R 
 ################
@@ -14,7 +14,7 @@ coreLimit<-6
 
 nStepsPRC<-3
 numParticles<-100
-InitialSimsPerParam <- 100
+nInitialSimsPerParam <- 100
 nRuns<-3
 generation.time<-10000
 
