@@ -55,8 +55,8 @@ setupMulticore<-function(multicore,nSim,coreLimit){
 	
 stopMulticore<-function(cluster){
 	if(attr(cluster,"multicore")){
-		parallel::stopCluster(cluster)
-		if(attr(cluster,"doParallel")){
+		#parallel::stopCluster(cluster)
+		if(attr(cluster,"doParallel")){	
 			doParallel::stopImplicitCluster()
 			}
 		}
