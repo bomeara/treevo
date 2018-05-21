@@ -13,7 +13,7 @@ simParticlePRCParallel<-function(
 	,standardDevFactor,numParticles){
 	#
 	# set up multicore
-	cores<-setupMulticore(multicore,nSim=nSim,coreLimit=coreLimit)
+	cluster<-setupMulticore(multicore,nSim=nSim,coreLimit=coreLimit)
 	#		
 	repDistFE<-foreach(1:nSim, .combine=c)
 	#
@@ -39,7 +39,7 @@ simParticlePRCParallel<-function(
 		#)
 		)
 	# stop multicore processes
-	foreach::registerDoSEQ()
+	stopMulticore(cluster)
 	#
 	return(newParticleList)
 	}	

@@ -91,7 +91,7 @@
 #' @importFrom coda effectiveSize HPDinterval as.mcmc
 #' @importFrom foreach foreach '%dopar%' registerDoSEQ
 #' @importFrom fastmatch '%fin%'
-#' @importFrom parallel detectCores
+#' @importFrom parallel detectCores stopCluster
 #' @importFrom partitions blockparts
 #' @importFrom MASS boxcox
 #' @importFrom graphics curve layout legend lines plot plot.new points polygon rect segments symbols text title

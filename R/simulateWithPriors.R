@@ -282,13 +282,14 @@ parallelSimulateWithPriors<-function(
 	#	
 	# multicore
 	# set up multicore
-	cores<-setupMulticore(multicore,nSim=nrepSim,coreLimit=coreLimit)
+	cluster<-setupMulticore(multicore,nSim=nrepSim,coreLimit=coreLimit)
 	#
 	# verbosity
+	nCores<-attr(cluster,"nCores")
 	if(verbose){
-		message(paste("Using", cores, "core(s) for simulations \n\n"))
-		if (nrepSim %%cores != 0) {
-			warning("The simulation is most efficient if the number of nrepSim is a multiple of the number of cores")
+		message(paste("Using", nCores, "core(s) for simulations \n\n"))
+		if (nrepSim %%nCores != 0) {
+			warning("The simulation is most efficient if the number of nrepSim is a multiple of the number of nCores")
 			}
 		message("Doing simulations: ")
 		}
@@ -309,13 +310,13 @@ parallelSimulateWithPriors<-function(
 	}else{
 		checkpointFileName<-paste(checkpointFile,".trueFreeValuesANDSummaryValues.Rsave",sep="")
 		trueFreeValuesANDSummaryValues<-c()
-		checkpointFreqAdjusted<-max(cores*round(checkpointFreq/cores),1)
+		checkpointFreqAdjusted<-max(nCores*round(checkpointFreq/nCores),1)
 		numberSimsInCheckpointRuns<-checkpointFreqAdjusted * floor(nrepSim/checkpointFreqAdjusted)
 		numberLoops<-floor(numberSimsInCheckpointRuns/checkpointFreqAdjusted)
 		numberSimsPerLoop<-numberSimsInCheckpointRuns/numberLoops
 		numberSimsAfterLastCheckpoint<-nrepSim - numberSimsInCheckpointRuns
 		if (checkpointFreqAdjusted != checkpointFreq ) {
-			warning(paste("Checkpoint frequency adjusted from",checkpointFreq,"to",checkpointFreqAdjusted,"to reduce the wasted time on unused cores"))
+			warning(paste("Checkpoint frequency adjusted from",checkpointFreq,"to",checkpointFreqAdjusted,"to reduce the wasted time on unused nCores"))
 			}
 		for (rep in sequence(numberLoops)) {
 			trueFreeValuesANDSummaryValues<-rbind(trueFreeValuesANDSummaryValues,
@@ -332,14 +333,12 @@ parallelSimulateWithPriors<-function(
 				startingPriorsFns=startingPriorsFns, intrinsicPriorsFns=intrinsicPriorsFns, extrinsicPriorsFns=extrinsicPriorsFns,  giveUpAttempts=giveUpAttempts,
 				freevector=freevector, timeStep=timeStep, intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, verbose=verboseNested, checks=FALSE))
 	}
-	if(multicore){
-		# stop multicore processes
-		foreach::registerDoSEQ()
-		}
+	# stop multicore processes
+	stopMulticore(cluster)
 	#
 	attr(trueFreeValuesANDSummaryValues,"freevector")<-freevector
 	return(trueFreeValuesANDSummaryValues)
-}
+	}
 
 #checkNiter<-function(niter.brown=25, niter.lambda=25, niter.delta=25, niter.OU=25, niter.white=25){
 #	if(niter.brown<2){stop("niter.brown must be at least 2")}

@@ -773,6 +773,7 @@ doRun_prc<-function(
 			results<-prcResults
 		}else{
 			results[[runID]]<-prcResults
+			message("Run finished...\n...\n\n")
 			}
 		}
 	#
