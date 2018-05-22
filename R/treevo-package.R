@@ -86,12 +86,14 @@
 #' @import stats
 #' @import phytools
 
+#' @importFrom parallel detectCores 
+#stopCluster
+
 #' @importFrom phylolm phylolm
 #' @importFrom pls plsr scores
 #' @importFrom coda effectiveSize HPDinterval as.mcmc
 #' @importFrom foreach foreach '%dopar%' registerDoSEQ
 #' @importFrom fastmatch '%fin%'
-#' @importFrom parallel detectCores stopCluster
 #' @importFrom partitions blockparts
 #' @importFrom MASS boxcox
 #' @importFrom graphics curve layout legend lines plot plot.new points polygon rect segments symbols text title
@@ -99,6 +101,9 @@
 #' @importFrom methods as setAs
 #' @importFrom rpgm rpgm.rnorm
 #' @importFrom utils capture.output
+
+
+
 
 # @importFrom plotrix listDepth
 

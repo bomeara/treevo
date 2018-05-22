@@ -1,5 +1,5 @@
 test_that("doRun_prc runs correctly in parallel", {
-	skip_on_cran()
+	#skip_on_cran()
 	data(simRunExample)
 	set.seed(1)
 	expect_warning(
