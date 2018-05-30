@@ -93,7 +93,7 @@ min(brlen[brlen!=0])
 min(brlen[brlen!=0])*10^6
 
 # let's look at the distribution of these edge lengths, ignoring zero-length
-hist(brlen[brlen!=0])
+hist(brlen[brlen!=0], main="",xlab="edge length")
 ```
 
 
@@ -201,17 +201,21 @@ resultsBound<-doRun_prc(
 
 ```
 
+The function `highestPostDens` provides us with the  weighted mean, standard deviation, upper and lower highest posterior density (HPD) for each free parameter in the posterior sample, for each individual run.
+
+For example, for each Brownian Motion run:
+
 ```{r}
-resultsBM<-results
+
+highestPostDens(resultsBM[[1]]$particleDataFrame, percent=0.95, returnData=FALSE)
+highestPostDens(resultsBM[[2]]$particleDataFrame, percent=0.95, returnData=FALSE)
+highestPostDens(resultsBM[[3]]$particleDataFrame, percent=0.95, returnData=FALSE)
 ```
 
-The function `highestPostDens` provides us with the  weighted mean, standard deviation, upper and lower highest posterior density (HPD) for each free parameter in the posterior sample. 
+Or just to look at the first run of the Bounded BM run:
 
 ```{r}
-
-highestPostDens(resultsBM$particleDataFrame, percent=0.95, returnData=FALSE)
-
-highestPostDens(resultsBound$particleDataFrame, percent=0.95, returnData=FALSE)
+highestPostDens(resultsBound[[1]]$particleDataFrame, percent=0.95, returnData=FALSE)
 
 ```
 
@@ -223,9 +227,9 @@ highestPostDens(resultsBound$particleDataFrame, percent=0.95, returnData=FALSE)
 # Performs the best when results are from multiple runs.
 
 # ESS for single runs
-pairwiseESS(resultsBM$particleDataFrame)
+pairwiseESS(resultsBM)
 
-pairwiseESS(resultsBound$particleDataFrame)
+pairwiseESS(resultsBound)
 
 # ESS for parameters shared between BM and bound
 #pairwiseESS(list(resultsBM$particleDataFrame,resultsBound$particleDataFrame))
@@ -239,20 +243,19 @@ pairwiseESS(resultsBound$particleDataFrame)
 # plotPosteriors
 	# for each free parameter in the posterior, a plot is made of the distribution of values estimate in the last generation
 
-plotPosteriors(particleDataFrame=resultsBM$particleDataFrame,
-   priorsMat=resultsBM$PriorMatrix)
+# collect the particleDataFrames into lists
 
-plotPosteriors(particleDataFrame=resultsBound$particleDataFrame,
-   priorsMat=resultsBound$PriorMatrix)
+resultsBMpart<-lapply(resultsBM,function(x) x$particleDataFrame)
+
+resultsBoundpart<-lapply(resultsBound,function(x) x$particleDataFrame)
+
+plotPosteriors(particleDataFrame=resultsBMpart,
+   priorsMat=resultsBM[[1]]$PriorMatrix)
+
+plotPosteriors(particleDataFrame=resultsBoundpart,
+   priorsMat=resultsBound[[1]]$PriorMatrix)
 ```
 
 
-
-
-```{r, eval=FALSE, echo=FALSE}
-
-save.image(file="treevo_vignette_workspace.Rdata")
-
-```
 
 

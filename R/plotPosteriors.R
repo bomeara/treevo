@@ -10,8 +10,8 @@
 
 #' @param particleDataFrame A \code{particleDataFrame} object returned by TreEvo ABC analyses, can be a
 #' single data frame or a list of data frames.
-#' If the \code{particleDataFrame} is a list of seperate TreEvo runs, posteriors will
-#' be layered over each other to check for repeatability.  The relative grayscale of
+#' If the \code{particleDataFrame} is a list of separate TreEvo runs, posteriors will
+#' be layered over each other to check for repeatability.  The relative gray-scale of
 #' posterior distributions in the plot depends on their total number of runs.
 
 #' @param priorsMat A \code{PriorMatrix} object s returned by TreEvo \code{\link{doRun}} functions. Can be a single such matrix
