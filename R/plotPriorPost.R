@@ -40,7 +40,9 @@
 
 #' @param to Upper bound, if any.
 
-#' @param prob Probability content of the highest posterior density (HPD).
+#' @param alpha Probability density content of the highest posterior density (HPD), calculated using \code{\link{highestDensityRegion}}.
+
+#' @inheritParams highestDensityRegion
 
 #' @param acceptedValues Vector of accepted particle values.
 
@@ -60,7 +62,10 @@
 #' 
 
 #' @seealso
+#' Highest posterior densities are calculated via \code{\link{highestDensityRegion}}.
+#' 
 #' \code{\link{plotPosteriors}} Plots multiple posteriors against their priors and potential known values.
+
 
 #' @author Brian O'Meara and Barb Banbury
 
@@ -90,10 +95,10 @@
 #' # examples of getting density coordinates and summary statistics from distributions
 #' 
 #' priorKernal<-getUnivariatePriorCurve(priorFn="normal", priorVariables=c(28,2),
-#' 	nPoints=100000, from=NULL, to=NULL, prob=0.95)
+#' 	nPoints=100000, from=NULL, to=NULL, alpha=0.95)
 #' 
 #' postKernal<-getUnivariatePosteriorCurve(acceptedValues=results[[1]]$particleDataFrame$starting_1,
-#' 	from=NULL, to=NULL, prob=0.95)
+#' 	from=NULL, to=NULL, alpha=0.95)
 #' 
 #' priorKernal
 #' postKernal
@@ -101,7 +106,7 @@
 #' # let's compare this (supposed) prior against the posterior in a plot
 #' 
 #' plotUnivariatePosteriorVsPrior(posteriorCurve=postKernal, priorCurve=priorKernal,
-#' 	label="parameter", trueValue=NULL, prob=0.95)
+#' 	label="parameter", trueValue=NULL, alpha=0.95)
 #' 
 #' # cool!
 #' 
@@ -234,7 +239,7 @@ plotPrior<-function(
 
 #' @rdname plotPriorPost
 #' @export
-plotUnivariatePosteriorVsPrior<-function(posteriorCurve, priorCurve, label="parameter", trueValue=NULL, prob=0.95) {
+plotUnivariatePosteriorVsPrior<-function(posteriorCurve, priorCurve, label="parameter", trueValue=NULL, alpha=0.95) {
 	plot(x=range(c(posteriorCurve$x, priorCurve$x)), y=range(c(posteriorCurve$y, priorCurve$y)), type="n", xlab=label, ylab="", bty="n", yaxt="n")
 	polygon(x=c(priorCurve$x, max(priorCurve$x), priorCurve$x[1]), y=c(priorCurve$y, 0, 0), col=rgb(0,0,0,0.3),border=rgb(0,0,0,0.3))
 	lines(x=rep(priorCurve$mean,2),y=c(0,max(c(priorCurve$y, posteriorCurve$y))),col="gray")
@@ -256,7 +261,7 @@ plotUnivariatePosteriorVsPrior<-function(posteriorCurve, priorCurve, label="para
 #' @rdname plotPriorPost
 #' @export
 getUnivariatePriorCurve<-function(priorFn, priorVariables,
-		nPoints=100000, from=NULL, to=NULL, prob=0.95) {
+		nPoints=100000, from=NULL, to=NULL, alpha=0.95, coda=coda) {
 	#
 	samples<-replicate(nPoints,pullFromPrior(priorVariables, priorFn))
 	if (is.null(from)) {
@@ -265,8 +270,11 @@ getUnivariatePriorCurve<-function(priorFn, priorVariables,
 	if (is.null(to)) {
 		to<-max(samples)
 	}
+	#
 	result<-density(samples,from=from, to=to)
-	hpd.result<-coda::HPDinterval(coda::as.mcmc(samples), prob)
+	hpd.result<-\code{\link{highestDensityRegion}}(samples, alpha=alpha, coda=coda)
+	#
+	#
   if (priorFn=="uniform") {
     result<-list(x=result$x,y=rep(max(result$y),length(result$x))) #kludge so uniform looks uniform
   }
@@ -278,7 +286,7 @@ getUnivariatePriorCurve<-function(priorFn, priorVariables,
 
 #' @rdname plotPriorPost
 #' @export
-getUnivariatePosteriorCurve<-function(acceptedValues, from=NULL, to=NULL, prob=0.95) {
+getUnivariatePosteriorCurve<-function(acceptedValues, from=NULL, to=NULL, alpha=0.95) {
 	if (is.null(from)) {
 		from<-min(acceptedValues)
 	}
@@ -286,7 +294,7 @@ getUnivariatePosteriorCurve<-function(acceptedValues, from=NULL, to=NULL, prob=0
 		to<-max(acceptedValues)
 	}
 	result<-density(acceptedValues,from=from, to=to)
-	hpd.result<-coda::HPDinterval(coda::as.mcmc(acceptedValues), prob)
+	hpd.result<-coda::HPDinterval(coda::as.mcmc(acceptedValues), alpha)
 	return(list(x=result$x, y=result$y, mean=mean(acceptedValues), lower=hpd.result[1,1], upper=hpd.result[1,2]))
 }
 

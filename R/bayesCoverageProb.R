@@ -1,6 +1,6 @@
 #' Bayesian Coverage Probability
 #' 
-#' This function calculates coverage probability for a list of highest posterior densities (HPDs) for a set of parameters.
+#' This function calculates coverage probability for a list of highest posterior densities (HPDs, calculated as HDRs, of Highest Density Regions via ) for a set of parameters.
 #' 
 #' Only for use with simulated data to test models.
 #' 
@@ -13,6 +13,8 @@
 
 #' @return Returns a value for each free parameter that describes the
 #' percentage that the real value falls within the HPD.
+
+#' @seealso \code{\link{highestDensityRegion}}
 
 #' @author Brian O'Meara and Barb Banbury
 

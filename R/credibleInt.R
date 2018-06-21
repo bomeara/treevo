@@ -1,43 +1,46 @@
-#' Bayesian Credible Interval
-#' 
-#' This function calculates credible intervals for each free
-#' parameter as quantiles. These will work as long as the data
-#' has a single mode - multimodal data may have overly large
-#' quantiles (to encompass multiple modes), in which case
-#' calculating credible intervals as \link{\code{highestPostDensity}}
-#' may be a better idea.
-#' 
-#' 
+# WE MAY WANT TO REMOVE THIS FUNCTION
 
-#' @param particleDataFrame A \code{particleDataFrame} object, as found among the output from \code{\link{doRun}} functions.
 
-#' @param percent Probability content of the highest probability density.
+#* Bayesian Credible Interval
+#* 
+#* This function calculates credible intervals for each free
+#* parameter, essentially as quantiles. These will work as long as the data
+#* has a single mode - multimodal data may have overly large
+#* quantiles (to encompass multiple modes), in which case
+#* calculating credible intervals as \code{\link{highestDensityRegion}}
+#* may be a better idea.
+#* 
+#* 
 
-#' @return Returns a matrix with weighted mean, standard deviation, upper and lower credible
-#' intervals for each free parameter.
+#* @param particleDataFrame A \code{particleDataFrame} object, as found among the output from \code{\link{doRun}} functions.
 
-#' @author Brian O'Meara and Barb Banbury
+#* @param alpha Probability content of the highest probability density.
+
+#* @return Returns a matrix with weighted mean, standard deviation, upper and lower credible
+#* intervals for each free parameter.
+
+#* @author Brian O'Meara and Barb Banbury
 
 # @references O'Meara and Banbury, unpublished
 
-#' @examples
-#' 
-#' data(simRunExample)
-#' credibleInt(results[[1]]$particleDataFrame)
-#' 
+#* @examples
+#* 
+#* data(simRunExample)
+#* credibleInt(results[[1]]$particleDataFrame)
+#* 
 
 # was named CredInt originally
 
-#' @name credibleInt
-#' @rdname credibleInt
-#' @export
-credibleInt<-function(particleDataFrame, percent=0.95) {
+#* @name credibleInt
+#* @rdname credibleInt
+#* @export
+credibleInt<-function(particleDataFrame, alpha=0.95) {
 	# ugh ugh
 	#generation<-NULL #to appease R CMD CHECK
 	# yes??? I think this is right, not sure
 	generation<-particleDataFrame$generation
 	#
-	PercentTail<-(1-percent)/2
+	alphaTail<-(1-alpha)/2
 	Ints<-matrix(nrow=(dim(particleDataFrame)[2]-6), ncol=4)
 	colnames(Ints)<-c("mean", "sd", "LowerCI", "UpperCI")
 	rownames(Ints)<-names(particleDataFrame[7: dim(particleDataFrame)[2]])
@@ -48,8 +51,8 @@ credibleInt<-function(particleDataFrame, percent=0.95) {
 			if(sd(subpDF[,i]) != 0) {
 				Ints[i,1]<-mean(subpDF[,i]) #not weighted
 				Ints[i,2]<-sd(subpDF[,i])
-				Ints[i,3]<-quantile(subpDF[,i], probs=0+PercentTail)
-				Ints[i,4]<-quantile(subpDF[,i], probs=1-PercentTail)
+				Ints[i,3]<-quantile(subpDF[,i], probs=0+alphaTail)
+				Ints[i,4]<-quantile(subpDF[,i], probs=1-alphaTail)
 				}
 			}
 		}	

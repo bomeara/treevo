@@ -22,7 +22,7 @@
 #' obtain than package \code{gpclib}, but may not be buildable on some UNIX workstations.
 #' 
 
-#' @inheritParams credibleInt
+#* @param particleDataFrame A \code{particleDataFrame} object, as found among the output from \code{\link{doRun}} functions.
 
 #' @param parameter Column number of parameter of interest from
 #' \code{particleDataFrame}.

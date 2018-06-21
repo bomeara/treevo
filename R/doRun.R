@@ -134,9 +134,9 @@
 
 # \item{whichVip}{Matrix of vip summary statistics for each free parameter}
 
-#' \item{credibleInt}{Credible Interval calculation for each free parameter of the final generation}
+# \item{credibleInt}{Credible Interval calculation for each free parameter of the final generation}
 
-#' \item{HPD}{Highest Posterior Density calculation each free parameter of the final generation}
+#' \item{postSummary}{Summarizes the posterior distribution from the final generation for all free parameters, giving the mean, standard deviation and Highest Posterior Density (at a 0.8 alpha) for each parameter.}
 #' }
 #' 
 #' If \code{nRuns} is greater than 1, the output from \code{doRun_prc} will be a list object composed of multiple output lists, as described.
@@ -166,9 +166,9 @@
 #' \item{particleDataFrame}{DataFrame with information from each
 #' simulation, including generation, attempt, id, parentid, distance, weight, and parameter states}
 
-#' \item{credibleInt}{Credible Interval calculation for each free parameter of the final generation}
+# \item{credibleInt}{Credible Interval calculation for each free parameter of the final generation}
 
-#' \item{HPD}{Highest Posterior Density calculation each free parameter of the final generation}
+#' \item{postSummary}{Summarizes the posterior distribution from the final generation for all free parameters, giving the mean, standard deviation and Highest Posterior Density (at a 0.8 alpha) for each parameter.}
 #' }
 #' 
 #' 
@@ -766,8 +766,8 @@ doRun_prc<-function(
 		prcResults$traits<-traits
 		prcResults$simTime<-initialSimsRes$simTime
 		prcResults$time.per.gen<-genTimes
-		prcResults$credibleInt <-credibleInt(particleDataFrame)
-		prcResults$HPD <-highestPostDensity(particleDataFrame)
+		#prcResults$credibleInt <-credibleInt(particleDataFrame)
+		prcResults$postSummary <-summarizePosterior(particleDataFrame)
 		#
 		if(identical(nRuns,1)){
 			results<-prcResults
