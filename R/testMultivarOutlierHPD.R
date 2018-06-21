@@ -34,8 +34,8 @@
 
 x<-rnorm(100,1,1)
 y<-(x*1.5)+rnorm(100)
-pIntX<-highestDensityRegion(x,prob=0.8)
-pIntY<-highestDensityRegion(y,prob=0.8)
+pIntX<-highestDensityInterval(x,prob=0.8)
+pIntY<-highestDensityInterval(y,prob=0.8)
 
 # plot it
 xLims<-c(min(c(x,pIntX)),max(c(x,pIntX)))
@@ -53,8 +53,8 @@ y<-(x*3)+rnorm(100)
 pcaRes<-princomp(cbind(x,y))
 PC<-pcaRes$scores
 
-pIntPC1<-highestDensityRegion(PC[,1],prob=0.8)
-pIntPC2<-highestDensityRegion(PC[,2],prob=0.8)
+pIntPC1<-highestDensityInterval(PC[,1],prob=0.8)
+pIntPC2<-highestDensityInterval(PC[,2],prob=0.8)
 
 # plot it
 xLims<-c(min(c(PC[,1],pIntPC1)),max(c(PC[,1],pIntPC1)))
@@ -102,7 +102,7 @@ testMultivarOutlierHDR<-function(dataMatrix,outlier,prob,pca=TRUE,...){
 	#
 	# get HPDs
 	HDR<-lapply(1:ncol(varia),function(i)
-		 highestDensityRegion(varia[,i],prob=prob,...))
+		 highestDensityInterval(varia[,i],prob=prob,...))
 	#
 	# test if outlier is within intervals listed for each variable
 	withinHDR<-sapply(1:ncol(varia),function(x) 

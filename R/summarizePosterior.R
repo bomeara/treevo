@@ -26,7 +26,7 @@
 #' 
 #' data(simRunExample)
 #' 
-#' highestDensityRegion(results[[1]]$particleDataFrame, alpha=0.95, returnData=FALSE)
+#' highestDensityInterval(results[[1]]$particleDataFrame, alpha=0.95, returnData=FALSE)
 #' 
 
 
@@ -90,7 +90,7 @@ summarizePosterior<-function(particleDataFrame, alpha=0.95, returnData=FALSE){
 
 
 				
-				HPD<-highestDensityRegion(dataVector=data,alpha=alpha)
+				HPD<-highestDensityInterval(dataVector=data,alpha=alpha)
 				
 				
 				Ints[i,3]<-codaHPD[1] #returns lower HPD		

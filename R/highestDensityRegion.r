@@ -60,29 +60,28 @@ plot(zDensOut$x,zDensity,col=colDens)
 #' @param coda Default is \code{FALSE}. If \code{TRUE}, unimodal highest density regions will
 #' instead be calculated using \code{\link{HPDinterval}} from package \code{coda}.
 
-#' @param ... Additional arguments passed to \code{density}. 
-#' A user may want to mess with
-#' this to adjust bandwidth, et cetera.
+#' @param ... Additional arguments passed to \code{\link{density}}. 
+#' A user may want to mess with this to adjust bandwidth, et cetera.
 
 #' @examples
 #' 
 #' data(simRunExample)
 #' 
-#' highestDensityRegion(results[[1]]$particleDataFrame, alpha=0.95, returnData=FALSE)
+#' highestDensityInterval(results[[1]]$particleDataFrame, alpha=0.95, returnData=FALSE)
 #' 
 
-highestDensityRegion(z,alpha=0.8)
+highestDensityInterval(z,alpha=0.8)
 
 
 
 
 
 
-#' @name highestDensityRegion
-#' @rdname highestDensityRegion
+#' @name highestDensityInterval
+#' @rdname highestDensityInterval
 #' @export
 
-highestDensityRegion<-function(dataVector, alpha, coda, ...){
+highestDensityInterval<-function(dataVector, alpha, coda, ...){
 	# test that its a vector
 
 	if(coda){

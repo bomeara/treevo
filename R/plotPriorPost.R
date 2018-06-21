@@ -5,7 +5,7 @@
 #' Function \code{plotPrior} visualizes the shape of various prior probability distributions available in TreEvo ABC analyses, and
 #' \code{getUnivariatePriorCurve} returns density coordinates and summary statistics from user-selected prior probability
 #' distribution. Similarly, function \code{getUnivariatePosteriorCurve} returns density coordinates and summary
-#' statistics from the posterior distribution of an ABC analysis. Both \code{getUnivariatePriorCurve} and \code{getUnivariatePosteriorCurve} also calculate the highest density intervals for their respective parameters, using the function \code{\link{highestDensityRegion}}.
+#' statistics from the posterior distribution of an ABC analysis. Both \code{getUnivariatePriorCurve} and \code{getUnivariatePosteriorCurve} also calculate the highest density intervals for their respective parameters, using the function \code{\link{highestDensityInterval}}.
 #'
 #' Function \code{plotUnivariatePosteriorVsPrior} plots the univariate density distributions from the prior and posterior against each other for comparison, along with the highest density intervals (HDI) for both. 
 
@@ -47,7 +47,7 @@
 
 #' @param to Upper bound, if any. By default this is \code{NULL} and thus ignored.
 
-#' @inheritParams highestDensityRegion
+#' @inheritParams highestDensityInterval
 
 #' @param ... Additional arguments passed to \code{\link{density}}, for use in both
 #' calculating the kernal density estimate for finding the curve, and for estimating
@@ -73,7 +73,7 @@
 #' 
 
 #' @seealso
-#' Highest posterior densities are calculated via \code{\link{highestDensityRegion}}.
+#' Highest posterior densities are calculated via \code{\link{highestDensityInterval}}.
 #' 
 #' \code{\link{plotPosteriors}} Plots multiple posteriors against their priors and potential known values.
 
@@ -283,7 +283,7 @@ getUnivariatePriorCurve<-function(priorFn, priorVariables,
 	}
 	#
 	result<-density(samples,from=from, to=to, ...)
-	hpd.result<-highestDensityRegion(samples, alpha=alpha, ..., coda=coda)
+	hpd.result<-highestDensityInterval(samples, alpha=alpha, ..., coda=coda)
 	#
 	#
   if (priorFn=="uniform") {
@@ -305,7 +305,7 @@ getUnivariatePosteriorCurve<-function(acceptedValues, from=NULL, to=NULL, alpha=
 		to<-max(acceptedValues)
 	}
 	result<-density(acceptedValues,from=from, to=to, ...)
-	hpd.result<-highestDensityRegion(samples, alpha=alpha, ..., coda=coda)
+	hpd.result<-highestDensityInterval(samples, alpha=alpha, ..., coda=coda)
 	return(list(x=result$x, y=result$y, mean=mean(acceptedValues), lower=hpd.result[1,1], upper=hpd.result[1,2]))
 }
 

@@ -14,7 +14,7 @@
 #' @return Returns a value for each free parameter that describes the
 #' percentage that the real value falls within the HPD.
 
-#' @seealso \code{\link{highestDensityRegion}}
+#' @seealso \code{\link{highestDensityInterval}}
 
 #' @author Brian O'Meara and Barb Banbury
 
