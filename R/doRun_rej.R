@@ -158,7 +158,7 @@ doRun_rej<-function(
 	rejectionResults$abcDistances<-res$abcDistances
 	rejectionResults$particleDataFrame<-res$particleDataFrame
 	rejectionResults$credibleInt<-credibleInt(res$particleDataFrame)
-	rejectionResults$HPD<-highestPostDens(res$particleDataFrame)
+	rejectionResults$HPD<-highestPostDensity(res$particleDataFrame)
 
 	return(rejectionResults)
 	}

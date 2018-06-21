@@ -1,7 +1,74 @@
 #' Highest Posterior Density
 #' 
-#' This function calculates the highest posterior density (HPD) for each freely varying parameter.
+#' This function calculates the highest posterior density (HPD) for each freely
+#' varying parameter, using \code{\link{HPDinterval}} in package \code{coda}.
 #' 
+
+
+# dealing with multimodal distributions
+
+# quantiles don't work - based on ECDF, so they can only be a single interval
+z<-sample(c(rnorm(50,1,2),rnorm(100,50,3)))
+
+# how to get out the actual values?
+
+# could do this using just density from stats
+density(z)
+
+alpha<-0.8
+
+zDensOut <- density(z)
+zDensity <- zDensOut$y/sum(zDensOut$y)
+inHPD<-cumsum(-sort(-zDensity))<=alpha
+# now reorder
+inHPD<-inHPD[order(order(-zDensity))]
+colDens<-rep(1,length(zDensity))
+colDens[inHPD]<-2
+plot(zDensOut$x,zDensity,col=colDens)
+
+# let's make this a function
+
+#' @param dataVector A vector of data, which can be reasonably assumed to
+#' represent independent, identically-distributed random variables, such as
+#' estimates of a parameter from a Bayesian MCMC.
+
+#' @param prob The threshold used for defining the highest density frequency
+#' cut-off.
+
+#' @param ... Additional arguments passed to \code{density}. 
+#' A user may want to mess with
+#' this to adjust bandwidth, et cetera.
+
+highestPostDensity<-function(dataVector, prob, ...){
+	densOut <- density(dataVector, ...)
+	densityScaled <- densOut$y/sum(densOut$y)
+	#
+	# count max number of ties
+	maxTies<-max(table(densityScaled))
+	# stop if more than half the dataset is tied
+	if(maxTies>(length(dataVector)/2)){
+		stop("Values of distribution are more than half tied with each other, may be flat")}
+	#
+	inHPD<-cumsum(-sort(-densityScaled))<=prob
+	# now reorder
+	inHPD<-inHPD[order(order(-densityScaled))]
+	# get breaks
+	startInt<-densOut$x[c(inHPD[1],
+		sapply(2:length(inHPD),function(x) inHPD[x] & !inHPD[x-1])
+		)]
+	endInt<-densOut$x[c(
+		sapply(1:(length(inHPD)-1),function(x) inHPD[x] & !inHPD[x+1])
+		,inHPD[length(inHPD)]
+		)]
+	resMatrix<-cbind(startInt,endInt)
+	return(resMatrix)
+	}
+
+highestPostDensity(z,prob=0.8)
+
+
+
+
 #' 
 
 #' @param particleDataFrame \code{particleDataFrame} output from \code{doRun}
@@ -24,13 +91,15 @@
 #' 
 #' data(simRunExample)
 #' 
-#' highestPostDens(results[[1]]$particleDataFrame, percent=0.95, returnData=FALSE)
+#' highestPostDensity(results[[1]]$particleDataFrame, percent=0.95, returnData=FALSE)
 #' 
 
-#' @name highestPostDens
-#' @rdname highestPostDens
+#' @name highestPostDensity
+#' @rdname highestPostDensity
 #' @export
-highestPostDens<-function(particleDataFrame, percent=0.95, returnData=FALSE){
+
+
+highestPostDensityCODA<-function(particleDataFrame, percent=0.95, returnData=FALSE){
   	# ugh ugh
 	#generation<-NULL #to appease R CMD CHECK
 	# yes??? I think this is right, not sure

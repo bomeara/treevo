@@ -767,7 +767,7 @@ doRun_prc<-function(
 		prcResults$simTime<-initialSimsRes$simTime
 		prcResults$time.per.gen<-genTimes
 		prcResults$credibleInt <-credibleInt(particleDataFrame)
-		prcResults$HPD <-highestPostDens(particleDataFrame)
+		prcResults$HPD <-highestPostDensity(particleDataFrame)
 		#
 		if(identical(nRuns,1)){
 			results<-prcResults

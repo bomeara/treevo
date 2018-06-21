@@ -25,9 +25,9 @@ test_that("getBMRatePrior works", {
   result<-getBMRatePrior(phy = simPhy, traits = simChar, timeStep = 1)
 })
 
-test_that("highestPostDens works", {
+test_that("highestPostDensity works", {
   set.seed(1)
   data(simRunExample)
-  result<-highestPostDens(results[[1]]$particleDataFrame, percent = 0.95,
+  result<-highestPostDensity(results[[1]]$particleDataFrame, percent = 0.95,
     returnData = FALSE)
 })

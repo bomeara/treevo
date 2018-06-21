@@ -1,6 +1,11 @@
 #' Bayesian Credible Interval
 #' 
-#' This function calculates credible interval for each free parameter.
+#' This function calculates credible intervals for each free
+#' parameter as quantiles. These will work as long as the data
+#' has a single mode - multimodal data may have overly large
+#' quantiles (to encompass multiple modes), in which case
+#' calculating credible intervals as \link{\code{highestPostDensity}}
+#' may be a better idea.
 #' 
 #' 
 

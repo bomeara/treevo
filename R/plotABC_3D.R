@@ -14,7 +14,7 @@
 
 #' @note
 #' This function requires access functions \code{triangulate} and the \code{as} method for
-#' class \code{gpc.poly} from package \code{gpclib}. As of 09-12-17, this package
+#' class \code{gpc.poly} from package \code{gpclib}. As of 05-30-18, this package
 #' was not available from CRAN as a Windows binary, and thus this function is likely
 #' unavailable to many (if not all) Windows users.
 #' 
