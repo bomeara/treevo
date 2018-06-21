@@ -1,7 +1,23 @@
 #' Highest Density Interval
 #' 
-#' This function calculates highest density intervals (HDIs) for a given univariate vector. Typically, this is done to obtain highest posterior density (HPD) for each freely varying parameter estimated in the posterior of a Bayesian MCMC analysis. If these intervals are calculated for more than one variable, they are referred to instead as regions. By default,  is done by fitting a kernal density estimate via R function \code{density} with default bandwidth, rescaling the kernal to a density, sorting intervals along the KDE by that density, and then summing these values from largest to smallest, until the desired alpha is reached. This algorithm is quick, and accounts for potentially multimodal distributions, or those with complex shapes, unlike unimodal intervals, such as quantiles, or the  \code{\link{HPDinterval}} in package \code{coda}.
+#' This function calculates highest density intervals (HDIs) for a given univariate vector.
+#' Typically, this is done to obtain highest posterior density (HPD) for each freely varying
+#' parameter estimated in the posterior of a Bayesian MCMC analysis. If these intervals are
+#' calculated for more than one variable, they are referred to instead as regions. 
 #' 
+#' By default,  is done by fitting a kernal density estimate (KDE) via R function \code{density}
+#' with default bandwidth, rescaling the kernal to a density, sorting intervals along the KDE
+#' by that density, and then summing these values from largest to smallest, until the desired
+#' alpha is reached. This algorithm is quick, and accounts for potentially multimodal distributions,
+#' or those with complex shapes, unlike unimodal intervals, such as quantiles, or the
+#' \code{\link{HPDinterval}} in package \code{coda}.
+#' 
+#' Alternatively, a user can opt to use function \code{\link{HPDinterval}} from package \code{coda}
+#' to calculate highest density intervals. These will work as long as the data has a single mode
+#' - data with multiple modes may have overly large quantiles (to encompass those multiple modes),
+#' resulting in overly wide estimates of coverage. 
+#' 
+
 
 
 # dealing with multimodal distributions
@@ -34,7 +50,14 @@ plot(zDensOut$x,zDensity,col=colDens)
 #' @param alpha The threshold used for defining the highest density frequency
 #' cut-off.
 
-#' @param coda Default is \code{FALSE}. If \code{TRUE}, highest density regions will
+#* @param alpha Probability content of the highest probability density.
+
+#' @param alpha Probability content of the highest posterior density (HPD).
+
+#' @param alpha Probability density content of the 
+
+
+#' @param coda Default is \code{FALSE}. If \code{TRUE}, unimodal highest density regions will
 #' instead be calculated using \code{\link{HPDinterval}} from package \code{coda}.
 
 #' @param ... Additional arguments passed to \code{density}. 

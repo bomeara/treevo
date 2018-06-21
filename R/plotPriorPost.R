@@ -2,11 +2,18 @@
 #' 
 #' Assorted functions for visualizing and summarizing the prior and posterior probability distributions associated with ABC analyses.
 #' 
-#' Function \code{plotPrior} visualizes the shape of various prior probability distributions available in TreEvo ABC analyses, while
-#' function \code{plotUnivariatePosteriorVsPrior} plots the univariate density distributions from the prior and posterior against each other for comparison.
-#' Function \code{getUnivariatePriorCurve} returns density coordinates and summary statistics from a selected prior probability distribution, while
-#' function \code{getUnivariatePosteriorCurve} returns density coordinates and summary statistics from the posterior distribution of an ABC analysis.
-#' The summaries from \code{getUnivariatePriorCurve} and \code{getUnivariatePosteriorCurve} are used as the input for \code{plotUnivariatePosteriorVsPrior}.
+#' Function \code{plotPrior} visualizes the shape of various prior probability distributions available in TreEvo ABC analyses, and
+#' \code{getUnivariatePriorCurve} returns density coordinates and summary statistics from user-selected prior probability
+#' distribution. Similarly, function \code{getUnivariatePosteriorCurve} returns density coordinates and summary
+#' statistics from the posterior distribution of an ABC analysis. Both \code{getUnivariatePriorCurve} and \code{getUnivariatePosteriorCurve} also calculate the highest density intervals for their respective parameters, using the function \code{\link{highestDensityRegion}}.
+#'
+#' Function \code{plotUnivariatePosteriorVsPrior} plots the univariate density distributions from the prior and posterior against each other for comparison, along with the highest density intervals (HDI) for both. 
+
+
+#' @details
+#' The summaries calculated from \code{getUnivariatePriorCurve} and \code{getUnivariatePosteriorCurve} are used
+#' as the input for \code{plotUnivariatePosteriorVsPrior}, hence the relationship of these functions
+#' to each other, and why they are listed together here.
 #' 
 
 #' @param priorFn Prior Shape of the distribution; one of either "fixed", "uniform", "normal",
@@ -36,13 +43,15 @@
 
 #' @param nPoints Number of points to draw.
 
-#' @param from Lower bound, if any.
+#' @param from Lower bound, if any. By default this is \code{NULL} and thus ignored.
 
-#' @param to Upper bound, if any.
-
-#' @param alpha Probability density content of the highest posterior density (HPD), calculated using \code{\link{highestDensityRegion}}.
+#' @param to Upper bound, if any. By default this is \code{NULL} and thus ignored.
 
 #' @inheritParams highestDensityRegion
+
+#' @param ... Additional arguments passed to \code{\link{density}}, for use in both
+#' calculating the kernal density estimate for finding the curve, and for estimating
+#' the highest density interval. A user may want to mess with this to adjust bandwidth, et cetera.
 
 #' @param acceptedValues Vector of accepted particle values.
 
@@ -57,8 +66,10 @@
 #' @return
 #' \code{plotPrior} and \code{plotUnivariatePosteriorVsPrior} produce plots of the respective distributions (see above).
 #' 
-#' \code{getUnivariatePriorCurve} and \code{getUnivariatePosteriorCurve} returns a list of x and y density coordinates, mean, and lower and
-#' upper highest posterior density (HPD), for their respective distribution.
+#' \code{getUnivariatePriorCurve} returns a list of x and y density coordinates, mean, and highest density intervals (HDI), for their respective distribution.
+#' 
+#' #' \code{getUnivariatePosteriorCurve} does the same for a posterior sample of parameter estimates, returning a list of x and y density coordinates, mean, and highest posterior density intervals (HPD).
+
 #' 
 
 #' @seealso
@@ -239,7 +250,7 @@ plotPrior<-function(
 
 #' @rdname plotPriorPost
 #' @export
-plotUnivariatePosteriorVsPrior<-function(posteriorCurve, priorCurve, label="parameter", trueValue=NULL, alpha=0.95) {
+plotUnivariatePosteriorVsPrior<-function(posteriorCurve, priorCurve, label="parameter", trueValue=NULL) {
 	plot(x=range(c(posteriorCurve$x, priorCurve$x)), y=range(c(posteriorCurve$y, priorCurve$y)), type="n", xlab=label, ylab="", bty="n", yaxt="n")
 	polygon(x=c(priorCurve$x, max(priorCurve$x), priorCurve$x[1]), y=c(priorCurve$y, 0, 0), col=rgb(0,0,0,0.3),border=rgb(0,0,0,0.3))
 	lines(x=rep(priorCurve$mean,2),y=c(0,max(c(priorCurve$y, posteriorCurve$y))),col="gray")
@@ -261,7 +272,7 @@ plotUnivariatePosteriorVsPrior<-function(posteriorCurve, priorCurve, label="para
 #' @rdname plotPriorPost
 #' @export
 getUnivariatePriorCurve<-function(priorFn, priorVariables,
-		nPoints=100000, from=NULL, to=NULL, alpha=0.95, coda=coda) {
+		nPoints=100000, from=NULL, to=NULL, alpha=0.95, ..., coda=coda) {
 	#
 	samples<-replicate(nPoints,pullFromPrior(priorVariables, priorFn))
 	if (is.null(from)) {
@@ -271,8 +282,8 @@ getUnivariatePriorCurve<-function(priorFn, priorVariables,
 		to<-max(samples)
 	}
 	#
-	result<-density(samples,from=from, to=to)
-	hpd.result<-\code{\link{highestDensityRegion}}(samples, alpha=alpha, coda=coda)
+	result<-density(samples,from=from, to=to, ...)
+	hpd.result<-highestDensityRegion(samples, alpha=alpha, ..., coda=coda)
 	#
 	#
   if (priorFn=="uniform") {
@@ -286,15 +297,15 @@ getUnivariatePriorCurve<-function(priorFn, priorVariables,
 
 #' @rdname plotPriorPost
 #' @export
-getUnivariatePosteriorCurve<-function(acceptedValues, from=NULL, to=NULL, alpha=0.95) {
+getUnivariatePosteriorCurve<-function(acceptedValues, from=NULL, to=NULL, alpha=0.95, ..., coda=coda) {
 	if (is.null(from)) {
 		from<-min(acceptedValues)
 	}
 	if (is.null(to)) {
 		to<-max(acceptedValues)
 	}
-	result<-density(acceptedValues,from=from, to=to)
-	hpd.result<-coda::HPDinterval(coda::as.mcmc(acceptedValues), alpha)
+	result<-density(acceptedValues,from=from, to=to, ...)
+	hpd.result<-highestDensityRegion(samples, alpha=alpha, ..., coda=coda)
 	return(list(x=result$x, y=result$y, mean=mean(acceptedValues), lower=hpd.result[1,1], upper=hpd.result[1,2]))
 }
 

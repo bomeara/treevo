@@ -4,20 +4,12 @@
 #* Bayesian Credible Interval
 #* 
 #* This function calculates credible intervals for each free
-#* parameter, essentially as quantiles. These will work as long as the data
-#* has a single mode - multimodal data may have overly large
-#* quantiles (to encompass multiple modes), in which case
-#* calculating credible intervals as \code{\link{highestDensityRegion}}
-#* may be a better idea.
+#* parameter, essentially as quantiles. 
 #* 
 #* 
 
-#* @param particleDataFrame A \code{particleDataFrame} object, as found among the output from \code{\link{doRun}} functions.
 
-#* @param alpha Probability content of the highest probability density.
 
-#* @return Returns a matrix with weighted mean, standard deviation, upper and lower credible
-#* intervals for each free parameter.
 
 #* @author Brian O'Meara and Barb Banbury
 
@@ -35,9 +27,7 @@
 #* @rdname credibleInt
 #* @export
 credibleInt<-function(particleDataFrame, alpha=0.95) {
-	# ugh ugh
-	#generation<-NULL #to appease R CMD CHECK
-	# yes??? I think this is right, not sure
+
 	generation<-particleDataFrame$generation
 	#
 	alphaTail<-(1-alpha)/2
