@@ -81,9 +81,11 @@ highestDensityInterval(z,alpha=0.8)
 #' @rdname highestDensityInterval
 #' @export
 
-highestDensityInterval<-function(dataVector, alpha, coda, ...){
+highestDensityInterval<-function(dataVector, alpha, coda=FALSE, ...){
 	# test that its a vector
 
+	
+	
 	if(coda){
 		codaHPD<-getHPDcoda(data,alpha)
 		resMatrix<-matrix(codaHPD[1:2],1,2)
