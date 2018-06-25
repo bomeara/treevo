@@ -39,39 +39,68 @@
 #' A user may want to mess with this to adjust bandwidth, et cetera.
 
 #' @examples
+#' set.seed(444)
 #' 
-
-
-
-
-
-# quantiles don't work - based on ECDF, so they can only be a single interval
-z<-sample(c(rnorm(50,1,2),rnorm(100,50,3)))
-
-# how to get out the actual values?
-
-# could do this using just density from stats
-density(z)
-
-alpha<-0.8
-
-zDensOut <- density(z)
-zDensity <- zDensOut$y/sum(zDensOut$y)
-inHPD<-cumsum(-sort(-zDensity))<=alpha
-# now reorder
-inHPD<-inHPD[order(order(-zDensity))]
-colDens<-rep(1,length(zDensity))
-colDens[inHPD]<-2
-plot(zDensOut$x,zDensity,col=colDens)
-
-highestDensityInterval(z,alpha=0.8)
+#' # let's imagine we have some variable with
+#' 	# an extreme bimodal distribution
+#' z<-sample(c(rnorm(50,1,2),rnorm(100,50,3)))
+#' hist(z)
+#' 
+#' # now let's say we want to know the what sort of values
+#' # are reasonably consistent with this distribution
+#' 
+#' # for example, let's say we wanted the ranges within
+#' # which 80% of our data occurs
+#' 
+#' # one way to do this would be a quantile
+#' 	# two tailed 80% quantiles
+#' quantile(z,probs=c(0.1,0.9))
+#' 
+#' # that seems overly broad - there's essentially no density
+#' # in the central valley - but we want to exclude values found there!
+#' # A value of 30 doesn't match this data sample, right??
+#' 
+#' # the problem is that all quantile methods are essentially based on
+#' # the empirical cumulative distribution function - which is monotonic
+#' # (as any cumulutative function should be), and thus
+#' # quantiles can only be a single interval
+#' 
+#' # A different approach is to use density from stats
+#' density(z)
+#' # we could then take the density estimates for
+#' # particular intervals, rank-order them, and
+#' # then cumulative sample until we reach
+#' # our desired probability density (alpha)
+#' 
+#' # let's try that
+#' alpha<-0.8
+#' zDensOut <- density(z)
+#' zDensity <- zDensOut$y/sum(zDensOut$y)
+#' inHPD<-cumsum(-sort(-zDensity))<=alpha
+#' # now reorder
+#' inHPD<-inHPD[order(order(-zDensity))]
+#' colDens<-rep(1,length(zDensity))
+#' colDens[inHPD]<-2
+#' # and let's plot it, with colors
+#' plot(zDensOut$x,zDensity,col=colDens)
+#' 
+#' # and we can do all that (except the plotting)
+#' 	# with highestDensityInterval
+#' highestDensityInterval(z,alpha=0.8)
 #' 
 #' #############################
 #' # example with output from doRun_prc
 #' 
 #' data(simRunExample)
 #' 
+#' # alpha = 0.95
 #' highestDensityInterval(results[[1]]$particleDataFrame, alpha=0.95)
+#' 
+#' # you might be tempted to use alphas like 95%, but with bayesian statistics
+#' # we often don't sample the distribution well enough to know
+#' # its shape to exceeding detail. alpha=0.8 may be more reasonable.
+#' highestDensityInterval(results[[1]]$particleDataFrame, alpha=0.8)
+#' 
 #' 
 
 
