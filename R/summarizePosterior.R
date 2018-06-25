@@ -8,7 +8,7 @@
 
 
 
-#' @param returnData Option to return data that falls within HPD interval.
+# @param returnData Option to return data that falls within HPD interval.
 
 #' @return Returns a list, with each element of the list as a vector containing the weighted mean, standard deviation, and followed by the highest density intervals (e.g. the highest posterior density intervals). Because posterior estimates of parameter values may be multimodal, multiple sets of bounds may be reported for complex posterior distributions.
 
@@ -26,7 +26,7 @@
 #' 
 #' data(simRunExample)
 #' 
-#' highestDensityInterval(results[[1]]$particleDataFrame, alpha=0.95, returnData=FALSE)
+#' highestDensityInterval(results[[1]]$particleDataFrame, alpha=0.95)
 #' 
 
 
@@ -56,7 +56,7 @@
 			}
 		}	
 
-summarizePosterior<-function(particleDataFrame, alpha=0.95, returnData=FALSE){
+summarizePosterior<-function(particleDataFrame, alpha=0.95){
 
 	generation<-particleDataFrame$generation
 	maxGen<-max(particleDataFrame$generation)
@@ -103,11 +103,14 @@ summarizePosterior<-function(particleDataFrame, alpha=0.95, returnData=FALSE){
 				}
 			}
 		}
-	if(returnData){
-		summary$summary<-Ints
-		res<-summary
-	}else{
-		res<-as.data.frame(Ints)
-		}
+	###########################
+	#if(returnData){
+	#	summary$summary<-Ints
+	#	res<-summary
+	#}else{
+	#	res<-as.data.frame(Ints)
+	#	}
+	###########################
+	res<-as.data.frame(Ints)
 	return(res)
 	}

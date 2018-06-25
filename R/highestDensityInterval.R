@@ -5,7 +5,8 @@
 #' parameter estimated in the posterior of a Bayesian MCMC analysis. If these intervals are
 #' calculated for more than one variable, they are referred to instead as regions. 
 #' 
-#' By default,  is done by fitting a kernal density estimate (KDE) via R function \code{density}
+#' By default, HDI calculation is preformed by fitting
+#' a kernal density estimate (KDE) via R function \code{density}
 #' with default bandwidth, rescaling the kernal to a density, sorting intervals along the KDE
 #' by that density, and then summing these values from largest to smallest, until the desired
 #' alpha is reached. This algorithm is quick, and accounts for potentially multimodal distributions,
@@ -20,7 +21,29 @@
 
 
 
-# dealing with multimodal distributions
+
+#' @param dataVector A vector of data, which can be reasonably assumed to
+#' represent independent, identically-distributed random variables, such as
+#' estimates of a parameter from a Bayesian MCMC.
+
+#' @param alpha The threshold used for defining the highest density frequency
+#' cut-off. If the highest density interval is applied to a Bayesian MCMC
+#' posterior sample, then the interval is effectively calculated for this
+#' value as a posterior probability density.
+
+#' @param coda Default is \code{FALSE}. If \code{TRUE}, unimodal highest density regions will
+#' instead be calculated using \code{\link{HPDinterval}} from package \code{coda}, which is
+#' similar to the function \code{quantile} in that it calculates only a single interval.
+
+#' @param ... Additional arguments passed to \code{\link{density}}. 
+#' A user may want to mess with this to adjust bandwidth, et cetera.
+
+#' @examples
+#' 
+
+
+
+
 
 # quantiles don't work - based on ECDF, so they can only be a single interval
 z<-sample(c(rnorm(50,1,2),rnorm(100,50,3)))
@@ -41,39 +64,15 @@ colDens<-rep(1,length(zDensity))
 colDens[inHPD]<-2
 plot(zDensOut$x,zDensity,col=colDens)
 
-# let's make this a function
-
-#' @param dataVector A vector of data, which can be reasonably assumed to
-#' represent independent, identically-distributed random variables, such as
-#' estimates of a parameter from a Bayesian MCMC.
-
-#' @param alpha The threshold used for defining the highest density frequency
-#' cut-off.
-
-#* @param alpha Probability content of the highest probability density.
-
-#' @param alpha Probability content of the highest posterior density (HPD).
-
-#' @param alpha Probability density content of the 
-
-
-#' @param coda Default is \code{FALSE}. If \code{TRUE}, unimodal highest density regions will
-#' instead be calculated using \code{\link{HPDinterval}} from package \code{coda}.
-
-#' @param ... Additional arguments passed to \code{\link{density}}. 
-#' A user may want to mess with this to adjust bandwidth, et cetera.
-
-#' @examples
+highestDensityInterval(z,alpha=0.8)
+#' 
+#' #############################
+#' # example with output from doRun_prc
 #' 
 #' data(simRunExample)
 #' 
-#' highestDensityInterval(results[[1]]$particleDataFrame, alpha=0.95, returnData=FALSE)
+#' highestDensityInterval(results[[1]]$particleDataFrame, alpha=0.95)
 #' 
-
-highestDensityInterval(z,alpha=0.8)
-
-
-
 
 
 

@@ -44,9 +44,6 @@
 #' density region (a multivariate highest density interval).
 #' 
 
-#' @inheritParams
-
-#' @param
 
 #' @return
 
@@ -152,10 +149,41 @@
 #' testMultivarOutlierHDR(dataMatrix=data,outlier=outlier,alpha=0.8,pca=FALSE)
 #' 
 
+
+
+#' @inheritParams highestDensityInterval
+
+#' @param pca
+
+#' @param dataMatrix A matrix consisting of rows of data observations,
+#' with one or more variables as the columns, such that each multivariate
+#' observation can be reasonably assumed to represent independent,
+#' identically-distributed random variables. For example, a matrix of
+#' sampled parameter estimates from the post-burnin posterior of a Bayesian MCMC.
+
+#' @param outlier A vector of consisting of a single observation of
+#' one or more variables, with the same length as the number
+#' of columns in /code{dataMatrix}. Not necessarily an \emph{outlier} but
+#' 
+
+
+
+
 #' @name testMultivarOutlierHDR
 #' @rdname testMultivarOutlierHDR
 #' @export
-testMultivarOutlierHDR<-function(dataMatrix,outlier,alpha,pca=TRUE,...){
+testMultivarOutlierHDR<-function(dataMatrix,outlier,alpha,coda=FALSE,pca=TRUE,...){
+	if(!is.matrix(dataMatrix)){
+		stop()
+		}
+	if(nrow(dataMatrix)<3){
+		stop("Two or less observations in dataMatrix - insufficient data for generating a highest density interval")
+		}
+	if(nrow(dataMatrix)>10){
+		
+		}
+
+
 	dataAll<-rbind(data,outlier)
 	# use PCA or not
 	if(pca){
@@ -172,7 +200,7 @@ testMultivarOutlierHDR<-function(dataMatrix,outlier,alpha,pca=TRUE,...){
 	#
 	# get HPDs
 	HDR<-lapply(1:ncol(varia),function(i)
-		 highestDensityInterval(varia[,i],alpha=alpha,...))
+		 highestDensityInterval(varia[,i],alpha=alpha,coda=coda,...))
 	#
 	# test if outlier is within intervals listed for each variable
 	withinHDR<-sapply(1:ncol(varia),function(x) 
