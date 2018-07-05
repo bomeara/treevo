@@ -1,10 +1,10 @@
-test_that("bayesCoverageProb works", {
-  set.seed(1)
-  data(simRunExample)
-  genPar <- c(ancState, genRate)
-  HPDs <- list(results[[1]]$HPD, resultsBound[[1]]$HPD)
-  result<-bayesCoverageProb(RealParam = genPar, HPD = HPDs, verbose = FALSE)
-})
+#test_that("bayesCoverageProb works", {
+#  set.seed(1)
+#  data(simRunExample)
+#  genPar <- c(ancState, genRate)
+#  HPDs <- list(results[[1]]$HPD, resultsBound[[1]]$HPD)
+#  result<-bayesCoverageProb(RealParam = genPar, HPD = HPDs, verbose = FALSE)
+#})
 
 test_that("compareListIPD works", {
   set.seed(1)

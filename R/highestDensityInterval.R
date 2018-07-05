@@ -19,9 +19,6 @@
 #' resulting in overly wide estimates of coverage. 
 #' 
 
-
-
-
 #' @param dataVector A vector of data, which can be reasonably assumed to
 #' represent independent, identically-distributed random variables, such as
 #' estimates of a parameter from a Bayesian MCMC.
@@ -37,6 +34,12 @@
 
 #' @param ... Additional arguments passed to \code{\link{density}}. 
 #' A user may want to mess with this to adjust bandwidth, et cetera.
+
+#' @references
+#' Hyndman, R. J. 1996. Computing and Graphing Highest
+#' Density Regions. \emph{The American Statistician} 50(2):120-126.
+
+
 
 #' @examples
 #' set.seed(444)
@@ -108,12 +111,20 @@
 #' @name highestDensityInterval
 #' @rdname highestDensityInterval
 #' @export
-
 highestDensityInterval<-function(dataVector, alpha, coda=FALSE, ...){
 	# test that its a vector
-
-	
-	
+	dataVector<-as.numeric(dataVector)
+	if(!is.vector(dataVector)){
+		stop("Unable to coerce dataVector to being a numeric vector")
+		}
+	# test alpha is of length 1
+	if(length(alpha)>1){
+		stop("alpha should be of length 1")
+		}
+	if(alpha>=1 | alpha<=0){
+		stop("alpha should be numeric and be between zero and one")
+		}
+	#
 	if(coda){
 		codaHPD<-getHPDcoda(data,alpha)
 		resMatrix<-matrix(codaHPD[1:2],1,2)
@@ -143,8 +154,8 @@ highestDensityInterval<-function(dataVector, alpha, coda=FALSE, ...){
 		}
 	# name the columns and rows
 		# paste("LowerHPD_", alpha, sep=""), paste("UpperHPD_", alpha, sep="")
-		
-		
+	colLabels<-c(paste0(c("LowerBound_alpha=","UpperBound_"),alpha))
+	colnames(resMatrix)<-colLabels
 	return(resMatrix)
 	}
 

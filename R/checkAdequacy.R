@@ -1,6 +1,5 @@
-# checkAdequacy
 
-# sixAnalysesTwoModels
+#'
 
 #' @details
 
@@ -47,6 +46,8 @@
 	#  then test if 'true' generating parameters are actually within the 95% HDF of the simulated posterior
 	# deals with how we don't really understand how adequate the models are for giving unbiased estimates of parameters
 
+# checkAdequacy              # sixAnalysesTwoModels
+	
 
 checkAdequacy<-function(){
 	}

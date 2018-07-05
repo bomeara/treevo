@@ -44,16 +44,37 @@
 #' density region (a multivariate highest density interval).
 #' 
 
+#' @inheritParams highestDensityInterval
+
+#' @param pca If \code{TRUE} (the default), a principal components analysis is
+#' applied to the provided input data, to reorient the data along orthogonal axes,
+#' with the purpose of potentially reducing covariation among the variables. If
+#' your variables are known to have little covariation among them, and/or have
+#' strange distributions that may violate the multivariate normal assumptions
+#' of a principal components analysis, then it may be advisable to set {pca = FALSE}.
+
+#' @param dataMatrix A matrix consisting of rows of data observations,
+#' with one or more variables as the columns, such that each multivariate
+#' observation can be reasonably assumed to represent independent,
+#' identically-distributed random variables. For example, a matrix of
+#' sampled parameter estimates from the post-burnin posterior of a Bayesian MCMC.
+
+#' @param outlier A vector of consisting of a single observation of
+#' one or more variables, with the same length as the number
+#' of columns in /code{dataMatrix}. Not necessarily an \emph{outlier} but
+#' 
+
 
 #' @return
-
-#' @aliases
+#' A logical, indicating whether the given data point (\code{outlier})
+#' is within the multivariate data cloud at the specified threshold
+#' probability density.
 
 #' @seealso
+#' This function is essentially a wrapper for applying \code{highestDensityInterval} to
+#' multivariate data, along with \code{\link{princomp}} in package \code{stats}.
 
 #' @author David W. Bapst
-
-#' @references
 
 #' @examples
 #' # First, you should understand the problems
@@ -151,22 +172,6 @@
 
 
 
-#' @inheritParams highestDensityInterval
-
-#' @param pca
-
-#' @param dataMatrix A matrix consisting of rows of data observations,
-#' with one or more variables as the columns, such that each multivariate
-#' observation can be reasonably assumed to represent independent,
-#' identically-distributed random variables. For example, a matrix of
-#' sampled parameter estimates from the post-burnin posterior of a Bayesian MCMC.
-
-#' @param outlier A vector of consisting of a single observation of
-#' one or more variables, with the same length as the number
-#' of columns in /code{dataMatrix}. Not necessarily an \emph{outlier} but
-#' 
-
-
 
 
 #' @name testMultivarOutlierHDR
@@ -174,20 +179,19 @@
 #' @export
 testMultivarOutlierHDR<-function(dataMatrix,outlier,alpha,coda=FALSE,pca=TRUE,...){
 	if(!is.matrix(dataMatrix)){
-		stop()
+		stop("dataMatrix is apparently not a matrix")
 		}
 	if(nrow(dataMatrix)<3){
-		stop("Two or less observations in dataMatrix - insufficient data for generating a highest density interval")
+		stop("Two or less observations in dataMatrix - insufficient data for generating a highest density region")
 		}
 	if(nrow(dataMatrix)>10){
-		
+		warning("Less than 10 observations are given as input - estimates of the highest density region may be very imprecise")
 		}
-
-
+	#
 	dataAll<-rbind(data,outlier)
 	# use PCA or not
 	if(pca){
-		pcaRes<-princomp(dataAll)
+		pcaRes<-stats::princomp(dataAll)
 		varia<-pcaRes$scores
 	}else{
 		# use raw
