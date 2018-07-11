@@ -117,45 +117,45 @@
 #' \donttest{
 #
 #' set.seed(1)
-#' tree<-rcoal(20)
+#' tree <- rcoal(20)
 #' # get realistic edge lengths
-#' tree$edge.length<-tree$edge.length*20
+#' tree$edge.length <- tree$edge.length*20
 #' 
 #' #Simple Brownian motion
 #'
-#' char<-doSimulation(
-#' 	phy=tree,
-#' 	generation.time=100000,
-#' 	intrinsicFn=brownianIntrinsic,
-#' 	extrinsicFn=nullExtrinsic,
-#' 	startingValues=c(10), #root state
-#' 	intrinsicValues=c(0.01),
-#' 	extrinsicValues=c(0))
+#' char <- doSimulation(
+#' 	phy = tree,
+#' 	generation.time = 100000,
+#' 	intrinsicFn = brownianIntrinsic,
+#' 	extrinsicFn = nullExtrinsic,
+#' 	startingValues = c(10), #root state
+#' 	intrinsicValues = c(0.01),
+#' 	extrinsicValues = c(0))
 #' 
 #' #Character displacement model with minimum bound
 #' 
-#' char<-doSimulation(
-#' 	phy=tree,
-#'  generation.time=100000,
-#' 	intrinsicFn=boundaryMinIntrinsic,
-#' 	extrinsicFn=ExponentiallyDecayingPushExtrinsic,
-#' 	startingValues=c(10), #root state
-#' 	intrinsicValues=c(0.05, 10, 0.01),
-#' 	extrinsicValues=c(0, .1, .25))
+#' char <- doSimulation(
+#' 	phy = tree,
+#'  generation.time = 100000,
+#' 	intrinsicFn = boundaryMinIntrinsic,
+#' 	extrinsicFn = ExponentiallyDecayingPushExtrinsic,
+#' 	startingValues = c(10), #root state
+#' 	intrinsicValues = c(0.05, 10, 0.01),
+#' 	extrinsicValues = c(0, .1, .25))
 #
 #' }
 
 #' @rdname doSimulation
 #' @export
-doSimulation<-function(phy=NULL, intrinsicFn, extrinsicFn, startingValues, intrinsicValues, extrinsicValues,
-	generation.time=1000, TreeYears=max(branching.times(phy)) * 1e6, timeStep=NULL, 
-	#maxAttempts = 100, saveHistory=FALSE, plot=FALSE, savePlot=FALSE, 
-	#reject.NaN=TRUE, saveRealParams=FALSE, jobName="", verbose=FALSE, 
-	returnAll = FALSE, taxonDF=NULL, checkTimeStep=TRUE) {
+doSimulation <- function(phy = NULL, intrinsicFn, extrinsicFn, startingValues, intrinsicValues, extrinsicValues,
+	generation.time = 1000, TreeYears = max(branching.times(phy)) * 1e6, timeStep = NULL, 
+	#maxAttempts = 100, saveHistory = FALSE, plot = FALSE, savePlot = FALSE, 
+	#reject.NaN = TRUE, saveRealParams = FALSE, jobName = "", verbose = FALSE, 
+	returnAll = FALSE, taxonDF = NULL, checkTimeStep = TRUE) {
 	#
 	#
 	if(is.null(timeStep)){
-		timeStep<-generation.time/TreeYears
+		timeStep <- generation.time/TreeYears
 		}
 	#
 	if(is.null(taxonDF)){
@@ -167,34 +167,34 @@ doSimulation<-function(phy=NULL, intrinsicFn, extrinsicFn, startingValues, intri
 		}
 	#
 	#if (saveRealParams){
-	#	RealParams<-vector("list", 2)
-	#	names(RealParams)<-c("matrix", "vector")
-	#	RealParams$vector<-c(startingValues, intrinsicValues, extrinsicValues)
-	#	maxLength<-(max(length(startingValues), length(intrinsicValues), length(extrinsicValues)))
-	#	RealParams$matrix<-matrix(ncol=maxLength, nrow=3)
-	#	rownames(RealParams$matrix)<-c("startingValues", "intrinsicFn", "extrinsicFn")
-	#	RealParams$matrix[1,]<-c(startingValues, rep(NA, maxLength-length(startingValues)))
-	#	RealParams$matrix[2,]<-c(intrinsicValues, rep(NA, maxLength-length(intrinsicValues)))
-	#	RealParams$matrix[3,]<-c(extrinsicValues, rep(NA, maxLength-length(extrinsicValues)))
-	#	save(RealParams, file=paste0("RealParams", jobName, ".Rdata", sep=""))
+	#	RealParams <- vector("list", 2)
+	#	names(RealParams) <- c("matrix", "vector")
+	#	RealParams$vector <- c(startingValues, intrinsicValues, extrinsicValues)
+	#	maxLength <- (max(length(startingValues), length(intrinsicValues), length(extrinsicValues)))
+	#	RealParams$matrix <- matrix(ncol = maxLength, nrow = 3)
+	#	rownames(RealParams$matrix) <- c("startingValues", "intrinsicFn", "extrinsicFn")
+	#	RealParams$matrix[1,] <- c(startingValues, rep(NA, maxLength-length(startingValues)))
+	#	RealParams$matrix[2,] <- c(intrinsicValues, rep(NA, maxLength-length(intrinsicValues)))
+	#	RealParams$matrix[3,] <- c(extrinsicValues, rep(NA, maxLength-length(extrinsicValues)))
+	#	save(RealParams, file = paste0("RealParams", jobName, ".Rdata", sep = ""))
 	#	}
 	#
 	#if (plot || savePlot || saveHistory) {
-	#	startVector<-c()
-	#	endVector<-c()
-	#	startTime<-c()
-	#	endTime<-c()
+	#	startVector <- c()
+	#	endVector <- c()
+	#	startTime <- c()
+	#	endTime <- c()
 	#	}
 	#
 	if(checkTimeStep){
 		#
-		numberofsteps<-max(taxonDF$endTime)/timeStep
-		mininterval<-min(taxonDF$endTime - taxonDF$startTime)
+		numberofsteps <- max(taxonDF$endTime)/timeStep
+		mininterval <- min(taxonDF$endTime - taxonDF$startTime)
 		#if (numberofsteps<1000) {
 			#warning(paste0("You have only ", numberofsteps, " but should probably have a lot more. Please consider 
 			#decreasing timeStep to no more than ", taxonDF[1, 1]/1000))
 		#	}
-		if (floor(mininterval/timeStep)<50 & floor(mininterval/timeStep)>=3) {
+		if (floor(mininterval/timeStep)<50 & floor(mininterval/timeStep) >= 3) {
 			warning(paste0("You have only ", floor(mininterval/timeStep),
 				" timeSteps on the shortest branch in this dataset but should probably have a lot more if you expect ", 
 				"change on this branch. Please consider decreasing timeStep to no more than ",
@@ -209,34 +209,34 @@ doSimulation<-function(phy=NULL, intrinsicFn, extrinsicFn, startingValues, intri
 			}
 		}
 	#
-	final.result.df<-doSimulationInternal(
-		taxonDF=taxonDF, timeStep=timeStep, 
-		intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, 
-		startingValues=startingValues, intrinsicValues=intrinsicValues, extrinsicValues=extrinsicValues)
+	final.result.df <- doSimulationInternal(
+		taxonDF = taxonDF, timeStep = timeStep, 
+		intrinsicFn = intrinsicFn, extrinsicFn = extrinsicFn, 
+		startingValues = startingValues, intrinsicValues = intrinsicValues, extrinsicValues = extrinsicValues)
 	#
 	#
 	#if(plot){
 	#	#dev.new()
-	#	plot(x=c(min(c(startVector, endVector)),
+	#	plot(x = c(min(c(startVector, endVector)),
 	#			max(c(startVector, endVector))), 
-	#		 y=c(0, max(c(startTime, endTime))),
-	#		 type="n", 
-	#		 ylab="Time", xlab="Trait value", main="", bty="n")
+	#		 y = c(0, max(c(startTime, endTime))),
+	#		 type = "n", 
+	#		 ylab = "Time", xlab = "Trait value", main = "", bty = "n")
 	#	for (i in 1:length(startVector)){
-	#		lines(x=c(startVector[i], endVector[i]), 
-	#			  y=max(c(startTime, endTime)) - c(startTime[i], endTime[i])
+	#		lines(x = c(startVector[i], endVector[i]), 
+	#			  y = max(c(startTime, endTime)) - c(startTime[i], endTime[i])
 	#			  )
 	#		}
 	#	}
 	#if (savePlot) {
-	#	pdf(paste0("SimTree", jobName, ".pdf", sep=""))	
-	#	plot(x=c(min(c(startVector, endVector)), max(c(startVector, endVector))),
-	#		 y=c(0, max(c(startTime, endTime))),
-	#		 type="n", ylab="Time", xlab="Trait value",
-	#		 main="", bty="n")
+	#	pdf(paste0("SimTree", jobName, ".pdf", sep = ""))	
+	#	plot(x = c(min(c(startVector, endVector)), max(c(startVector, endVector))),
+	#		 y = c(0, max(c(startTime, endTime))),
+	#		 type = "n", ylab = "Time", xlab = "Trait value",
+	#		 main = "", bty = "n")
 	#	for (i in 1:length(startVector)) {
-	#		lines(x=c(startVector[i], endVector[i]),
-	#		y=max(c(startTime, endTime)) - c(startTime[i], endTime[i]))
+	#		lines(x = c(startVector[i], endVector[i]),
+	#		y = max(c(startTime, endTime)) - c(startTime[i], endTime[i]))
 	#		}
 	#	dev.off()
 	#	}
@@ -247,7 +247,7 @@ doSimulation<-function(phy=NULL, intrinsicFn, extrinsicFn, startingValues, intri
 	
 	
 # 
-doSimulationInternal<-function(
+doSimulationInternal <- function(
 	taxonDF, timeStep, intrinsicFn, extrinsicFn, 
 	startingValues, intrinsicValues, extrinsicValues){
 	#
@@ -256,23 +256,23 @@ doSimulationInternal<-function(
 	####################################################################
 	#initial setup
 	#
-	numberofsteps<-max(taxonDF$endTime)/timeStep
-	mininterval<-min(taxonDF$endTime - taxonDF$startTime)
+	numberofsteps <- max(taxonDF$endTime)/timeStep
+	mininterval <- min(taxonDF$endTime - taxonDF$startTime)
 	#
 	depthfrompresent = max(taxonDF$endTime)
 	heightfromroot = 0
 	# which element of DF is states
-	whichStatesCol<-which(names(taxonDF)=="states")
+	whichStatesCol <- which(names(taxonDF) == "states")
 	#
-	taxonDF[[whichStatesCol]][which(taxonDF$startTime==0)] <- startingValues
+	taxonDF[[whichStatesCol]][which(taxonDF$startTime == 0)] <- startingValues
 	#	
 	taxonDF.previous <- taxonDF
 	#
-	taxonID<-taxonDF$id
-	taxonStartTime<-taxonDF$startTime
-	taxonEndTime<-taxonDF$endTime
-	taxonTerminal<-taxonDF$terminal
-	taxonAnc<-taxonDF$ancestorId
+	taxonID <- taxonDF$id
+	taxonStartTime <- taxonDF$startTime
+	taxonEndTime <- taxonDF$endTime
+	taxonTerminal <- taxonDF$terminal
+	taxonAnc <- taxonDF$ancestorId
 	while(depthfrompresent>0) {
 		#if(reject.NaN) {
 		#	taxonDF.previous <- taxonDF
@@ -282,8 +282,8 @@ doSimulationInternal<-function(
 		depth.end <- depthfrompresent - timeStep
 		height.start <- heightfromroot
 		height.end <- heightfromroot + timeStep
-		ids.alive.at.start <- taxonID[which(taxonStartTime <= height.start & taxonEndTime > height.start)]
-		ids.alive.at.end <-  taxonID[which(taxonEndTime > height.end & taxonStartTime <= height.end)]
+		ids.alive.at.start <- taxonID[which(taxonStartTime  <=  height.start & taxonEndTime > height.start)]
+		ids.alive.at.end <-  taxonID[which(taxonEndTime > height.end & taxonStartTime  <=  height.end)]
 		ids.only.alive.in.interval <- taxonID[which(taxonStartTime > height.start & taxonEndTime < height.end)]
 		ids.changing.status <-  c(ids.alive.at.start[!(ids.alive.at.start  %fin% ids.alive.at.end)], ids.only.alive.in.interval)
 		ids.speciating <- c(taxonID[which((taxonID %fin% ids.changing.status) & (!taxonTerminal))], ids.only.alive.in.interval)
@@ -294,12 +294,12 @@ doSimulationInternal<-function(
 		#	stop("some aliveRows are NA")
 		#	}
 		#
-		taxonStates<-taxonDF[[whichStatesCol]]
+		taxonStates <- taxonDF[[whichStatesCol]]
 		currentStates <- taxonStates[aliveRows]
 		#
 		#if(any(is.na(currentStates))) {
 		#	message(paste0("currentStates ",currentStates))
-		#	message(paste0("taxonID %fin% ids.alive.at.start ",paste0(taxonID %fin% ids.alive.at.start,collapse=" ")))
+		#	message(paste0("taxonID %fin% ids.alive.at.start ",paste0(taxonID %fin% ids.alive.at.start,collapse = " ")))
 		#	message(c(height.start,height.end))
 		#	message(taxonDF[taxonID %fin% ids.alive.at.start,])
 		#	stop("there are NAs in currentStates! How?? Something is very wrong")
@@ -307,21 +307,21 @@ doSimulationInternal<-function(
 		#
 		#
 		# get vector of ancestors
-		ancestors<-match(taxonAnc[aliveRows],taxonID)	
+		ancestors <- match(taxonAnc[aliveRows],taxonID)	
 		#
 		#first evolve in this interval, then speciate
 		for (whichTaxon in 1:length(aliveRows)) {
 			# find match within aliveRows for match to currentStates
-			taxonIndex<-aliveRows[whichTaxon]
-			taxonState<-taxonStates[taxonIndex]
+			taxonIndex <- aliveRows[whichTaxon]
+			taxonState <- taxonStates[taxonIndex]
 			# check if the ancestor is NA
 			if(is.na(taxonState)) {
-				#whichAncestor<- which(taxonID==taxonAnc[taxonIndex])
+				#whichAncestor <-  which(taxonID == taxonAnc[taxonIndex])
 				taxonState <- taxonStates[ancestors[whichTaxon]]
 				if(is.na(taxonState)){
 					stop("A taxon's ancestor has an NA character")
 					}
-				currentStates[whichTaxon]<-taxonState
+				currentStates[whichTaxon] <- taxonState
 				}				
 			#
 			newState <- taxonState + 
@@ -337,21 +337,21 @@ doSimulationInternal<-function(
 			##		stop(paste0("there are NAs in currentStates! How?? Something is very wrong\n",
 			##			"currentStates ",currentStates))
 			##		}
-			##	attempt.count<-0
-			##	while(is.na(newState) & attempt.count <= maxAttempts) {
+			##	attempt.count <- 0
+			##	while(is.na(newState) & attempt.count  <=  maxAttempts) {
 			##		old = taxonState
 			##		#check
 			##		if(is.na(old)){
 			##			stop("Ancestral state for a simulated character state is NA - something is very wrong")
 			##			}
-			##		intrinsic.displacement = intrinsicFn(params=intrinsicValues, states=currentStates[taxonIndex],
-			##			timefrompresent =depthfrompresent)
+			##		intrinsic.displacement = intrinsicFn(params = intrinsicValues, states = currentStates[taxonIndex],
+			##			timefrompresent  = depthfrompresent)
 			##		#check
 			##		if(is.na(intrinsic.displacement)){
 			##			stop("The intrinsicFn is returning NAs; something terrible has happened")
 			##			}
-			##		extrinsic.displacement = extrinsicFn(params=extrinsicValues, selfstates=currentStates[taxonIndex],
-			##			otherstates=currentStates[-taxonIndex], timefrompresent =depthfrompresent)
+			##		extrinsic.displacement = extrinsicFn(params = extrinsicValues, selfstates = currentStates[taxonIndex],
+			##			otherstates = currentStates[-taxonIndex], timefrompresent  = depthfrompresent)
 			##		#check
 			##		if(is.na(extrinsic.displacement)){
 			##			stop(
@@ -370,33 +370,33 @@ doSimulationInternal<-function(
 			##		newState <- old + intrinsic.displacement + extrinsic.displacement
 			##		warning(paste0("Attempt ", attempt.count, " led to using old value of ", old, " intrinsicFn return of ",intrinsic.displacement, " and extrinsicFn return of ", extrinsic.displacement))
 			##		#message(paste0("For diagnostic purposes: IntrinsicValues ",intrinsicValues))
-			##		attempt.count<-attempt.count+1
+			##		attempt.count <- attempt.count+1
 			##		}
 			##	if(is.na(newState) & attempt.count>maxAttempts) {
 			##		if(is.na(extrinsic.displacement)){
-			##			message(paste0(ls(),collapse=", "))
+			##			message(paste0(ls(),collapse = ", "))
 			##			#message(str(aliveRows))
 			##			message(paste0("taxonIndex ",taxonIndex,"\n",
-			##							"aliveRows ",paste0(aliveRows, collapse=", "),"\n",
+			##							"aliveRows ",paste0(aliveRows, collapse = ", "),"\n",
 			##							"length(aliveRows) ",length(aliveRows),"\n",
-			##							"sequence(length(aliveRows))", paste(sequence(length(aliveRows)),collapse=", "), "\n",
-			##							"currentStates ",paste(currentStates,collapse=", "),"\n",
+			##							"sequence(length(aliveRows))", paste(sequence(length(aliveRows)),collapse = ", "), "\n",
+			##							"currentStates ",paste(currentStates,collapse = ", "),"\n",
 			##							"params ",extrinsicValues,"\n",
 			##							"selfstates ",currentStates[taxonIndex],"\n",
 			##							"otherstates ",paste(
-			##								currentStates[-taxonIndex],collapse=" "),"\n",
+			##								currentStates[-taxonIndex],collapse = " "),"\n",
 			##							"timefrompresent ",depthfrompresent,"\n"))
 			##			}
 			##		stop(paste0(
 			##			"Simulating with these parameters resulted in problematic results despite ", maxAttempts, " attempts",
 			##			"\nFor one example, taxonDF$states[taxonIndex] was ",
 			##			taxonStates[taxonIndex], ", for which intrinsicFn returned ",
-			##			intrinsicFn(params=intrinsicValues, states=currentStates[taxonIndex],
-			##				timefrompresent =depthfrompresent)
+			##			intrinsicFn(params = intrinsicValues, states = currentStates[taxonIndex],
+			##				timefrompresent  = depthfrompresent)
 			##			, "\nand extrinsicFn returned ",
-			##			extrinsicFn(params=extrinsicValues,
-			##				selfstates=currentStates[taxonIndex], otherstates=currentStates[-taxonIndex],
-			##				timefrompresent =depthfrompresent
+			##			extrinsicFn(params = extrinsicValues,
+			##				selfstates = currentStates[taxonIndex], otherstates = currentStates[-taxonIndex],
+			##				timefrompresent  = depthfrompresent
 			##				)
 			##			," with currentStates[taxonIndex] = ", currentStates[taxonIndex])
 			##			)
@@ -407,12 +407,12 @@ doSimulationInternal<-function(
 			##	}
 			#
 			#	if (plot || savePlot || saveHistory) {
-			#		startVector<-append(startVector, taxa[[i]]$states)
-			#		endVector <-append(endVector, newvalues)
-			#		startTime <-append(startTime, timefrompresent+timeStep)
-			#		endTime <-append(endTime, timefrompresent)
+			#		startVector <- append(startVector, taxa[[i]]$states)
+			#		endVector  <- append(endVector, newvalues)
+			#		startTime  <- append(startTime, timefrompresent+timeStep)
+			#		endTime  <- append(endTime, timefrompresent)
 			#		if(saveHistory){
-			#			save(startVector, endVector, startTime, endTime, file=paste0("savedHistory", jobName, ".Rdata", sep=""))
+			#			save(startVector, endVector, startTime, endTime, file = paste0("savedHistory", jobName, ".Rdata", sep = ""))
 			#		}
 			#	}
 			#
@@ -423,8 +423,8 @@ doSimulationInternal<-function(
 		# now speciate and pass one state to descendant
 		if(length(ids.speciating)>0) {
 			for (speciating.taxonIndex in sequence(length(ids.speciating))) {
-				ancestor.row <- which(taxonID==ids.speciating[speciating.taxonIndex])
-				descendant.rows <- which(taxonAnc==taxonID[ancestor.row])
+				ancestor.row <- which(taxonID == ids.speciating[speciating.taxonIndex])
+				descendant.rows <- which(taxonAnc == taxonID[ancestor.row])
 				taxonStates[descendant.rows] <- taxonStates[ancestor.row]
 				}
 			}	
@@ -434,7 +434,7 @@ doSimulationInternal<-function(
 		#
 		if(any(is.nan(taxonStates[aliveRows])) | any(is.na(taxonStates[aliveRows]))) {
 				stop(paste0("A simulation run produced a state of NA or NaN - something is probably very wrong\n",
-					"Here are the states for currently living taxa: ",	paste(taxonStates[aliveRows], collapse=" ")))
+					"Here are the states for currently living taxa: ",	paste(taxonStates[aliveRows], collapse = " ")))
 				}
 		#				
 		#if(verbose) {
@@ -443,19 +443,19 @@ doSimulationInternal<-function(
 		#	}
 		#if(reject.NaN) {
 		#	if(any(is.nan(taxonStates))) {
-		#		save(list=ls(), file="ErrorRun.rda")
-		#		stop(paste0("There was an NaN generated. See saved objects in ", getwd(), "/ErrorRun.rda", sep=""))
+		#		save(list = ls(), file = "ErrorRun.rda")
+		#		stop(paste0("There was an NaN generated. See saved objects in ", getwd(), "/ErrorRun.rda", sep = ""))
 		#		}
 		#	}
 		#
 		# finally update the dataframe
-		taxonDF[[whichStatesCol]]<-taxonStates
+		taxonDF[[whichStatesCol]] <- taxonStates
 		}
 	#if(returnAll) {
 	#	return(taxonDF)
 	#	}
-	final.result <- subset(taxonDF, taxonTerminal==TRUE)
-	final.result.df <- data.frame(states=final.result[[whichStatesCol]])
+	final.result <- subset(taxonDF, taxonTerminal == TRUE)
+	final.result.df <- data.frame(states = final.result[[whichStatesCol]])
 	rownames(final.result.df) <- final.result$name
 	return(final.result.df)
 	}	
@@ -480,20 +480,20 @@ doSimulationInternal<-function(
 # @name summarizeTaxonStates
 # @rdname summarizeTaxonStates
 # @export
-summarizeTaxonStates<-function(taxa) {
+summarizeTaxonStates <- function(taxa) {
 #message("in summarizeTaxonStates")
-	statesvector<-c()
-	taxonid<-c()
-	taxonname<-c()
-	taxontimesincespeciation<-c()
+	statesvector <- c()
+	taxonid <- c()
+	taxonname <- c()
+	taxontimesincespeciation <- c()
 	for (i in 1:length(taxa)) {
-		statesvector<-c(statesvector, taxa[[i]]$states)
-		taxonid<-c(taxonid, taxa[[i]]$id )
-		taxonname<-c(taxonname, taxa[[i]]$name )
-		taxontimesincespeciation<-c(taxontimesincespeciation, taxa[[i]]$timeSinceSpeciation)
+		statesvector <- c(statesvector, taxa[[i]]$states)
+		taxonid <- c(taxonid, taxa[[i]]$id )
+		taxonname <- c(taxonname, taxa[[i]]$name )
+		taxontimesincespeciation <- c(taxontimesincespeciation, taxa[[i]]$timeSinceSpeciation)
 	}
-	statesmatrix<-matrix(statesvector, ncol=length(taxa[[1]]$states), byrow=TRUE) #each row represents one taxon
-	taxonframe<-data.frame(taxonid, taxonname, taxontimesincespeciation, statesmatrix)
+	statesmatrix <- matrix(statesvector, ncol = length(taxa[[1]]$states), byrow = TRUE) #each row represents one taxon
+	taxonframe <- data.frame(taxonid, taxonname, taxontimesincespeciation, statesmatrix)
 	return(taxonframe)
 }
 

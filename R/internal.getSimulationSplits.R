@@ -17,18 +17,18 @@
 # @name intrinsicModels
 # @rdname intrinsicModels
 # @export
-getSimulationSplits<-function(phy) {
-	phy$node.label<-NULL
-	branchingTimes<-sort(branching.times(phy), decreasing=TRUE)
-	branchingTimesNames<-names(branchingTimes)
-	ancestorVector<-c()
-	descendant1Vector<-c()
-	descendant2Vector<-c()
+getSimulationSplits <- function(phy) {
+	phy$node.label <- NULL
+	branchingTimes <- sort(branching.times(phy), decreasing = TRUE)
+	branchingTimesNames <- names(branchingTimes)
+	ancestorVector <- c()
+	descendant1Vector <- c()
+	descendant2Vector <- c()
 	for (i in 1:length(branchingTimes)) {
-		relationshipVector<-phy$edge[phy$edge[, 1]==branchingTimesNames[i]]
-		ancestorVector<-c(ancestorVector, relationshipVector[2])
-		descendant1Vector<-c(descendant1Vector, relationshipVector[3])
-		descendant2Vector<-c(descendant2Vector, relationshipVector[4])
+		relationshipVector <- phy$edge[phy$edge[, 1] == branchingTimesNames[i]]
+		ancestorVector <- c(ancestorVector, relationshipVector[2])
+		descendant1Vector <- c(descendant1Vector, relationshipVector[3])
+		descendant2Vector <- c(descendant2Vector, relationshipVector[4])
 	}
 	
 	return(data.frame(branchingTimes, ancestorVector, descendant1Vector, descendant2Vector))
@@ -53,15 +53,15 @@ getSimulationSplits<-function(phy) {
 # @name getTaxonDFWithPossibleExtinction
 # @rdname getTaxonDFWithPossibleExtinction
 # @export
-getTaxonDFWithPossibleExtinction<-function(phy) {
+getTaxonDFWithPossibleExtinction <- function(phy) {
 	heights <- data.frame(cbind(phy$edge, phy$edge.length, phytools::nodeHeights(phy)))
 	colnames(heights) <- c("rootward.id", "tipward.id", "edge.length", "rootward.height", "tipward.height")
-	heights$name <- paste("internal", heights$tipward.id, sep=".")
+	heights$name <- paste("internal", heights$tipward.id, sep = ".")
 	for (taxon.index in sequence(ape::Ntip(phy))) {
-		heights$name[which(heights$tipward.id==taxon.index)] <- phy$tip.label[taxon.index]
+		heights$name[which(heights$tipward.id == taxon.index)] <- phy$tip.label[taxon.index]
 	}
 	result <- data.frame(t(sapply(split(heights,
-		seq(dim(heights)[1])), createAbcTaxonFromHeightsRow)), stringsAsFactors=FALSE)
+		seq(dim(heights)[1])), createAbcTaxonFromHeightsRow)), stringsAsFactors = FALSE)
 	for (col.id in sequence(dim(result)[2])) {
 		result[,col.id] <- unlist(result[,col.id])
 	}
@@ -78,7 +78,7 @@ getTaxonDFWithPossibleExtinction<-function(phy) {
 # @return An abctaxon object
 # @author Brian O'Meara
 createAbcTaxonFromHeightsRow <- function(x) {
-	return(abctaxon(id=x$tipward.id, name=x$name, timeSinceSpeciation=0, states=NA, nextstates=NA,
-	startTime=x$rootward.height, endTime=x$tipward.height, terminal=!grepl("internal.", x$name), ancestorId=x$rootward.id))
+	return(abctaxon(id = x$tipward.id, name = x$name, timeSinceSpeciation = 0, states = NA, nextstates = NA,
+	startTime = x$rootward.height, endTime = x$tipward.height, terminal = !grepl("internal.", x$name), ancestorId = x$rootward.id))
 }
 

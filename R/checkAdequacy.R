@@ -49,7 +49,7 @@
 # checkAdequacy              # sixAnalysesTwoModels
 	
 
-checkAdequacy<-function(){
+checkAdequacy <- function(){
 	}
 
 

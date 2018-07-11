@@ -1,5 +1,5 @@
 # function for getting prior matrix for doRun_prc
-getPriorMatrix=function(
+getPriorMatrix <- function(
 	startingPriorsValues,
 	intrinsicPriorsValues,
 	extrinsicPriorsValues,
@@ -10,29 +10,29 @@ getPriorMatrix=function(
 	#
 	#
 	#create PriorMatrix
-	namesForPriorMatrix<-c()
-	PriorMatrix<-matrix(c(startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns), nrow=1, ncol=numberParametersTotal)
+	namesForPriorMatrix <- c()
+	PriorMatrix <- matrix(c(startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns), nrow = 1, ncol = numberParametersTotal)
 	for (a in 1:dim(startingPriorsValues)[2]){
-		namesForPriorMatrix=c(paste0("starting_", a, sep=""))
+		namesForPriorMatrix <- c(paste0("starting_", a, sep = ""))
 		}
 	#
 	for (b in 1:dim(intrinsicPriorsValues)[2]){
-		namesForPriorMatrix<-append(namesForPriorMatrix, paste0("intrinsic_", b, sep=""))
+		namesForPriorMatrix <- append(namesForPriorMatrix, paste0("intrinsic_", b, sep = ""))
 		}
 	#
 	#message(extrinsicPriorsValues)
 	for (c in 1:dim(extrinsicPriorsValues)[2]){
-		namesForPriorMatrix <-append(namesForPriorMatrix, paste0("extrinsic_", c, sep=""))
+		namesForPriorMatrix  <- append(namesForPriorMatrix, paste0("extrinsic_", c, sep = ""))
 		}
 	#
-	PriorMatrix<-rbind(
+	PriorMatrix <- rbind(
 		PriorMatrix, 
 		cbind(startingPriorsValues, 
 			intrinsicPriorsValues, 
 			extrinsicPriorsValues
 			)
 		)
-	colnames(PriorMatrix)<-namesForPriorMatrix
-	rownames(PriorMatrix)<-c("shape", "value1", "value2")
+	colnames(PriorMatrix) <- namesForPriorMatrix
+	rownames(PriorMatrix) <- c("shape", "value1", "value2")
 	return(PriorMatrix)
 	}

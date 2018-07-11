@@ -1,5 +1,5 @@
 # internal function for doing initial simulations in doRun_PRC
-initialSimsPRC<-function(
+initialSimsPRC <- function(
 		nrepSim,
 		phy,  
 		taxonDF,
@@ -14,7 +14,7 @@ initialSimsPRC<-function(
 		originalSummaryValues,
 		epsilonProportion, 
 		epsilonMultiplier,
-		validation="CV", 
+		validation = "CV", 
 		variance.cutoff,
 		saveData,jobName
 		){		
@@ -29,41 +29,41 @@ initialSimsPRC<-function(
 	#
 	#Used to be = nInitialSims*((2^try)/2), If initial simulations are not enough, 
 		# and we need to try again - then new analysis will double number of initial simulations
-	#nrepSim<-nInitialSims
+	#nrepSim <- nInitialSims
 	#
 	message(paste0("Number of initial simulations set to ", nrepSim)) #, "\n"
 	message("Doing initial simulations...")
-	Time<-proc.time()[[3]]
-	trueFreeValues<-matrix(nrow=0, ncol= numberParametersFree)
+	Time <- proc.time()[[3]]
+	trueFreeValues <- matrix(nrow = 0, ncol =  numberParametersFree)
 	#set up initial sum stats as length of SSL of original data
-	summaryValues<-matrix(
-		nrow=0, 
-		ncol=length(originalSummaryValues)
+	summaryValues <- matrix(
+		nrow = 0, 
+		ncol = length(originalSummaryValues)
 		)
-	trueFreeValuesANDSummaryValues<-parallelSimulateWithPriors(	#makeQuiet(
-		nrepSim=nrepSim, 
-		phy=phy,  
-		taxonDF=taxonDF,
-		startingPriorsValues=startingPriorsValues, intrinsicPriorsValues=intrinsicPriorsValues, extrinsicPriorsValues=extrinsicPriorsValues,
-		startingPriorsFns=startingPriorsFns, intrinsicPriorsFns=intrinsicPriorsFns, extrinsicPriorsFns=extrinsicPriorsFns,
-		freevector=freevector, timeStep=timeStep, 
-		intrinsicFn=intrinsicFn, extrinsicFn=extrinsicFn, 
-		coreLimit=coreLimit, 
-		multicore=multicore,
-		verbose=FALSE,  
-		checkTimeStep=FALSE
+	trueFreeValuesANDSummaryValues <- parallelSimulateWithPriors(	#makeQuiet(
+		nrepSim = nrepSim, 
+		phy = phy,  
+		taxonDF = taxonDF,
+		startingPriorsValues = startingPriorsValues, intrinsicPriorsValues = intrinsicPriorsValues, extrinsicPriorsValues = extrinsicPriorsValues,
+		startingPriorsFns = startingPriorsFns, intrinsicPriorsFns = intrinsicPriorsFns, extrinsicPriorsFns = extrinsicPriorsFns,
+		freevector = freevector, timeStep = timeStep, 
+		intrinsicFn = intrinsicFn, extrinsicFn = extrinsicFn, 
+		coreLimit = coreLimit, 
+		multicore = multicore,
+		verbose = FALSE,  
+		checkTimeStep = FALSE
 		)	#)
 	#
 	if(saveData){
-		save(trueFreeValues,summaryValues,file=paste0("CompletedSimulations",jobName,".Rdata",sep=""))
+		save(trueFreeValues,summaryValues,file = paste0("CompletedSimulations",jobName,".Rdata",sep = ""))
 		}
 	#
-	simTime<-proc.time()[[3]]-Time
-	message(paste0("Initial simulations took ", round(simTime, digits=3), " seconds")) #, "\n"
+	simTime <- proc.time()[[3]]-Time
+	message(paste0("Initial simulations took ", round(simTime, digits = 3), " seconds")) #, "\n"
 	#
 	#separate the simulation results: true values and the summary values
-	trueFreeValuesMatrix<-trueFreeValuesANDSummaryValues[,1:numberParametersFree]
-	summaryValuesMatrix<-trueFreeValuesANDSummaryValues[,-1:-numberParametersFree]
+	trueFreeValuesMatrix <- trueFreeValuesANDSummaryValues[,1:numberParametersFree]
+	summaryValuesMatrix <- trueFreeValuesANDSummaryValues[,-1:-numberParametersFree]
 	#while(sink.number()>0) {sink()}
 	#
 	#---------------------- Initial Simulations (End) ------------------------------
@@ -71,29 +71,29 @@ initialSimsPRC<-function(
 	pls.model.list <- ( #makeQuiet(
 		apply(trueFreeValuesMatrix, 2, 
 			returnPLSModel, 
-			summaryValuesMatrix=summaryValuesMatrix, 
-			validation=validation,
-			scale=scale, variance.cutoff = variance.cutoff,verbose=FALSE
+			summaryValuesMatrix = summaryValuesMatrix, 
+			validation = validation,
+			scale = scale, variance.cutoff = variance.cutoff,verbose = FALSE
 			))
 		#)
 		#
 	#----------------- Find distribution of distances (Start) ----------------------
 	#
-	distanceVector<-abcDistance(summaryValuesMatrix, originalSummaryValues, pls.model.list)
+	distanceVector <- abcDistance(summaryValuesMatrix, originalSummaryValues, pls.model.list)
 	message("Finding distribution of distances...") #\n
 	#this gives the distance such that epsilonProportion of the simulations starting from a given set of values will be rejected
-	epsilonDistance<-quantile(distanceVector, probs=epsilonProportion)
-	toleranceVector<-rep(epsilonDistance, nStepsPRC)
+	epsilonDistance <- quantile(distanceVector, probs = epsilonProportion)
+	toleranceVector <- rep(epsilonDistance, nStepsPRC)
 	#
 	if(nStepsPRC>1){
 		for (step in 2:nStepsPRC) {
-			toleranceVector[step]<-toleranceVector[step-1]*epsilonMultiplier
+			toleranceVector[step] <- toleranceVector[step-1]*epsilonMultiplier
 			}
 		}
 	#----------------- Find distribution of distances (End) ---------------------
 	#
 	# need to provide simTime, pls.model.list, toleranceVector
-	res<-list(pls.model.list=pls.model.list, toleranceVector=toleranceVector, simTime=simTime)
+	res <- list(pls.model.list = pls.model.list, toleranceVector = toleranceVector, simTime = simTime)
 	#
 	return(res)
 	}
