@@ -20,13 +20,13 @@
 
 #' \item{\code{simPhy}}{A simulated 30-tip coalescent phylogeny in typical \code{phylo} format.}
 
-#' \item{\code{ancState}}{The starting ancestral value,
+#' \item{\code{ancState}}{The starting ancestral value, 
 #' used for generating the simulated continuous trait data.}
 
-#' \item{\code{genRate}}{The true rate of trait change under Brownian Motion,
+#' \item{\code{genRate}}{The true rate of trait change under Brownian Motion, 
 #' used for generating the simulated continuous trait data.}
 
-# \item{\code{simCharOut}}{The raw output of \code{\link{doSimulation}} on \code{simPhy},
+# \item{\code{simCharOut}}{The raw output of \code{\link{doSimulation}} on \code{simPhy}, 
 # under the model \code{\link{brownianIntrinsic}}.}
 
 #' \item{\code{simChar}}{The output of \code{\link{doSimulation}} on \code{simPhy}, 
@@ -41,7 +41,7 @@
 #' 
 #' The objects \code{results} and \code{resultsBound} are lists composed of a number
 #' of elements (see the documentation for the \code{\link{doRun_prc}} function for more detail). These elements are
-#' respectively \code{input.data}, \code{PriorMatrix}, \code{particleDataFrame}, \code{toleranceVector}, \code{phy},
+#' respectively \code{input.data}, \code{PriorMatrix}, \code{particleDataFrame}, \code{toleranceVector}, \code{phy}, 
 #' \code{traits}, \code{simTime}, \code{time.per.gen}, and \code{postSummary}.
 #' 
 
@@ -74,64 +74,64 @@
 #' 
 #' #Simple Brownian motion
 #' simChar <- doSimulation(
-#' 	phy = simPhy,
-#' 	intrinsicFn = brownianIntrinsic,
-#' 	extrinsicFn = nullExtrinsic,
+#' 	phy = simPhy, 
+#' 	intrinsicFn = brownianIntrinsic, 
+#' 	extrinsicFn = nullExtrinsic, 
 #' 	startingValues = ancState, #root state
-#' 	intrinsicValues = genRate,
-#' 	extrinsicValues = c(0),
+#' 	intrinsicValues = genRate, 
+#' 	extrinsicValues = c(0), 
 #' 	generation.time = 10000
 #' 	)
 
 # 
 # # clean for use with doRun
-# simChar <- simCharOut[,"statesmatrix",drop = FALSE]
+# simChar <- simCharOut[, "statesmatrix", drop = FALSE]
 # rownames(simChar) <- simPhy$tip.label[simCharOut$taxonid]
 
 #' 
 #' results <- doRun_prc(
-#' 	phy = simPhy,
-#' 	traits = simChar,
-#' 	intrinsicFn = brownianIntrinsic,
-#' 	extrinsicFn = nullExtrinsic,
-#' 	startingPriorsFns = "normal",
-#' 	startingPriorsValues = matrix(c(mean(simChar[,1]), sd(simChar[,1]))),
-#' 	intrinsicPriorsFns = c("exponential"),
-#' 	intrinsicPriorsValues = matrix(c(10, 10), nrow = 2, byrow = FALSE),
-#' 	extrinsicPriorsFns = c("fixed"),
-#' 	extrinsicPriorsValues = matrix(c(0, 0), nrow = 2, byrow = FALSE),
-#' 	generation.time = 10000,
-#' 	nRuns = 2,
-#' 	nStepsPRC = 3,
-#' 	numParticles = 20,
-#' 	nInitialSimsPerParam = 10,
-#' 	jobName = "examplerun_prc",
-#' 	stopRule = FALSE,
-#' 	multicore = FALSE,
-#' 	verboseParticles = TRUE,
+#' 	phy = simPhy, 
+#' 	traits = simChar, 
+#' 	intrinsicFn = brownianIntrinsic, 
+#' 	extrinsicFn = nullExtrinsic, 
+#' 	startingPriorsFns = "normal", 
+#' 	startingPriorsValues = matrix(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
+#' 	intrinsicPriorsFns = c("exponential"), 
+#' 	intrinsicPriorsValues = matrix(c(10, 10), nrow = 2, byrow = FALSE), 
+#' 	extrinsicPriorsFns = c("fixed"), 
+#' 	extrinsicPriorsValues = matrix(c(0, 0), nrow = 2, byrow = FALSE), 
+#' 	generation.time = 10000, 
+#' 	nRuns = 2, 
+#' 	nStepsPRC = 3, 
+#' 	numParticles = 20, 
+#' 	nInitialSimsPerParam = 10, 
+#' 	jobName = "examplerun_prc", 
+#' 	stopRule = FALSE, 
+#' 	multicore = FALSE, 
+#' 	verboseParticles = TRUE, 
 #' 	coreLimit = 1
 #' 	)
 #' 
 #' resultsBound <- doRun_prc(
-#' 	phy = simPhy,
-#' 	traits = simChar,
-#' 	intrinsicFn = boundaryMinIntrinsic,
-#' 	extrinsicFn = nullExtrinsic,
-#' 	startingPriorsFns = "normal",
-#' 	startingPriorsValues = matrix(c(mean(simChar[,1]), sd(simChar[,1]))),
-#' 	intrinsicPriorsFns = c("exponential","normal"),
-#' 	intrinsicPriorsValues = matrix(c(10, 10, -10, 1), nrow = 2, byrow = FALSE),
-#' 	extrinsicPriorsFns = c("fixed"),
-#' 	extrinsicPriorsValues = matrix(c(0, 0), nrow = 2, byrow = FALSE),
-#' 	generation.time = 10000,
-#' 	nRuns = 2,
-#' 	nStepsPRC = 3,
-#' 	numParticles = 20,
-#' 	nInitialSimsPerParam = 10,
-#' 	jobName = "examplerun_prc_bound",
-#' 	stopRule = FALSE,
-#' 	multicore = FALSE,
-#' 	verboseParticles = TRUE,
+#' 	phy = simPhy, 
+#' 	traits = simChar, 
+#' 	intrinsicFn = boundaryMinIntrinsic, 
+#' 	extrinsicFn = nullExtrinsic, 
+#' 	startingPriorsFns = "normal", 
+#' 	startingPriorsValues = matrix(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
+#' 	intrinsicPriorsFns = c("exponential", "normal"), 
+#' 	intrinsicPriorsValues = matrix(c(10, 10, -10, 1), nrow = 2, byrow = FALSE), 
+#' 	extrinsicPriorsFns = c("fixed"), 
+#' 	extrinsicPriorsValues = matrix(c(0, 0), nrow = 2, byrow = FALSE), 
+#' 	generation.time = 10000, 
+#' 	nRuns = 2, 
+#' 	nStepsPRC = 3, 
+#' 	numParticles = 20, 
+#' 	nInitialSimsPerParam = 10, 
+#' 	jobName = "examplerun_prc_bound", 
+#' 	stopRule = FALSE, 
+#' 	multicore = FALSE, 
+#' 	verboseParticles = TRUE, 
 #' 	coreLimit = 1
 #' 	)
 #' 

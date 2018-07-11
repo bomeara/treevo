@@ -14,12 +14,12 @@
 pullFromPrior <- function(priorValues, priorFn) {
 	#fixed, uniform, normal, lognormal, gamma, exponential
 	x <- NA
-	priorFn <- match.arg(arg = priorFn,choices = c("fixed", "uniform", "normal", "lognormal", "gamma", "exponential"),several.ok = FALSE);
+	priorFn <- match.arg(arg = priorFn, choices = c("fixed", "uniform", "normal", "lognormal", "gamma", "exponential"), several.ok = FALSE);
 	if (priorFn == "fixed") {
 		x <- priorValues[1]
 	}
 	else if (priorFn == "uniform") {
-		x <- runif(n = 1,min = min(priorValues), max = max(priorValues))
+		x <- runif(n = 1, min = min(priorValues), max = max(priorValues))
 	}
 	else if (priorFn == "normal") {
 		x <- rnorm(n = 1, mean = priorValues[1], sd = priorValues[2])
@@ -34,7 +34,7 @@ pullFromPrior <- function(priorValues, priorFn) {
 		x <- rexp(n = 1, rate = priorValues[1])
 	}
 	else {
-		stop(priorFn," was not a recognized prior function")
+		stop(priorFn, " was not a recognized prior function")
 	}
 	x
 }

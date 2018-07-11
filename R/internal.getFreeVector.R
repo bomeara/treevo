@@ -1,6 +1,6 @@
 # internal function for calculating freevector
 
-getFreeVector <- function(startingPriorsFns, startingPriorsValues,
+getFreeVector <- function(startingPriorsFns, startingPriorsValues, 
 						intrinsicPriorsFns, intrinsicPriorsValues, 
 						extrinsicPriorsFns, extrinsicPriorsValues){
 	#checks
@@ -37,8 +37,8 @@ getFreeVector <- function(startingPriorsFns, startingPriorsValues,
 	#Calculate freevector
 	for (i in 1:dim(startingPriorsValues)[2]) {
 		if(dim(startingPriorsValues)[2])
-		priorFn <- match.arg(arg = startingPriorsFns[i],
-			choices = c("fixed", "uniform", "normal", "lognormal", "gamma", "exponential"),
+		priorFn <- match.arg(arg = startingPriorsFns[i], 
+			choices = c("fixed", "uniform", "normal", "lognormal", "gamma", "exponential"), 
 			several.ok = FALSE)
 		#
 		if (priorFn == "fixed") {
@@ -50,12 +50,12 @@ getFreeVector <- function(startingPriorsFns, startingPriorsValues,
 			#titlevector  <- c(titlevector, paste("Starting", numberParametersStarting))
 			parFree <- TRUE
 			}
-		names(parFree) <- paste0("starting_",i)
+		names(parFree) <- paste0("starting_", i)
 		freevector <- c(freevector, parFree)
 		}
 	for (j in 1:dim(intrinsicPriorsValues)[2]) {
-		priorFn <- match.arg(arg = intrinsicPriorsFns[j],
-			choices = c("fixed", "uniform", "normal", "lognormal", "gamma", "exponential"),
+		priorFn <- match.arg(arg = intrinsicPriorsFns[j], 
+			choices = c("fixed", "uniform", "normal", "lognormal", "gamma", "exponential"), 
 			several.ok = FALSE)
 		#
 		if (priorFn == "fixed") {
@@ -67,12 +67,12 @@ getFreeVector <- function(startingPriorsFns, startingPriorsValues,
 			#titlevector  <- c(titlevector, paste("Intrinsic", numberParametersIntrinsic))
 			parFree <- TRUE
 			}
-		names(parFree) <- paste0("intrinsic_",j)
+		names(parFree) <- paste0("intrinsic_", j)
 		freevector <- c(freevector, parFree)
 		}
 	for (k in 1:dim(extrinsicPriorsValues)[2]) {
-		priorFn <- match.arg(arg = extrinsicPriorsFns[k],
-			choices = c("fixed", "uniform", "normal", "lognormal", "gamma", "exponential"),
+		priorFn <- match.arg(arg = extrinsicPriorsFns[k], 
+			choices = c("fixed", "uniform", "normal", "lognormal", "gamma", "exponential"), 
 			several.ok = FALSE)
 		#
 		if (priorFn == "fixed") {
@@ -84,7 +84,7 @@ getFreeVector <- function(startingPriorsFns, startingPriorsValues,
 			#titlevector  <- c(titlevector, paste("Extrinsic", numberParametersExtrinsic))
 			parFree <- TRUE
 			}
-		names(parFree) <- paste0("extrinsic_",k)
+		names(parFree) <- paste0("extrinsic_", k)
 		freevector <- c(freevector, parFree)
 		}
 		

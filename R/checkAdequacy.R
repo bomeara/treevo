@@ -42,7 +42,7 @@
 # okay so the general sketch is particles from the posterior, simulate under this set of parameters N times, 
 	# and compare the original ECDF for each parameter to the simulated
 # my other idea:
-# draw parameter estimates from some posterior particle, simulate under those parameters,
+# draw parameter estimates from some posterior particle, simulate under those parameters, 
 	#  then test if 'true' generating parameters are actually within the 95% HDF of the simulated posterior
 	# deals with how we don't really understand how adequate the models are for giving unbiased estimates of parameters
 

@@ -3,17 +3,17 @@
 # multicore simSumDistancePRC 
 simParticlePRCParallel <- function(
 	nSim, multicore, coreLimit
-	,phy, taxonDF, timeStep 
-	,intrinsicFn, extrinsicFn 
-	,startingPriorsValues,intrinsicPriorsValues,extrinsicPriorsValues
-	,startingPriorsFns,intrinsicPriorsFns,extrinsicPriorsFns
+	, phy, taxonDF, timeStep 
+	, intrinsicFn, extrinsicFn 
+	, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues
+	, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns
 	#startingValues, intrinsicValues, extrinsicValues
-	,originalSummaryValues, pls.model.list
-	,toleranceValue,prevGenParticleList
-	,standardDevFactor,numParticles){
+	, originalSummaryValues, pls.model.list
+	, toleranceValue, prevGenParticleList
+	, standardDevFactor, numParticles){
 	#
 	# set up multicore
-	cluster <- setupMulticore(multicore,nSim = nSim,coreLimit = coreLimit)
+	cluster <- setupMulticore(multicore, nSim = nSim, coreLimit = coreLimit)
 	#		
 	repDistFE <- foreach(1:nSim, .combine = c)
 	#
@@ -23,17 +23,17 @@ simParticlePRCParallel <- function(
 			phy = phy, taxonDF = taxonDF, timeStep = timeStep, 
 			intrinsicFn = intrinsicFn, 
 			extrinsicFn = extrinsicFn, 
-			startingPriorsValues = startingPriorsValues,
-			startingPriorsFns = startingPriorsFns,
-			intrinsicPriorsValues = intrinsicPriorsValues,
-			intrinsicPriorsFns = intrinsicPriorsFns,
-			extrinsicPriorsValues = extrinsicPriorsValues,
-			extrinsicPriorsFns = extrinsicPriorsFns,
+			startingPriorsValues = startingPriorsValues, 
+			startingPriorsFns = startingPriorsFns, 
+			intrinsicPriorsValues = intrinsicPriorsValues, 
+			intrinsicPriorsFns = intrinsicPriorsFns, 
+			extrinsicPriorsValues = extrinsicPriorsValues, 
+			extrinsicPriorsFns = extrinsicPriorsFns, 
 			originalSummaryValues = originalSummaryValues, 
-			pls.model.list = pls.model.list,
-			toleranceValue = toleranceValue,
-			prevGenParticleList = prevGenParticleList,
-			standardDevFactor = standardDevFactor,
+			pls.model.list = pls.model.list, 
+			toleranceValue = toleranceValue, 
+			prevGenParticleList = prevGenParticleList, 
+			standardDevFactor = standardDevFactor, 
 			numParticles = numParticles
 			)
 		#)
@@ -48,34 +48,34 @@ simParticlePRCParallel <- function(
 # multicore simSumDistancePRC 
 simParticlePRCNotParallel <- function(
 	nSim, multicore, coreLimit
-	,phy, taxonDF, timeStep 
-	,intrinsicFn, extrinsicFn 
-	,startingPriorsValues,intrinsicPriorsValues,extrinsicPriorsValues
-	,startingPriorsFns,intrinsicPriorsFns,extrinsicPriorsFns
+	, phy, taxonDF, timeStep 
+	, intrinsicFn, extrinsicFn 
+	, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues
+	, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns
 	#startingValues, intrinsicValues, extrinsicValues
-	,originalSummaryValues, pls.model.list
-	,toleranceValue,prevGenParticleList
-	,standardDevFactor,numParticles){
+	, originalSummaryValues, pls.model.list
+	, toleranceValue, prevGenParticleList
+	, standardDevFactor, numParticles){
 	#
 	newParticleList <- list()
 	#
 	for(i in 1:nSim){
-		newParticleList <- c(newParticleList,
+		newParticleList <- c(newParticleList, 
 			simParticlePRC(
 				phy = phy, taxonDF = taxonDF, timeStep = timeStep, 
 				intrinsicFn = intrinsicFn, 
 				extrinsicFn = extrinsicFn, 
-				startingPriorsValues = startingPriorsValues,
-				startingPriorsFns = startingPriorsFns,
-				intrinsicPriorsValues = intrinsicPriorsValues,
-				intrinsicPriorsFns = intrinsicPriorsFns,
-				extrinsicPriorsValues = extrinsicPriorsValues,
-				extrinsicPriorsFns = extrinsicPriorsFns,
+				startingPriorsValues = startingPriorsValues, 
+				startingPriorsFns = startingPriorsFns, 
+				intrinsicPriorsValues = intrinsicPriorsValues, 
+				intrinsicPriorsFns = intrinsicPriorsFns, 
+				extrinsicPriorsValues = extrinsicPriorsValues, 
+				extrinsicPriorsFns = extrinsicPriorsFns, 
 				originalSummaryValues = originalSummaryValues, 
-				pls.model.list = pls.model.list,
-				toleranceValue = toleranceValue,
-				prevGenParticleList = prevGenParticleList,
-				standardDevFactor = standardDevFactor,
+				pls.model.list = pls.model.list, 
+				toleranceValue = toleranceValue, 
+				prevGenParticleList = prevGenParticleList, 
+				standardDevFactor = standardDevFactor, 
 				numParticles = numParticles
 				)
 			)
@@ -89,11 +89,11 @@ simParticlePRCNotParallel <- function(
 	# for doRun_PRC - to be run in parallel
 simParticlePRC <- function(
 	phy, taxonDF, timeStep, intrinsicFn, extrinsicFn, 
-	startingPriorsValues,intrinsicPriorsValues,extrinsicPriorsValues,
-	startingPriorsFns,intrinsicPriorsFns,extrinsicPriorsFns,
-	#startingValues, intrinsicValues, extrinsicValues,
+	startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, 
+	startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, 
+	#startingValues, intrinsicValues, extrinsicValues, 
 	originalSummaryValues, pls.model.list
-	,toleranceValue,prevGenParticleList,standardDevFactor,numParticles){
+	, toleranceValue, prevGenParticleList, standardDevFactor, numParticles){
 	# 
 	# get particle parameters
 	#
@@ -104,34 +104,34 @@ simParticlePRC <- function(
 		# for generation = 1, weight all particles the same
 		newparticle <- abcparticle(id = NA, generation = 1, weight = 1/numParticles)	#, parentid = NA
 		newparticle <- initializeStatesFromMatrices(
-			particle = newparticle,
-			startingPriorsValues = startingPriorsValues,
-			startingPriorsFns = startingPriorsFns,
-			intrinsicPriorsValues = intrinsicPriorsValues,
-			intrinsicPriorsFns = intrinsicPriorsFns,
-			extrinsicPriorsValues = extrinsicPriorsValues,
+			particle = newparticle, 
+			startingPriorsValues = startingPriorsValues, 
+			startingPriorsFns = startingPriorsFns, 
+			intrinsicPriorsValues = intrinsicPriorsValues, 
+			intrinsicPriorsFns = intrinsicPriorsFns, 
+			extrinsicPriorsValues = extrinsicPriorsValues, 
 			extrinsicPriorsFns = extrinsicPriorsFns
 			)							
 	}else{
 		#print("check 1 - get weighted params for gen >1")
-		prevGenParticleWeights <- sapply(prevGenParticleList,function(x) x$weight)
+		prevGenParticleWeights <- sapply(prevGenParticleList, function(x) x$weight)
 		# use particles from PREVIOUS GENERATION to randomly select a particle
 		particleToSelect <- which.max(as.vector(rmultinom(1, size = 1, prob = prevGenParticleWeights)))
 		# get that particle's data
 		oldparticle <- prevGenParticleList[[particleToSelect]]
 		#
 		#print("check 1b - mutate")
-		#print(list(particle = oldparticle,
-		#	startingPriorsValues = startingPriorsValues, startingPriorsFns = startingPriorsFns,
-		#	intrinsicPriorsValues = intrinsicPriorsValues, intrinsicPriorsFns = intrinsicPriorsFns,
-		#	extrinsicPriorsValues = extrinsicPriorsValues, extrinsicPriorsFns = extrinsicPriorsFns,
+		#print(list(particle = oldparticle, 
+		#	startingPriorsValues = startingPriorsValues, startingPriorsFns = startingPriorsFns, 
+		#	intrinsicPriorsValues = intrinsicPriorsValues, intrinsicPriorsFns = intrinsicPriorsFns, 
+		#	extrinsicPriorsValues = extrinsicPriorsValues, extrinsicPriorsFns = extrinsicPriorsFns, 
 		#	standardDevFactor = standardDevFactor
 		#	))
 		#	
-		newparticle <- mutateStates(particle = oldparticle,
-			startingPriorsValues = startingPriorsValues, startingPriorsFns = startingPriorsFns,
-			intrinsicPriorsValues = intrinsicPriorsValues, intrinsicPriorsFns = intrinsicPriorsFns,
-			extrinsicPriorsValues = extrinsicPriorsValues, extrinsicPriorsFns = extrinsicPriorsFns,
+		newparticle <- mutateStates(particle = oldparticle, 
+			startingPriorsValues = startingPriorsValues, startingPriorsFns = startingPriorsFns, 
+			intrinsicPriorsValues = intrinsicPriorsValues, intrinsicPriorsFns = intrinsicPriorsFns, 
+			extrinsicPriorsValues = extrinsicPriorsValues, extrinsicPriorsFns = extrinsicPriorsFns, 
 			standardDevFactor = standardDevFactor
 			)
 		newparticle$parentid <- particleToSelect
@@ -142,21 +142,21 @@ simParticlePRC <- function(
 	#
 	# do the simulation
 	simTraitsParticle <- doSimulationInternal(
-		taxonDF = taxonDF,
-		intrinsicFn = intrinsicFn,
-		extrinsicFn = extrinsicFn,
-		startingValues = newparticle$startingValues,
-		intrinsicValues = newparticle$intrinsicValues,
-		extrinsicValues = newparticle$extrinsicValues,
+		taxonDF = taxonDF, 
+		intrinsicFn = intrinsicFn, 
+		extrinsicFn = extrinsicFn, 
+		startingValues = newparticle$startingValues, 
+		intrinsicValues = newparticle$intrinsicValues, 
+		extrinsicValues = newparticle$extrinsicValues, 
 		timeStep = timeStep
 		)
 	#
 	#print("check 3 - endSim")
 	#
 	# get the summary stats	
-	simSumMat <- summaryStatsLong(phy = phy,traits = simTraitsParticle)
+	simSumMat <- summaryStatsLong(phy = phy, traits = simTraitsParticle)
 	# get the distance of the simulation to the original
-	simDistance <- abcDistance(summaryValuesMatrix = simSumMat,
+	simDistance <- abcDistance(summaryValuesMatrix = simSumMat, 
 		originalSummaryValues = originalSummaryValues, 
 		pls.model.list = pls.model.list)	
 	#
@@ -174,16 +174,16 @@ simParticlePRC <- function(
 			#for generation>1 - now get weights, using correction in Sisson et al. 2007
 			newparticle$weight <- sumLogTranProb(
 				 prevGenParticleList = prevGenParticleList
-				,newStartingValues = newparticle$startingValues
-				,newIntrinsicValues = newparticle$intrinsicValues
-				,newExtrinsicValues = newparticle$extrinsicValues
-				,startingPriorsFns = startingPriorsFns
-				,intrinsicPriorsFns = intrinsicPriorsFns
-				,extrinsicPriorsFns = extrinsicPriorsFns
-				,startingPriorsValues = startingPriorsValues
-				,intrinsicPriorsValues = intrinsicPriorsValues
-				,extrinsicPriorsValues = extrinsicPriorsValues
-				,standardDevFactor = standardDevFactor
+				, newStartingValues = newparticle$startingValues
+				, newIntrinsicValues = newparticle$intrinsicValues
+				, newExtrinsicValues = newparticle$extrinsicValues
+				, startingPriorsFns = startingPriorsFns
+				, intrinsicPriorsFns = intrinsicPriorsFns
+				, extrinsicPriorsFns = extrinsicPriorsFns
+				, startingPriorsValues = startingPriorsValues
+				, intrinsicPriorsValues = intrinsicPriorsValues
+				, extrinsicPriorsValues = extrinsicPriorsValues
+				, standardDevFactor = standardDevFactor
 				)
 			}
 	}else{
@@ -194,16 +194,16 @@ simParticlePRC <- function(
 	return(newparticle)
 	}
 	
-boostNsim <- function(nSims,nCores){
+boostNsim <- function(nSims, nCores){
 	newNsim <- nCores*(nSims%/%nCores + as.logical(nSims%%nCores))
 	return(newNsim)
 	}
 
-getlnTransitionProb <- function(newvalue,meantouse,Fn,priorValues,stdFactor){
-		#newvalue = newparticleList[[1]]$startingValues[j],
-		#meantouse = prevGenParticleList[[i]]$startingValues[j],
-		#Fn = startingPriorsFns[j],
-		#priorValues =  startingPriorsValues[,j],
+getlnTransitionProb <- function(newvalue, meantouse, Fn, priorValues, stdFactor){
+		#newvalue = newparticleList[[1]]$startingValues[j], 
+		#meantouse = prevGenParticleList[[i]]$startingValues[j], 
+		#Fn = startingPriorsFns[j], 
+		#priorValues =  startingPriorsValues[, j], 
 		#stdFactor = standardDevFactor
 										
 	if (Fn == "uniform") {
@@ -218,7 +218,7 @@ getlnTransitionProb <- function(newvalue,meantouse,Fn,priorValues,stdFactor){
 		sdtouse <- stdFactor*(priorValues[2])
 	}
 	#
-	lnlocalTransitionProb <- dnorm(newvalue, mean = meantouse, sd = sdtouse,log = TRUE
+	lnlocalTransitionProb <- dnorm(newvalue, mean = meantouse, sd = sdtouse, log = TRUE
 		) - ((log(1)/pnorm(min(priorValues), mean = meantouse, sd = sdtouse, lower.tail = TRUE, log.p = TRUE))
 			* pnorm(max(priorValues), mean = meantouse , sd = sdtouse, lower.tail = FALSE, log.p = TRUE))
 	if(length(lnlocalTransitionProb) != 1){
@@ -232,46 +232,46 @@ getlnTransitionProb <- function(newvalue,meantouse,Fn,priorValues,stdFactor){
 		lnlocalTransitionProb = log(1)
 	}
 	if(!is.finite(lnlocalTransitionProb) || is.na(lnlocalTransitionProb)) {
-		message(paste0("issue with lnlocalTransitionProb = ",lnlocalTransitionProb))
+		message(paste0("issue with lnlocalTransitionProb = ", lnlocalTransitionProb))
 		}
 	return(lnlocalTransitionProb)
 	}	
 
 sumLogTranProb <- function(prevGenParticleList
-	,newStartingValues, newIntrinsicValues, newExtrinsicValues
-	,startingPriorsFns,intrinsicPriorsFns,extrinsicPriorsFns
-	,startingPriorsValues,intrinsicPriorsValues,extrinsicPriorsValues
-	,standardDevFactor){
+	, newStartingValues, newIntrinsicValues, newExtrinsicValues
+	, startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns
+	, startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues
+	, standardDevFactor){
 	#now get weights, using correction in Sisson et al. 2007
 	#
 	newWeight = 0
 	#
 	for (i in 1:length(prevGenParticleList)) {
 		#
-		LLTPstart <- sapply(length(newStartingValues),
+		LLTPstart <- sapply(length(newStartingValues), 
 			function(j) getlnTransitionProb(
-				newvalue = newStartingValues[j],
-				meantouse = prevGenParticleList[[i]]$startingValues[j],
-				Fn = startingPriorsFns[j],
-				priorValues =  startingPriorsValues[,j],
+				newvalue = newStartingValues[j], 
+				meantouse = prevGenParticleList[[i]]$startingValues[j], 
+				Fn = startingPriorsFns[j], 
+				priorValues =  startingPriorsValues[, j], 
 				stdFactor = standardDevFactor
 				)
 			)
-		LLTPintr <- sapply(length(newIntrinsicValues),
+		LLTPintr <- sapply(length(newIntrinsicValues), 
 			function(j) getlnTransitionProb(
-				newvalue = newIntrinsicValues[j],
-				meantouse = prevGenParticleList[[i]]$intrinsicValues[j],
-				Fn = intrinsicPriorsFns[j],
-				priorValues =  intrinsicPriorsValues[,j],
+				newvalue = newIntrinsicValues[j], 
+				meantouse = prevGenParticleList[[i]]$intrinsicValues[j], 
+				Fn = intrinsicPriorsFns[j], 
+				priorValues =  intrinsicPriorsValues[, j], 
 				stdFactor = standardDevFactor
 				)
 			)
-		LLTPextr <- sapply(length(newExtrinsicValues),
+		LLTPextr <- sapply(length(newExtrinsicValues), 
 			function(j) getlnTransitionProb(
-				newvalue = newExtrinsicValues[j],
-				meantouse = prevGenParticleList[[i]]$extrinsicValues[j],
-				Fn = extrinsicPriorsFns[j],
-				priorValues =  extrinsicPriorsValues[,j],
+				newvalue = newExtrinsicValues[j], 
+				meantouse = prevGenParticleList[[i]]$extrinsicValues[j], 
+				Fn = extrinsicPriorsFns[j], 
+				priorValues =  extrinsicPriorsValues[, j], 
 				stdFactor = standardDevFactor
 				)
 			)
@@ -281,15 +281,15 @@ sumLogTranProb <- function(prevGenParticleList
 		lnTransitionProb <- lnTransitionProb+sum(LLTPstart)+sum(LLTPintr)+sum(LLTPextr)
 		#
 		#if(!is.finite(lnTransitionProb) || is.na(lnTransitionProb)) {
-		#	warning(paste0("Issue with lnTransitionProb: ",
-		#		" lnTransitionProb = ",lnTransitionProb))
+		#	warning(paste0("Issue with lnTransitionProb: ", 
+		#		" lnTransitionProb = ", lnTransitionProb))
 		#	}
 		#
 		newWeight <- newWeight+(prevGenParticleList[[i]]$weight)*exp(lnTransitionProb)
 		} #for (i in 1:length(prevGenParticleList)) bracket
 	#
 	if (!is.finite(newWeight) || is.na(newWeight)) {
-		warning(paste0("Possible error; newWeight is ",newWeight))
+		warning(paste0("Possible error; newWeight is ", newWeight))
 		}
 	return(newWeight)
 	}

@@ -16,7 +16,7 @@
 #' 
 #' data(simRunExample)
 #' 
-#' pdfList <- list(Brownian = results[[1]]$particleDataFrame,Bounded = resultsBound[[1]]$particleDataFrame)
+#' pdfList <- list(Brownian = results[[1]]$particleDataFrame, Bounded = resultsBound[[1]]$particleDataFrame)
 #' 
 #' pairwiseKS(particleDataFrameList = pdfList)
 
@@ -36,8 +36,8 @@ pairwiseKS <- function(particleDataFrameList) {
 	
 	x <- list()
 	for (list in 1:length(particleDataFrameList)) {
-		nonZeroFrame <- particleDataFrameList[[list]][which(particleDataFrameList[[list]][,6]>0),]
-		x[[list]] <- subset(nonZeroFrame,nonZeroFrame$generation == max(nonZeroFrame$generation))
+		nonZeroFrame <- particleDataFrameList[[list]][which(particleDataFrameList[[list]][, 6]>0), ]
+		x[[list]] <- subset(nonZeroFrame, nonZeroFrame$generation == max(nonZeroFrame$generation))
 		}	
 
 	KSMatrixList <- vector("list", dim(x[[1]])[2]-6)
@@ -53,7 +53,7 @@ pairwiseKS <- function(particleDataFrameList) {
 		#colnames(KSMatrix) <- paste0("run", 1:length(x))
 		for (i in 1:dim(KSMatrix)[1]){
 			for (j in 1:dim(KSMatrix)[2]){
-				KSMatrix[i, j] <- suppressWarnings(round(ks.test(x[[i]][, param],x[[j]][, param])$p.value, digits = 4)) #make diag
+				KSMatrix[i, j] <- suppressWarnings(round(ks.test(x[[i]][, param], x[[j]][, param])$p.value, digits = 4)) #make diag
 				}
 			}
 		KSMatrixList[[m]] <- KSMatrix

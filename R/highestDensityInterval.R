@@ -9,13 +9,13 @@
 #' a kernal density estimate (KDE) via R function \code{density}
 #' with default bandwidth, rescaling the kernal to a density, sorting intervals along the KDE
 #' by that density, and then summing these values from largest to smallest, until the desired
-#' alpha is reached. This algorithm is quick, and accounts for potentially multimodal distributions,
+#' alpha is reached. This algorithm is quick, and accounts for potentially multimodal distributions, 
 #' or those with complex shapes, unlike unimodal intervals, such as quantiles, or the
 #' \code{\link{HPDinterval}} in package \code{coda}.
 #' 
 #' Alternatively, a user can opt to use function \code{\link{HPDinterval}} from package \code{coda}
 #' to calculate highest density intervals. These will work as long as the data has a single mode
-#' - data with multiple modes may have overly large quantiles (to encompass those multiple modes),
+#' - data with multiple modes may have overly large quantiles (to encompass those multiple modes), 
 #' resulting in overly wide estimates of coverage. 
 #' 
 
@@ -46,7 +46,7 @@
 #' 
 #' # let's imagine we have some variable with
 #' 	# an extreme bimodal distribution
-#' z <- sample(c(rnorm(50,1,2),rnorm(100,50,3)))
+#' z <- sample(c(rnorm(50, 1, 2), rnorm(100, 50, 3)))
 #' hist(z)
 #' 
 #' # now let's say we want to know the what sort of values
@@ -57,7 +57,7 @@
 #' 
 #' # one way to do this would be a quantile
 #' 	# two tailed 80% quantiles
-#' quantile(z,probs = c(0.1,0.9))
+#' quantile(z, probs = c(0.1, 0.9))
 #' 
 #' # that seems overly broad - there's essentially no density
 #' # in the central valley - but we want to exclude values found there!
@@ -82,14 +82,14 @@
 #' inHPD <- cumsum(-sort(-zDensity)) <= alpha
 #' # now reorder
 #' inHPD <- inHPD[order(order(-zDensity))]
-#' colDens <- rep(1,length(zDensity))
+#' colDens <- rep(1, length(zDensity))
 #' colDens[inHPD] <- 2
 #' # and let's plot it, with colors
-#' plot(zDensOut$x,zDensity,col = colDens)
+#' plot(zDensOut$x, zDensity, col = colDens)
 #' 
 #' # and we can do all that (except the plotting)
 #' 	# with highestDensityInterval
-#' highestDensityInterval(z,alpha = 0.8)
+#' highestDensityInterval(z, alpha = 0.8)
 #' 
 #' #############################
 #' # example with output from doRun_prc
@@ -126,8 +126,8 @@ highestDensityInterval <- function(dataVector, alpha, coda = FALSE, ...){
 		}
 	#
 	if(coda){
-		codaHPD <- getHPDcoda(data,alpha)
-		resMatrix <- matrix(codaHPD[1:2],1,2)
+		codaHPD <- getHPDcoda(data, alpha)
+		resMatrix <- matrix(codaHPD[1:2], 1, 2)
 	}else{
 		#
 		densOut <- density(dataVector, ...)
@@ -143,18 +143,18 @@ highestDensityInterval <- function(dataVector, alpha, coda = FALSE, ...){
 		# now reorder
 		inHPD <- inHPD[order(order(-densityScaled))]
 		# get breaks
-		startInt <- densOut$x[c(inHPD[1],
-			sapply(2:length(inHPD),function(x) inHPD[x] & !inHPD[x-1])
+		startInt <- densOut$x[c(inHPD[1], 
+			sapply(2:length(inHPD), function(x) inHPD[x] & !inHPD[x-1])
 			)]
 		endInt <- densOut$x[c(
-			sapply(1:(length(inHPD)-1),function(x) inHPD[x] & !inHPD[x+1])
-			,inHPD[length(inHPD)]
+			sapply(1:(length(inHPD)-1), function(x) inHPD[x] & !inHPD[x+1])
+			, inHPD[length(inHPD)]
 			)]
-		resMatrix <- cbind(startInt,endInt)
+		resMatrix <- cbind(startInt, endInt)
 		}
 	# name the columns and rows
 		# paste("LowerHPD_", alpha, sep = ""), paste("UpperHPD_", alpha, sep = "")
-	colLabels <- c(paste0(c("LowerBound_alpha = ","UpperBound_"),alpha))
+	colLabels <- c(paste0(c("LowerBound_alpha = ", "UpperBound_"), alpha))
 	colnames(resMatrix) <- colLabels
 	return(resMatrix)
 	}
@@ -162,7 +162,7 @@ highestDensityInterval <- function(dataVector, alpha, coda = FALSE, ...){
 
 
 # internal function for getting unimodal HDR using coda
-getHPDcoda <- function(data,alpha){
-	codaHPD <- coda::HPDinterval(coda::as.mcmc(subpDF[,i]), prob = alpha)
+getHPDcoda <- function(data, alpha){
+	codaHPD <- coda::HPDinterval(coda::as.mcmc(subpDF[, i]), prob = alpha)
 	return(codaHPD)
 	}

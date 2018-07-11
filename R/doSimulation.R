@@ -4,7 +4,7 @@
 #' These functions are mainly used as internal components, generating simulations
 #' within ABC analyses using the \code{\link{doRun}} functions. See \emph{Note} below.
 #' 
-#' The phylogenetic tree used is rescaled such that the distance from the root to the furthest tip is rescaled to equal 1 time-unit,
+#' The phylogenetic tree used is rescaled such that the distance from the root to the furthest tip is rescaled to equal 1 time-unit, 
 #' and it is this rescaled edge lengths to with arguments \code{timeStep} refers to. Typically, this will be determined though
 #' as a ratio of \code{TreeYears} (which is the number of calender years constituing the root-to-furthest-tip distance, and
 #' is determined by default as if the user had supplied a tree with edge lengths in time-units of 1 time-unit = 1 million years), and
@@ -51,10 +51,10 @@
 # @param maxAttempts How many attempts should be tried if a run produces an \code{NA} result? If \code{maxAttempts}
 # is reached without producing a non-\code{NA} result, the simulation is terminated.
 
-#' @param generation.time The number of years per generation. This sets the coarseness of the simulation; if it's set to 1000,
+#' @param generation.time The number of years per generation. This sets the coarseness of the simulation; if it's set to 1000, 
 #' for example, the population's trait values change every 1000 calender years. Note that this is in calender years (see description
 #' for argument \code{TreeYears}), and not in millions of years (as is typical for dated trees in macroevolutionary studies).
-#' Thus, if a branch is 1 million-year time-unit long, and a user applies the default \code{generation.time = 1000},
+#' Thus, if a branch is 1 million-year time-unit long, and a user applies the default \code{generation.time = 1000}, 
 #' then 1000 evolutionary changes will be simulated along that branch.
 #' See documentation for \code{\link{doSimulation}} for further details.
 
@@ -65,7 +65,7 @@
 #' See documentation for \code{\link{doSimulation}} for further details.
 
 #' @param timeStep This value corresponds to the lenght of intervals between discrete evolutionary events ('generations')
-#' simulated along branches, relative to a rescaled tree where the root to furthest tip distance is 1. For example,
+#' simulated along branches, relative to a rescaled tree where the root to furthest tip distance is 1. For example, 
 #' \code{timeStep = 0.01} of would mean 100 (i.e., 1 / 0.01) evolutionary changes would be expected to occur from
 #' the root to the furthest tip. (Note that the real number simulated will be much less, because simulations start
 #' over at each branching node.) Ideally, \code{timeStep} (or its effective value, via other arguments) should be
@@ -124,30 +124,30 @@
 #' #Simple Brownian motion
 #'
 #' char <- doSimulation(
-#' 	phy = tree,
-#' 	generation.time = 100000,
-#' 	intrinsicFn = brownianIntrinsic,
-#' 	extrinsicFn = nullExtrinsic,
+#' 	phy = tree, 
+#' 	generation.time = 100000, 
+#' 	intrinsicFn = brownianIntrinsic, 
+#' 	extrinsicFn = nullExtrinsic, 
 #' 	startingValues = c(10), #root state
-#' 	intrinsicValues = c(0.01),
+#' 	intrinsicValues = c(0.01), 
 #' 	extrinsicValues = c(0))
 #' 
 #' #Character displacement model with minimum bound
 #' 
 #' char <- doSimulation(
-#' 	phy = tree,
-#'  generation.time = 100000,
-#' 	intrinsicFn = boundaryMinIntrinsic,
-#' 	extrinsicFn = ExponentiallyDecayingPushExtrinsic,
+#' 	phy = tree, 
+#'  generation.time = 100000, 
+#' 	intrinsicFn = boundaryMinIntrinsic, 
+#' 	extrinsicFn = ExponentiallyDecayingPushExtrinsic, 
 #' 	startingValues = c(10), #root state
-#' 	intrinsicValues = c(0.05, 10, 0.01),
+#' 	intrinsicValues = c(0.05, 10, 0.01), 
 #' 	extrinsicValues = c(0, .1, .25))
 #
 #' }
 
 #' @rdname doSimulation
 #' @export
-doSimulation <- function(phy = NULL, intrinsicFn, extrinsicFn, startingValues, intrinsicValues, extrinsicValues,
+doSimulation <- function(phy = NULL, intrinsicFn, extrinsicFn, startingValues, intrinsicValues, extrinsicValues, 
 	generation.time = 1000, TreeYears = max(branching.times(phy)) * 1e6, timeStep = NULL, 
 	#maxAttempts = 100, saveHistory = FALSE, plot = FALSE, savePlot = FALSE, 
 	#reject.NaN = TRUE, saveRealParams = FALSE, jobName = "", verbose = FALSE, 
@@ -173,9 +173,9 @@ doSimulation <- function(phy = NULL, intrinsicFn, extrinsicFn, startingValues, i
 	#	maxLength <- (max(length(startingValues), length(intrinsicValues), length(extrinsicValues)))
 	#	RealParams$matrix <- matrix(ncol = maxLength, nrow = 3)
 	#	rownames(RealParams$matrix) <- c("startingValues", "intrinsicFn", "extrinsicFn")
-	#	RealParams$matrix[1,] <- c(startingValues, rep(NA, maxLength-length(startingValues)))
-	#	RealParams$matrix[2,] <- c(intrinsicValues, rep(NA, maxLength-length(intrinsicValues)))
-	#	RealParams$matrix[3,] <- c(extrinsicValues, rep(NA, maxLength-length(extrinsicValues)))
+	#	RealParams$matrix[1, ] <- c(startingValues, rep(NA, maxLength-length(startingValues)))
+	#	RealParams$matrix[2, ] <- c(intrinsicValues, rep(NA, maxLength-length(intrinsicValues)))
+	#	RealParams$matrix[3, ] <- c(extrinsicValues, rep(NA, maxLength-length(extrinsicValues)))
 	#	save(RealParams, file = paste0("RealParams", jobName, ".Rdata", sep = ""))
 	#	}
 	#
@@ -195,16 +195,16 @@ doSimulation <- function(phy = NULL, intrinsicFn, extrinsicFn, startingValues, i
 			#decreasing timeStep to no more than ", taxonDF[1, 1]/1000))
 		#	}
 		if (floor(mininterval/timeStep)<50 & floor(mininterval/timeStep) >= 3) {
-			warning(paste0("You have only ", floor(mininterval/timeStep),
+			warning(paste0("You have only ", floor(mininterval/timeStep), 
 				" timeSteps on the shortest branch in this dataset but should probably have a lot more if you expect ", 
-				"change on this branch. Please consider decreasing timeStep to no more than ",
-				signif(mininterval/50,2)))
+				"change on this branch. Please consider decreasing timeStep to no more than ", 
+				signif(mininterval/50, 2)))
 			}
 		if (floor(mininterval/timeStep)<3) {
-			warning(paste0("You have only ", floor(mininterval/timeStep),
-				" timeSteps on the shortest branch in this dataset but should probably have a lot more if you expect change ",
-				"on this branch. Please consider decreasing timeStep to no more than ",
-					signif(mininterval/50,2)," or at the very least ", signif(mininterval/3,2)))
+			warning(paste0("You have only ", floor(mininterval/timeStep), 
+				" timeSteps on the shortest branch in this dataset but should probably have a lot more if you expect change ", 
+				"on this branch. Please consider decreasing timeStep to no more than ", 
+					signif(mininterval/50, 2), " or at the very least ", signif(mininterval/3, 2)))
 		#	timeStep <- mininterval/3
 			}
 		}
@@ -217,9 +217,9 @@ doSimulation <- function(phy = NULL, intrinsicFn, extrinsicFn, startingValues, i
 	#
 	#if(plot){
 	#	#dev.new()
-	#	plot(x = c(min(c(startVector, endVector)),
+	#	plot(x = c(min(c(startVector, endVector)), 
 	#			max(c(startVector, endVector))), 
-	#		 y = c(0, max(c(startTime, endTime))),
+	#		 y = c(0, max(c(startTime, endTime))), 
 	#		 type = "n", 
 	#		 ylab = "Time", xlab = "Trait value", main = "", bty = "n")
 	#	for (i in 1:length(startVector)){
@@ -230,12 +230,12 @@ doSimulation <- function(phy = NULL, intrinsicFn, extrinsicFn, startingValues, i
 	#	}
 	#if (savePlot) {
 	#	pdf(paste0("SimTree", jobName, ".pdf", sep = ""))	
-	#	plot(x = c(min(c(startVector, endVector)), max(c(startVector, endVector))),
-	#		 y = c(0, max(c(startTime, endTime))),
-	#		 type = "n", ylab = "Time", xlab = "Trait value",
+	#	plot(x = c(min(c(startVector, endVector)), max(c(startVector, endVector))), 
+	#		 y = c(0, max(c(startTime, endTime))), 
+	#		 type = "n", ylab = "Time", xlab = "Trait value", 
 	#		 main = "", bty = "n")
 	#	for (i in 1:length(startVector)) {
-	#		lines(x = c(startVector[i], endVector[i]),
+	#		lines(x = c(startVector[i], endVector[i]), 
 	#		y = max(c(startTime, endTime)) - c(startTime[i], endTime[i]))
 	#		}
 	#	dev.off()
@@ -298,16 +298,16 @@ doSimulationInternal <- function(
 		currentStates <- taxonStates[aliveRows]
 		#
 		#if(any(is.na(currentStates))) {
-		#	message(paste0("currentStates ",currentStates))
-		#	message(paste0("taxonID %fin% ids.alive.at.start ",paste0(taxonID %fin% ids.alive.at.start,collapse = " ")))
-		#	message(c(height.start,height.end))
-		#	message(taxonDF[taxonID %fin% ids.alive.at.start,])
+		#	message(paste0("currentStates ", currentStates))
+		#	message(paste0("taxonID %fin% ids.alive.at.start ", paste0(taxonID %fin% ids.alive.at.start, collapse = " ")))
+		#	message(c(height.start, height.end))
+		#	message(taxonDF[taxonID %fin% ids.alive.at.start, ])
 		#	stop("there are NAs in currentStates! How?? Something is very wrong")
 		#	}
 		#
 		#
 		# get vector of ancestors
-		ancestors <- match(taxonAnc[aliveRows],taxonID)	
+		ancestors <- match(taxonAnc[aliveRows], taxonID)	
 		#
 		#first evolve in this interval, then speciate
 		for (whichTaxon in 1:length(aliveRows)) {
@@ -334,8 +334,8 @@ doSimulationInternal <- function(
 			##if(is.na(newState)) {	# what happens if I change this to a stop? oh that's no good
 			##	stop("A simulation run produced a state of NA - something is probably very wrong")
 			##	if(any(is.na(currentStates))) {
-			##		stop(paste0("there are NAs in currentStates! How?? Something is very wrong\n",
-			##			"currentStates ",currentStates))
+			##		stop(paste0("there are NAs in currentStates! How?? Something is very wrong\n", 
+			##			"currentStates ", currentStates))
 			##		}
 			##	attempt.count <- 0
 			##	while(is.na(newState) & attempt.count  <=  maxAttempts) {
@@ -344,61 +344,61 @@ doSimulationInternal <- function(
 			##		if(is.na(old)){
 			##			stop("Ancestral state for a simulated character state is NA - something is very wrong")
 			##			}
-			##		intrinsic.displacement = intrinsicFn(params = intrinsicValues, states = currentStates[taxonIndex],
+			##		intrinsic.displacement = intrinsicFn(params = intrinsicValues, states = currentStates[taxonIndex], 
 			##			timefrompresent  = depthfrompresent)
 			##		#check
 			##		if(is.na(intrinsic.displacement)){
 			##			stop("The intrinsicFn is returning NAs; something terrible has happened")
 			##			}
-			##		extrinsic.displacement = extrinsicFn(params = extrinsicValues, selfstates = currentStates[taxonIndex],
+			##		extrinsic.displacement = extrinsicFn(params = extrinsicValues, selfstates = currentStates[taxonIndex], 
 			##			otherstates = currentStates[-taxonIndex], timefrompresent  = depthfrompresent)
 			##		#check
 			##		if(is.na(extrinsic.displacement)){
 			##			stop(
-			##				paste("The extrinsicFn is returning NAs; something terrible has happened:",
-			##					"\ntaxonIndex",taxonIndex,
-			##					"\naliveRows",aliveRows,
-			##					"\ncurrentStates",currentStates,
-			##					"\nparams:",extrinsicValues,
-			##					"\nselfstates:",currentStates[taxonIndex],
-			##					"\notherstates:",currentStates[-taxonIndex],
-			##					"\ntimefrompresent:",depthfrompresent
-			##					#,"\nextFun:",extrinsicFn
+			##				paste("The extrinsicFn is returning NAs; something terrible has happened:", 
+			##					"\ntaxonIndex", taxonIndex, 
+			##					"\naliveRows", aliveRows, 
+			##					"\ncurrentStates", currentStates, 
+			##					"\nparams:", extrinsicValues, 
+			##					"\nselfstates:", currentStates[taxonIndex], 
+			##					"\notherstates:", currentStates[-taxonIndex], 
+			##					"\ntimefrompresent:", depthfrompresent
+			##					#, "\nextFun:", extrinsicFn
 			##					)
 			##				)
 			##			}
 			##		newState <- old + intrinsic.displacement + extrinsic.displacement
-			##		warning(paste0("Attempt ", attempt.count, " led to using old value of ", old, " intrinsicFn return of ",intrinsic.displacement, " and extrinsicFn return of ", extrinsic.displacement))
-			##		#message(paste0("For diagnostic purposes: IntrinsicValues ",intrinsicValues))
+			##		warning(paste0("Attempt ", attempt.count, " led to using old value of ", old, " intrinsicFn return of ", intrinsic.displacement, " and extrinsicFn return of ", extrinsic.displacement))
+			##		#message(paste0("For diagnostic purposes: IntrinsicValues ", intrinsicValues))
 			##		attempt.count <- attempt.count+1
 			##		}
 			##	if(is.na(newState) & attempt.count>maxAttempts) {
 			##		if(is.na(extrinsic.displacement)){
-			##			message(paste0(ls(),collapse = ", "))
+			##			message(paste0(ls(), collapse = ", "))
 			##			#message(str(aliveRows))
-			##			message(paste0("taxonIndex ",taxonIndex,"\n",
-			##							"aliveRows ",paste0(aliveRows, collapse = ", "),"\n",
-			##							"length(aliveRows) ",length(aliveRows),"\n",
-			##							"sequence(length(aliveRows))", paste(sequence(length(aliveRows)),collapse = ", "), "\n",
-			##							"currentStates ",paste(currentStates,collapse = ", "),"\n",
-			##							"params ",extrinsicValues,"\n",
-			##							"selfstates ",currentStates[taxonIndex],"\n",
-			##							"otherstates ",paste(
-			##								currentStates[-taxonIndex],collapse = " "),"\n",
-			##							"timefrompresent ",depthfrompresent,"\n"))
+			##			message(paste0("taxonIndex ", taxonIndex, "\n", 
+			##							"aliveRows ", paste0(aliveRows, collapse = ", "), "\n", 
+			##							"length(aliveRows) ", length(aliveRows), "\n", 
+			##							"sequence(length(aliveRows))", paste(sequence(length(aliveRows)), collapse = ", "), "\n", 
+			##							"currentStates ", paste(currentStates, collapse = ", "), "\n", 
+			##							"params ", extrinsicValues, "\n", 
+			##							"selfstates ", currentStates[taxonIndex], "\n", 
+			##							"otherstates ", paste(
+			##								currentStates[-taxonIndex], collapse = " "), "\n", 
+			##							"timefrompresent ", depthfrompresent, "\n"))
 			##			}
 			##		stop(paste0(
-			##			"Simulating with these parameters resulted in problematic results despite ", maxAttempts, " attempts",
-			##			"\nFor one example, taxonDF$states[taxonIndex] was ",
-			##			taxonStates[taxonIndex], ", for which intrinsicFn returned ",
-			##			intrinsicFn(params = intrinsicValues, states = currentStates[taxonIndex],
+			##			"Simulating with these parameters resulted in problematic results despite ", maxAttempts, " attempts", 
+			##			"\nFor one example, taxonDF$states[taxonIndex] was ", 
+			##			taxonStates[taxonIndex], ", for which intrinsicFn returned ", 
+			##			intrinsicFn(params = intrinsicValues, states = currentStates[taxonIndex], 
 			##				timefrompresent  = depthfrompresent)
-			##			, "\nand extrinsicFn returned ",
-			##			extrinsicFn(params = extrinsicValues,
-			##				selfstates = currentStates[taxonIndex], otherstates = currentStates[-taxonIndex],
+			##			, "\nand extrinsicFn returned ", 
+			##			extrinsicFn(params = extrinsicValues, 
+			##				selfstates = currentStates[taxonIndex], otherstates = currentStates[-taxonIndex], 
 			##				timefrompresent  = depthfrompresent
 			##				)
-			##			," with currentStates[taxonIndex] = ", currentStates[taxonIndex])
+			##			, " with currentStates[taxonIndex] = ", currentStates[taxonIndex])
 			##			)
 			##		}
 			##	if(is.na(newState)) {
@@ -433,8 +433,8 @@ doSimulationInternal <- function(
 		heightfromroot <- height.end
 		#
 		if(any(is.nan(taxonStates[aliveRows])) | any(is.na(taxonStates[aliveRows]))) {
-				stop(paste0("A simulation run produced a state of NA or NaN - something is probably very wrong\n",
-					"Here are the states for currently living taxa: ",	paste(taxonStates[aliveRows], collapse = " ")))
+				stop(paste0("A simulation run produced a state of NA or NaN - something is probably very wrong\n", 
+					"Here are the states for currently living taxa: ", 	paste(taxonStates[aliveRows], collapse = " ")))
 				}
 		#				
 		#if(verbose) {

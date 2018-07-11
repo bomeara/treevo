@@ -1,11 +1,11 @@
 # function for getting prior matrix for doRun_prc
 getPriorMatrix <- function(
-	startingPriorsValues,
-	intrinsicPriorsValues,
-	extrinsicPriorsValues,
-	startingPriorsFns,
-	intrinsicPriorsFns,
-	extrinsicPriorsFns,
+	startingPriorsValues, 
+	intrinsicPriorsValues, 
+	extrinsicPriorsValues, 
+	startingPriorsFns, 
+	intrinsicPriorsFns, 
+	extrinsicPriorsFns, 
 	numberParametersTotal){
 	#
 	#

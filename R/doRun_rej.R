@@ -1,21 +1,21 @@
 #' @rdname doRun
 #' @export
 doRun_rej <- function(
-	phy, traits,
-	intrinsicFn, extrinsicFn,
-	startingPriorsValues, startingPriorsFns,
-	intrinsicPriorsValues, intrinsicPriorsFns,
-	extrinsicPriorsValues, extrinsicPriorsFns,
-	#startingValuesGuess = c(), intrinsicValuesGuess = c(), extrinsicValuesGuess = c(),
-	generation.time = 1000,
-	TreeYears = max(branching.times(phy)) * 1e6,
-	multicore = FALSE,
-	coreLimit = NA,
-	validation = "CV",
-	scale = TRUE,
-	variance.cutoff = 95,
-	#niter.goal = 5,
-	standardDevFactor = 0.20, nInitialSims = NA, jobName = NA, abcTolerance = 0.1,
+	phy, traits, 
+	intrinsicFn, extrinsicFn, 
+	startingPriorsValues, startingPriorsFns, 
+	intrinsicPriorsValues, intrinsicPriorsFns, 
+	extrinsicPriorsValues, extrinsicPriorsFns, 
+	#startingValuesGuess = c(), intrinsicValuesGuess = c(), extrinsicValuesGuess = c(), 
+	generation.time = 1000, 
+	TreeYears = max(branching.times(phy)) * 1e6, 
+	multicore = FALSE, 
+	coreLimit = NA, 
+	validation = "CV", 
+	scale = TRUE, 
+	variance.cutoff = 95, 
+	#niter.goal = 5, 
+	standardDevFactor = 0.20, nInitialSims = NA, jobName = NA, abcTolerance = 0.1, 
 	checkpointFile = NULL, checkpointFreq = 24, savesims = FALSE) {	
 	
 	
@@ -26,7 +26,7 @@ doRun_rej <- function(
 	startTime <- proc.time()[[3]]
 
 	timeStep <- generation.time/TreeYears
-	message(paste0("The effective timeStep for this tree will be ",signif(timeStep,2),
+	message(paste0("The effective timeStep for this tree will be ", signif(timeStep, 2), 
 		", as a proportion of tree height (root to furthest tip)..."))
 
 	edgesRescaled <- phy$edge.length/max(node.depth.edgelength(phy))
@@ -40,15 +40,15 @@ doRun_rej <- function(
 		#message("Tree has zero or nearly zero length branches")
 	}
 	
-	totalGenerations <- sum(sapply(edgesRescaled,function(x) floor(x/timeStep)))
-	message("Given generation time, a total of ",round(totalGenerations)," generations will occur over this tree")
+	totalGenerations <- sum(sapply(edgesRescaled, function(x) floor(x/timeStep)))
+	message("Given generation time, a total of ", round(totalGenerations), " generations will occur over this tree")
 		
 	#splits <- getSimulationSplits(phy) #initialize this info
 	taxonDF <- getTaxonDFWithPossibleExtinction(phy = phy)
 
 	# get freevector
-	freevector <- getFreeVector(startingPriorsFns = startingPriorsFns, startingPriorsValues = startingPriorsValues,
-						intrinsicPriorsFns = intrinsicPriorsFns, intrinsicPriorsValues = intrinsicPriorsValues,
+	freevector <- getFreeVector(startingPriorsFns = startingPriorsFns, startingPriorsValues = startingPriorsValues, 
+						intrinsicPriorsFns = intrinsicPriorsFns, intrinsicPriorsValues = intrinsicPriorsValues, 
 						extrinsicPriorsFns = extrinsicPriorsFns, extrinsicPriorsValues = extrinsicPriorsValues)
 	numberParametersTotal <- length(freevector)
 	numberParametersFree <- sum(freevector)
@@ -72,21 +72,21 @@ doRun_rej <- function(
 	#
 	#initialize guesses, if needed
 	#if (length(startingValuesGuess) == 0) { #if no user guesses, try pulling a value from the prior
-	#	startingValuesGuess <- rep(NA,length(startingPriorsFns))
+	#	startingValuesGuess <- rep(NA, length(startingPriorsFns))
 	#	for (i in 1:length(startingPriorsFns)) {
-	#		startingValuesGuess[i] <- pullFromPrior(startingPriorsValues[,i],startingPriorsFns[i])
+	#		startingValuesGuess[i] <- pullFromPrior(startingPriorsValues[, i], startingPriorsFns[i])
 	#	}
 	#}
 	#if (length(intrinsicValuesGuess) == 0) { #if no user guesses, try pulling a value from the prior
-	#	intrinsicValuesGuess <- rep(NA,length(intrinsicPriorsFns))
+	#	intrinsicValuesGuess <- rep(NA, length(intrinsicPriorsFns))
 	#	for (i in 1:length(intrinsicPriorsFns)) {
-	#		intrinsicValuesGuess[i] <- pullFromPrior(intrinsicPriorsValues[,i],intrinsicPriorsFns[i])
+	#		intrinsicValuesGuess[i] <- pullFromPrior(intrinsicPriorsValues[, i], intrinsicPriorsFns[i])
 	#	}
 	#}
 	#if (length(extrinsicValuesGuess) == 0) { #if no user guesses, try pulling a value from the prior
-	#	extrinsicValuesGuess <- rep(NA,length(extrinsicPriorsFns))
+	#	extrinsicValuesGuess <- rep(NA, length(extrinsicPriorsFns))
 	#	for (i in 1:length(extrinsicPriorsFns)) {
-	#		extrinsicValuesGuess[i] <- pullFromPrior(extrinsicPriorsValues[,i],extrinsicPriorsFns[i])
+	#		extrinsicValuesGuess[i] <- pullFromPrior(extrinsicPriorsValues[, i], extrinsicPriorsFns[i])
 	#	}
 	#}
 	#
@@ -99,28 +99,28 @@ doRun_rej <- function(
 	nrepSim <- nInitialSims
 	message(paste0("Number of initial simulations set to ", nrepSim)) 	#, "\n"
 	if(!is.null(checkpointFile)) {
-		save(list = ls(),file = paste0(checkpointFile,".intialsettings.Rsave",sep = ""))
+		save(list = ls(), file = paste0(checkpointFile, ".intialsettings.Rsave", sep = ""))
 		}
 	#
 	#Figure out how many iterations to use for optimization in Geiger.
 	#it actually runs faster without checking for cores. And we parallelize elsewhere
-	#niter.brown.g <- getBM(phy = phy,dat = traits,niterN = 100,niter.goal = niter.goal)$niter.g
-	#niter.lambda.g <- getLambda(phy = phy,dat = traits,niterN = 100,niter.goal = niter.goal)$niter.g
-	#niter.delta.g <- getDelta(phy = phy,dat = traits,niterN = 100,niter.goal = niter.goal)$niter.g
-	#niter.OU.g <- getOU(phy = phy,dat = traits,niterN = 100,niter.goal = niter.goal)$niter.g
-	#niter.white.g <- getWhite(phy = phy,dat = traits,niterN = 100,niter.goal = niter.goal)$niter.g
+	#niter.brown.g <- getBM(phy = phy, dat = traits, niterN = 100, niter.goal = niter.goal)$niter.g
+	#niter.lambda.g <- getLambda(phy = phy, dat = traits, niterN = 100, niter.goal = niter.goal)$niter.g
+	#niter.delta.g <- getDelta(phy = phy, dat = traits, niterN = 100, niter.goal = niter.goal)$niter.g
+	#niter.OU.g <- getOU(phy = phy, dat = traits, niterN = 100, niter.goal = niter.goal)$niter.g
+	#niter.white.g <- getWhite(phy = phy, dat = traits, niterN = 100, niter.goal = niter.goal)$niter.g
 	#
-	#message(paste0("Setting number of starting points for Geiger optimization to ",
-	#	paste0("\n",niter.brown.g, " for Brownian motion"),
-	#	paste0("\n",niter.lambda.g, " for lambda"),
-	#	paste0("\n",niter.delta.g, " for delta"),
-	#	paste0("\n",niter.OU.g, " for OU"),
-	#	paste0("\n",niter.white.g, " for white noise")))
+	#message(paste0("Setting number of starting points for Geiger optimization to ", 
+	#	paste0("\n", niter.brown.g, " for Brownian motion"), 
+	#	paste0("\n", niter.lambda.g, " for lambda"), 
+	#	paste0("\n", niter.delta.g, " for delta"), 
+	#	paste0("\n", niter.OU.g, " for OU"), 
+	#	paste0("\n", niter.white.g, " for white noise")))
 	#
-	trueFreeValuesANDSummaryValues <- parallelSimulateWithPriors(nrepSim = nrepSim, coreLimit = coreLimit, phy = phy,  taxonDF = taxonDF,
-		startingPriorsValues = startingPriorsValues, intrinsicPriorsValues = intrinsicPriorsValues, extrinsicPriorsValues = extrinsicPriorsValues,
-		startingPriorsFns = startingPriorsFns, intrinsicPriorsFns = intrinsicPriorsFns, extrinsicPriorsFns = extrinsicPriorsFns,
-		freevector = freevector, timeStep = timeStep, intrinsicFn = intrinsicFn, extrinsicFn = extrinsicFn,
+	trueFreeValuesANDSummaryValues <- parallelSimulateWithPriors(nrepSim = nrepSim, coreLimit = coreLimit, phy = phy, taxonDF = taxonDF, 
+		startingPriorsValues = startingPriorsValues, intrinsicPriorsValues = intrinsicPriorsValues, extrinsicPriorsValues = extrinsicPriorsValues, 
+		startingPriorsFns = startingPriorsFns, intrinsicPriorsFns = intrinsicPriorsFns, extrinsicPriorsFns = extrinsicPriorsFns, 
+		freevector = freevector, timeStep = timeStep, intrinsicFn = intrinsicFn, extrinsicFn = extrinsicFn, 
 		multicore = multicore, checkpointFile = checkpointFile, checkpointFreq = checkpointFreq, 
 		#niter.brown = niter.brown.g, niter.lambda = niter.lambda.g, niter.delta = niter.delta.g, niter.OU = niter.OU.g, niter.white = niter.white.g
 		)
@@ -130,14 +130,14 @@ doRun_rej <- function(
 	message(paste0("Initial simulations took ", round(simTime, digits = 3), " seconds")) #, "\n"
 
 	#separate the simulation results: true values and the summary values
-	trueFreeValuesMatrix <- trueFreeValuesANDSummaryValues[,1:numberParametersFree]
-	summaryValuesMatrix <- trueFreeValuesANDSummaryValues[,-1:-numberParametersFree]
+	trueFreeValuesMatrix <- trueFreeValuesANDSummaryValues[, 1:numberParametersFree]
+	summaryValuesMatrix <- trueFreeValuesANDSummaryValues[, -1:-numberParametersFree]
 
 	if (savesims){
 		save(trueFreeValuesMatrix, summaryValuesMatrix, simTime, file = paste0("sims", jobName, ".Rdata", sep = ""))
 		}
 
-	res <- makeQuiet(PLSRejection(summaryValuesMatrix = summaryValuesMatrix, trueFreeValuesMatrix = trueFreeValuesMatrix,
+	res <- makeQuiet(PLSRejection(summaryValuesMatrix = summaryValuesMatrix, trueFreeValuesMatrix = trueFreeValuesMatrix, 
 		phy = phy, traits = traits, abcTolerance = abcTolerance))
 	
 	#save(abcDistancesRaw, abcDistancesRawTotal, abcDistances, abcResults, particleDataFrame, file = "")
@@ -147,7 +147,7 @@ doRun_rej <- function(
 	rejectionResults <- vector("list")
 	
 	#names(rejectionResults) <- c("input.data", "PriorMatrix", "phy", "traits")
-	#save(trueFreeValuesMatrix,res, file = "BarbsTestofDistanceCalc2.Rdata")
+	#save(trueFreeValuesMatrix, res, file = "BarbsTestofDistanceCalc2.Rdata")
 
 	rejectionResults$input.data <- input.data
 	rejectionResults$PriorMatrix <- PriorMatrix

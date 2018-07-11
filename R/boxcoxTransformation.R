@@ -31,30 +31,30 @@
 #' # example simulation
 #' 
 #' simDataParallel <- parallelSimulateWithPriors(
-#'   nrepSim = 5, multicore = FALSE, coreLimit = 1,
-#'   phy = simPhy,
-#'   intrinsicFn = brownianIntrinsic,
-#'   extrinsicFn = nullExtrinsic,
-#'   startingPriorsFns = "normal",
-#'   startingPriorsValues = matrix(c(mean(simChar[,1]), sd(simChar[,1]))),
-#'   intrinsicPriorsFns = c("exponential"),
-#'   intrinsicPriorsValues = matrix(c(10, 10), nrow = 2, byrow = FALSE),
-#'   extrinsicPriorsFns = c("fixed"),
-#'   extrinsicPriorsValues = matrix(c(0, 0), nrow = 2, byrow = FALSE),
-#'   generation.time = 100000,
-#'   checkpointFile = NULL, checkpointFreq = 24,
-#'   verbose = FALSE,
+#'   nrepSim = 5, multicore = FALSE, coreLimit = 1, 
+#'   phy = simPhy, 
+#'   intrinsicFn = brownianIntrinsic, 
+#'   extrinsicFn = nullExtrinsic, 
+#'   startingPriorsFns = "normal", 
+#'   startingPriorsValues = matrix(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
+#'   intrinsicPriorsFns = c("exponential"), 
+#'   intrinsicPriorsValues = matrix(c(10, 10), nrow = 2, byrow = FALSE), 
+#'   extrinsicPriorsFns = c("fixed"), 
+#'   extrinsicPriorsValues = matrix(c(0, 0), nrow = 2, byrow = FALSE), 
+#'   generation.time = 100000, 
+#'   checkpointFile = NULL, checkpointFreq = 24, 
+#'   verbose = FALSE, 
 #'   freevector = NULL, taxonDF = NULL)
 #' 
-#' nParFree <- sum(attr(simDataParallel,"freevector"))
+#' nParFree <- sum(attr(simDataParallel, "freevector"))
 #' 
 #' #separate the simulation results: 'true' generating parameter values from the summary values
-#' summaryValuesMat <- simDataParallel[,-1:-nParFree]
+#' summaryValuesMat <- simDataParallel[, -1:-nParFree]
 #' 
 #' boxTranMat <- boxcoxTransformationMatrix(summaryValuesMatrix = summaryValuesMat)
 #' boxTranMat
 #' 
-#' boxcoxTransformation(summaryValuesVector = summaryValuesMat[,1],
+#' boxcoxTransformation(summaryValuesVector = summaryValuesMat[, 1], 
 #'  boxcoxAddition = boxTranMat$boxcoxAddition, boxcoxLambda = boxTranMat$boxcoxLambda)
 #' }
 
@@ -88,7 +88,7 @@ boxcoxTransformationMatrix <- function (summaryValuesMatrix) {
     if (sd(summaryValuesMatrix[, summaryValueIndex]) > 0) {
 		# this alternative is thanks to https://stackoverflow.com/questions/33999512/how-to-use-the-box-cox-power-transformation-in-r/34002020
       #newLambda <- makeQuiet(as.numeric(try(car::powerTransform(summaryVM, method = "Nelder-Mead")$lambda)))
-      bc <- MASS::boxcox(variable ~ 1, data = data.frame(variable = summaryVM),
+      bc <- MASS::boxcox(variable ~ 1, data = data.frame(variable = summaryVM), 
 		 lambda = seq(-20, 20, 1/10000), plotit = FALSE)
 	  newLambda <- bc$x[which(max(bc$y) == bc$y)[1]]
       if (!is.na(newLambda)) {
@@ -97,7 +97,7 @@ boxcoxTransformationMatrix <- function (summaryValuesMatrix) {
     }
     summaryValuesMatrix[, summaryValueIndex] <- summaryVM^boxcoxLambda[summaryValueIndex]
   }
-  res <- list(boxcoxAddition = boxcoxAddition, boxcoxLambda = boxcoxLambda,
+  res <- list(boxcoxAddition = boxcoxAddition, boxcoxLambda = boxcoxLambda, 
        boxcoxSummaryValuesMatrix = summaryValuesMatrix)
   return(res)
 }

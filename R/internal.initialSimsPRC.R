@@ -1,22 +1,22 @@
 # internal function for doing initial simulations in doRun_PRC
 initialSimsPRC <- function(
-		nrepSim,
-		phy,  
-		taxonDF,
-		startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues,
-		startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns,
+		nrepSim, 
+		phy, 
+		taxonDF, 
+		startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues, 
+		startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns, 
 		freevector, timeStep, 
 		intrinsicFn, extrinsicFn, 
-		nStepsPRC,
+		nStepsPRC, 
 		coreLimit, 
-		multicore,
-		numberParametersFree,
-		originalSummaryValues,
+		multicore, 
+		numberParametersFree, 
+		originalSummaryValues, 
 		epsilonProportion, 
-		epsilonMultiplier,
+		epsilonMultiplier, 
 		validation = "CV", 
-		variance.cutoff,
-		saveData,jobName
+		variance.cutoff, 
+		saveData, jobName
 		){		
 	#
 	#	
@@ -42,28 +42,28 @@ initialSimsPRC <- function(
 		)
 	trueFreeValuesANDSummaryValues <- parallelSimulateWithPriors(	#makeQuiet(
 		nrepSim = nrepSim, 
-		phy = phy,  
-		taxonDF = taxonDF,
-		startingPriorsValues = startingPriorsValues, intrinsicPriorsValues = intrinsicPriorsValues, extrinsicPriorsValues = extrinsicPriorsValues,
-		startingPriorsFns = startingPriorsFns, intrinsicPriorsFns = intrinsicPriorsFns, extrinsicPriorsFns = extrinsicPriorsFns,
+		phy = phy, 
+		taxonDF = taxonDF, 
+		startingPriorsValues = startingPriorsValues, intrinsicPriorsValues = intrinsicPriorsValues, extrinsicPriorsValues = extrinsicPriorsValues, 
+		startingPriorsFns = startingPriorsFns, intrinsicPriorsFns = intrinsicPriorsFns, extrinsicPriorsFns = extrinsicPriorsFns, 
 		freevector = freevector, timeStep = timeStep, 
 		intrinsicFn = intrinsicFn, extrinsicFn = extrinsicFn, 
 		coreLimit = coreLimit, 
-		multicore = multicore,
-		verbose = FALSE,  
+		multicore = multicore, 
+		verbose = FALSE, 
 		checkTimeStep = FALSE
 		)	#)
 	#
 	if(saveData){
-		save(trueFreeValues,summaryValues,file = paste0("CompletedSimulations",jobName,".Rdata",sep = ""))
+		save(trueFreeValues, summaryValues, file = paste0("CompletedSimulations", jobName, ".Rdata", sep = ""))
 		}
 	#
 	simTime <- proc.time()[[3]]-Time
 	message(paste0("Initial simulations took ", round(simTime, digits = 3), " seconds")) #, "\n"
 	#
 	#separate the simulation results: true values and the summary values
-	trueFreeValuesMatrix <- trueFreeValuesANDSummaryValues[,1:numberParametersFree]
-	summaryValuesMatrix <- trueFreeValuesANDSummaryValues[,-1:-numberParametersFree]
+	trueFreeValuesMatrix <- trueFreeValuesANDSummaryValues[, 1:numberParametersFree]
+	summaryValuesMatrix <- trueFreeValuesANDSummaryValues[, -1:-numberParametersFree]
 	#while(sink.number()>0) {sink()}
 	#
 	#---------------------- Initial Simulations (End) ------------------------------
@@ -72,8 +72,8 @@ initialSimsPRC <- function(
 		apply(trueFreeValuesMatrix, 2, 
 			returnPLSModel, 
 			summaryValuesMatrix = summaryValuesMatrix, 
-			validation = validation,
-			scale = scale, variance.cutoff = variance.cutoff,verbose = FALSE
+			validation = validation, 
+			scale = scale, variance.cutoff = variance.cutoff, verbose = FALSE
 			))
 		#)
 		#

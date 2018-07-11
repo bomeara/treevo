@@ -26,9 +26,9 @@
 #* data(simRunExample)
 #* 
 #* # real (generating) parameters
-#* genPar <- c(ancState,genRate)
+#* genPar <- c(ancState, genRate)
 #* 
-#* HPDs <- list(results[[1]]$HPD,resultsBound[[1]]$HPD)
+#* HPDs <- list(results[[1]]$HPD, resultsBound[[1]]$HPD)
 #* 
 #* bayesCoverageProb(RealParam = genPar, HPD = HPDs, verbose = TRUE)
 #* 
@@ -69,12 +69,12 @@ bayesCoverageProb <- function(RealParam, HPD, verbose = FALSE){
 	colnames(Covered) <- rownames(HPD[[1]])
 	for(i in 1:length(HPD)){
 		for(j in 1:length(rps[[i]])){
-			if(!is.na(HPD[[i]][j,4])) { #keep only parameters that vary (ie, not fixed)
-				if(HPD[[i]][j,4]  >=  rps[[i]][j] && rps[[i]][j]  >=  HPD[[i]][j,3]) {
-					Covered[i,j] <- 1
+			if(!is.na(HPD[[i]][j, 4])) { #keep only parameters that vary (ie, not fixed)
+				if(HPD[[i]][j, 4]  >=  rps[[i]][j] && rps[[i]][j]  >=  HPD[[i]][j, 3]) {
+					Covered[i, j] <- 1
 				}
 				else{
-					Covered[i,j] <- 0
+					Covered[i, j] <- 0
 				}
 			}
 		}

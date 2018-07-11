@@ -41,11 +41,11 @@
 #' data(simRunExample)
 #' 
 #' # make a list of particleDataFrames to plot multiple runs
-#' resultsPDFlist <- lapply(results,function(x) x$particleDataFrame)
+#' resultsPDFlist <- lapply(results, function(x) x$particleDataFrame)
 #' 
-#' plotPosteriors(resultsPDFlist,
-#'    priorsMat = results[[1]]$PriorMatrix,
-#'    realParam = TRUE, realParamValues = c(ancState,genRate))
+#' plotPosteriors(resultsPDFlist, 
+#'    priorsMat = results[[1]]$PriorMatrix, 
+#'    realParam = TRUE, realParamValues = c(ancState, genRate))
 
 
 #' @name plotPosteriors
@@ -72,7 +72,7 @@ plotPosteriors <- function(particleDataFrame, priorsMat, realParam = FALSE, real
 		generation <- particleDataFrame$generation
 	
 		#make generation and other names by column so it works for partial and complete
-		data1 <- subset(particleDataFrame[which(particleDataFrame$weight>0),], generation == max(particleDataFrame$generation))
+		data1 <- subset(particleDataFrame[which(particleDataFrame$weight>0), ], generation == max(particleDataFrame$generation))
 		run <- rep(1, dim(data1)[1])
 		all <- cbind(run, data1)
 		}
@@ -81,7 +81,7 @@ plotPosteriors <- function(particleDataFrame, priorsMat, realParam = FALSE, real
 		all <- data.frame()
 		for (list in 1:length(particleDataFrame)) {
 			#make generation and other names by column so it works for partial and complete
-			data1 <- subset(particleDataFrame[[list]][which(particleDataFrame[[list]]$weight>0),],
+			data1 <- subset(particleDataFrame[[list]][which(particleDataFrame[[list]]$weight>0), ], 
 				generation == max(particleDataFrame[[list]]$generation))
 			run <- rep(list, dim(data1)[1])
 			particleDataFrame[[list]] <- cbind(run, data1)
@@ -93,7 +93,7 @@ plotPosteriors <- function(particleDataFrame, priorsMat, realParam = FALSE, real
 	}
 
 
-	freeParams <- dim(subset(priorsMat[,which(priorsMat[1,]  !=  "fixed")])[,])[2]
+	freeParams <- dim(subset(priorsMat[, which(priorsMat[1, ]  !=  "fixed")])[, ])[2]
 	#dev.new(width = 2.5*freeParams, height = 3)
 	nf <- layout(matrix(1:freeParams, nrow = 1, byrow = TRUE), respect = TRUE)
 	#layout.show(nf)
@@ -103,7 +103,7 @@ plotPosteriors <- function(particleDataFrame, priorsMat, realParam = FALSE, real
 	##layout.show(nf)
 
 	v <- vector("list", max(all$run))
-	nParticles <- dim(subset(all[which(all$weight>0),], run == max(all$run)))[1]
+	nParticles <- dim(subset(all[which(all$weight>0), ], run == max(all$run)))[1]
 
 	for (param in 1:dim(priorsMat)[2]) {
 		#message(param)
@@ -112,15 +112,15 @@ plotPosteriors <- function(particleDataFrame, priorsMat, realParam = FALSE, real
 		r <- c()
 		q <- c()
 
-		if (priorsMat[1,param]  !=  "fixed") {
+		if (priorsMat[1, param]  !=  "fixed") {
 
 			if (priorsMat[1, param]  ==  "uniform" || priorsMat[1, param]  ==  "exponential") {
 				for (dens in 1:max(all$run)) {
-					v[[dens]] <- density(subset(all[which(all$run == dens),],)[,which.param],
-						weights = nParticles*subset(all[which(all$weight>0),], run == dens)[,7]/sum(
-							nParticles*subset(all[which(all$weight>0),], run == dens)[,7]),
-						from = min(subset(all[which(all$run == dens),],)[,which.param]),
-						to = max(subset(all[which(all$run == dens),],)[,which.param]))
+					v[[dens]] <- density(subset(all[which(all$run == dens), ], )[, which.param], 
+						weights = nParticles*subset(all[which(all$weight>0), ], run == dens)[, 7]/sum(
+							nParticles*subset(all[which(all$weight>0), ], run == dens)[, 7]), 
+						from = min(subset(all[which(all$run == dens), ], )[, which.param]), 
+						to = max(subset(all[which(all$run == dens), ], )[, which.param]))
 					v[[dens]]$x <- c(min(v[[dens]]$x), v[[dens]]$x, max(v[[dens]]$x))
 					v[[dens]]$y <- c(0, v[[dens]]$y, 0)
 					q <- c(q, v[[dens]]$x)
@@ -129,9 +129,9 @@ plotPosteriors <- function(particleDataFrame, priorsMat, realParam = FALSE, real
 			}else{
 				if (priorsMat[1, param]  ==  "normal" || priorsMat[1, param]  ==  "lognormal" || priorsMat[1, param]  ==  "gamma"){
 					for (dens in 1:max(all$run)) {
-						v[[dens]] <- density(subset(all[which(all$run == dens),],)[,which.param],
-							weights = nParticles*subset(all[which(all$weight>0),], run == dens)[,7]/sum(
-								nParticles*subset(all[which(all$weight>0),], run == dens)[,7]))
+						v[[dens]] <- density(subset(all[which(all$run == dens), ], )[, which.param], 
+							weights = nParticles*subset(all[which(all$weight>0), ], run == dens)[, 7]/sum(
+								nParticles*subset(all[which(all$weight>0), ], run == dens)[, 7]))
 						q <- c(q, v[[dens]]$x)
 						r <- c(r, v[[dens]]$y)
 						}
@@ -143,8 +143,8 @@ plotPosteriors <- function(particleDataFrame, priorsMat, realParam = FALSE, real
 				min = as.numeric(min(priorsMat[2, param], priorsMat[3, param]))
 				max = as.numeric(max(priorsMat[2, param], priorsMat[3, param]))
 				x <- runif(1000, min, max)
-				poly <- curve(dunif(x),
-					xlim = c(min(min-(.3*(max-min)),min(q)), max(max+(.3*(max-min)), max(q))), ylim = c(0, max(1.5, max(r))),
+				poly <- curve(dunif(x), 
+					xlim = c(min(min-(.3*(max-min)), min(q)), max(max+(.3*(max-min)), max(q))), ylim = c(0, max(1.5, max(r))), 
 					type = "n", xlab = names(all)[which.param], ylab = "Density", bty = "n")
 				rect(min, 0, max, 1, border = "blue", lwd = 1.5)
 				if (realParam) {
@@ -157,8 +157,8 @@ plotPosteriors <- function(particleDataFrame, priorsMat, realParam = FALSE, real
 				stdev = as.numeric(priorsMat[3, param])
 				x <- rnorm(1000, mean, stdev)
 				w <- density(x)
-				poly <- curve(dnorm(x, mean, stdev), from = min(x), to = max(x),
-					xlim = c(min(min(w$x), min(q)), max(max(w$x), max(q))), ylim = c(0, max(max(w$y), max(r))),
+				poly <- curve(dnorm(x, mean, stdev), from = min(x), to = max(x), 
+					xlim = c(min(min(w$x), min(q)), max(max(w$x), max(q))), ylim = c(0, max(max(w$y), max(r))), 
 					xlab = names(all)[which.param], ylab = "Density", col = "blue", lwd = 1.5, bty = "n")
 				if (realParam) {
 					segments(realParamValues[param], 0, realParamValues[param], max(max(w$y), max(r)), col = "red", lwd = 1.5)
@@ -169,8 +169,8 @@ plotPosteriors <- function(particleDataFrame, priorsMat, realParam = FALSE, real
 				stdev = as.numeric(priorsMat[3, param])
 				x <- rlnorm(1000, mean, stdev)
 				w <- density(x)
-				poly <- curve(dlnorm(x, mean, stdev), from = 0, to = qlnorm(0.99, mean, stdev),
-					xlim = c(min(min(w$x), min(q)), max(max(w$x), max(q))), ylim = c(0, max(max(w$y), max(r))),
+				poly <- curve(dlnorm(x, mean, stdev), from = 0, to = qlnorm(0.99, mean, stdev), 
+					xlim = c(min(min(w$x), min(q)), max(max(w$x), max(q))), ylim = c(0, max(max(w$y), max(r))), 
 					xlab = names(all)[which.param], ylab = "Density", col = "blue", lwd = 1.5, bty = "n")
 				if (realParam) {
 					segments(realParamValues[param], 0, realParamValues[param], max(max(w$y), max(r)), col = "red", lwd = 1.5)
@@ -181,11 +181,11 @@ plotPosteriors <- function(particleDataFrame, priorsMat, realParam = FALSE, real
 				scale = as.numeric(priorsMat[3, param])
 				x <- rgamma(1000, shape, scale)
 				w <- density(x)
-				poly <- curve(dgamma(x, shape, scale), from = 0, to = qgamma(0.99, shape, scale),
-					xlim = c(min(min(w$x),min(q)), max(max(w$x), max(q))), ylim = c(0, max(max(w$y), max(r))),
+				poly <- curve(dgamma(x, shape, scale), from = 0, to = qgamma(0.99, shape, scale), 
+					xlim = c(min(min(w$x), min(q)), max(max(w$x), max(q))), ylim = c(0, max(max(w$y), max(r))), 
 					xlab = names(all)[which.param], ylab = "Density", col = "blue", lwd = 1.5, bty = "n")
 				if (realParam) {
-					segments(realParamValues[param], 0, realParamValues[param],
+					segments(realParamValues[param], 0, realParamValues[param], 
 						max(max(w$y), max(r)), col = "red", lwd = 1.5)
 				}
 			}
@@ -194,8 +194,8 @@ plotPosteriors <- function(particleDataFrame, priorsMat, realParam = FALSE, real
 				rate = as.numeric(priorsMat[2, param])
 				x <- rexp(1000, rate)
 				w <- density(x)
-				poly <- curve(dexp(x, rate), from = 0, to = qexp(0.99, rate),
-					xlim = c(min(min(w$x),min(q)), max(max(w$x), max(q))), ylim = c(0, max(max(w$y), max(r))),
+				poly <- curve(dexp(x, rate), from = 0, to = qexp(0.99, rate), 
+					xlim = c(min(min(w$x), min(q)), max(max(w$x), max(q))), ylim = c(0, max(max(w$y), max(r))), 
 					xlab = names(all)[which.param], ylab = "Density", col = "blue", lwd = 1.5, bty = "n") #, sub = names(data)[which.param]
 				if (realParam) {
 					segments(realParamValues[param], 0, realParamValues[param], max(max(w$y), max(r)), col = "red", lwd = 1.5)
@@ -209,7 +209,7 @@ plotPosteriors <- function(particleDataFrame, priorsMat, realParam = FALSE, real
 			for (lines in 1:length(v)) {
 				polygon(v[[lines]]$x, v[[lines]]$y, border = NA, col = rgb(0, 0, 0, (.7/max(all$run))))
 			}
-		} #if (priorsMat[1,param]  !=  "fixed")
+		} #if (priorsMat[1, param]  !=  "fixed")
 	} #for
 	layout(1)
 	

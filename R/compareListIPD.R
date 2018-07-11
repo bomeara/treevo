@@ -20,7 +20,7 @@
 #' 
 #' data(simRunExample)
 #' 
-#' pdfList <- list(results[[1]]$particleDataFrame,resultsBound[[1]]$particleDataFrame)
+#' pdfList <- list(results[[1]]$particleDataFrame, resultsBound[[1]]$particleDataFrame)
 #' 
 #' compareListIPD(particleDataFrameList = pdfList, verbose = TRUE)
 #' 
@@ -41,7 +41,7 @@ compareListIPD <- function(particleDataFrameList, verbose = FALSE){
 	data1 <- vector("list")
 	maxgen <- c()
 	for (list in 1:length(particleDataFrameList)) {
-		data1[[list]] <- subset(particleDataFrameList[[list]][which(particleDataFrameList[[list]][,6]>0),], )
+		data1[[list]] <- subset(particleDataFrameList[[list]][which(particleDataFrameList[[list]][, 6]>0), ], )
 		maxgen <- append(maxgen, max(data1[[list]]$generation))
 	}	
 	for (param in 1:params){
@@ -51,10 +51,10 @@ compareListIPD <- function(particleDataFrameList, verbose = FALSE){
 			IPDmatrix <- matrix(nrow = length(data1), ncol = length(data1))
 			for (row in 1: dim(IPDmatrix)[1]){
 				for (col in 1: dim(IPDmatrix)[2]){
-					IPDmatrix[row, col] <- (median(interparticleDistance(data1[[row]][which(data1[[row]]$generation == gen),6+param],
-						data1[[col]][which(data1[[col]]$generation == gen),6+param]))^2)  / median(
-						interparticleDistance(data1[[row]][which(data1[[row]]$generation == gen),6+param],
-						data1[[col]][which(data1[[col]]$generation == gen),6+param]))*2
+					IPDmatrix[row, col] <- (median(interparticleDistance(data1[[row]][which(data1[[row]]$generation == gen), 6+param], 
+						data1[[col]][which(data1[[col]]$generation == gen), 6+param]))^2)  / median(
+						interparticleDistance(data1[[row]][which(data1[[row]]$generation == gen), 6+param], 
+						data1[[col]][which(data1[[col]]$generation == gen), 6+param]))*2
 					#protect against NAs, since we are dividing above (if sd(A and or B[param] = 0 then it will NA))
 					if (is.na(IPDmatrix[row, col])){
 						IPDmatrix[row, col] <- 0
@@ -93,11 +93,11 @@ compareListIPD <- function(particleDataFrameList, verbose = FALSE){
 #   @author Brian O'Meara and Barb Banbury
 # @references O'Meara and Banbury, unpublished
 
-interparticleDistance <- function(x,y,abs = TRUE) {
-   distances <- matrix(nrow = length(x),ncol = length(y))
+interparticleDistance <- function(x, y, abs = TRUE) {
+   distances <- matrix(nrow = length(x), ncol = length(y))
    for (i in sequence(length(x))) {
       for (j in sequence(length(y))) {
-        distances[i,j] <- x[i]-y[j]
+        distances[i, j] <- x[i]-y[j]
       }
    }
    if (abs == TRUE) {
