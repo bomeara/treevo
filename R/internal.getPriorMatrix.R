@@ -1,5 +1,5 @@
 # function for getting prior matrix for doRun_prc
-getPriorMatrix<-function(
+getPriorMatrix=function(
 	startingPriorsValues,
 	intrinsicPriorsValues,
 	extrinsicPriorsValues,
@@ -13,7 +13,7 @@ getPriorMatrix<-function(
 	namesForPriorMatrix<-c()
 	PriorMatrix<-matrix(c(startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns), nrow=1, ncol=numberParametersTotal)
 	for (a in 1:dim(startingPriorsValues)[2]){
-		namesForPriorMatrix<-c(paste0("starting_", a, sep=""))
+		namesForPriorMatrix=c(paste0("starting_", a, sep=""))
 		}
 	#
 	for (b in 1:dim(intrinsicPriorsValues)[2]){

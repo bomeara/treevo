@@ -296,4 +296,3 @@ sumLogTranProb<-function(prevGenParticleList
 	
 
 
-	

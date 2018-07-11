@@ -266,4 +266,4 @@ test_that("simParticlePRC run correctly", {
 		)
 	expect_is(results, "list")
 })
-		
+

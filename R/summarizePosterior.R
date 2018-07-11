@@ -1,7 +1,8 @@
 #' Summarize Posterior Distribution for a Free Parameter
 #' 
 
-#' This function summarizes the posterior distribution from the final generation for all free parameters, outputting the mean, standard deviation and Highest Posterior Density (at a 0.8 alpha) for each parameter.
+#' This function summarizes the posterior distribution from the final generation for all free parameters,
+#' outputting the mean, standard deviation and Highest Posterior Density (at a 0.8 alpha) for each parameter.
 #' 
 
 #' @param particleDataFrame A \code{particleDataFrame} object, as found among the output from \code{\link{doRun}} functions.
@@ -114,3 +115,4 @@ summarizePosterior<-function(particleDataFrame, alpha=0.95){
 	res<-as.data.frame(Ints)
 	return(res)
 	}
+	

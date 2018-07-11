@@ -112,4 +112,3 @@ getWhite<-function(phy,dat){		#,niterN,niter.goal=NA
 	#	}
 	return(res)
 	}			
-	
