@@ -285,7 +285,9 @@ plotPrior <- function(
 
 #' @rdname plotPriorPost
 #' @export
-plotUnivariatePosteriorVsPrior <- function(posteriorCurve, priorCurve, label = "parameter", trueValue = NULL) {
+plotUnivariatePosteriorVsPrior <- function(posteriorCurve, 
+		priorCurve, label = "parameter", trueValue = NULL) {
+	####################################################################
 	# are priors and posteriors potentially multimodal?
 	priorMultimodal <- nrow(priorCurve$HPD)>1
 	posteriorMultimodal <- nrow(posteriorCurve$HPD)>1

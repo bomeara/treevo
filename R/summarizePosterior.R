@@ -5,43 +5,49 @@
 #' outputting the mean, standard deviation and Highest Posterior Density (at a 0.8 alpha) for each parameter.
 #' 
 
-#' @param particleDataFrame A \code{particleDataFrame} object, as found among the output from \code{\link{doRun}} functions.
+#' @param particleDataFrame A \code{particleDataFrame} object, as
+#' found among the output from \code{\link{doRun}} functions.
 
 
+#' @return Returns a list, wherein each element of the list is secondary list containing
+#' the weighted mean, standard deviation, and a matrix giving the highest density
+#' intervals (e.g. the highest posterior density intervals). Because posterior
+#' estimates of parameter values may be multimodal, multiple sets of bounds
+#' may be reported for complex posterior distributions, which each constitute one 
+#' row of the output matrix. See 
 
-# @param returnData Option to return data that falls within HPD interval.
+#' @author David W Bapst
 
-#' @return Returns a list, with each element of the list as a vector containing the weighted mean, standard deviation, and followed by the highest density intervals (e.g. the highest posterior density intervals). Because posterior estimates of parameter values may be multimodal, multiple sets of bounds may be reported for complex posterior distributions.
-
-#* @return Returns a matrix with weighted mean, standard deviation, upper and lower credible
-#* intervals for each free parameter.
-
-#' @author Brian O'Meara and Barb Banbury
-
-#' @seealso \code{\link{HPDinterval}} in package \code{coda}
-
-# @references O'Meara and Banbury, unpublished
+#' @seealso
+#' This function is essentially a wrapper for independently applying 
+#' a few summary statistics and applying
+#' \code{highestDensityInterval} to multiple parameters. As each parameter
+#'  is handled independently, the returned HPD intervals may not properly account
+#'  for covariation among parameter estimates from the posterior. If testing
+#'  whether a given observation is within a given density of the posterior or
+#'  not, please look at function \code{\link{testMultivarOutlierHDR}}.
 
 
 #' @examples
 #' 
 #' data(simRunExample)
 #' 
-#' highestDensityInterval(results[[1]]$particleDataFrame, alpha = 0.95)
+#' summarizePosterior(results[[1]]$particleDataFrame, alpha = 0.5)
 #' 
 
 
 
-#' @name
-#' @rdname
+#' @name summarizePosterior
+#' @rdname summarizePosterior
 #' @export
-
-
-
-
-
-summarizePosterior <- function(particleDataFrame, alpha = 0.95){
-
+summarizePosterior <- function(particleDataFrame, 
+		alpha = 0.8, 
+		coda = FALSE, 
+		verboseMultimodal = TRUE, 
+		...){
+	########################################################
+	
+	
 	generation <- particleDataFrame$generation
 	maxGen <- max(particleDataFrame$generation)
 #	library(coda, quietly = TRUE)
@@ -74,7 +80,14 @@ summarizePosterior <- function(particleDataFrame, alpha = 0.95){
 
 
 				
-				HPD <- highestDensityInterval(dataVector = data, alpha = alpha)
+				HPD <- highestDensityInterval(dataVector = data,
+					alpha = alpha, coda = coda, 
+					verboseMultimodal=verboseMultimodal, ...)
+					
+				res<-list(
+					mean = 
+					HPD = HPD
+					)
 				
 				
 				Ints[i, 3] <- codaHPD[1] #returns lower HPD		
@@ -101,8 +114,8 @@ summarizePosterior <- function(particleDataFrame, alpha = 0.95){
 	}
 	
 	
-	
-	# OLD
+##################################################################################################	
+# OLD
 #	
 #		generation <- particleDataFrame$generation
 #	#
@@ -123,3 +136,5 @@ summarizePosterior <- function(particleDataFrame, alpha = 0.95){
 #			}
 #		}	
 #	
+
+# @param returnData Option to return data that falls within HPD interval.
