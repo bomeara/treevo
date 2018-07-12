@@ -61,8 +61,10 @@
 
 #' @param outlier A vector of consisting of a single observation of
 #' one or more variables, with the same length as the number
-#' of columns in /code{dataMatrix}. Not necessarily an \emph{outlier} but
-#' 
+#' of columns in /code{dataMatrix}. Not necessarily
+#' a true 'outlier' \emph{per se} but
+#' some data point of interest that you wish to test whether it is
+#' inside some given probability density estimated from a sample of points.
 
 
 #' @return
@@ -144,8 +146,10 @@
 #' 
 #' x <- rnorm(100, 1, 1)
 #' y <- (x*0.8)+rnorm(100)
-#' z <- sample(c(rnorm(50, 3, 2), rnorm(50, 30, 3)))
-#' a <- sample(c(rnorm(50, 3, 2), rnorm(50, 10, 3)))+x^2
+#' z <- sample(c(rnorm(50, 3, 2), 
+#'   rnorm(50, 30, 3)))
+#' a <- sample(c(rnorm(50, 3, 2), 
+#'   rnorm(50, 10, 3)))+x^2
 #' 
 #' #plot(x, y)
 #' #plot(x, z)
@@ -155,19 +159,25 @@
 #' # actual outlier, but maybe not obvious if PCA isn't applied
 #' outlier <- c(2, 0.6, 10, 8)
 #' # this one should appear to be an outlier (but only if PCA is applied)
-#' testMultivarOutlierHDR(dataMatrix = data, outlier = outlier, alpha = 0.8)
-#' testMultivarOutlierHDR(dataMatrix = data, outlier = outlier, alpha = 0.8, pca = FALSE)
+#' testMultivarOutlierHDR(dataMatrix = data,
+#'   outlier = outlier, alpha = 0.8)
+#' testMultivarOutlierHDR(dataMatrix = data, 
+#'   outlier = outlier, alpha = 0.8, pca = FALSE)
 #' 
 #' # this one should be within the 80% area
 #' outlier <- c(1, 0, 30, 5)
-#' testMultivarOutlierHDR(dataMatrix = data, outlier = outlier, alpha = 0.8)
-#' testMultivarOutlierHDR(dataMatrix = data, outlier = outlier, alpha = 0.8, pca = FALSE)
+#' testMultivarOutlierHDR(dataMatrix = data, 
+#'   outlier = outlier, alpha = 0.8)
+#' testMultivarOutlierHDR(dataMatrix = data, 
+#'   outlier = outlier, alpha = 0.8, pca = FALSE)
 #' 
 #' # this one should be an obvious outlier no matter what
 #' outlier <- c(3, -2, 20, 18)
 #' # this one should be outside the 80% area
-#' testMultivarOutlierHDR(dataMatrix = data, outlier = outlier, alpha = 0.8)
-#' testMultivarOutlierHDR(dataMatrix = data, outlier = outlier, alpha = 0.8, pca = FALSE)
+#' testMultivarOutlierHDR(dataMatrix = data, 
+#'   outlier = outlier, alpha = 0.8)
+#' testMultivarOutlierHDR(dataMatrix = data, 
+#'   outlier = outlier, alpha = 0.8, pca = FALSE)
 #' 
 
 
@@ -197,7 +207,7 @@ testMultivarOutlierHDR <- function(dataMatrix, outlier, alpha, coda = FALSE, pca
 		# use raw
 		varia <- dataAll
 		}
-	# seperate out the outlier to be tested
+	# separate out the outlier to be tested
 	variaOut <- varia[nrow(varia), ]
 	# now remove outlier from variable sample to get HPD from
 	varia <- varia[-nrow(varia), ]
