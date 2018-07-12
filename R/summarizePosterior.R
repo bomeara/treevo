@@ -2,12 +2,14 @@
 #' 
 
 #' This function summarizes the posterior distribution from the final generation for all free parameters, 
-#' outputting the mean, standard deviation and Highest Posterior Density (at a 0.8 alpha) for each parameter.
+#' outputting the mean, standard deviation and Highest Posterior Density (at a 0.8 alpha) for each parameter based
+#' on estimates taken from the last generation of an ABC analysis using the \code{doRun} functions in \code{TreEvo}.
 #' 
 
 #' @param particleDataFrame A \code{particleDataFrame} object, as
 #' found among the output from \code{\link{doRun}} functions.
 
+#' @inheritParams highestDensityInterval
 
 #' @return Returns a list, wherein each element of the list is secondary list containing
 #' the weighted mean, standard deviation, and a matrix giving the highest density
@@ -21,11 +23,12 @@
 #' @seealso
 #' This function is essentially a wrapper for independently applying 
 #' a few summary statistics and applying
-#' \code{highestDensityInterval} to multiple parameters. As each parameter
-#'  is handled independently, the returned HPD intervals may not properly account
-#'  for covariation among parameter estimates from the posterior. If testing
-#'  whether a given observation is within a given density of the posterior or
-#'  not, please look at function \code{\link{testMultivarOutlierHDR}}.
+#' \code{highestDensityInterval} to multiple parameter estimates, taken from
+#' the last generation of an ABC analysis in \code{TreEvo}. As each parameter
+#' is handled independently, the returned HPD intervals may not properly account
+#' for covariation among parameter estimates from the posterior. If testing
+#' whether a given observation is within a given density of the posterior or
+#' not, please look at function \code{\link{testMultivarOutlierHDR}}.
 
 
 #' @examples
@@ -46,19 +49,20 @@ summarizePosterior <- function(particleDataFrame,
 		verboseMultimodal = TRUE, 
 		...){
 	########################################################
-	
-	
+	#	
 	generation <- particleDataFrame$generation
+	# get the max generation
 	maxGen <- max(particleDataFrame$generation)
-#	library(coda, quietly = TRUE)
-	summary <- vector("list")
-	# find particles from the last generation
+	# subset on particles from the last generation
 	subpDF <- particleDataFrame[particleDataFrame$generation == maxGen
-		& particleDataFrame$weight>0, ]
+		& particleDataFrame$weight>0, ]	
 	#
 	# now only get the parameter estimates
 	subpDF <- as.data.frame(subpDF[, 7:dim(particleDataFrame)[2]])
-	#parNames <- colnames(subpDF)
+	
+	#
+	# old code - for removing parameters with bad values??
+	# maybe applicable for fixed params?
 	#
 	for(i in 1:dim(subpDF)[2]){
 		if(length(subpDF[, i])>1){
@@ -67,22 +71,28 @@ summarizePosterior <- function(particleDataFrame,
 				}
 			}
 		}
-	Ints <- matrix(nrow = (dim(subpDF)[2]), ncol = 4)
-	colnames(Ints) <- c("mean", "sd")	
-	rownames(Ints) <- names(subpDF)
-	for(i in 1:dim(subpDF)[2]){
-		if(length(subpDF[, i])>1){
-			if(sd(subpDF[, i])  !=  0) {
-				Ints[i, 1] <- mean(subpDF[, i]) #not weighted
-				Ints[i, 2] <- sd(subpDF[, i])
-				
-				
+	#
+	res<-apply(subpDF,2,getSummary,
+		alpha = alpha, coda = coda, 
+		verboseMultimodal=verboseMultimodal, ...)
+	
+	
+	
+	getSummary(param,
+			alpha = alpha, coda = coda, 
+			verboseMultimodal=verboseMultimodal, ...){
 
-
-				
-				HPD <- highestDensityInterval(dataVector = data,
+		#
+		HPD <- highestDensityInterval(dataVector = data,
 					alpha = alpha, coda = coda, 
 					verboseMultimodal=verboseMultimodal, ...)
+		}
+				
+				
+
+	parNames <- colnames(subpDF)
+				
+				
 					
 				res<-list(
 					mean = 
@@ -90,9 +100,7 @@ summarizePosterior <- function(particleDataFrame,
 					)
 				
 				
-				Ints[i, 3] <- codaHPD[1] #returns lower HPD		
-				Ints[i, 4] <- codaHPD[2] #returns upper HPD	
-				
+
 				
 				if(returnData){
 					summary[[i]] <- subpDF[, i][-c(which(subpDF[i]<Ints[i, 3]), which(subpDF[, i]>Ints[i, 4]))]

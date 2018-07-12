@@ -43,7 +43,9 @@
 #' Hyndman, R. J. 1996. Computing and Graphing Highest
 #' Density Regions. \emph{The American Statistician} 50(2):120-126.
 
-
+#' @seealso \code{\link{HPDinterval}} in package \code{coda} for an
+#' alternative used by older versions of \code{TreEvo}
+#' which cannot properly handle multimodal distributions.
 
 #' @examples
 #' set.seed(444)

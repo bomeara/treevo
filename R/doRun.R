@@ -767,7 +767,7 @@ doRun_prc <- function(
 		prcResults$simTime <- initialSimsRes$simTime
 		prcResults$time.per.gen <- genTimes
 		#prcResults$credibleInt  <- credibleInt(particleDataFrame)
-		prcResults$postSummary  <- summarizePosterior(particleDataFrame)
+		prcResults$postSummary  <- summarizePosterior(particleDataFrame, verboseMultimodal = FALSE)
 		#
 		if(identical(nRuns, 1)){
 			results <- prcResults
