@@ -187,7 +187,7 @@
 #' @name testMultivarOutlierHDR
 #' @rdname testMultivarOutlierHDR
 #' @export
-testMultivarOutlierHDR <- function(dataMatrix, outlier, alpha, coda = FALSE, pca = TRUE, ...){
+testMultivarOutlierHDR <- function(dataMatrix, outlier, alpha, coda = FALSE, verboseMultimodal=FALSE, pca = TRUE, ...){
 	if(!is.matrix(dataMatrix)){
 		stop("dataMatrix is apparently not a matrix")
 		}
@@ -214,12 +214,16 @@ testMultivarOutlierHDR <- function(dataMatrix, outlier, alpha, coda = FALSE, pca
 	#
 	# get HPDs
 	HDR <- lapply(1:ncol(varia), function(i)
-		 highestDensityInterval(varia[, i], alpha = alpha, coda = coda, ...))
+		 highestDensityInterval(
+			varia[, i], alpha = alpha, coda = coda, 
+			verboseMultimodal=verboseMultimodal, ...
+			)
+		)
 	#
 	# test if outlier is within intervals listed for each variable
 	withinHDR <- sapply(1:ncol(varia), function(x) 
 		any(sapply(1:nrow(HPD[[x]]), function(y) 
-			HPD[[x]][y, 1] <= variaOut[x] & HPD[[x]][y, 2] >= variaOut[x]
+			(HPD[[x]][y, 1] <= variaOut[x]) & (HPD[[x]][y, 2] >= variaOut[x])
 			))
 		)
 	res <- all(withinHPD)

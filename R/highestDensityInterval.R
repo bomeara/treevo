@@ -35,6 +35,10 @@
 #' @param ... Additional arguments passed to \code{\link{density}}. 
 #' A user may want to mess with this to adjust bandwidth, et cetera.
 
+#' @param verboseMultimodal If \code{TRUE}, the function will print a message
+#' indicating when the inferred highest density interval is discontinuous, and
+#' thus likely reflects that the supplied data is multimodal.
+
 #' @references
 #' Hyndman, R. J. 1996. Computing and Graphing Highest
 #' Density Regions. \emph{The American Statistician} 50(2):120-126.
@@ -108,10 +112,14 @@
 
 
 
+
+
 #' @name highestDensityInterval
 #' @rdname highestDensityInterval
 #' @export
-highestDensityInterval <- function(dataVector, alpha, coda = FALSE, ...){
+highestDensityInterval <- function(dataVector, alpha,
+		coda = FALSE, verboseMultimodal = TRUE,...){
+	#
 	# test that its a vector
 	dataVector <- as.numeric(dataVector)
 	if(!is.vector(dataVector)){
@@ -154,8 +162,13 @@ highestDensityInterval <- function(dataVector, alpha, coda = FALSE, ...){
 		}
 	# name the columns and rows
 		# paste("LowerHPD_", alpha, sep = ""), paste("UpperHPD_", alpha, sep = "")
-	colLabels <- c(paste0(c("LowerBound_alpha = ", "UpperBound_"), alpha))
+	colLabels <- c(paste0(c("LowerBound_alpha=", "UpperBound__alpha="), alpha))
 	colnames(resMatrix) <- colLabels
+	#
+	if(nrow(resMatrix)>1 & verboseMultimodal){
+		message("Inferred highest density intervals are discontinuous, suggesting data may have multiple modes")
+		}
+	#
 	return(resMatrix)
 	}
 
