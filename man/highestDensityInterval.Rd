@@ -100,7 +100,6 @@ highestDensityInterval(z, alpha = 0.8)
 
 #############################
 # example with output from doRun_prc
-
 data(simRunExample)
 
 # we'll use summarizePosterior, which just automates picking

@@ -13,11 +13,11 @@ test_that("compareListIPD works", {
   result<-compareListIPD(particleDataFrameList = pdfList, verbose = FALSE)
 })
 
-test_that("credibleInt works", {
-  set.seed(1)
-  data(simRunExample)
-  result<-credibleInt(results[[1]]$particleDataFrame)
-})
+#test_that("credibleInt works", {
+#  set.seed(1)
+#  data(simRunExample)
+#  result<-credibleInt(results[[1]]$particleDataFrame)
+#})
 
 test_that("getBMRatePrior works", {
   set.seed(1)
@@ -25,9 +25,9 @@ test_that("getBMRatePrior works", {
   result<-getBMRatePrior(phy = simPhy, traits = simChar, timeStep = 1)
 })
 
-test_that("highestPostDensity works", {
-  set.seed(1)
-  data(simRunExample)
-  result<-highestPostDensity(results[[1]]$particleDataFrame, percent = 0.95,
-    returnData = FALSE)
-})
+#test_that("highestPostDensity works", {
+#  set.seed(1)
+#  data(simRunExample)
+#  result<-highestPostDensity(results[[1]]$particleDataFrame, percent = 0.95,
+#    returnData = FALSE)
+#})

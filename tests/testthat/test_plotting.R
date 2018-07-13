@@ -45,14 +45,14 @@ test_that("plotPriorPost works", {
     0.2), plotQuants = FALSE, plotLegend = FALSE)
   priorKernal <- getUnivariatePriorCurve(priorFn = "normal",
     priorVariables = c(28, 2), nPoints = 1e+05, from = NULL,
-    to = NULL, prob = 0.95)
+    to = NULL, alpha = 0.95)
   postKernal <- getUnivariatePosteriorCurve(acceptedValues = results[[1]]$particleDataFrame$starting_1,
-    from = NULL, to = NULL, prob = 0.95)
+    from = NULL, to = NULL, alpha = 0.95)
   priorKernal
   postKernal
   plotUnivariatePosteriorVsPrior(posteriorCurve = postKernal,
     priorCurve = priorKernal, label = "parameter",
-    trueValue = NULL, prob = 0.95)
+    trueValue = NULL)
 })
 
 test_that("parentOffspringPlots works", {
