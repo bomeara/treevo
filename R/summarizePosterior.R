@@ -16,14 +16,14 @@
 #' intervals (e.g. the highest posterior density intervals). Because posterior
 #' estimates of parameter values may be multimodal, multiple sets of bounds
 #' may be reported for complex posterior distributions, which each constitute one 
-#' row of the output matrix. See 
+#' row of the output matrix. See \code{\link{highestDensityInterval}} for details.
 
 #' @author David W Bapst
 
 #' @seealso
 #' This function is essentially a wrapper for independently applying 
 #' a few summary statistics and applying
-#' \code{highestDensityInterval} to multiple parameter estimates, taken from
+#' \code{\link{highestDensityInterval}} to multiple parameter estimates, taken from
 #' the last generation of an ABC analysis in \code{TreEvo}. As each parameter
 #' is handled independently, the returned HPD intervals may not properly account
 #' for covariation among parameter estimates from the posterior. If testing

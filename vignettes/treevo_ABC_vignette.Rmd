@@ -201,21 +201,21 @@ resultsBound<-doRun_prc(
 
 ```
 
-The function `highestPostDens` provides us with the  weighted mean, standard deviation, upper and lower highest posterior density (HPD) for each free parameter in the posterior sample, for each individual run.
+The function `summarizePosterior` provides us with the mean, standard deviation, and  highest posterior density (HPD) for each free parameter in the posterior sample, for each individual run. We can specify the probability density we would like to receive the bounds for using the `alpha` argument.
 
 For example, for each Brownian Motion run:
 
 ```{r}
 
-highestPostDens(resultsBM[[1]]$particleDataFrame, percent=0.95, returnData=FALSE)
-highestPostDens(resultsBM[[2]]$particleDataFrame, percent=0.95, returnData=FALSE)
-highestPostDens(resultsBM[[3]]$particleDataFrame, percent=0.95, returnData=FALSE)
+summarizePosterior(resultsBM[[1]]$particleDataFrame, alpha = 0.8)
+summarizePosterior(resultsBM[[2]]$particleDataFrame, alpha = 0.8)
+summarizePosterior(resultsBM[[3]]$particleDataFrame, alpha = 0.8)
 ```
 
 Or just to look at the first run of the Bounded BM run:
 
 ```{r}
-highestPostDens(resultsBound[[1]]$particleDataFrame, percent=0.95, returnData=FALSE)
+summarizePosterior(resultsBound[[1]]$particleDataFrame, alpha = 0.8)
 
 ```
 

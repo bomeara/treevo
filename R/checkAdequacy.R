@@ -1,27 +1,27 @@
 
 #'
 
-#' @details
+#*' @details
 
-#' @inheritParams
+#*' @inheritParams
 
-#' @param
+#*' @param
 
-#' @return
+#*' @return
 
-#' @aliases
+#*' @aliases
 
-#' @seealso
+#*' @seealso
 
-#' @author David W. Bapst
+#*' @author David W. Bapst
 
-#' @references
+#*' @references
 
-#' @examples
+#*' @examples
 
-#' @name
-#' @rdname
-#' @export
+#*' @name
+#*' @rdname
+#*' @export
 
 
 #############################################################################################

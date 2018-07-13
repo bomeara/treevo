@@ -4,7 +4,8 @@
 #' 
 #' 
 
-#' @param particleDataFrameList An object of type list, composed of particleDataFrames from separate analyses.
+#' @param particleDataFrameList An object of type list,
+#' composed of particleDataFrames from separate analyses.
 
 #' @return Returns a matrix with Kolmogorov-Smirnov values of all pairwise runs.
 
@@ -16,7 +17,8 @@
 #' 
 #' data(simRunExample)
 #' 
-#' pdfList <- list(Brownian = results[[1]]$particleDataFrame, Bounded = resultsBound[[1]]$particleDataFrame)
+#' pdfList <- list(Brownian = results[[1]]$particleDataFrame,
+#'    Bounded = resultsBound[[1]]$particleDataFrame)
 #' 
 #' pairwiseKS(particleDataFrameList = pdfList)
 
@@ -30,7 +32,8 @@ pairwiseKS <- function(particleDataFrameList) {
 
 	#source("/Users/Barb/Desktop/treevo/pkg/R/pairings.R")
 		
-	if(class(particleDataFrameList) == "data.frame" | class(particleDataFrameList) != "list" ){ # | length(particleDataFrameList) != 2
+	if(class(particleDataFrameList) == "data.frame" | class(particleDataFrameList) != "list" ){
+					# | length(particleDataFrameList) != 2
 		warning("KS test requires a list, composed of particleDataFrameList objects from two ABC runs")
 	}
 	
@@ -53,7 +56,8 @@ pairwiseKS <- function(particleDataFrameList) {
 		#colnames(KSMatrix) <- paste0("run", 1:length(x))
 		for (i in 1:dim(KSMatrix)[1]){
 			for (j in 1:dim(KSMatrix)[2]){
-				KSMatrix[i, j] <- suppressWarnings(round(ks.test(x[[i]][, param], x[[j]][, param])$p.value, digits = 4)) #make diag
+				KSMatrix[i, j] <- suppressWarnings(round(ks.test(x[[i]][, param],
+					x[[j]][, param])$p.value, digits = 4)) #make diag
 				}
 			}
 		KSMatrixList[[m]] <- KSMatrix

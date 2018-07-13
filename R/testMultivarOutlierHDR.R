@@ -198,7 +198,7 @@ testMultivarOutlierHDR <- function(dataMatrix, outlier, alpha, coda = FALSE, ver
 		warning("Less than 10 observations are given as input - estimates of the highest density region may be very imprecise")
 		}
 	#
-	dataAll <- rbind(data, outlier)
+	dataAll <- rbind(dataMatrix, outlier)
 	# use PCA or not
 	if(pca){
 		pcaRes <- stats::princomp(dataAll)
@@ -209,7 +209,7 @@ testMultivarOutlierHDR <- function(dataMatrix, outlier, alpha, coda = FALSE, ver
 		}
 	# separate out the outlier to be tested
 	variaOut <- varia[nrow(varia), ]
-	# now remove outlier from variable sample to get HPD from
+	# now remove outlier from variable sample to get HDR from
 	varia <- varia[-nrow(varia), ]
 	#
 	# get HPDs
@@ -222,10 +222,10 @@ testMultivarOutlierHDR <- function(dataMatrix, outlier, alpha, coda = FALSE, ver
 	#
 	# test if outlier is within intervals listed for each variable
 	withinHDR <- sapply(1:ncol(varia), function(x) 
-		any(sapply(1:nrow(HPD[[x]]), function(y) 
-			(HPD[[x]][y, 1] <= variaOut[x]) & (HPD[[x]][y, 2] >= variaOut[x])
+		any(sapply(1:nrow(HDR[[x]]), function(y) 
+			(HDR[[x]][y, 1] <= variaOut[x]) & (HDR[[x]][y, 2] >= variaOut[x])
 			))
 		)
-	res <- all(withinHPD)
+	res <- all(withinHDR)
 	return(res)
 	}

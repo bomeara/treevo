@@ -33,7 +33,7 @@ the weighted mean, standard deviation, and a matrix giving the highest density
 intervals (e.g. the highest posterior density intervals). Because posterior
 estimates of parameter values may be multimodal, multiple sets of bounds
 may be reported for complex posterior distributions, which each constitute one 
-row of the output matrix. See
+row of the output matrix. See \code{\link{highestDensityInterval}} for details.
 }
 \description{
 This function summarizes the distribution of parameter estimates from
@@ -51,7 +51,7 @@ summarizePosterior(results[[1]]$particleDataFrame, alpha = 0.5)
 \seealso{
 This function is essentially a wrapper for independently applying 
 a few summary statistics and applying
-\code{highestDensityInterval} to multiple parameter estimates, taken from
+\code{\link{highestDensityInterval}} to multiple parameter estimates, taken from
 the last generation of an ABC analysis in \code{TreEvo}. As each parameter
 is handled independently, the returned HPD intervals may not properly account
 for covariation among parameter estimates from the posterior. If testing
