@@ -64,7 +64,7 @@ test_that("simParticlePRCParallel run correctly", {
 	rownames(param.stdev)<-paste0("Gen ", c(1: nStepsPRC), sep="")
 	#
 	# save input data for use later
-	input.data<-rbind(jobName, Ntip(phy), nInitialSims, generation.time, TreeYears, timeStep, totalGenerations,
+	input.data<-rbind(jobName, Ntips = Ntip(phy), nInitialSims, generation.time, TreeYears, timeStep, totalGenerations,
 		epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor)
 	#
 	# get summary values for observed data
@@ -200,7 +200,7 @@ test_that("simParticlePRC run correctly", {
 	rownames(param.stdev)<-paste0("Gen ", c(1: nStepsPRC), sep="")
 	#
 	# save input data for use later
-	input.data<-rbind(jobName, Ntip(phy), nInitialSims, generation.time, TreeYears, timeStep, totalGenerations,
+	input.data<-rbind(jobName, Ntips = Ntip(phy), nInitialSims, generation.time, TreeYears, timeStep, totalGenerations,
 		epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor)
 	#
 	# get summary values for observed data

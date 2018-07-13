@@ -1,23 +1,30 @@
 #' @rdname doRun
 #' @export
 doRun_rej <- function(
-	phy, traits, 
-	intrinsicFn, extrinsicFn, 
-	startingPriorsValues, startingPriorsFns, 
-	intrinsicPriorsValues, intrinsicPriorsFns, 
-	extrinsicPriorsValues, extrinsicPriorsFns, 
-	#startingValuesGuess = c(), intrinsicValuesGuess = c(), extrinsicValuesGuess = c(), 
-	generation.time = 1000, 
-	TreeYears = max(branching.times(phy)) * 1e6, 
-	multicore = FALSE, 
-	coreLimit = NA, 
-	validation = "CV", 
-	scale = TRUE, 
-	variance.cutoff = 95, 
-	#niter.goal = 5, 
-	standardDevFactor = 0.20, nInitialSims = NA, jobName = NA, abcTolerance = 0.1, 
-	checkpointFile = NULL, checkpointFreq = 24, savesims = FALSE) {	
-	
+		phy, traits, 
+		intrinsicFn, extrinsicFn, 
+		startingPriorsValues, startingPriorsFns, 
+		intrinsicPriorsValues, intrinsicPriorsFns, 
+		extrinsicPriorsValues, extrinsicPriorsFns, 
+		#startingValuesGuess = c(), intrinsicValuesGuess = c(), extrinsicValuesGuess = c(), 
+		generation.time = 1000, 
+		TreeYears = max(branching.times(phy)) * 1e6, 
+		multicore = FALSE, 
+		coreLimit = NA, 
+		validation = "CV", 
+		scale = TRUE, 
+		#
+		nInitialSims = NULL, 
+		nInitialSimsPerParam = 100, 
+		#
+		variance.cutoff = 95, 
+		#niter.goal = 5, 
+		standardDevFactor = 0.20, 
+		#
+		jobName = NA, abcTolerance = 0.1, 
+		checkpointFile = NULL, checkpointFreq = 24,
+		savesims = FALSE) {	
+	####################################################
 	
 	
 	if (!is.binary.tree(phy)) {
@@ -47,15 +54,23 @@ doRun_rej <- function(
 	taxonDF <- getTaxonDFWithPossibleExtinction(phy = phy)
 
 	# get freevector
-	freevector <- getFreeVector(startingPriorsFns = startingPriorsFns, startingPriorsValues = startingPriorsValues, 
-						intrinsicPriorsFns = intrinsicPriorsFns, intrinsicPriorsValues = intrinsicPriorsValues, 
-						extrinsicPriorsFns = extrinsicPriorsFns, extrinsicPriorsValues = extrinsicPriorsValues)
+	freevector <- getFreeVector(startingPriorsFns = startingPriorsFns, 
+						startingPriorsValues = startingPriorsValues, 
+						intrinsicPriorsFns = intrinsicPriorsFns, 
+						intrinsicPriorsValues = intrinsicPriorsValues, 
+						extrinsicPriorsFns = extrinsicPriorsFns, 
+						extrinsicPriorsValues = extrinsicPriorsValues
+						)
 	numberParametersTotal <- length(freevector)
 	numberParametersFree <- sum(freevector)
 
 	#create PriorMatrix
 	namesForPriorMatrix <- c()
-	PriorMatrix <- matrix(c(startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns), nrow = 1, ncol = numberParametersTotal)
+	PriorMatrix <- matrix(c(startingPriorsFns,
+		intrinsicPriorsFns,
+		extrinsicPriorsFns),
+		nrow = 1,
+		ncol = numberParametersTotal)
 	for (a in 1:dim(startingPriorsValues)[2]) {
 		namesForPriorMatrix <- c(paste0("starting_", a, sep = ""))
 	}
@@ -90,14 +105,18 @@ doRun_rej <- function(
 	#	}
 	#}
 	#
-	if (is.na(nInitialSims)) {
-		nInitialSims <- 100*numberParametersFree
+	if (is.null(nInitialSims)) {
+		nInitialSims <- nInitialSimsPerParam*numberParametersFree	
+		message(paste0("Number of initial simulations to be performed (nInitialSims) not given\n", 
+			"Number of initial simulations will instead be product of the number of free parameters multiplied by ",
+			nInitialSimsPerParam, 
+			"\n( = ", nInitialSims, " initial simulations)"))
 		}
 	#
 	#Used to be multiple tries where nrepSim = nInitialSims*((2^try)/2).
 		#If initial simulations are not enough, and we need to try again then new analysis will double number of initial simulations
 	nrepSim <- nInitialSims
-	message(paste0("Number of initial simulations set to ", nrepSim)) 	#, "\n"
+	#message(paste0("Number of initial simulations set to ", nrepSim)) 	#, "\n"
 	if(!is.null(checkpointFile)) {
 		save(list = ls(), file = paste0(checkpointFile, ".intialsettings.Rsave", sep = ""))
 		}
@@ -117,12 +136,19 @@ doRun_rej <- function(
 	#	paste0("\n", niter.OU.g, " for OU"), 
 	#	paste0("\n", niter.white.g, " for white noise")))
 	#
-	trueFreeValuesANDSummaryValues <- parallelSimulateWithPriors(nrepSim = nrepSim, coreLimit = coreLimit, phy = phy, taxonDF = taxonDF, 
-		startingPriorsValues = startingPriorsValues, intrinsicPriorsValues = intrinsicPriorsValues, extrinsicPriorsValues = extrinsicPriorsValues, 
-		startingPriorsFns = startingPriorsFns, intrinsicPriorsFns = intrinsicPriorsFns, extrinsicPriorsFns = extrinsicPriorsFns, 
-		freevector = freevector, timeStep = timeStep, intrinsicFn = intrinsicFn, extrinsicFn = extrinsicFn, 
-		multicore = multicore, checkpointFile = checkpointFile, checkpointFreq = checkpointFreq, 
-		#niter.brown = niter.brown.g, niter.lambda = niter.lambda.g, niter.delta = niter.delta.g, niter.OU = niter.OU.g, niter.white = niter.white.g
+	trueFreeValuesANDSummaryValues <- parallelSimulateWithPriors(
+		nrepSim = nrepSim, coreLimit = coreLimit, phy = phy, taxonDF = taxonDF, 
+		startingPriorsValues = startingPriorsValues,
+		intrinsicPriorsValues = intrinsicPriorsValues,
+		extrinsicPriorsValues = extrinsicPriorsValues, 
+		startingPriorsFns = startingPriorsFns,
+		intrinsicPriorsFns = intrinsicPriorsFns,
+		extrinsicPriorsFns = extrinsicPriorsFns, 
+		freevector = freevector, timeStep = timeStep,
+		intrinsicFn = intrinsicFn, extrinsicFn = extrinsicFn, 
+		multicore = multicore,
+		checkpointFile = checkpointFile,
+		checkpointFreq = checkpointFreq, 
 		)
 	#
 	#message("\n\n")
@@ -137,18 +163,26 @@ doRun_rej <- function(
 		save(trueFreeValuesMatrix, summaryValuesMatrix, simTime, file = paste0("sims", jobName, ".Rdata", sep = ""))
 		}
 
-	res <- makeQuiet(PLSRejection(summaryValuesMatrix = summaryValuesMatrix, trueFreeValuesMatrix = trueFreeValuesMatrix, 
-		phy = phy, traits = traits, abcTolerance = abcTolerance))
-	
-	#save(abcDistancesRaw, abcDistancesRawTotal, abcDistances, abcResults, particleDataFrame, file = "")
-	input.data <- rbind(jobName, length(phy[[3]]), generation.time, TreeYears, timeStep, totalGenerations, nInitialSims, standardDevFactor, abcTolerance)
-	#message(res)
-	
-	rejectionResults <- vector("list")
-	
-	#names(rejectionResults) <- c("input.data", "PriorMatrix", "phy", "traits")
-	#save(trueFreeValuesMatrix, res, file = "BarbsTestofDistanceCalc2.Rdata")
-
+	res <- makeQuiet(PLSRejection(
+		summaryValuesMatrix = summaryValuesMatrix, 
+		trueFreeValuesMatrix = trueFreeValuesMatrix, 
+		phy = phy, 
+		traits = traits, 
+		abcTolerance = abcTolerance
+		))
+	# number of accepted simulations
+	nAcceptedSims<-nrow(res$particleDataFrame)
+	# print acceptance rate
+	message(paste0("Of ",nInitialSims,"initial simulations, ",nAcceptedSims,
+		"were accepted (",nAcceptedSims/nInitialSims," Particle Acceptance Rate)"))
+	#
+	rejectionResults <- list()
+	# save input data, conditions
+	Ntips <- Ntip(phy)
+	input.data <- rbind(jobName, Ntips,
+		generation.time, TreeYears, timeStep, totalGenerations,
+		nInitialSims, nAcceptedSims, standardDevFactor, abcTolerance)
+	#
 	rejectionResults$input.data <- input.data
 	rejectionResults$PriorMatrix <- PriorMatrix
 	rejectionResults$phy <- phy
@@ -158,7 +192,11 @@ doRun_rej <- function(
 	rejectionResults$abcDistances <- res$abcDistances
 	rejectionResults$particleDataFrame <- res$particleDataFrame
 	#rejectionResults$credibleInt <- credibleInt(res$particleDataFrame)
-	rejectionResults$postSummary  <- summarizePosterior(res$particleDataFrame, verboseMultimodal = FALSE)
-
+	if(nAcceptedSims>2){
+		rejectionResults$postSummary  <- summarizePosterior(res$particleDataFrame, verboseMultimodal = FALSE)
+	}else{
+		warning("Posterior Summaries were not calculated as the number of accepted particles was less than 2")
+		}
+	#
 	return(rejectionResults)
 	}

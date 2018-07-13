@@ -9,7 +9,7 @@
 doRun_prc(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
   startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns,
   extrinsicPriorsValues, extrinsicPriorsFns, numParticles = 300,
-  nStepsPRC = 5, nRuns = 2, nInitialSims = NA,
+  nStepsPRC = 5, nRuns = 2, nInitialSims = NULL,
   nInitialSimsPerParam = 100, generation.time = 1000,
   TreeYears = max(branching.times(phy)) * 1e+06, multicore = FALSE,
   coreLimit = NA, multicoreSuppress = FALSE, standardDevFactor = 0.2,
@@ -22,10 +22,10 @@ doRun_rej(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
   startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns,
   extrinsicPriorsValues, extrinsicPriorsFns, generation.time = 1000,
   TreeYears = max(branching.times(phy)) * 1e+06, multicore = FALSE,
-  coreLimit = NA, validation = "CV", scale = TRUE, variance.cutoff = 95,
-  standardDevFactor = 0.2, nInitialSims = NA, jobName = NA,
-  abcTolerance = 0.1, checkpointFile = NULL, checkpointFreq = 24,
-  savesims = FALSE)
+  coreLimit = NA, validation = "CV", scale = TRUE, nInitialSims = NULL,
+  nInitialSimsPerParam = 100, variance.cutoff = 95,
+  standardDevFactor = 0.2, jobName = NA, abcTolerance = 0.1,
+  checkpointFile = NULL, checkpointFreq = 24, savesims = FALSE)
 }
 \arguments{
 \item{phy}{A phylogenetic tree, in package \code{ape}'s \code{phylo} format.}
@@ -68,7 +68,8 @@ as the generation of particles within each run makes use of the multicore functi
 If \code{nRuns} is greater than 1, the output from \code{doRun_prc} will be a list object composed of
 multiple output lists, as described.}
 
-\item{nInitialSims}{Number of initial simulations used to calibrate particle rejection control algorithm.}
+\item{nInitialSims}{Number of initial simulations used to calibrate particle rejection control algorithm.
+If not given, this will be a function of the number of freely varying parameters.}
 
 \item{nInitialSimsPerParam}{If \code{nInitialSims} is not given by the user, the number of initial simulations
 performed to calibrate the particle rejection algorithm will instead be the number of free parameters
@@ -265,7 +266,6 @@ resultsRej <- doRun_rej(
 	extrinsicPriorsFns = c("fixed"), 
 	extrinsicPriorsValues = matrix(c(0, 0), nrow = 2, byrow = FALSE), 
 generation.time = 10000, 
-	nInitialSims = 10, 
 	jobName = "examplerun_rej", 
 	abcTolerance = 0.05, 
 	multicore = FALSE, 

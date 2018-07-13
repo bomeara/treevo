@@ -54,6 +54,7 @@
 #' @param standardDevFactor Standard deviation for mutating states each time a new particle is generated in a PRC generation.
 
 #' @param nInitialSims Number of initial simulations used to calibrate particle rejection control algorithm.
+#' If not given, this will be a function of the number of freely varying parameters.
 
 # @param plot If \code{TRUE}, plots distance of each simulation.
 
@@ -231,7 +232,6 @@
 #' 	extrinsicPriorsFns = c("fixed"), 
 #' 	extrinsicPriorsValues = matrix(c(0, 0), nrow = 2, byrow = FALSE), 
 #'	generation.time = 10000, 
-#' 	nInitialSims = 10, 
 #' 	jobName = "examplerun_rej", 
 #' 	abcTolerance = 0.05, 
 #' 	multicore = FALSE, 
@@ -271,7 +271,7 @@ doRun_prc <- function(
 	numParticles = 300, 
 	nStepsPRC = 5, 
 	nRuns = 2, 
-	nInitialSims = NA, 
+	nInitialSims = NULL, 
 	nInitialSimsPerParam = 100, 
 	#
 	generation.time = 1000, 
@@ -378,11 +378,11 @@ doRun_prc <- function(
 	colnames(param.stdev) <- namesParFree
 	rownames(param.stdev) <- paste0("Gen ", c(1: nStepsPRC), sep = "")
 	#
-	#
-	if (is.na(nInitialSims)) {
+	if (is.null(nInitialSims)) {
 		nInitialSims <- nInitialSimsPerParam*numberParametersFree	#modified from 1000, which is rather computationally abusive
 		message(paste0("Number of initial simulations to be performed (nInitialSims) not given\n", 
-			"Number of initial simulations will instead be product of the number of free parameters multipled by ", nInitialSimsPerParam, 
+			"Number of initial simulations will instead be product of the number of free parameters multiplied by ",
+			nInitialSimsPerParam, 
 			"\n( = ", nInitialSims, " initial simulations)"))
 		}
 	#
@@ -766,9 +766,13 @@ doRun_prc <- function(
 		prcResults$traits <- traits
 		prcResults$simTime <- initialSimsRes$simTime
 		prcResults$time.per.gen <- genTimes
-		#prcResults$credibleInt  <- credibleInt(particleDataFrame)
-		prcResults$postSummary  <- summarizePosterior(particleDataFrame, verboseMultimodal = FALSE)
-		#
+		#######################################
+		if(nrow(particleDataFrame)>2){
+			prcResults$postSummary  <- summarizePosterior(particleDataFrame, verboseMultimodal = FALSE)
+		}else{
+			warning("Posterior Summaries were not calculated as the number of accepted particles was less than 2")
+			}
+		######################################
 		if(identical(nRuns, 1)){
 			results <- prcResults
 		}else{
