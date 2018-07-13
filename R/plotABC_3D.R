@@ -22,7 +22,7 @@
 #' obtain than package \code{gpclib}, but may not be buildable on some UNIX workstations.
 #' 
 
-#* @param particleDataFrame A \code{particleDataFrame} object, as found among the output from \code{\link{doRun}} functions.
+#' @param particleDataFrame A \code{particleDataFrame} object, as found among the output from \code{\link{doRun}} functions.
 
 #' @param parameter Column number of parameter of interest from
 #' \code{particleDataFrame}.
@@ -84,11 +84,10 @@ plotABC_3D <- function(particleDataFrame, parameter, show.particles = "none",
 	# yes??? I think this is right, not sure
 	generation <- particleDataFrame$generation
 		
-	x <- particleDataFrame	
 	param.position <- parameter
 	pdfMaxGen <- particleDataFrame[particleDataFrame$weight>0  & particleDataFrame$generation == max(particleDataFrame$generation), ]
 	nParticles <- dim(pdfMaxGen)[1]
-	nparams <- dim(x)[2]-6
+	nparams <- dim(particleDataFrame)[2]-6
 	#
 	q <- vector() #vector of x vals
 	r <- vector() #vector of y vals

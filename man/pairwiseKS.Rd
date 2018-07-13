@@ -7,7 +7,8 @@
 pairwiseKS(particleDataFrameList)
 }
 \arguments{
-\item{particleDataFrameList}{An object of type list, composed of particleDataFrames from separate analyses.}
+\item{particleDataFrameList}{An object of type list,
+composed of particleDataFrames from separate analyses.}
 }
 \value{
 Returns a matrix with Kolmogorov-Smirnov values of all pairwise runs.
@@ -19,7 +20,8 @@ This function calculates Kolmogorov-Smirnov on results.
 
 data(simRunExample)
 
-pdfList <- list(Brownian = results[[1]]$particleDataFrame, Bounded = resultsBound[[1]]$particleDataFrame)
+pdfList <- list(Brownian = results[[1]]$particleDataFrame,
+   Bounded = resultsBound[[1]]$particleDataFrame)
 
 pairwiseKS(particleDataFrameList = pdfList)
 }

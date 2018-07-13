@@ -111,7 +111,7 @@
 #' 
 #' plotUnivariatePosteriorVsPrior(
 #'   posteriorCurve = postKernal, priorCurve = priorKernal, 
-#'  	label = "parameter", trueValue = NULL, alpha = 0.95)
+#'  	label = "parameter", trueValue = NULL)
 #' 
 #' # cool!
 #' 
@@ -407,7 +407,7 @@ getUnivariatePosteriorCurve <- function(acceptedValues,
 		}
 	result <- density(acceptedValues, from = from, to = to, ...)
 	hpd.result <- highestDensityInterval(
-		samples, alpha = alpha, 
+		acceptedValues, alpha = alpha, 
 		coda = coda, 
 		verboseMultimodal=verboseMultimodal, ...)
 	#

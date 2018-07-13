@@ -126,7 +126,7 @@ postKernal
 
 plotUnivariatePosteriorVsPrior(
   posteriorCurve = postKernal, priorCurve = priorKernal, 
- 	label = "parameter", trueValue = NULL, alpha = 0.95)
+ 	label = "parameter", trueValue = NULL)
 
 # cool!
 

@@ -1,4 +1,6 @@
 ^\.travis\.yml$
 ^docs$
-^/.git$
-^/.lintr$
+^\.git$
+^\.lintr$
+^vignette\\\.construct_vignette\.txt
+^vignette\\\.constructing_treevo_vignette\.R

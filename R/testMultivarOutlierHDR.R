@@ -189,7 +189,14 @@
 #' @export
 testMultivarOutlierHDR <- function(dataMatrix, outlier, alpha, coda = FALSE, verboseMultimodal=FALSE, pca = TRUE, ...){
 	if(!is.matrix(dataMatrix)){
-		stop("dataMatrix is apparently not a matrix")
+		if(is.vector(dataMatrix)){
+			dataMatrix<-matrix(dataMatrix,,1)
+		}else{
+			dataMatrix<-as.matrix(dataMatrix)
+			}
+		if(!is.matrix(dataMatrix)){
+			stop("dataMatrix cannot be coerced to be a a matrix")
+			}
 		}
 	if(nrow(dataMatrix)<3){
 		stop("Two or less observations in dataMatrix - insufficient data for generating a highest density region")
