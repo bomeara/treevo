@@ -48,10 +48,10 @@ use for extrinsic function parameters: can be one of \code{"fixed"}, \code{"unif
 \item{extrinsicPriorsValues}{Matrix with number of columns equal to the number of parameters to pass
 to the extrinsic function and number of rows equal to two (representing two parameters to pass to prior distribution).}
 
-\item{generation.time}{The number of years per generation. This sets the coarseness of the simulation; if it's set to 1000,
+\item{generation.time}{The number of years per generation. This sets the coarseness of the simulation; if it's set to 1000, 
 for example, the population's trait values change every 1000 calender years. Note that this is in calender years (see description
 for argument \code{TreeYears}), and not in millions of years (as is typical for dated trees in macroevolutionary studies).
-Thus, if a branch is 1 million-year time-unit long, and a user applies the default \code{generation.time = 1000},
+Thus, if a branch is 1 million-year time-unit long, and a user applies the default \code{generation.time = 1000}, 
 then 1000 evolutionary changes will be simulated along that branch.
 See documentation for \code{\link{doSimulation}} for further details.}
 
@@ -62,7 +62,7 @@ branch lengths are not in millions of years, you should alter this argument. Oth
 See documentation for \code{\link{doSimulation}} for further details.}
 
 \item{timeStep}{This value corresponds to the lenght of intervals between discrete evolutionary events ('generations')
-simulated along branches, relative to a rescaled tree where the root to furthest tip distance is 1. For example,
+simulated along branches, relative to a rescaled tree where the root to furthest tip distance is 1. For example, 
 \code{timeStep = 0.01} of would mean 100 (i.e., 1 / 0.01) evolutionary changes would be expected to occur from
 the root to the furthest tip. (Note that the real number simulated will be much less, because simulations start
 over at each branching node.) Ideally, \code{timeStep} (or its effective value, via other arguments) should be
@@ -94,7 +94,7 @@ fixed (\code{FALSE}) parameters.}
 \item{multicore}{Whether to use multicore, default is \code{FALSE}. If \code{TRUE}, one of
 two suggested packages must be installed, either \code{doMC} (for UNIX systems) or
 \code{doParallel} (for Windows), which are used to activate multithreading.
-If neither package is installed, this function will fail if \code{multicore=TRUE}.}
+If neither package is installed, this function will fail if \code{multicore = TRUE}.}
 
 \item{coreLimit}{Maximum number of cores to be used.}
 
@@ -107,11 +107,11 @@ If neither package is installed, this function will fail if \code{multicore=TRUE
 \item{verboseNested}{Should looped runs of \code{simulateWithPriors} be verbose?}
 }
 \value{
-Function \code{simulateWithPriors} returns a vector of \code{trueFreeValues},
+Function \code{simulateWithPriors} returns a vector of \code{trueFreeValues}, 
 the true generating parameters used in the simulation
 (a set of values as long as the number of freely varying parameters), concatenated with a set of summary statistics for
 the simulation. Function \code{parallelSimulateWithPriors} returns a matrix of such vectors bound
-together, with each row representing a different simulation. By default,
+together, with each row representing a different simulation. By default, 
 both functions also assign a logical vector named \code{freevector}, indicating the total number of
 parameters and which parameters are freely-varying (have \code{TRUE} values), as an attribute of
 the output.
@@ -132,45 +132,45 @@ want to use \code{\link{simulateWithPriors}} or \code{\link{doSimulation}} to do
 \examples{
 \donttest{
 set.seed(1)
-tree<-rcoal(20)
+tree <- rcoal(20)
 # get realistic edge lengths
-tree$edge.length<-tree$edge.length*20
+tree$edge.length <- tree$edge.length*20
 
 # example simulation
 
 # NOTE: the example analyses involve too few simulations, with coarse time-units
 	# - all for the sake of examples that reasonably test the functions
 	
-simData<-simulateWithPriors(phy=tree,
-  intrinsicFn=brownianIntrinsic,
-  extrinsicFn=nullExtrinsic,
-  startingPriorsFns="normal",
-  startingPriorsValues=matrix(c(mean(simChar[,1]), sd(simChar[,1]))),
-  intrinsicPriorsFns=c("exponential"),
-  intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
-  extrinsicPriorsFns=c("fixed"),
-  extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
-  generation.time=100000,
-	 freevector=NULL, 	
-	 giveUpAttempts=10,
-	 verbose=TRUE)
+simData <- simulateWithPriors(phy = tree, 
+  intrinsicFn = brownianIntrinsic, 
+  extrinsicFn = nullExtrinsic, 
+  startingPriorsFns = "normal", 
+  startingPriorsValues = matrix(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
+  intrinsicPriorsFns = c("exponential"), 
+  intrinsicPriorsValues = matrix(c(10, 10), nrow = 2, byrow = FALSE), 
+  extrinsicPriorsFns = c("fixed"), 
+  extrinsicPriorsValues = matrix(c(0, 0), nrow = 2, byrow = FALSE), 
+  generation.time = 100000, 
+	 freevector = NULL, 	
+	 giveUpAttempts = 10, 
+	 verbose = TRUE)
 
 simData
 
-simDataParallel<-parallelSimulateWithPriors(
-  nrepSim=2, multicore=FALSE, coreLimit=1,
-  phy=tree,
-  intrinsicFn=brownianIntrinsic,
-  extrinsicFn=nullExtrinsic,
-  startingPriorsFns="normal",
-  startingPriorsValues=matrix(c(mean(simChar[,1]), sd(simChar[,1]))),
-  intrinsicPriorsFns=c("exponential"),
-  intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
-  extrinsicPriorsFns=c("fixed"),
-  extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
-  generation.time=100000,
-  checkpointFile=NULL, checkpointFreq=24,
-  verbose=TRUE, freevector=NULL, taxonDF=NULL)
+simDataParallel <- parallelSimulateWithPriors(
+  nrepSim = 2, multicore = FALSE, coreLimit = 1, 
+  phy = tree, 
+  intrinsicFn = brownianIntrinsic, 
+  extrinsicFn = nullExtrinsic, 
+  startingPriorsFns = "normal", 
+  startingPriorsValues = matrix(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
+  intrinsicPriorsFns = c("exponential"), 
+  intrinsicPriorsValues = matrix(c(10, 10), nrow = 2, byrow = FALSE), 
+  extrinsicPriorsFns = c("fixed"), 
+  extrinsicPriorsValues = matrix(c(0, 0), nrow = 2, byrow = FALSE), 
+  generation.time = 100000, 
+  checkpointFile = NULL, checkpointFreq = 24, 
+  verbose = TRUE, freevector = NULL, taxonDF = NULL)
 
 simDataParallel
 

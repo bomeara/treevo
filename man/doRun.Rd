@@ -63,7 +63,7 @@ use for extrinsic function parameters: can be one of \code{"fixed"}, \code{"unif
 \item{nStepsPRC}{Number of PRC generations to run.}
 
 \item{nRuns}{Number of independent PRC runs to be performed, each consisting of independent sets of
-initial simulations and PRC generations. Note that runs are run \emph{sequentially}, and not in parallel,
+initial simulations and PRC generations. Note that runs are run \emph{sequentially}, and not in parallel, 
 as the generation of particles within each run makes use of the multicore functionality.
 If \code{nRuns} is greater than 1, the output from \code{doRun_prc} will be a list object composed of
 multiple output lists, as described.}
@@ -74,10 +74,10 @@ multiple output lists, as described.}
 performed to calibrate the particle rejection algorithm will instead be the number of free parameters
 in the model multiplied by \code{nInitialSimsPerParam}.}
 
-\item{generation.time}{The number of years per generation. This sets the coarseness of the simulation; if it's set to 1000,
+\item{generation.time}{The number of years per generation. This sets the coarseness of the simulation; if it's set to 1000, 
 for example, the population's trait values change every 1000 calender years. Note that this is in calender years (see description
 for argument \code{TreeYears}), and not in millions of years (as is typical for dated trees in macroevolutionary studies).
-Thus, if a branch is 1 million-year time-unit long, and a user applies the default \code{generation.time = 1000},
+Thus, if a branch is 1 million-year time-unit long, and a user applies the default \code{generation.time = 1000}, 
 then 1000 evolutionary changes will be simulated along that branch.
 See documentation for \code{\link{doSimulation}} for further details.}
 
@@ -90,7 +90,7 @@ See documentation for \code{\link{doSimulation}} for further details.}
 \item{multicore}{Whether to use multicore, default is \code{FALSE}. If \code{TRUE}, one of
 two suggested packages must be installed, either \code{doMC} (for UNIX systems) or
 \code{doParallel} (for Windows), which are used to activate multithreading.
-If neither package is installed, this function will fail if \code{multicore=TRUE}.}
+If neither package is installed, this function will fail if \code{multicore = TRUE}.}
 
 \item{coreLimit}{Maximum number of cores to be used.}
 
@@ -106,10 +106,10 @@ of \code{doPar}. Mainly to be used for developer diagnostic purposes.}
 \item{validation}{Character argument controlling what validation procedure is used by \code{\link{plsr}}.
 Default is \code{"CV"} for cross-validation.}
 
-\item{scale}{This argument is passed to \code{\link{plsr}}.  It may be a numeric vector, or logical. If numeric vector,
+\item{scale}{This argument is passed to \code{\link{plsr}}.  It may be a numeric vector, or logical. If numeric vector, 
 the input is scaled by dividing each variable with the corresponding element of scale.
 If \code{scale = TRUE}, the inpus is scaled by dividing each variable by its sample standard deviation.
-If cross-validation is selected (the default for \code{returnPLSModel}),
+If cross-validation is selected (the default for \code{returnPLSModel}), 
 scaling by the standard deviation is done for every segment.}
 
 \item{variance.cutoff}{Minimum threshold percentage of variance explained for the
@@ -132,7 +132,7 @@ the PRC algorithm as it runs.}
 
 \item{jobName}{Optional job name.}
 
-\item{saveData}{Option to save various run information during the analysis,
+\item{saveData}{Option to save various run information during the analysis, 
 including summary statistics from analyses, output to external .Rdata and .txt files.}
 
 \item{verboseParticles}{If \code{TRUE} (the default), a large amount of information about parameter estimates
@@ -147,29 +147,28 @@ and acceptance of particles is output to console via \code{message} as \code{doR
 \item{savesims}{Option to save individual simulations, output to a .Rdata file.}
 }
 \value{
-The output of these two functions are lists, composed of multiple objects,
+The output of these two functions are lists, composed of multiple objects, 
 which differ slightly in their content among the two functions. For \code{doRun_prc}, the output is:
 \describe{
-\item{input.data}{Input variables: jobName, number of taxa, nInitialSims,
-generation.time, TreeYears, timeStep, totalGenerations, epsilonProportion,
+\item{input.data}{Input variables: jobName, number of taxa, nInitialSims, 
+generation.time, TreeYears, timeStep, totalGenerations, epsilonProportion, 
 epsilonMultiplier, nRuns, nStepsPRC, numParticles, standardDevFactor}
 \item{PriorMatrix}{Matrix of prior distributions. This is used for doing post-analysis comparisons between prior and posterior distributions, such as with function \code{plotPosteriors}}
-\item{particleDataFrame}{DataFrame with information from each simulation,
+\item{particleDataFrame}{DataFrame with information from each simulation, 
 including generation, attempt, id, parentid, distance, weight, and parameter states}
 \item{toleranceVector}{Final tolerance vector}
 \item{phy}{Input phylogeny}
 \item{traits}{Input traits} \item{simTime}{Processor time for initial simulations}
 \item{time.per.gen}{Processor time for subsequent generations}
-\item{credibleInt}{Credible Interval calculation for each free parameter of the final generation}
-\item{HPD}{Highest Posterior Density calculation each free parameter of the final generation}
+\item{postSummary}{Summarizes the posterior distribution from the final generation for all free parameters, giving the mean, standard deviation and Highest Posterior Density (at a 0.8 alpha) for each parameter.}
 }
 
 If \code{nRuns} is greater than 1, the output from \code{doRun_prc} will be a list object composed of multiple output lists, as described.
 
 For \code{doRun_rej}, the output is:
 \describe{
-\item{input.data}{Input variables: jobName, number of taxa, nInitialSims,
-generation.time, TreeYears, timeStep, totalGenerations, epsilonProportion,
+\item{input.data}{Input variables: jobName, number of taxa, nInitialSims, 
+generation.time, TreeYears, timeStep, totalGenerations, epsilonProportion, 
 epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor}
 \item{PriorMatrix}{Matrix of prior distributions. This is used for doing post-analysis comparisons between prior and posterior distributions, such as with function \code{plotPosteriors}}
 \item{phy}{Input phylogeny}
@@ -179,24 +178,23 @@ epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor}
 \item{abcDistancesRaw}{Euclidean distances for each simulation and free parameter}
 \item{particleDataFrame}{DataFrame with information from each
 simulation, including generation, attempt, id, parentid, distance, weight, and parameter states}
-\item{credibleInt}{Credible Interval calculation for each free parameter of the final generation}
-\item{HPD}{Highest Posterior Density calculation each free parameter of the final generation}
+\item{postSummary}{Summarizes the posterior distribution from the final generation for all free parameters, giving the mean, standard deviation and Highest Posterior Density (at a 0.8 alpha) for each parameter.}
 }
 }
 \description{
-The \code{doRun} functions are the main interface for \code{TreEvo} users to do Approximate Bayesian Computation (ABC) analysis,
+The \code{doRun} functions are the main interface for \code{TreEvo} users to do Approximate Bayesian Computation (ABC) analysis, 
 effectively wrapping the \code{\link{simulateWithPriors}} functions to perform simulations, which
 themselves are wrappers for the \code{\link{doSimulation}} function. The two current \code{doRun}
-functions are \code{doRun_prc} which applies a partial rejection control(PRC) ABC analysis over multiple generations of simulations,
+functions are \code{doRun_prc} which applies a partial rejection control(PRC) ABC analysis over multiple generations of simulations, 
 and \code{doRun_rej} which performs a full rejection ('rej') ABC analysis.
 }
 \details{
-Both \code{doRun} functions take an input phylogeny (\code{phy}),
+Both \code{doRun} functions take an input phylogeny (\code{phy}), 
 observed trait data set (\code{traits}), models (\code{intrinsicFn}, \code{extrinsicFn}), and priors
-(\code{startingPriorsValues}, \code{startingPriorsFns}, \code{intrinsicPriorsValues},
+(\code{startingPriorsValues}, \code{startingPriorsFns}, \code{intrinsicPriorsValues}, 
 \code{intrinsicPriorsFns}, \code{extrinsicPriorsValues}, \code{extrinsicPriorsFns}). Pulling from
 the priors, it simulates an initial set of simulations (\code{nInitialSims}). This set of simulations is
-boxcox transformed ,and a PLS regression (see \code{\link{methodsPLS}}) is performed for each free parameter
+boxcox transformed , and a PLS regression (see \code{\link{methodsPLS}}) is performed for each free parameter
 to determine the most informative summary statistics (using \code{variance.cutoff}). The euclidean distance is calculated
 between each each initial simulation's most informative summary statistics and the input observed data.
 
@@ -206,7 +204,7 @@ For function \code{doRun_rej}, those simulations whose most informative summary 
 \code{abcTolerance} are kept as accepted 'particles' (simulations runs), describing the
 posterior distribution of parameters. No additional generations of simulations are performed.
 
-Coversely, function \code{doRun_prc} performs an ABC-PRC analysis,
+Coversely, function \code{doRun_prc} performs an ABC-PRC analysis, 
 which follows a much more complicated algorithm with additional generations. In PRC, tolerance is set based on
 \code{epsilonProportion} and \code{epsilonMultiplier}, and the analysis
 begins with generation 1 and continues through a number of generations equal to \code{nStepsPRC}.
@@ -223,54 +221,54 @@ parameters.
 set.seed(1)
 data(simRunExample)
 
-# NOTE: the example analyses below sample too few particles,
+# NOTE: the example analyses below sample too few particles, 
 	# over too few steps, with too few starting simulations
 	# - all for the sake of examples that reasonably test the functions
 
 # Please set these values to more realistic levels for your analyses!
 
-resultsPRC<-doRun_prc(
-  phy = simPhy,
-  traits = simChar,
-  intrinsicFn=brownianIntrinsic,
-  extrinsicFn=nullExtrinsic,
-  startingPriorsFns="normal",
-  startingPriorsValues=matrix(c(mean(simChar[,1]), sd(simChar[,1]))),
-  intrinsicPriorsFns=c("exponential"),
-  intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
-  extrinsicPriorsFns=c("fixed"),
-  extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
-  generation.time=10000,
-  nRuns=2,
-  nStepsPRC=3,
-  numParticles=20,
-  nInitialSimsPerParam = 10,
-  jobName="examplerun_prc",
-  stopRule=FALSE,
-  multicore=FALSE,
-  coreLimit=1
+resultsPRC <- doRun_prc(
+  phy = simPhy, 
+  traits = simChar, 
+  intrinsicFn = brownianIntrinsic, 
+  extrinsicFn = nullExtrinsic, 
+  startingPriorsFns = "normal", 
+  startingPriorsValues = matrix(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
+  intrinsicPriorsFns = c("exponential"), 
+  intrinsicPriorsValues = matrix(c(10, 10), nrow = 2, byrow = FALSE), 
+  extrinsicPriorsFns = c("fixed"), 
+  extrinsicPriorsValues = matrix(c(0, 0), nrow = 2, byrow = FALSE), 
+  generation.time = 10000, 
+  nRuns = 2, 
+  nStepsPRC = 3, 
+  numParticles = 20, 
+  nInitialSimsPerParam = 10, 
+  jobName = "examplerun_prc", 
+  stopRule = FALSE, 
+  multicore = FALSE, 
+  coreLimit = 1
 )
 
 resultsPRC
 
 #one should make sure priors are uniform with doRun_rej!
 
-resultsRej<-doRun_rej(
-	phy = simPhy,
-	traits = simChar,
-	intrinsicFn = brownianIntrinsic,
-	extrinsicFn = nullExtrinsic,
-	startingPriorsFns = "normal",
-	startingPriorsValues = matrix(c(mean(simChar[,1]), sd(simChar[,1]))),
-	intrinsicPriorsFns = c("exponential"),
-	intrinsicPriorsValues = matrix(c(10, 10), nrow=2, byrow=FALSE), #grep for normal in pkg
-	extrinsicPriorsFns = c("fixed"),
-	extrinsicPriorsValues = matrix(c(0, 0), nrow=2, byrow=FALSE),
-generation.time=10000,
-	nInitialSims = 10,
-	jobName = "examplerun_rej",
-	abcTolerance = 0.05,
-	multicore = FALSE,
+resultsRej <- doRun_rej(
+	phy = simPhy, 
+	traits = simChar, 
+	intrinsicFn = brownianIntrinsic, 
+	extrinsicFn = nullExtrinsic, 
+	startingPriorsFns = "normal", 
+	startingPriorsValues = matrix(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
+	intrinsicPriorsFns = c("exponential"), 
+	intrinsicPriorsValues = matrix(c(10, 10), nrow = 2, byrow = FALSE), #grep for normal in pkg
+	extrinsicPriorsFns = c("fixed"), 
+	extrinsicPriorsValues = matrix(c(0, 0), nrow = 2, byrow = FALSE), 
+generation.time = 10000, 
+	nInitialSims = 10, 
+	jobName = "examplerun_rej", 
+	abcTolerance = 0.05, 
+	multicore = FALSE, 
 	coreLimit = 1
 	)
 

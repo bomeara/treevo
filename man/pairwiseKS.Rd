@@ -19,7 +19,7 @@ This function calculates Kolmogorov-Smirnov on results.
 
 data(simRunExample)
 
-pdfList<-list(Brownian=results[[1]]$particleDataFrame,Bounded=resultsBound[[1]]$particleDataFrame)
+pdfList <- list(Brownian = results[[1]]$particleDataFrame, Bounded = resultsBound[[1]]$particleDataFrame)
 
 pairwiseKS(particleDataFrameList = pdfList)
 }

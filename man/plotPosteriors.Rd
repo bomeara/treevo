@@ -10,8 +10,8 @@ plotPosteriors(particleDataFrame, priorsMat, realParam = FALSE,
 \arguments{
 \item{particleDataFrame}{A \code{particleDataFrame} object returned by TreEvo ABC analyses, can be a
 single data frame or a list of data frames.
-If the \code{particleDataFrame} is a list of seperate TreEvo runs, posteriors will
-be layered over each other to check for repeatability.  The relative grayscale of
+If the \code{particleDataFrame} is a list of separate TreEvo runs, posteriors will
+be layered over each other to check for repeatability.  The relative gray-scale of
 posterior distributions in the plot depends on their total number of runs.}
 
 \item{priorsMat}{A \code{PriorMatrix} object s returned by TreEvo \code{\link{doRun}} functions. Can be a single such matrix
@@ -40,9 +40,12 @@ the true values are known.
 \examples{
 data(simRunExample)
 
-plotPosteriors(particleDataFrame=results[[1]]$particleDataFrame,
-   priorsMat=results[[1]]$PriorMatrix,
-   realParam=TRUE, realParamValues=c(ancState,genRate))
+# make a list of particleDataFrames to plot multiple runs
+resultsPDFlist <- lapply(results, function(x) x$particleDataFrame)
+
+plotPosteriors(resultsPDFlist, 
+   priorsMat = results[[1]]$PriorMatrix, 
+   realParam = TRUE, realParamValues = c(ancState, genRate))
 }
 \seealso{
 \code{\link{plotPrior}} for a set of functions for visualizing and summarizing
