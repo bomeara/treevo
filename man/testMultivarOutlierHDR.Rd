@@ -123,7 +123,7 @@ points(x = outlier[1], y = outlier[2], col = 2)
 
 # we can use testMultivarOutlierHDR with pca = FALSE
 # to do all of the above without visually checking
-testMultivarOutlierHDR(dataMatrix = c(x, y), 
+testMultivarOutlierHDR(dataMatrix = cbind(x, y), 
 	outlier = outlier, alpha = 0.8, pca = FALSE)
 	
 # Should that really be considered to be within
