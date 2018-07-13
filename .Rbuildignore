@@ -2,5 +2,9 @@
 ^docs$
 ^\.git$
 ^\.lintr$
+
+vignettes/.construct_vignette.txt
+vignettes/.constructing_treevo_vignette.R
+
 ^vignette\\\.construct_vignette\.txt
 ^vignette\\\.constructing_treevo_vignette\.R

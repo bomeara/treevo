@@ -136,7 +136,7 @@
 #' # white space not supported by the observed data.
 #' 
 #' # And now let's apply testMultivarOutlierHDR, with pca = TRUE
-#' testMultivarOutlierHDR(dataMatrix = c(x, y), 
+#' testMultivarOutlierHDR(dataMatrix = cbind(x, y), 
 #' 	outlier = outlier, alpha = 0.8, pca = TRUE)
 #' 
 #' #####################
