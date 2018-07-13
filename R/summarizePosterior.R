@@ -1,9 +1,9 @@
 #' Summarize Posterior Distribution for a Free Parameter
 #' 
-
-#' This function summarizes the posterior distribution from the final generation for all free parameters, 
-#' outputting the mean, standard deviation and Highest Posterior Density (at a 0.8 alpha) for each parameter based
-#' on estimates taken from the last generation of an ABC analysis using the \code{doRun} functions in \code{TreEvo}.
+#' This function summarizes the distribution of parameter estimates from
+#' the posterior of an ABC analysis sing the \code{doRun} functions in \code{TreEvo}, for all
+#' freely varying parameters. Only the final generation is considered. This summary includes
+#' the mean, standard deviation and Highest Posterior Density (at a 0.8 alpha) for each parameter.
 #' 
 
 #' @param particleDataFrame A \code{particleDataFrame} object, as
@@ -30,14 +30,12 @@
 #' whether a given observation is within a given density of the posterior or
 #' not, please look at function \code{\link{testMultivarOutlierHDR}}.
 
-
 #' @examples
 #' 
 #' data(simRunExample)
 #' 
 #' summarizePosterior(results[[1]]$particleDataFrame, alpha = 0.5)
 #' 
-
 
 
 #' @name summarizePosterior
@@ -75,50 +73,24 @@ summarizePosterior <- function(particleDataFrame,
 	res<-apply(subpDF,2,getSummary,
 		alpha = alpha, coda = coda, 
 		verboseMultimodal=verboseMultimodal, ...)
-	
-	
-	
-	getSummary(param,
-			alpha = alpha, coda = coda, 
-			verboseMultimodal=verboseMultimodal, ...){
-
-		#
-		HPD <- highestDensityInterval(dataVector = data,
-					alpha = alpha, coda = coda, 
-					verboseMultimodal=verboseMultimodal, ...)
-		}
-				
-				
-
-	parNames <- colnames(subpDF)
-				
-				
-					
-				res<-list(
-					mean = 
-					HPD = HPD
-					)
-				
-				
-
-				
-				if(returnData){
-					summary[[i]] <- subpDF[, i][-c(which(subpDF[i]<Ints[i, 3]), which(subpDF[, i]>Ints[i, 4]))]
-					}		
-				}
-			}
-		}
-	###########################
-	#if(returnData){
-	#	summary$summary <- Ints
-	#	res <- summary
-	#}else{
-	#	res <- as.data.frame(Ints)
-	#	}
-	###########################
-	# mean, standard deviation and Highest Posterior Density
-	res <- as.data.frame(Ints)
+	# name the elements of the list
+	names(res) <- colnames(subpDF)
 	return(res)
+	}
+				
+getSummary <- function(param, alpha = alpha, coda = coda, 
+		verboseMultimodal=verboseMultimodal, ...){
+	######################################
+	#
+	HPD <- highestDensityInterval(dataVector = param,
+				alpha = alpha, coda = coda, 
+				verboseMultimodal=verboseMultimodal, ...)
+	output<-list(
+		mean = mean(param),
+		sd = sd(param),
+		HPD = HPD
+		)
+	return(output)
 	}
 	
 	
@@ -146,3 +118,4 @@ summarizePosterior <- function(particleDataFrame,
 #	
 
 # @param returnData Option to return data that falls within HPD interval.
+
