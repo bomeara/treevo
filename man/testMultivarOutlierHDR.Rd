@@ -54,7 +54,7 @@ This function takes a matrix, consisting of multiple observations
 for a set of variables, with observations assumed to be independent
 and identically distributed, calculates a highest density interval
 for each of those variables (using
-\link{\code{highestDensityInterval}}), and then tests if some
+\code{\link{highestDensityInterval}}), and then tests if some
 potential 'outlier' (a particular observation for that set of
 variables), is within that highest density interval.
 Typically, users may want to account for possible non-independence
