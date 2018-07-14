@@ -30,17 +30,17 @@ ancState <- c(10)
 
 #Simple Brownian motion
 simChar <- doSimulation(
-	phy = tree, 
-	intrinsicFn = brownianIntrinsic, 
-	extrinsicFn = nullExtrinsic, 
-	startingValues = ancState, #root state
-	intrinsicValues = genRate, 
-	extrinsicValues = c(0), 
-	generation.time = 100000)
+    phy = tree, 
+    intrinsicFn = brownianIntrinsic, 
+    extrinsicFn = nullExtrinsic, 
+    startingValues = ancState, #root state
+    intrinsicValues = genRate, 
+    extrinsicValues = c(0), 
+    generation.time = 100000)
 
 # NOTE: the example analyses below sample too few particles, 
-	# over too few steps, with too few starting simulations
-	# - all for the sake of examples that reasonably test the functions
+    # over too few steps, with too few starting simulations
+    # - all for the sake of examples that reasonably test the functions
 
 # Please set these values to more realistic levels for your analyses!
 
@@ -59,7 +59,7 @@ results <- doRun_prc(
   nRuns = 2, 
   nStepsPRC = 3, 
   numParticles = 20, 
-	 nInitialSimsPerParam = 10, 
+     nInitialSimsPerParam = 10, 
   jobName = "examplerun_prc", 
   stopRule = FALSE, 
   multicore = FALSE, 

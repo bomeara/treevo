@@ -139,8 +139,8 @@ tree$edge.length <- tree$edge.length*20
 # example simulation
 
 # NOTE: the example analyses involve too few simulations, with coarse time-units
-	# - all for the sake of examples that reasonably test the functions
-	
+    # - all for the sake of examples that reasonably test the functions
+    
 simData <- simulateWithPriors(phy = tree, 
   intrinsicFn = brownianIntrinsic, 
   extrinsicFn = nullExtrinsic, 
@@ -151,9 +151,9 @@ simData <- simulateWithPriors(phy = tree,
   extrinsicPriorsFns = c("fixed"), 
   extrinsicPriorsValues = matrix(c(0, 0), nrow = 2, byrow = FALSE), 
   generation.time = 100000, 
-	 freevector = NULL, 	
-	 giveUpAttempts = 10, 
-	 verbose = TRUE)
+     freevector = NULL,     
+     giveUpAttempts = 10, 
+     verbose = TRUE)
 
 simData
 

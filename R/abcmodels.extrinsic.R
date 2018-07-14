@@ -65,37 +65,37 @@
 #' tree$edge.length <- tree$edge.length*20
 #' 
 #' #No trait evolution except due to
-#'		# character displacement due to nearest neighbor taxon
+#'        # character displacement due to nearest neighbor taxon
 #' char <- doSimulation(
-#' 	phy = tree, 
-#' 	intrinsicFn = nullIntrinsic, 
-#' 	extrinsicFn = nearestNeighborDisplacementExtrinsic, 
-#' 	startingValues = c(10), #root state
-#' 	intrinsicValues = c(0), 
-#' 	extrinsicValues = c(0.1, 0.1, 0.1), 
+#'     phy = tree, 
+#'     intrinsicFn = nullIntrinsic, 
+#'     extrinsicFn = nearestNeighborDisplacementExtrinsic, 
+#'     startingValues = c(10), #root state
+#'     intrinsicValues = c(0), 
+#'     extrinsicValues = c(0.1, 0.1, 0.1), 
 #'  generation.time = 100000)
 #' 
 #' #Similarly, no trait evolution except due to
-#'		# character displacement from all other taxa in the clade
+#'        # character displacement from all other taxa in the clade
 #' char <- doSimulation(
-#' 	phy = tree, 
-#' 	intrinsicFn = nullIntrinsic, 
-#' 	extrinsicFn = everyoneDisplacementExtrinsic, 
-#' 	startingValues = c(10), #root state
-#' 	intrinsicValues = c(0), 
-#' 	extrinsicValues = c(0.1, 0.1, 0.1), 
-#' 	generation.time = 100000)
+#'     phy = tree, 
+#'     intrinsicFn = nullIntrinsic, 
+#'     extrinsicFn = everyoneDisplacementExtrinsic, 
+#'     startingValues = c(10), #root state
+#'     intrinsicValues = c(0), 
+#'     extrinsicValues = c(0.1, 0.1, 0.1), 
+#'     generation.time = 100000)
 #' 
 #' # A variant where force of character displacement decays exponentially
-#' 		# as lineages become more different
+#'         # as lineages become more different
 #' char <- doSimulation(
-#' 	phy = tree, 
-#' 	intrinsicFn = nullIntrinsic, 
-#' 	extrinsicFn = ExponentiallyDecayingPushExtrinsic, 
-#' 	startingValues = c(10), #root state
-#' 	intrinsicValues = c(0), 
-#' 	extrinsicValues = c(0.1, 0.1, 2), 
-#' 	generation.time = 100000)
+#'     phy = tree, 
+#'     intrinsicFn = nullIntrinsic, 
+#'     extrinsicFn = ExponentiallyDecayingPushExtrinsic, 
+#'     startingValues = c(10), #root state
+#'     intrinsicValues = c(0), 
+#'     extrinsicValues = c(0.1, 0.1, 2), 
+#'     generation.time = 100000)
 #
 #' }
 #
@@ -104,67 +104,67 @@
 #' @rdname extrinsicModels
 #' @export
 nullExtrinsic <- function(params, selfstates, otherstates, timefrompresent) {
-	newdisplacement <- 0*selfstates
-	return(newdisplacement)
+    newdisplacement <- 0*selfstates
+    return(newdisplacement)
 }
 
 #' @rdname extrinsicModels
 #' @export
 nearestNeighborDisplacementExtrinsic <- function(params, selfstates, otherstates, timefrompresent) {
-	#params[1] is sd, params[2] is springK, params[3] is maxforce
-	repulsorTaxon <- which.min(abs(otherstates-selfstates))
-	repulsorValue <- otherstates[repulsorTaxon]
-	sd <- params[1]
-	springK <- params[2]
-	maxforce <- params[3]
-	localsign <- sign(selfstates[1]- repulsorValue)
-	#message(abs((selfstates[1]-repulsorValue)))
-	if(localsign == 0) {
-		localsign = sign(rpgm::rpgm.rnorm(n = 1))	
-	}
-	newdisplacement <- rpgm::rpgm.rnorm(n = 1, mean = localsign*min(c(abs(springK/((selfstates[1]-repulsorValue)*(selfstates[1]-repulsorValue))), maxforce), na.rm = TRUE), sd = sd)
-	return(newdisplacement)
+    #params[1] is sd, params[2] is springK, params[3] is maxforce
+    repulsorTaxon <- which.min(abs(otherstates-selfstates))
+    repulsorValue <- otherstates[repulsorTaxon]
+    sd <- params[1]
+    springK <- params[2]
+    maxforce <- params[3]
+    localsign <- sign(selfstates[1]- repulsorValue)
+    #message(abs((selfstates[1]-repulsorValue)))
+    if(localsign == 0) {
+        localsign = sign(rpgm::rpgm.rnorm(n = 1))    
+    }
+    newdisplacement <- rpgm::rpgm.rnorm(n = 1, mean = localsign*min(c(abs(springK/((selfstates[1]-repulsorValue)*(selfstates[1]-repulsorValue))), maxforce), na.rm = TRUE), sd = sd)
+    return(newdisplacement)
 }
 
 
 #' @rdname extrinsicModels
 #' @export
 everyoneDisplacementExtrinsic <- function(params, selfstates, otherstates, timefrompresent) {
-	#this is set up for one character only right now
-	#params[1] is sd, params[2] is springK, params[3] is maxforce
-	sd <- params[1]
-	springK  <- params[2]
-	maxforce <- params[3]
-	netforce <- 0
-	for (i in 1:length(otherstates)) {
-			localsign <- sign(selfstates[1]-otherstates[i])
-			if(localsign == 0) {
-				localsign = sign(rpgm::rpgm.rnorm(n = 1))	
-			}
-			netforce <- netforce+localsign*min(c(abs(springK/((selfstates[1]-otherstates[i])*(selfstates[1]-otherstates[i]))), maxforce), na.rm = TRUE)
-	}
-	newdisplacement <- rpgm::rpgm.rnorm(n = 1, mean = netforce, sd = sd)
-	return(newdisplacement)
+    #this is set up for one character only right now
+    #params[1] is sd, params[2] is springK, params[3] is maxforce
+    sd <- params[1]
+    springK  <- params[2]
+    maxforce <- params[3]
+    netforce <- 0
+    for (i in 1:length(otherstates)) {
+            localsign <- sign(selfstates[1]-otherstates[i])
+            if(localsign == 0) {
+                localsign = sign(rpgm::rpgm.rnorm(n = 1))    
+            }
+            netforce <- netforce+localsign*min(c(abs(springK/((selfstates[1]-otherstates[i])*(selfstates[1]-otherstates[i]))), maxforce), na.rm = TRUE)
+    }
+    newdisplacement <- rpgm::rpgm.rnorm(n = 1, mean = netforce, sd = sd)
+    return(newdisplacement)
 }
 
 
 #' @rdname extrinsicModels
 #' @export
 ExponentiallyDecayingPushExtrinsic <- function(params, selfstates, otherstates, timefrompresent) {
-	#params[1] is sd, params[2] is maxForce when character difference = 0, params[3] is half
-		# distance (the phenotypic distance at which repulsion is half maxForce)
-	repulsorTaxon <- which.min(abs(otherstates-selfstates))
-	repulsorValue <- otherstates[repulsorTaxon]
-	sd <- params[1]
-	maxForce <- params[2]
-	halfDistance <- params[3] #is like half life
-	rate <- log(2, base = exp(1))/ halfDistance
-	localsign <- sign(selfstates[1]- repulsorValue)
-	if(localsign == 0) {  #to deal with case of identical values
-		localsign = sign(rpgm::rpgm.rnorm(n = 1))	
-	}
-	newdisplacement <- rpgm::rpgm.rnorm(n = 1, mean = maxForce*localsign*exp(-1*rate*abs((selfstates[1]-repulsorValue))), sd = sd)
-	return(newdisplacement)
+    #params[1] is sd, params[2] is maxForce when character difference = 0, params[3] is half
+        # distance (the phenotypic distance at which repulsion is half maxForce)
+    repulsorTaxon <- which.min(abs(otherstates-selfstates))
+    repulsorValue <- otherstates[repulsorTaxon]
+    sd <- params[1]
+    maxForce <- params[2]
+    halfDistance <- params[3] #is like half life
+    rate <- log(2, base = exp(1))/ halfDistance
+    localsign <- sign(selfstates[1]- repulsorValue)
+    if(localsign == 0) {  #to deal with case of identical values
+        localsign = sign(rpgm::rpgm.rnorm(n = 1))    
+    }
+    newdisplacement <- rpgm::rpgm.rnorm(n = 1, mean = maxForce*localsign*exp(-1*rate*abs((selfstates[1]-repulsorValue))), sd = sd)
+    return(newdisplacement)
 }
 
 #Extra functions for calculating Exponential Decay Push priors

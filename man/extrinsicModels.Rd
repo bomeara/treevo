@@ -72,37 +72,37 @@ tree <- rcoal(20)
 tree$edge.length <- tree$edge.length*20
 
 #No trait evolution except due to
-	# character displacement due to nearest neighbor taxon
+       # character displacement due to nearest neighbor taxon
 char <- doSimulation(
-	phy = tree, 
-	intrinsicFn = nullIntrinsic, 
-	extrinsicFn = nearestNeighborDisplacementExtrinsic, 
-	startingValues = c(10), #root state
-	intrinsicValues = c(0), 
-	extrinsicValues = c(0.1, 0.1, 0.1), 
+    phy = tree, 
+    intrinsicFn = nullIntrinsic, 
+    extrinsicFn = nearestNeighborDisplacementExtrinsic, 
+    startingValues = c(10), #root state
+    intrinsicValues = c(0), 
+    extrinsicValues = c(0.1, 0.1, 0.1), 
  generation.time = 100000)
 
 #Similarly, no trait evolution except due to
-	# character displacement from all other taxa in the clade
+       # character displacement from all other taxa in the clade
 char <- doSimulation(
-	phy = tree, 
-	intrinsicFn = nullIntrinsic, 
-	extrinsicFn = everyoneDisplacementExtrinsic, 
-	startingValues = c(10), #root state
-	intrinsicValues = c(0), 
-	extrinsicValues = c(0.1, 0.1, 0.1), 
-	generation.time = 100000)
+    phy = tree, 
+    intrinsicFn = nullIntrinsic, 
+    extrinsicFn = everyoneDisplacementExtrinsic, 
+    startingValues = c(10), #root state
+    intrinsicValues = c(0), 
+    extrinsicValues = c(0.1, 0.1, 0.1), 
+    generation.time = 100000)
 
 # A variant where force of character displacement decays exponentially
-		# as lineages become more different
+        # as lineages become more different
 char <- doSimulation(
-	phy = tree, 
-	intrinsicFn = nullIntrinsic, 
-	extrinsicFn = ExponentiallyDecayingPushExtrinsic, 
-	startingValues = c(10), #root state
-	intrinsicValues = c(0), 
-	extrinsicValues = c(0.1, 0.1, 2), 
-	generation.time = 100000)
+    phy = tree, 
+    intrinsicFn = nullIntrinsic, 
+    extrinsicFn = ExponentiallyDecayingPushExtrinsic, 
+    startingValues = c(10), #root state
+    intrinsicValues = c(0), 
+    extrinsicValues = c(0.1, 0.1, 2), 
+    generation.time = 100000)
 }
 }
 \author{

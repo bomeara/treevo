@@ -124,8 +124,8 @@ points(x = outlier[1], y = outlier[2], col = 2)
 # we can use testMultivarOutlierHDR with pca = FALSE
 # to do all of the above without visually checking
 testMultivarOutlierHDR(dataMatrix = cbind(x, y), 
-	outlier = outlier, alpha = 0.8, pca = FALSE)
-	
+    outlier = outlier, alpha = 0.8, pca = FALSE)
+    
 # Should that really be considered to be within
 # the 80\% density region of this data cloud?
 
@@ -150,12 +150,12 @@ rect(pIntPC1[1], pIntPC2[1], pIntPC1[2], pIntPC2[2])
 
 # And now let's apply testMultivarOutlierHDR, with pca = TRUE
 testMultivarOutlierHDR(dataMatrix = cbind(x, y), 
-	outlier = outlier, alpha = 0.8, pca = TRUE)
+    outlier = outlier, alpha = 0.8, pca = TRUE)
 
 #####################
 
 # Example with four complex variables
-	# including correlated and multimodal variables
+    # including correlated and multimodal variables
 
 x <- rnorm(100, 1, 1)
 y <- (x*0.8)+rnorm(100)

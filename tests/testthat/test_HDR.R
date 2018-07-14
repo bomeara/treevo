@@ -2,7 +2,7 @@ test_that("highestDensityInterval works", {
 set.seed(444)
 
 # let's imagine we have some variable with
-	# an extreme bimodal distribution
+    # an extreme bimodal distribution
 z <- sample(c(rnorm(50, 1, 2), rnorm(100, 50, 3)))
 hist(z)
 
@@ -13,7 +13,7 @@ hist(z)
 # which 80% of our data occurs
 
 # one way to do this would be a quantile
-	# two tailed 80% quantiles
+    # two tailed 80% quantiles
 quantile(z, probs = c(0.1, 0.9))
 
 # that seems overly broad - there's essentially no density
@@ -45,7 +45,7 @@ colDens[inHPD] <- 2
 plot(zDensOut$x, zDensity, col = colDens)
 
 # and we can do all that (except the plotting)
-	# with highestDensityInterval
+    # with highestDensityInterval
 highestDensityInterval(z, alpha = 0.8)
 
 })
@@ -80,8 +80,8 @@ points(x = outlier[1], y = outlier[2], col = 2)
 # we can use testMultivarOutlierHDR with pca = FALSE
 # to do all of the above without visually checking
 testMultivarOutlierHDR(dataMatrix = cbind(x, y), 
-	outlier = outlier, alpha = 0.8, pca = FALSE)
-	
+    outlier = outlier, alpha = 0.8, pca = FALSE)
+    
 # Should that really be considered to be within
 # the 80% density region of this data cloud?
 
@@ -106,12 +106,12 @@ rect(pIntPC1[1], pIntPC2[1], pIntPC1[2], pIntPC2[2])
 
 # And now let's apply testMultivarOutlierHDR, with pca = TRUE
 testMultivarOutlierHDR(dataMatrix = cbind(x, y), 
-	outlier = outlier, alpha = 0.8, pca = TRUE)
+    outlier = outlier, alpha = 0.8, pca = TRUE)
 
 #####################
 
 # Example with four complex variables
-	# including correlated and multimodal variables
+    # including correlated and multimodal variables
 
 x <- rnorm(100, 1, 1)
 y <- (x*0.8)+rnorm(100)

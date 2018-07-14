@@ -223,8 +223,8 @@ set.seed(1)
 data(simRunExample)
 
 # NOTE: the example analyses below sample too few particles, 
-	# over too few steps, with too few starting simulations
-	# - all for the sake of examples that reasonably test the functions
+    # over too few steps, with too few starting simulations
+    # - all for the sake of examples that reasonably test the functions
 
 # Please set these values to more realistic levels for your analyses!
 
@@ -255,22 +255,22 @@ resultsPRC
 #one should make sure priors are uniform with doRun_rej!
 
 resultsRej <- doRun_rej(
-	phy = simPhy, 
-	traits = simChar, 
-	intrinsicFn = brownianIntrinsic, 
-	extrinsicFn = nullExtrinsic, 
-	startingPriorsFns = "normal", 
-	startingPriorsValues = matrix(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
-	intrinsicPriorsFns = c("exponential"), 
-	intrinsicPriorsValues = matrix(c(10, 10), nrow = 2, byrow = FALSE), #grep for normal in pkg
-	extrinsicPriorsFns = c("fixed"), 
-	extrinsicPriorsValues = matrix(c(0, 0), nrow = 2, byrow = FALSE), 
-generation.time = 10000, 
-	jobName = "examplerun_rej", 
-	abcTolerance = 0.05, 
-	multicore = FALSE, 
-	coreLimit = 1
-	)
+    phy = simPhy, 
+    traits = simChar, 
+    intrinsicFn = brownianIntrinsic, 
+    extrinsicFn = nullExtrinsic, 
+    startingPriorsFns = "normal", 
+    startingPriorsValues = matrix(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
+    intrinsicPriorsFns = c("exponential"), 
+    intrinsicPriorsValues = matrix(c(10, 10), nrow = 2, byrow = FALSE), #grep for normal in pkg
+    extrinsicPriorsFns = c("fixed"), 
+    extrinsicPriorsValues = matrix(c(0, 0), nrow = 2, byrow = FALSE), 
+   generation.time = 10000, 
+    jobName = "examplerun_rej", 
+    abcTolerance = 0.05, 
+    multicore = FALSE, 
+    coreLimit = 1
+    )
 
 resultsRej
 }

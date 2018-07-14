@@ -103,21 +103,21 @@ data(simRunExample)
 # examples with plotPrior
 
 plotPrior(priorFn = "exponential", priorVariables = c(10))
-	
+    
 plotPrior(priorFn = "normal", priorVariables = c(1, 2))
-	
+    
 plotPrior(priorFn = "gamma", priorVariables = c(2, .2),
    plotQuants = FALSE, plotLegend = FALSE)
 
 # examples of getting density coordinates and summary statistics from distributions
 
 priorKernal <- getUnivariatePriorCurve(
-	priorFn = "normal", priorVariables = c(28, 2), 
-	nPoints = 100000, from = NULL, to = NULL, alpha = 0.95)
+    priorFn = "normal", priorVariables = c(28, 2), 
+    nPoints = 100000, from = NULL, to = NULL, alpha = 0.95)
 
 postKernal <- getUnivariatePosteriorCurve(
   acceptedValues = results[[1]]$particleDataFrame$starting_1, 
-	 from = NULL, to = NULL, alpha = 0.95)
+     from = NULL, to = NULL, alpha = 0.95)
 
 priorKernal
 postKernal
@@ -126,7 +126,7 @@ postKernal
 
 plotUnivariatePosteriorVsPrior(
   posteriorCurve = postKernal, priorCurve = priorKernal, 
- 	label = "parameter", trueValue = NULL)
+     label = "parameter", trueValue = NULL)
 
 # cool!
 

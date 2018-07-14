@@ -100,24 +100,24 @@ tree$edge.length <- tree$edge.length*20
 #Simple Brownian motion
 
 char <- doSimulation(
-	phy = tree, 
-	generation.time = 100000, 
-	intrinsicFn = brownianIntrinsic, 
-	extrinsicFn = nullExtrinsic, 
-	startingValues = c(10), #root state
-	intrinsicValues = c(0.01), 
-	extrinsicValues = c(0))
+    phy = tree, 
+    generation.time = 100000, 
+    intrinsicFn = brownianIntrinsic, 
+    extrinsicFn = nullExtrinsic, 
+    startingValues = c(10), #root state
+    intrinsicValues = c(0.01), 
+    extrinsicValues = c(0))
 
 #Character displacement model with minimum bound
 
 char <- doSimulation(
-	phy = tree, 
+    phy = tree, 
  generation.time = 100000, 
-	intrinsicFn = boundaryMinIntrinsic, 
-	extrinsicFn = ExponentiallyDecayingPushExtrinsic, 
-	startingValues = c(10), #root state
-	intrinsicValues = c(0.05, 10, 0.01), 
-	extrinsicValues = c(0, .1, .25))
+    intrinsicFn = boundaryMinIntrinsic, 
+    extrinsicFn = ExponentiallyDecayingPushExtrinsic, 
+    startingValues = c(10), #root state
+    intrinsicValues = c(0.05, 10, 0.01), 
+    extrinsicValues = c(0, .1, .25))
 }
 }
 \author{

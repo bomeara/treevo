@@ -128,34 +128,34 @@ tree$edge.length <- tree$edge.length*20
 
 #Simple Brownian motion Intrinsic Model
 char <- doSimulation(
-	phy = tree, 
-	intrinsicFn = brownianIntrinsic, 
-	extrinsicFn = nullExtrinsic, 
-	startingValues = c(10), #root state
-	intrinsicValues = c(0.01), 
-	extrinsicValues = c(0), 
-	generation.time = 100000)
+    phy = tree, 
+    intrinsicFn = brownianIntrinsic, 
+    extrinsicFn = nullExtrinsic, 
+    startingValues = c(10), #root state
+    intrinsicValues = c(0.01), 
+    extrinsicValues = c(0), 
+    generation.time = 100000)
 
 # Simple model with BM, but a minimum bound at 0, max bound at 15
 char <- doSimulation(
-	phy = tree, 
-	intrinsicFn = boundaryIntrinsic, 
-	extrinsicFn = nullExtrinsic, 
-	startingValues = c(10), #root state
-	intrinsicValues = c(0.01, 0, 15), 
-	extrinsicValues = c(0), 
-	generation.time = 100000)
+    phy = tree, 
+    intrinsicFn = boundaryIntrinsic, 
+    extrinsicFn = nullExtrinsic, 
+    startingValues = c(10), #root state
+    intrinsicValues = c(0.01, 0, 15), 
+    extrinsicValues = c(0), 
+    generation.time = 100000)
 
 # Autoregressive (Ornstein-Uhlenbeck) model
-	# with minimum bound at 0
+       # with minimum bound at 0
 char <- doSimulation(
-	phy = tree, 
-	intrinsicFn = minBoundaryAutoregressiveIntrinsic, 
-	extrinsicFn = nullExtrinsic, 
-	startingValues = c(10), #root state
-	intrinsicValues = c(0.01, 3, 0.1, 0), 
-	extrinsicValues = c(0), 
-	generation.time = 100000)
+    phy = tree, 
+    intrinsicFn = minBoundaryAutoregressiveIntrinsic, 
+    extrinsicFn = nullExtrinsic, 
+    startingValues = c(10), #root state
+    intrinsicValues = c(0.01, 3, 0.1, 0), 
+    extrinsicValues = c(0), 
+    generation.time = 100000)
 }
 }
 \author{

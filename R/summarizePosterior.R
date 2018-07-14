@@ -51,80 +51,80 @@
 #' @rdname summarizePosterior
 #' @export
 summarizePosterior <- function(particleDataFrame, 
-		alpha = 0.8, 
-		coda = FALSE, 
-		verboseMultimodal = TRUE, 
-		...){
-	########################################################
-	#	
-	generation <- particleDataFrame$generation
-	# get the max generation
-	maxGen <- max(particleDataFrame$generation)
-	# subset on particles from the last generation
-	subpDF <- particleDataFrame[particleDataFrame$generation == maxGen
-		& particleDataFrame$weight>0, ]	
-	#
-	# now only get the parameter estimates
-	subpDF <- as.data.frame(subpDF[, 7:dim(particleDataFrame)[2]])
-	
-	#
-	# old code - for removing parameters with bad values??
-	# maybe applicable for fixed params?
-	#
-	for(i in 1:dim(subpDF)[2]){
-		if(length(subpDF[, i])>1){
-			if(sd(subpDF[, i], na.rm = TRUE)  ==  0) {
-				subpDF <- subpDF[, -i]
-				}
-			}
-		}
-	#
-	res<-apply(subpDF,2,getSummary,
-		alpha = alpha, coda = coda, 
-		verboseMultimodal=verboseMultimodal, ...)
-	# name the elements of the list
-	names(res) <- colnames(subpDF)
-	return(res)
-	}
-				
+        alpha = 0.8, 
+        coda = FALSE, 
+        verboseMultimodal = TRUE, 
+        ...){
+    ########################################################
+    #    
+    generation <- particleDataFrame$generation
+    # get the max generation
+    maxGen <- max(particleDataFrame$generation)
+    # subset on particles from the last generation
+    subpDF <- particleDataFrame[particleDataFrame$generation == maxGen
+        & particleDataFrame$weight>0, ]    
+    #
+    # now only get the parameter estimates
+    subpDF <- as.data.frame(subpDF[, 7:dim(particleDataFrame)[2]])
+    
+    #
+    # old code - for removing parameters with bad values??
+    # maybe applicable for fixed params?
+    #
+    for(i in 1:dim(subpDF)[2]){
+        if(length(subpDF[, i])>1){
+            if(sd(subpDF[, i], na.rm = TRUE)  ==  0) {
+                subpDF <- subpDF[, -i]
+                }
+            }
+        }
+    #
+    res<-apply(subpDF,2,getSummary,
+        alpha = alpha, coda = coda, 
+        verboseMultimodal=verboseMultimodal, ...)
+    # name the elements of the list
+    names(res) <- colnames(subpDF)
+    return(res)
+    }
+                
 getSummary <- function(param, alpha = alpha, coda = coda, 
-		verboseMultimodal=verboseMultimodal, ...){
-	######################################
-	#
-	HPD <- highestDensityInterval(dataVector = param,
-				alpha = alpha, coda = coda, 
-				verboseMultimodal=verboseMultimodal, ...)
-	output<-list(
-		mean = mean(param),
-		sd = sd(param),
-		HPD = HPD
-		)
-	return(output)
-	}
-	
-	
-##################################################################################################	
+        verboseMultimodal=verboseMultimodal, ...){
+    ######################################
+    #
+    HPD <- highestDensityInterval(dataVector = param,
+                alpha = alpha, coda = coda, 
+                verboseMultimodal=verboseMultimodal, ...)
+    output<-list(
+        mean = mean(param),
+        sd = sd(param),
+        HPD = HPD
+        )
+    return(output)
+    }
+    
+    
+##################################################################################################    
 # OLD
-#	
-#		generation <- particleDataFrame$generation
-#	#
-#	alphaTail <- (1-alpha)/2
-#	Ints <- matrix(nrow = (dim(particleDataFrame)[2]-6), ncol = 4)
-#	colnames(Ints) <- c("mean", "sd", "LowerCI", "UpperCI")
-#	rownames(Ints) <- names(particleDataFrame[7: dim(particleDataFrame)[2]])
-#	subpDF <- subset(particleDataFrame[which(particleDataFrame$weight>0), ], 
-#		generation == max(particleDataFrame$generation), drop = FALSE)[7:dim(particleDataFrame)[2]]
-#	for(i in 1:dim(subpDF)[2]){
-#		if(length(subpDF[, i])>1){
-#			if(sd(subpDF[, i])  !=  0) {
-#				Ints[i, 1] <- mean(subpDF[, i]) #not weighted
-#				Ints[i, 2] <- sd(subpDF[, i])
-#				Ints[i, 3] <- quantile(subpDF[, i], probs = 0+alphaTail)
-#				Ints[i, 4] <- quantile(subpDF[, i], probs = 1-alphaTail)
-#				}
-#			}
-#		}	
-#	
+#    
+#        generation <- particleDataFrame$generation
+#    #
+#    alphaTail <- (1-alpha)/2
+#    Ints <- matrix(nrow = (dim(particleDataFrame)[2]-6), ncol = 4)
+#    colnames(Ints) <- c("mean", "sd", "LowerCI", "UpperCI")
+#    rownames(Ints) <- names(particleDataFrame[7: dim(particleDataFrame)[2]])
+#    subpDF <- subset(particleDataFrame[which(particleDataFrame$weight>0), ], 
+#        generation == max(particleDataFrame$generation), drop = FALSE)[7:dim(particleDataFrame)[2]]
+#    for(i in 1:dim(subpDF)[2]){
+#        if(length(subpDF[, i])>1){
+#            if(sd(subpDF[, i])  !=  0) {
+#                Ints[i, 1] <- mean(subpDF[, i]) #not weighted
+#                Ints[i, 2] <- sd(subpDF[, i])
+#                Ints[i, 3] <- quantile(subpDF[, i], probs = 0+alphaTail)
+#                Ints[i, 4] <- quantile(subpDF[, i], probs = 1-alphaTail)
+#                }
+#            }
+#        }    
+#    
 
 # @param returnData Option to return data that falls within HPD interval.
 

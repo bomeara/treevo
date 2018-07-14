@@ -1,3 +1,6 @@
+Version - 0.9.0 - 07-13-18
+-Implemented new highest density region methods, replacing former credible interval functions
+
 Version - 0.6.0 - 03-19-18
 -Extensive modularization of doRun_prc code
 -Full parellization of PRC algorithm for doRun_prc

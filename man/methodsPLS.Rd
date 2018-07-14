@@ -90,8 +90,8 @@ trueFreeValuesMat <- simDataParallel[, 1:nParFree]
 summaryValuesMat <- simDataParallel[, -1:-nParFree]
 
 PLSmodel <- returnPLSModel(trueFreeValuesMatrix = trueFreeValuesMat, 
-	  	summaryValuesMatrix = summaryValuesMat, 
-   	validation = "CV", scale = TRUE, variance.cutoff = 95 , segments = nSimulations)
+          summaryValuesMatrix = summaryValuesMat, 
+       validation = "CV", scale = TRUE, variance.cutoff = 95 , segments = nSimulations)
 
 PLSmodel
 

@@ -51,7 +51,7 @@
 #' set.seed(444)
 #' 
 #' # let's imagine we have some variable with
-#' 	# an extreme bimodal distribution
+#'     # an extreme bimodal distribution
 #' z <- sample(c(rnorm(50, 1, 2), rnorm(100, 50, 3)))
 #' hist(z)
 #' 
@@ -62,7 +62,7 @@
 #' # which 80% of our data occurs
 #' 
 #' # one way to do this would be a quantile
-#' 	# two tailed 80% quantiles
+#'     # two tailed 80% quantiles
 #' quantile(z, probs = c(0.1, 0.9))
 #' 
 #' # that seems overly broad - there's essentially no density
@@ -94,7 +94,7 @@
 #' plot(zDensOut$x, zDensity, col = colDens)
 #' 
 #' # and we can do all that (except the plotting)
-#' 	# with highestDensityInterval
+#'     # with highestDensityInterval
 #' highestDensityInterval(z, alpha = 0.8)
 #' 
 #' #############################
@@ -122,64 +122,64 @@
 #' @rdname highestDensityInterval
 #' @export
 highestDensityInterval <- function(dataVector, alpha,
-		coda = FALSE, verboseMultimodal = TRUE,...){
-	#
-	# test that its a vector
-	dataVector <- as.numeric(dataVector)
-	if(!is.vector(dataVector)){
-		stop("Unable to coerce dataVector to being a numeric vector")
-		}
-	# test alpha is of length 1
-	if(length(alpha)>1){
-		stop("alpha should be of length 1")
-		}
-	if(alpha >= 1 | alpha <= 0){
-		stop("alpha should be numeric and be between zero and one")
-		}
-	#
-	if(coda){
-		codaHPD <- getHPDcoda(dataVector, alpha)
-		resMatrix <- matrix(codaHPD[1:2], 1, 2)
-	}else{
-		#
-		densOut <- density(dataVector, ...)
-		densityScaled <- densOut$y/sum(densOut$y)
-		#
-		# count max number of ties
-		maxTies <- max(table(densityScaled))
-		# stop if more than half the dataset is tied
-		if(maxTies>(length(dataVector)/2)){
-			stop("Values of distribution are more than half tied with each other, may be flat")}
-		#
-		inHPD <- cumsum(-sort(-densityScaled)) <= alpha
-		# now reorder
-		inHPD <- inHPD[order(order(-densityScaled))]
-		# get breaks
-		startInt <- densOut$x[c(inHPD[1], 
-			sapply(2:length(inHPD), function(x) inHPD[x] & !inHPD[x-1])
-			)]
-		endInt <- densOut$x[c(
-			sapply(1:(length(inHPD)-1), function(x) inHPD[x] & !inHPD[x+1])
-			, inHPD[length(inHPD)]
-			)]
-		resMatrix <- cbind(startInt, endInt)
-		}
-	# name the columns and rows
-		# paste("LowerHPD_", alpha, sep = ""), paste("UpperHPD_", alpha, sep = "")
-	colLabels <- c(paste0(c("LowerBound_alpha=", "UpperBound__alpha="), alpha))
-	colnames(resMatrix) <- colLabels
-	#
-	if(nrow(resMatrix)>1 & verboseMultimodal){
-		message("Inferred highest density intervals are discontinuous, suggesting data may have multiple modes")
-		}
-	#
-	return(resMatrix)
-	}
+        coda = FALSE, verboseMultimodal = TRUE,...){
+    #
+    # test that its a vector
+    dataVector <- as.numeric(dataVector)
+    if(!is.vector(dataVector)){
+        stop("Unable to coerce dataVector to being a numeric vector")
+        }
+    # test alpha is of length 1
+    if(length(alpha)>1){
+        stop("alpha should be of length 1")
+        }
+    if(alpha >= 1 | alpha <= 0){
+        stop("alpha should be numeric and be between zero and one")
+        }
+    #
+    if(coda){
+        codaHPD <- getHPDcoda(dataVector, alpha)
+        resMatrix <- matrix(codaHPD[1:2], 1, 2)
+    }else{
+        #
+        densOut <- density(dataVector, ...)
+        densityScaled <- densOut$y/sum(densOut$y)
+        #
+        # count max number of ties
+        maxTies <- max(table(densityScaled))
+        # stop if more than half the dataset is tied
+        if(maxTies>(length(dataVector)/2)){
+            stop("Values of distribution are more than half tied with each other, may be flat")}
+        #
+        inHPD <- cumsum(-sort(-densityScaled)) <= alpha
+        # now reorder
+        inHPD <- inHPD[order(order(-densityScaled))]
+        # get breaks
+        startInt <- densOut$x[c(inHPD[1], 
+            sapply(2:length(inHPD), function(x) inHPD[x] & !inHPD[x-1])
+            )]
+        endInt <- densOut$x[c(
+            sapply(1:(length(inHPD)-1), function(x) inHPD[x] & !inHPD[x+1])
+            , inHPD[length(inHPD)]
+            )]
+        resMatrix <- cbind(startInt, endInt)
+        }
+    # name the columns and rows
+        # paste("LowerHPD_", alpha, sep = ""), paste("UpperHPD_", alpha, sep = "")
+    colLabels <- c(paste0(c("LowerBound_alpha=", "UpperBound__alpha="), alpha))
+    colnames(resMatrix) <- colLabels
+    #
+    if(nrow(resMatrix)>1 & verboseMultimodal){
+        message("Inferred highest density intervals are discontinuous, suggesting data may have multiple modes")
+        }
+    #
+    return(resMatrix)
+    }
 
 
 
 # internal function for getting unimodal HDR using coda
 getHPDcoda <- function(data, alpha){
-	codaHPD <- coda::HPDinterval(coda::as.mcmc(data), prob = alpha)
-	return(codaHPD)
-	}
+    codaHPD <- coda::HPDinterval(coda::as.mcmc(data), prob = alpha)
+    return(codaHPD)
+    }

@@ -68,10 +68,10 @@ Let's plot a traitgram of the data.
 
 ```{r, echo=FALSE, fig.show='hold'}
 plotTraitgram(tree=tree, trait=sutureComplexity,
-	 conf.int=FALSE, main="Ammonite Suture Complexity")
+     conf.int=FALSE, main="Ammonite Suture Complexity")
 
 plotTraitgram(tree=tree, trait=shellSize,
-	 conf.int=FALSE, main="Ammonite Shell Diameter")
+     conf.int=FALSE, main="Ammonite Shell Diameter")
 ```
 
 how small is the smallest branch length, even after extending terminal branches?
@@ -241,7 +241,7 @@ pairwiseESS(resultsBound)
 ```{r fig.width = 7, fig.asp=0.4}
 
 # plotPosteriors
-	# for each free parameter in the posterior, a plot is made of the distribution of values estimate in the last generation
+    # for each free parameter in the posterior, a plot is made of the distribution of values estimate in the last generation
 
 # collect the particleDataFrames into lists
 

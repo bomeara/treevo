@@ -52,7 +52,7 @@ resulting in overly wide estimates of coverage.
 set.seed(444)
 
 # let's imagine we have some variable with
-	# an extreme bimodal distribution
+    # an extreme bimodal distribution
 z <- sample(c(rnorm(50, 1, 2), rnorm(100, 50, 3)))
 hist(z)
 
@@ -63,7 +63,7 @@ hist(z)
 # which 80\% of our data occurs
 
 # one way to do this would be a quantile
-	# two tailed 80\% quantiles
+    # two tailed 80\% quantiles
 quantile(z, probs = c(0.1, 0.9))
 
 # that seems overly broad - there's essentially no density
@@ -95,7 +95,7 @@ colDens[inHPD] <- 2
 plot(zDensOut$x, zDensity, col = colDens)
 
 # and we can do all that (except the plotting)
-	# with highestDensityInterval
+    # with highestDensityInterval
 highestDensityInterval(z, alpha = 0.8)
 
 #############################

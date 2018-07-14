@@ -37,7 +37,7 @@
 #' @param verbose If \code{TRUE}, helpful warning messages will be made when you make questionable decisions.
 
 # for \code{pls.model.list} # Used in doc for both scale and variance.cutoff
-	# I HAVE NO IDEA WHAT THIS MEANS? WHAT IS pls.model.list???
+    # I HAVE NO IDEA WHAT THIS MEANS? WHAT IS pls.model.list???
 
 
 #' @param pls.model Output from \code{\link{returnPLSModel}}.
@@ -87,8 +87,8 @@
 #' summaryValuesMat <- simDataParallel[, -1:-nParFree]
 #' 
 #' PLSmodel <- returnPLSModel(trueFreeValuesMatrix = trueFreeValuesMat, 
-#' 	  	summaryValuesMatrix = summaryValuesMat, 
-#'    	validation = "CV", scale = TRUE, variance.cutoff = 95 , segments = nSimulations)
+#'           summaryValuesMatrix = summaryValuesMat, 
+#'        validation = "CV", scale = TRUE, variance.cutoff = 95 , segments = nSimulations)
 #' 
 #' PLSmodel
 #' 
@@ -114,11 +114,11 @@ returnPLSModel <- function(trueFreeValuesMatrix, summaryValuesMatrix, validation
   pls.model <- makeQuiet(plsr(trueFreeValuesMatrix~summaryValuesMatrix, validation = validation, scale = scale, ...))
   explained.variance  <- cumsum(sort(attr(scores(pls.model), "explvar"), decreasing = TRUE))
   ncomp.final <- min(c(as.numeric(which(explained.variance >= variance.cutoff)[1]), 
-	length(explained.variance)), na.rm = TRUE) #min is to deal with case of never explaining >95%
+    length(explained.variance)), na.rm = TRUE) #min is to deal with case of never explaining >95%
   #
   # now rerun with the ideal number of components
   pls.model.final <- makeQuiet(plsr(trueFreeValuesMatrix~summaryValuesMatrix, 
-	ncomp = ncomp.final, validation = "none", scale = scale, ...))
+    ncomp = ncomp.final, validation = "none", scale = scale, ...))
   return(pls.model.final)
 }
 

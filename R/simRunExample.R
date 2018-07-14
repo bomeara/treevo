@@ -74,14 +74,14 @@
 #' 
 #' #Simple Brownian motion
 #' simChar <- doSimulation(
-#' 	phy = simPhy, 
-#' 	intrinsicFn = brownianIntrinsic, 
-#' 	extrinsicFn = nullExtrinsic, 
-#' 	startingValues = ancState, #root state
-#' 	intrinsicValues = genRate, 
-#' 	extrinsicValues = c(0), 
-#' 	generation.time = 10000
-#' 	)
+#'     phy = simPhy, 
+#'     intrinsicFn = brownianIntrinsic, 
+#'     extrinsicFn = nullExtrinsic, 
+#'     startingValues = ancState, #root state
+#'     intrinsicValues = genRate, 
+#'     extrinsicValues = c(0), 
+#'     generation.time = 10000
+#'     )
 
 # 
 # # clean for use with doRun
@@ -90,50 +90,50 @@
 
 #' 
 #' results <- doRun_prc(
-#' 	phy = simPhy, 
-#' 	traits = simChar, 
-#' 	intrinsicFn = brownianIntrinsic, 
-#' 	extrinsicFn = nullExtrinsic, 
-#' 	startingPriorsFns = "normal", 
-#' 	startingPriorsValues = matrix(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
-#' 	intrinsicPriorsFns = c("exponential"), 
-#' 	intrinsicPriorsValues = matrix(c(10, 10), nrow = 2, byrow = FALSE), 
-#' 	extrinsicPriorsFns = c("fixed"), 
-#' 	extrinsicPriorsValues = matrix(c(0, 0), nrow = 2, byrow = FALSE), 
-#' 	generation.time = 10000, 
-#' 	nRuns = 2, 
-#' 	nStepsPRC = 3, 
-#' 	numParticles = 20, 
-#' 	nInitialSimsPerParam = 10, 
-#' 	jobName = "examplerun_prc", 
-#' 	stopRule = FALSE, 
-#' 	multicore = FALSE, 
-#' 	verboseParticles = TRUE, 
-#' 	coreLimit = 1
-#' 	)
+#'     phy = simPhy, 
+#'     traits = simChar, 
+#'     intrinsicFn = brownianIntrinsic, 
+#'     extrinsicFn = nullExtrinsic, 
+#'     startingPriorsFns = "normal", 
+#'     startingPriorsValues = matrix(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
+#'     intrinsicPriorsFns = c("exponential"), 
+#'     intrinsicPriorsValues = matrix(c(10, 10), nrow = 2, byrow = FALSE), 
+#'     extrinsicPriorsFns = c("fixed"), 
+#'     extrinsicPriorsValues = matrix(c(0, 0), nrow = 2, byrow = FALSE), 
+#'     generation.time = 10000, 
+#'     nRuns = 2, 
+#'     nStepsPRC = 3, 
+#'     numParticles = 20, 
+#'     nInitialSimsPerParam = 10, 
+#'     jobName = "examplerun_prc", 
+#'     stopRule = FALSE, 
+#'     multicore = FALSE, 
+#'     verboseParticles = TRUE, 
+#'     coreLimit = 1
+#'     )
 #' 
 #' resultsBound <- doRun_prc(
-#' 	phy = simPhy, 
-#' 	traits = simChar, 
-#' 	intrinsicFn = boundaryMinIntrinsic, 
-#' 	extrinsicFn = nullExtrinsic, 
-#' 	startingPriorsFns = "normal", 
-#' 	startingPriorsValues = matrix(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
-#' 	intrinsicPriorsFns = c("exponential", "normal"), 
-#' 	intrinsicPriorsValues = matrix(c(10, 10, -10, 1), nrow = 2, byrow = FALSE), 
-#' 	extrinsicPriorsFns = c("fixed"), 
-#' 	extrinsicPriorsValues = matrix(c(0, 0), nrow = 2, byrow = FALSE), 
-#' 	generation.time = 10000, 
-#' 	nRuns = 2, 
-#' 	nStepsPRC = 3, 
-#' 	numParticles = 20, 
-#' 	nInitialSimsPerParam = 10, 
-#' 	jobName = "examplerun_prc_bound", 
-#' 	stopRule = FALSE, 
-#' 	multicore = FALSE, 
-#' 	verboseParticles = TRUE, 
-#' 	coreLimit = 1
-#' 	)
+#'     phy = simPhy, 
+#'     traits = simChar, 
+#'     intrinsicFn = boundaryMinIntrinsic, 
+#'     extrinsicFn = nullExtrinsic, 
+#'     startingPriorsFns = "normal", 
+#'     startingPriorsValues = matrix(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
+#'     intrinsicPriorsFns = c("exponential", "normal"), 
+#'     intrinsicPriorsValues = matrix(c(10, 10, -10, 1), nrow = 2, byrow = FALSE), 
+#'     extrinsicPriorsFns = c("fixed"), 
+#'     extrinsicPriorsValues = matrix(c(0, 0), nrow = 2, byrow = FALSE), 
+#'     generation.time = 10000, 
+#'     nRuns = 2, 
+#'     nStepsPRC = 3, 
+#'     numParticles = 20, 
+#'     nInitialSimsPerParam = 10, 
+#'     jobName = "examplerun_prc_bound", 
+#'     stopRule = FALSE, 
+#'     multicore = FALSE, 
+#'     verboseParticles = TRUE, 
+#'     coreLimit = 1
+#'     )
 #' 
 #' rm(.Random.seed)
 #' save.image(file = "simRunExample.rdata")

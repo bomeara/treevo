@@ -34,10 +34,10 @@ tree<-addTermBranchLength(tree,0.01)
 
 ## ---- echo=FALSE, fig.show='hold'----------------------------------------
 #plotTraitgram(tree=tree, trait=sutureComplexity,
-#	 conf.int=FALSE, main="Ammonite Suture Complexity")
+#     conf.int=FALSE, main="Ammonite Suture Complexity")
 
 #plotTraitgram(tree=tree, trait=shellSize,
-#	 conf.int=FALSE, main="Ammonite Shell Diameter")
+#     conf.int=FALSE, main="Ammonite Shell Diameter")
 
 ## ------------------------------------------------------------------------
 

@@ -33,7 +33,7 @@
 #
 # PLSRejection(summaryValuesMatrix, 
 #   trueFreeValuesMatrix, 
-# 	 phy = simPhy, traits = simChar, abcTolerance = results[[1]]$abcTolerance)
+#      phy = simPhy, traits = simChar, abcTolerance = results[[1]]$abcTolerance)
 #
 
 # This is a difficult function to write an example for, as mainly an algorithm for doRun_rej; unclear if even needs to be exported
@@ -54,7 +54,7 @@ PLSRejection <- function(summaryValuesMatrix, trueFreeValuesMatrix,
   abcDistancesRaw <- sapply(sequence(dim(trueFreeValuesMatrix)[2]), SingleParameterPLSDistanceSquared,
          summaryValuesMatrix = summaryValuesMatrix, 
          trueFreeValuesMatrix = trueFreeValuesMatrix, originalSummaryValues = originalSummaryValues, 
-		 validation = validation, scale = scale, variance.cutoff = variance.cutoff)
+         validation = validation, scale = scale, variance.cutoff = variance.cutoff)
   abcDistancesRawTotal <- apply(abcDistancesRaw, 1, sum)
   abcDistances <- sqrt(abcDistancesRawTotal) #Euclid rules.
   #
@@ -63,26 +63,26 @@ PLSRejection <- function(summaryValuesMatrix, trueFreeValuesMatrix,
   abcQuantile <- quantile(abcDistances, prob = abcTolerance)
   acceptedParticles <- trueFreeValuesMatrix[
     which(abcDistances <= abcQuantile)
-	, , drop = FALSE] 
+    , , drop = FALSE] 
   #
   acceptedDistances <- abcDistances[which(abcDistances <= quantile(abcDistances, prob = abcTolerance))]
   #
   particleDataFrame <- data.frame(cbind(
-	rep(1, dim(acceptedParticles)[1]), 
-	as.vector(which(abcDistances <= quantile(abcDistances, prob = abcTolerance))), 
-	seq(1:dim(acceptedParticles)[1]), 
-	rep(0, dim(acceptedParticles)[1]), 
-	acceptedDistances, rep(1, 
-	dim(acceptedParticles)[1]), 
-	acceptedParticles
-	))
+    rep(1, dim(acceptedParticles)[1]), 
+    as.vector(which(abcDistances <= quantile(abcDistances, prob = abcTolerance))), 
+    seq(1:dim(acceptedParticles)[1]), 
+    rep(0, dim(acceptedParticles)[1]), 
+    acceptedDistances, rep(1, 
+    dim(acceptedParticles)[1]), 
+    acceptedParticles
+    ))
   colnames(particleDataFrame) <- c("generation", "attempt", "id", "parentid", "distance", 
-	"weight", paste("param", seq(dim(trueFreeValuesMatrix)[2]), sep = ""))
+    "weight", paste("param", seq(dim(trueFreeValuesMatrix)[2]), sep = ""))
   return(list(particleDataFrame = particleDataFrame, abcDistances = abcDistances))
   }
 
 SingleParameterPLSDistanceSquared <- function(index, summaryValuesMatrix, trueFreeValuesMatrix, 
-		originalSummaryValues, validation = "CV", scale = TRUE, variance.cutoff = 95) {
+        originalSummaryValues, validation = "CV", scale = TRUE, variance.cutoff = 95) {
   trueFreeValuesMatrix <- trueFreeValuesMatrix[, index]
   pls.model <- returnPLSModel(trueFreeValuesMatrix, summaryValuesMatrix,
     validation = validation, scale = scale, variance.cutoff = variance.cutoff)
@@ -91,10 +91,10 @@ SingleParameterPLSDistanceSquared <- function(index, summaryValuesMatrix, trueFr
   #
   distanceByRow <- function(x, originalSummaryValues.transformed) {
     return(dist(matrix(c(x, originalSummaryValues.transformed), byrow = TRUE, nrow = 2))[1])
-	}
+    }
   #
   raw.distances <- apply(summaryValues.transformed, 1, distanceByRow,
     originalSummaryValues.transformed = originalSummaryValues.transformed
-	)
+    )
   return(raw.distances^2)
   }

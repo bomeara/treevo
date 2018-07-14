@@ -27,6 +27,7 @@
 #############################################################################################
 # notes from conversation with Smits (05-09-18)
 # Me: so I'm doing approximate bayesian computation and the question is, what do I want to show to the reader
+
 # Me: I want to show posterior parameter estimates from real data, and show that they are very different from parameter estimates made under other models, or under the same model but with simulated data, for scenarios with a small number of models
 # what i do is make the same series of posterior predictive checks and demonstrate how your prefered model better recapitulates the data it was fit to
 # like....how well do they all reproduce to ecdf or the density of the original data? if your model does a better job of doing that, then it is straight up a better model
@@ -40,17 +41,17 @@
 #####################################################################################
 # from 06-21-18
 # okay so the general sketch is particles from the posterior, simulate under this set of parameters N times, 
-	# and compare the original ECDF for each parameter to the simulated
+    # and compare the original ECDF for each parameter to the simulated
 # my other idea:
 # draw parameter estimates from some posterior particle, simulate under those parameters, 
-	#  then test if 'true' generating parameters are actually within the 95% HDF of the simulated posterior
-	# deals with how we don't really understand how adequate the models are for giving unbiased estimates of parameters
+    #  then test if 'true' generating parameters are actually within the 95% HDF of the simulated posterior
+    # deals with how we don't really understand how adequate the models are for giving unbiased estimates of parameters
 
 # checkAdequacy              # sixAnalysesTwoModels
-	
+    
 
 #checkAdequacy <- function(){
-#	}
+#    }
 
 
 

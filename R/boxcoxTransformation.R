@@ -63,8 +63,8 @@
 #' @rdname boxcoxTransformation
 #' @export
 boxcoxTransformation <- function(summaryValuesVector, boxcoxAddition, boxcoxLambda) {
-	#yes, a row of summary values
-	for (summaryValueIndex in 1:length(summaryValuesVector)) {
+    #yes, a row of summary values
+    for (summaryValueIndex in 1:length(summaryValuesVector)) {
         summaryValuesVector[summaryValueIndex] <- (summaryValuesVector[summaryValueIndex] +
             boxcoxAddition[summaryValueIndex])^boxcoxLambda[summaryValueIndex]
     }
@@ -86,11 +86,11 @@ boxcoxTransformationMatrix <- function (summaryValuesMatrix) {
     summaryVM <- summaryValuesMatrix[, summaryValueIndex] + boxcoxAddition[summaryValueIndex]
     boxcoxLambda[summaryValueIndex] <- 1
     if (sd(summaryValuesMatrix[, summaryValueIndex]) > 0) {
-		# this alternative is thanks to https://stackoverflow.com/questions/33999512/how-to-use-the-box-cox-power-transformation-in-r/34002020
+        # this alternative is thanks to https://stackoverflow.com/questions/33999512/how-to-use-the-box-cox-power-transformation-in-r/34002020
       #newLambda <- makeQuiet(as.numeric(try(car::powerTransform(summaryVM, method = "Nelder-Mead")$lambda)))
       bc <- MASS::boxcox(variable ~ 1, data = data.frame(variable = summaryVM), 
-		 lambda = seq(-20, 20, 1/10000), plotit = FALSE)
-	  newLambda <- bc$x[which(max(bc$y) == bc$y)[1]]
+         lambda = seq(-20, 20, 1/10000), plotit = FALSE)
+      newLambda <- bc$x[which(max(bc$y) == bc$y)[1]]
       if (!is.na(newLambda)) {
         boxcoxLambda[summaryValueIndex] <- newLambda
       }

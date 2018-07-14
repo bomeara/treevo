@@ -111,8 +111,8 @@
 #' # we can use testMultivarOutlierHDR with pca = FALSE
 #' # to do all of the above without visually checking
 #' testMultivarOutlierHDR(dataMatrix = cbind(x, y), 
-#' 	outlier = outlier, alpha = 0.8, pca = FALSE)
-#' 	
+#'     outlier = outlier, alpha = 0.8, pca = FALSE)
+#'     
 #' # Should that really be considered to be within
 #' # the 80% density region of this data cloud?
 #' 
@@ -137,12 +137,12 @@
 #' 
 #' # And now let's apply testMultivarOutlierHDR, with pca = TRUE
 #' testMultivarOutlierHDR(dataMatrix = cbind(x, y), 
-#' 	outlier = outlier, alpha = 0.8, pca = TRUE)
+#'     outlier = outlier, alpha = 0.8, pca = TRUE)
 #' 
 #' #####################
 #' 
 #' # Example with four complex variables
-#' 	# including correlated and multimodal variables
+#'     # including correlated and multimodal variables
 #' 
 #' x <- rnorm(100, 1, 1)
 #' y <- (x*0.8)+rnorm(100)
@@ -188,51 +188,51 @@
 #' @rdname testMultivarOutlierHDR
 #' @export
 testMultivarOutlierHDR <- function(dataMatrix, outlier, alpha, coda = FALSE, verboseMultimodal=FALSE, pca = TRUE, ...){
-	if(!is.matrix(dataMatrix)){
-		if(is.vector(dataMatrix)){
-			dataMatrix<-matrix(dataMatrix,,1)
-		}else{
-			dataMatrix<-as.matrix(dataMatrix)
-			}
-		if(!is.matrix(dataMatrix)){
-			stop("dataMatrix cannot be coerced to be a a matrix")
-			}
-		}
-	if(nrow(dataMatrix)<3){
-		stop("Two or less observations in dataMatrix - insufficient data for generating a highest density region")
-		}
-	if(nrow(dataMatrix)>10){
-		warning("Less than 10 observations are given as input - estimates of the highest density region may be very imprecise")
-		}
-	#
-	dataAll <- rbind(dataMatrix, outlier)
-	# use PCA or not
-	if(pca){
-		pcaRes <- stats::princomp(dataAll)
-		varia <- pcaRes$scores
-	}else{
-		# use raw
-		varia <- dataAll
-		}
-	# separate out the outlier to be tested
-	variaOut <- varia[nrow(varia), ]
-	# now remove outlier from variable sample to get HDR from
-	varia <- varia[-nrow(varia), ]
-	#
-	# get HPDs
-	HDR <- lapply(1:ncol(varia), function(i)
-		 highestDensityInterval(
-			varia[, i], alpha = alpha, coda = coda, 
-			verboseMultimodal=verboseMultimodal, ...
-			)
-		)
-	#
-	# test if outlier is within intervals listed for each variable
-	withinHDR <- sapply(1:ncol(varia), function(x) 
-		any(sapply(1:nrow(HDR[[x]]), function(y) 
-			(HDR[[x]][y, 1] <= variaOut[x]) & (HDR[[x]][y, 2] >= variaOut[x])
-			))
-		)
-	res <- all(withinHDR)
-	return(res)
-	}
+    if(!is.matrix(dataMatrix)){
+        if(is.vector(dataMatrix)){
+            dataMatrix<-matrix(dataMatrix,,1)
+        }else{
+            dataMatrix<-as.matrix(dataMatrix)
+            }
+        if(!is.matrix(dataMatrix)){
+            stop("dataMatrix cannot be coerced to be a a matrix")
+            }
+        }
+    if(nrow(dataMatrix)<3){
+        stop("Two or less observations in dataMatrix - insufficient data for generating a highest density region")
+        }
+    if(nrow(dataMatrix)>10){
+        warning("Less than 10 observations are given as input - estimates of the highest density region may be very imprecise")
+        }
+    #
+    dataAll <- rbind(dataMatrix, outlier)
+    # use PCA or not
+    if(pca){
+        pcaRes <- stats::princomp(dataAll)
+        varia <- pcaRes$scores
+    }else{
+        # use raw
+        varia <- dataAll
+        }
+    # separate out the outlier to be tested
+    variaOut <- varia[nrow(varia), ]
+    # now remove outlier from variable sample to get HDR from
+    varia <- varia[-nrow(varia), ]
+    #
+    # get HPDs
+    HDR <- lapply(1:ncol(varia), function(i)
+         highestDensityInterval(
+            varia[, i], alpha = alpha, coda = coda, 
+            verboseMultimodal=verboseMultimodal, ...
+            )
+        )
+    #
+    # test if outlier is within intervals listed for each variable
+    withinHDR <- sapply(1:ncol(varia), function(x) 
+        any(sapply(1:nrow(HDR[[x]]), function(y) 
+            (HDR[[x]][y, 1] <= variaOut[x]) & (HDR[[x]][y, 2] >= variaOut[x])
+            ))
+        )
+    res <- all(withinHDR)
+    return(res)
+    }
