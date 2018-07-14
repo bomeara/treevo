@@ -18,10 +18,10 @@
 #' @param validation Character argument controlling what validation procedure is used by \code{\link{plsr}}.
 #' Default is \code{"CV"} for cross-validation.
 
-#' @param scale This argument is passed to \code{\link{plsr}}.  It may be a numeric vector, or logical. If numeric vector,
+#' @param scale This argument is passed to \code{\link{plsr}}.  It may be a numeric vector, or logical. If numeric vector, 
 #' the input is scaled by dividing each variable with the corresponding element of scale.
 #' If \code{scale = TRUE}, the inpus is scaled by dividing each variable by its sample standard deviation.
-#' If cross-validation is selected (the default for \code{returnPLSModel}),
+#' If cross-validation is selected (the default for \code{returnPLSModel}), 
 #' scaling by the standard deviation is done for every segment.
 
 #' @param variance.cutoff Minimum threshold percentage of variance explained for the
@@ -37,7 +37,7 @@
 #' @param verbose If \code{TRUE}, helpful warning messages will be made when you make questionable decisions.
 
 # for \code{pls.model.list} # Used in doc for both scale and variance.cutoff
-	# I HAVE NO IDEA WHAT THIS MEANS? WHAT IS pls.model.list???
+    # I HAVE NO IDEA WHAT THIS MEANS? WHAT IS pls.model.list???
 
 
 #' @param pls.model Output from \code{\link{returnPLSModel}}.
@@ -59,40 +59,40 @@
 #' 
 #' # example simulation
 #' 
-#' nSimulations<-6
+#' nSimulations <- 6
 #' 
-#' simDataParallel<-parallelSimulateWithPriors(
-#'   nrepSim=nSimulations,
-#'   multicore=FALSE,
-#'   coreLimit=1,
-#'   phy=simPhy,
-#'   intrinsicFn=brownianIntrinsic,
-#'   extrinsicFn=nullExtrinsic,
-#'   startingPriorsFns="normal",
-#'   startingPriorsValues=matrix(c(mean(simChar[,1]), sd(simChar[,1]))),
-#'   intrinsicPriorsFns=c("exponential"),
-#'   intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
-#'   extrinsicPriorsFns=c("fixed"),
-#'   extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
-#'   generation.time=10000,
-#'   checkpointFile=NULL,
-#'   checkpointFreq=24,
-#'   verbose=FALSE,
-#'   freevector=NULL, taxonDF=NULL)
+#' simDataParallel <- parallelSimulateWithPriors(
+#'   nrepSim = nSimulations, 
+#'   multicore = FALSE, 
+#'   coreLimit = 1, 
+#'   phy = simPhy, 
+#'   intrinsicFn = brownianIntrinsic, 
+#'   extrinsicFn = nullExtrinsic, 
+#'   startingPriorsFns = "normal", 
+#'   startingPriorsValues = matrix(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
+#'   intrinsicPriorsFns = c("exponential"), 
+#'   intrinsicPriorsValues = matrix(c(10, 10), nrow = 2, byrow = FALSE), 
+#'   extrinsicPriorsFns = c("fixed"), 
+#'   extrinsicPriorsValues = matrix(c(0, 0), nrow = 2, byrow = FALSE), 
+#'   generation.time = 10000, 
+#'   checkpointFile = NULL, 
+#'   checkpointFreq = 24, 
+#'   verbose = FALSE, 
+#'   freevector = NULL, taxonDF = NULL)
 #' 
-#' nParFree<-sum(attr(simDataParallel,"freevector"))
+#' nParFree <- sum(attr(simDataParallel, "freevector"))
 #' 
 #' #separate the simulation results: 'true' generating parameter values from the summary values
-#' trueFreeValuesMat<-simDataParallel[,1:nParFree]
-#' summaryValuesMat<-simDataParallel[,-1:-nParFree]
+#' trueFreeValuesMat <- simDataParallel[, 1:nParFree]
+#' summaryValuesMat <- simDataParallel[, -1:-nParFree]
 #' 
-#' PLSmodel<-returnPLSModel(trueFreeValuesMatrix=trueFreeValuesMat,
-#' 	  	summaryValuesMatrix=summaryValuesMat,
-#'    	validation="CV", scale=TRUE, variance.cutoff=95 , segments = nSimulations)
+#' PLSmodel <- returnPLSModel(trueFreeValuesMatrix = trueFreeValuesMat, 
+#'           summaryValuesMatrix = summaryValuesMat, 
+#'        validation = "CV", scale = TRUE, variance.cutoff = 95 , segments = nSimulations)
 #' 
 #' PLSmodel
 #' 
-#' PLSTransform(summaryValuesMatrix=summaryValuesMat, pls.model=PLSmodel)
+#' PLSTransform(summaryValuesMatrix = summaryValuesMat, pls.model = PLSmodel)
 #' }
 #' 
 
@@ -101,35 +101,33 @@
 #' @name methodsPLS
 #' @rdname methodsPLS
 #' @export
-returnPLSModel<-function(trueFreeValuesMatrix, summaryValuesMatrix, validation="CV", scale=TRUE, variance.cutoff=95, verbose=TRUE, ...) {
+returnPLSModel <- function(trueFreeValuesMatrix, summaryValuesMatrix, validation = "CV", scale = TRUE, variance.cutoff = 95, verbose = TRUE, ...) {
   #note that this assumes that trueFreeValues is for a single param at a time, which works MUCH better
-
-  trueFreeValuesMatrix<-trueFreeValuesMatrix
   if (dim(summaryValuesMatrix)[2]>1 & verbose) {
     warning("in practice, doing PLS works best if you do each free parameter separately, so one parameter does not dominate")
   }
-  if (class(trueFreeValuesMatrix)!="matrix") {
-    trueFreeValuesMatrix<-matrix(trueFreeValuesMatrix,nrow=max(c(1,length(trueFreeValuesMatrix)),na.rm=TRUE))
+  if (class(trueFreeValuesMatrix) != "matrix") {
+    trueFreeValuesMatrix <- matrix(trueFreeValuesMatrix, nrow = max(c(1, length(trueFreeValuesMatrix)), na.rm = TRUE))
   }
   #
   #scaling is important
-  pls.model <- makeQuiet(plsr(trueFreeValuesMatrix~summaryValuesMatrix,validation=validation,scale=scale,...))
-  explained.variance <-cumsum(sort(attr(scores(pls.model),"explvar"),decreasing=TRUE))
-  ncomp.final<-min(c(as.numeric(which(explained.variance>=variance.cutoff)[1]),
-	length(explained.variance)),na.rm=TRUE) #min is to deal with case of never explaining >95%
+  pls.model <- makeQuiet(plsr(trueFreeValuesMatrix~summaryValuesMatrix, validation = validation, scale = scale, ...))
+  explained.variance  <- cumsum(sort(attr(scores(pls.model), "explvar"), decreasing = TRUE))
+  ncomp.final <- min(c(as.numeric(which(explained.variance >= variance.cutoff)[1]), 
+    length(explained.variance)), na.rm = TRUE) #min is to deal with case of never explaining >95%
   #
   # now rerun with the ideal number of components
-  pls.model.final <- makeQuiet(plsr(trueFreeValuesMatrix~summaryValuesMatrix,
-	ncomp=ncomp.final, validation="none",scale=scale,...))
+  pls.model.final <- makeQuiet(plsr(trueFreeValuesMatrix~summaryValuesMatrix, 
+    ncomp = ncomp.final, validation = "none", scale = scale, ...))
   return(pls.model.final)
 }
 
 
 #' @rdname methodsPLS
 #' @export
-PLSTransform<-function(summaryValuesMatrix, pls.model) {
-  if (class(summaryValuesMatrix)!="matrix") {
-    summaryValuesMatrix<-matrix(summaryValuesMatrix,ncol=max(c(1,length(summaryValuesMatrix)),na.rm=TRUE))
+PLSTransform <- function(summaryValuesMatrix, pls.model) {
+  if (class(summaryValuesMatrix) != "matrix") {
+    summaryValuesMatrix <- matrix(summaryValuesMatrix, ncol = max(c(1, length(summaryValuesMatrix)), na.rm = TRUE))
   }
-  predict(pls.model,summaryValuesMatrix,type="scores")
+  predict(pls.model, summaryValuesMatrix, type = "scores")
 }

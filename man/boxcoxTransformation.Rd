@@ -35,32 +35,32 @@ data(simRunExample)
 
 # example simulation
 
-simDataParallel<-parallelSimulateWithPriors(
-  nrepSim=5, multicore=FALSE, coreLimit=1,
-  phy=simPhy,
-  intrinsicFn=brownianIntrinsic,
-  extrinsicFn=nullExtrinsic,
-  startingPriorsFns="normal",
-  startingPriorsValues=matrix(c(mean(simChar[,1]), sd(simChar[,1]))),
-  intrinsicPriorsFns=c("exponential"),
-  intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE),
-  extrinsicPriorsFns=c("fixed"),
-  extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE),
-  generation.time=100000,
-  checkpointFile=NULL, checkpointFreq=24,
-  verbose=FALSE,
-  freevector=NULL, taxonDF=NULL)
+simDataParallel <- parallelSimulateWithPriors(
+  nrepSim = 5, multicore = FALSE, coreLimit = 1, 
+  phy = simPhy, 
+  intrinsicFn = brownianIntrinsic, 
+  extrinsicFn = nullExtrinsic, 
+  startingPriorsFns = "normal", 
+  startingPriorsValues = matrix(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
+  intrinsicPriorsFns = c("exponential"), 
+  intrinsicPriorsValues = matrix(c(10, 10), nrow = 2, byrow = FALSE), 
+  extrinsicPriorsFns = c("fixed"), 
+  extrinsicPriorsValues = matrix(c(0, 0), nrow = 2, byrow = FALSE), 
+  generation.time = 100000, 
+  checkpointFile = NULL, checkpointFreq = 24, 
+  verbose = FALSE, 
+  freevector = NULL, taxonDF = NULL)
 
-nParFree<-sum(attr(simDataParallel,"freevector"))
+nParFree <- sum(attr(simDataParallel, "freevector"))
 
 #separate the simulation results: 'true' generating parameter values from the summary values
-summaryValuesMat<-simDataParallel[,-1:-nParFree]
+summaryValuesMat <- simDataParallel[, -1:-nParFree]
 
-boxTranMat<-boxcoxTransformationMatrix(summaryValuesMatrix = summaryValuesMat)
+boxTranMat <- boxcoxTransformationMatrix(summaryValuesMatrix = summaryValuesMat)
 boxTranMat
 
-boxcoxTransformation(summaryValuesVector=summaryValuesMat[,1],
- boxcoxAddition=boxTranMat$boxcoxAddition, boxcoxLambda=boxTranMat$boxcoxLambda)
+boxcoxTransformation(summaryValuesVector = summaryValuesMat[, 1], 
+ boxcoxAddition = boxTranMat$boxcoxAddition, boxcoxLambda = boxTranMat$boxcoxLambda)
 }
 }
 \author{

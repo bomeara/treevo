@@ -35,8 +35,8 @@ data(simRunExample)
 
 #timeStep = 0.1 -> effectively ~100 steps over the tree length
 
-getBMRatePrior(phy=simPhy, traits=simChar,
-   timeStep=0.01, verbose=TRUE)
+getBMRatePrior(phy = simPhy, traits = simChar, 
+   timeStep = 0.01, verbose = TRUE)
 
 
 }

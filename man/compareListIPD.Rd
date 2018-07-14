@@ -22,9 +22,9 @@ parameter.
 
 data(simRunExample)
 
-pdfList<-list(results$particleDataFrame,resultsBound$particleDataFrame)
+pdfList <- list(results[[1]]$particleDataFrame, resultsBound[[1]]$particleDataFrame)
 
-compareListIPD(particleDataFrameList=pdfList, verbose=TRUE)
+compareListIPD(particleDataFrameList = pdfList, verbose = TRUE)
 
 }
 \author{

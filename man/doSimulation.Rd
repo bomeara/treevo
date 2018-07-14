@@ -27,10 +27,10 @@ intrinsic model.}
 \item{extrinsicValues}{Vector of values corresponding to the parameters of the
 extrinsic model.}
 
-\item{generation.time}{The number of years per generation. This sets the coarseness of the simulation; if it's set to 1000,
+\item{generation.time}{The number of years per generation. This sets the coarseness of the simulation; if it's set to 1000, 
 for example, the population's trait values change every 1000 calender years. Note that this is in calender years (see description
 for argument \code{TreeYears}), and not in millions of years (as is typical for dated trees in macroevolutionary studies).
-Thus, if a branch is 1 million-year time-unit long, and a user applies the default \code{generation.time = 1000},
+Thus, if a branch is 1 million-year time-unit long, and a user applies the default \code{generation.time = 1000}, 
 then 1000 evolutionary changes will be simulated along that branch.
 See documentation for \code{\link{doSimulation}} for further details.}
 
@@ -41,7 +41,7 @@ branch lengths are not in millions of years, you should alter this argument. Oth
 See documentation for \code{\link{doSimulation}} for further details.}
 
 \item{timeStep}{This value corresponds to the lenght of intervals between discrete evolutionary events ('generations')
-simulated along branches, relative to a rescaled tree where the root to furthest tip distance is 1. For example,
+simulated along branches, relative to a rescaled tree where the root to furthest tip distance is 1. For example, 
 \code{timeStep = 0.01} of would mean 100 (i.e., 1 / 0.01) evolutionary changes would be expected to occur from
 the root to the furthest tip. (Note that the real number simulated will be much less, because simulations start
 over at each branching node.) Ideally, \code{timeStep} (or its effective value, via other arguments) should be
@@ -72,7 +72,7 @@ These functions are mainly used as internal components, generating simulations
 within ABC analyses using the \code{\link{doRun}} functions. See \emph{Note} below.
 }
 \details{
-The phylogenetic tree used is rescaled such that the distance from the root to the furthest tip is rescaled to equal 1 time-unit,
+The phylogenetic tree used is rescaled such that the distance from the root to the furthest tip is rescaled to equal 1 time-unit, 
 and it is this rescaled edge lengths to with arguments \code{timeStep} refers to. Typically, this will be determined though
 as a ratio of \code{TreeYears} (which is the number of calender years constituing the root-to-furthest-tip distance, and
 is determined by default as if the user had supplied a tree with edge lengths in time-units of 1 time-unit = 1 million years), and
@@ -93,31 +93,31 @@ want to use \code{\link{simulateWithPriors}} or \code{\link{doSimulation}} funct
 \examples{
 \donttest{
 set.seed(1)
-tree<-rcoal(20)
+tree <- rcoal(20)
 # get realistic edge lengths
-tree$edge.length<-tree$edge.length*20
+tree$edge.length <- tree$edge.length*20
 
 #Simple Brownian motion
 
-char<-doSimulation(
-	phy=tree,
-	generation.time=100000,
-	intrinsicFn=brownianIntrinsic,
-	extrinsicFn=nullExtrinsic,
-	startingValues=c(10), #root state
-	intrinsicValues=c(0.01),
-	extrinsicValues=c(0))
+char <- doSimulation(
+    phy = tree, 
+    generation.time = 100000, 
+    intrinsicFn = brownianIntrinsic, 
+    extrinsicFn = nullExtrinsic, 
+    startingValues = c(10), #root state
+    intrinsicValues = c(0.01), 
+    extrinsicValues = c(0))
 
 #Character displacement model with minimum bound
 
-char<-doSimulation(
-	phy=tree,
- generation.time=100000,
-	intrinsicFn=boundaryMinIntrinsic,
-	extrinsicFn=ExponentiallyDecayingPushExtrinsic,
-	startingValues=c(10), #root state
-	intrinsicValues=c(0.05, 10, 0.01),
-	extrinsicValues=c(0, .1, .25))
+char <- doSimulation(
+    phy = tree, 
+ generation.time = 100000, 
+    intrinsicFn = boundaryMinIntrinsic, 
+    extrinsicFn = ExponentiallyDecayingPushExtrinsic, 
+    startingValues = c(10), #root state
+    intrinsicValues = c(0.05, 10, 0.01), 
+    extrinsicValues = c(0, .1, .25))
 }
 }
 \author{

@@ -12,37 +12,50 @@ vignette: >
   
 ---
 
-```{r}
+```{r,echo=FALSE}
 # Control Box
+set.seed(444)
 multicore<-TRUE
-coreLimit<-4
-# as of 01-18-18, gen times of 1000000 complete relatively quickly, smaller do not!
-generation.time<-1000000
+coreLimit<-6
+generation.time<-10000
 ```  
 
-```{r,echo=FALSE}
+For this vignette, we will use the tree of ammonite genera, and the continuous character data for those ammonites, taken from Raia et al. (2015, American Naturalist). This data is taken from their supplemental appendix, available at the American Naturalist website, and is available as an example dataset in R package `paleotree`. 
+
+
+```{r}
 library(paleotree)
 data(RaiaCopesRule)
-set.seed(444)
-
 ```
 
-For this vignette, we will use the tree of ammonite genera, and the continuous character data for those ammonites, taken from Raia et al. (2015, American Naturalist). This data is taken from their supplemental appendix, available at the American Naturalist website, and is available as an example dataset in R package `paleotree`. 
+```{r,echo=FALSE}
+load("treevo_vignette_workspace_presaved.Rdata")
+```
+
+```{r}
+ls()
+```
 
 The trees for the three groups examined in this paper all appear to be trees dated to the last appearance times (as opposed to the first appearance time) *and* specifically the end-boundary of the interval containing the last appearance.
 
 First, let's plot the tree:
 
 ```{r}
-plot(ladderize(ammoniteTreeRaia));axisPhylo()
+plot(ladderize(ammoniteTreeRaia), show.tip.label=FALSE)
+axisPhylo()
 ```
 
 This tree has polytomies - we will have to deal with that. Let's randomly resolve tree using `multi2di` from ape, and then use function `addTermBranchLength` from package `paleotree`
 
 ```{r}
 tree<-multi2di(ammoniteTreeRaia)
+
+# let's apply ATBL
 tree<-addTermBranchLength(tree,0.01)
-plot(ladderize(tree));axisPhylo()
+
+# let's try plotting it again
+plot(ladderize(tree), show.tip.label=FALSE)
+axisPhylo()
 ```
 
 Because we aren't adjust the internal edges at all, `multi2di` has just inserted a number of zero-length internal edges between internodes within the tree. This means that alternative resolutions of the tree (as multi2di is stochastic) won't create meaningfully different variance-covariance matrices, so we likely don't need to worry about resolving multiple trees in this case (because we're taking the trees used by Raia et al. at total face-value, which perhaps is the truly unsupported assumption).
@@ -55,16 +68,63 @@ Let's plot a traitgram of the data.
 
 ```{r, echo=FALSE, fig.show='hold'}
 plotTraitgram(tree=tree, trait=sutureComplexity,
-	 conf.int=FALSE, main="Ammonite Suture Complexity")
+     conf.int=FALSE, main="Ammonite Suture Complexity")
 
 plotTraitgram(tree=tree, trait=shellSize,
-	 conf.int=FALSE, main="Ammonite Shell Diameter")
+     conf.int=FALSE, main="Ammonite Shell Diameter")
 ```
+
+how small is the smallest branch length, even after extending terminal branches?
+
+```{r}
+
+brlen<-tree$edge.length
+min(brlen)
+
+# zero-length branches!
+```
+
+
+```{r}
+# what about not zero-length branches?
+min(brlen[brlen!=0])
+
+# in years
+min(brlen[brlen!=0])*10^6
+
+# let's look at the distribution of these edge lengths, ignoring zero-length
+hist(brlen[brlen!=0], main="",xlab="edge length")
+```
+
+
+
+```{r}
+# total number of zero-length branches
+sum(brlen==0)
+
+# proportion of edges that are zero-length
+sum(brlen==0)/length(brlen)
+
+```
+
+Yeesh - nearly a quarter of branches on this tree are zero-length branches. Not looking so good.
+
+
+
+```{r}
+
+# number of zero-length internal branches
+sum(brlen==0 & tree$edge[,2]>Ntip(tree))
+
+# number of zero-length terminal branches 
+  # (shouldn't be any because of our application of ATBL)
+sum(brlen==0 & tree$edge[,2]<=Ntip(tree))
+```
+
 
 Let's use TreEvo!
 
 ```{r}
-
 library(TreEvo)
 
 # character data for doRun must be in matrix form
@@ -72,7 +132,6 @@ library(TreEvo)
 
 charData<-matrix(sutureComplexity,ncol=1)
 rownames(charData)<-names(sutureComplexity)
-
 ```
 
 Let's analyze it with ordinary BM
@@ -80,7 +139,7 @@ Let's analyze it with ordinary BM
 ```{r eval=FALSE}
 
 
-results<-doRun_prc(
+resultsBM<-doRun_prc(
   phy = tree,
   traits = charData,
   intrinsicFn=brownianIntrinsic,
@@ -142,10 +201,61 @@ resultsBound<-doRun_prc(
 
 ```
 
+The function `summarizePosterior` provides us with the mean, standard deviation, and  highest posterior density (HPD) for each free parameter in the posterior sample, for each individual run. We can specify the probability density we would like to receive the bounds for using the `alpha` argument.
 
-```{r, eval=FALSE, echo=FALSE}
+For example, for each Brownian Motion run:
 
-save.image(file="treevo_vignette_workspace.Rdata")
+```{r}
+
+summarizePosterior(resultsBM[[1]]$particleDataFrame, alpha = 0.8)
+summarizePosterior(resultsBM[[2]]$particleDataFrame, alpha = 0.8)
+summarizePosterior(resultsBM[[3]]$particleDataFrame, alpha = 0.8)
+```
+
+Or just to look at the first run of the Bounded BM run:
+
+```{r}
+summarizePosterior(resultsBound[[1]]$particleDataFrame, alpha = 0.8)
 
 ```
+
+
+
+```{r }
+
+# This function calculates Effective Sample Size (ESS) on results.  
+# Performs the best when results are from multiple runs.
+
+# ESS for single runs
+pairwiseESS(resultsBM)
+
+pairwiseESS(resultsBound)
+
+# ESS for parameters shared between BM and bound
+#pairwiseESS(list(resultsBM$particleDataFrame,resultsBound$particleDataFrame))
+
+
+```
+
+
+```{r fig.width = 7, fig.asp=0.4}
+
+# plotPosteriors
+    # for each free parameter in the posterior, a plot is made of the distribution of values estimate in the last generation
+
+# collect the particleDataFrames into lists
+
+resultsBMpart<-lapply(resultsBM,function(x) x$particleDataFrame)
+
+resultsBoundpart<-lapply(resultsBound,function(x) x$particleDataFrame)
+
+plotPosteriors(particleDataFrame=resultsBMpart,
+   priorsMat=resultsBM[[1]]$PriorMatrix)
+
+plotPosteriors(particleDataFrame=resultsBoundpart,
+   priorsMat=resultsBound[[1]]$PriorMatrix)
+```
+
+
+
 

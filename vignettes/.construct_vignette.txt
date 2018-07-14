@@ -1,0 +1,19 @@
+cd C:\Users\notDave\Desktop\remoteWorkplace && powershell -Command "(New-Object Net.WebClient).DownloadFile('https://raw.githubusercontent.com/bomeara/treevo/vignette_third_try/vignettes/.constructing_treevo_vignette.R','constructVignette.R')" && R CMD BATCH --no-save --no-restore constructVignette.R
+
+
+
+
+
+
+
+
+cd C:\Users\notDave\Desktop\remoteWorkplace && R CMD BATCH --no-save --no-restore https://raw.githubusercontent.com/bomeara/treevo/vignette_third_try/vignettes/.constructing_treevo_vignette.R
+
+copy https://raw.githubusercontent.com/bomeara/treevo/vignette_third_try/vignettes/.constructing_treevo_vignette.R
+
+
+powershell -Command "Invoke-WebRequest https://raw.githubusercontent.com/bomeara/treevo/vignette_third_try/vignettes/.constructing_treevo_vignette.R"
+
+
+powershell -Command "(New-Object Net.WebClient).DownloadFile('https://raw.githubusercontent.com/bomeara/treevo/vignette_third_try/vignettes/.constructing_treevo_vignette.R','constructVignette.R')"
+

@@ -28,41 +28,41 @@
 #' 
 #' #timeStep = 0.1 -> effectively ~100 steps over the tree length
 #' 
-#' getBMRatePrior(phy=simPhy, traits=simChar,
-#'    timeStep=0.01, verbose=TRUE)
+#' getBMRatePrior(phy = simPhy, traits = simChar, 
+#'    timeStep = 0.01, verbose = TRUE)
 #' 
 #' 
 
 #' @name getBMRatePrior
 #' @rdname getBMRatePrior
 #' @export
-getBMRatePrior<-function(phy, traits, timeStep, verbose=TRUE) {
+getBMRatePrior <- function(phy, traits, timeStep, verbose = TRUE){
   if(verbose){
-	message("BM rate prior is an exponential distribution with a mean value approximately equal to the likelihood estimation")
-	}
-  GetBrownianSDRate<-function(phy, traits, timeStep) { #conversion from continuous rate to discrete
+    message("BM rate prior is an exponential distribution with a mean value approximately equal to the likelihood estimation")
+    }
+  GetBrownianSDRate <- function(phy, traits, timeStep) { #conversion from continuous rate to discrete
     if(is.null(names(traits))){
-		names(traits) <- colnames(traits)
-		}
-	#
-	continuous.time.sigma.squared<-numeric()
-	for(i in 1:ncol(traits)){
-		trait<-traits[,i]
-		names(trait)<-rownames(traits)
-		continuous.time.sigma.squared[i] <- getBM(phy=phy,dat=trait)$beta
-		}
-	#
+        names(traits) <- colnames(traits)
+        }
+    #
+    continuous.time.sigma.squared <- numeric()
+    for(i in 1:ncol(traits)){
+        trait <- traits[, i]
+        names(trait) <- rownames(traits)
+        continuous.time.sigma.squared[i] <- getBM(phy = phy, dat = trait)$beta
+        }
+    #
     numSteps <- getSimulationSplits(phy)[1, 1] / timeStep
-    discrete.time.sigma.squared<-continuous.time.sigma.squared * max(node.depth.edgelength(phy)) / numSteps
-    discrete.time.sd<-sqrt(discrete.time.sigma.squared)
+    discrete.time.sigma.squared <- continuous.time.sigma.squared * max(node.depth.edgelength(phy)) / numSteps
+    discrete.time.sd <- sqrt(discrete.time.sigma.squared)
     return(discrete.time.sd)
   }
-  LikelihoodRateEst<-GetBrownianSDRate(phy, traits, timeStep)
-  intrinsicPriorsValues<-LikelihoodRateEst^-1
+  LikelihoodRateEst <- GetBrownianSDRate(phy, traits, timeStep)
+  intrinsicPriorsValues <- LikelihoodRateEst^-1
   if(verbose){
-	message(paste0("LikelihoodRateEst = ", LikelihoodRateEst, "; Mean of exp distribution for prior is ~",
-		mean(rexp(10000, LikelihoodRateEst^-1)), "; exp rate = ",  LikelihoodRateEst^-1))
-	}
+    message(paste0("LikelihoodRateEst = ", LikelihoodRateEst, "; Mean of exp distribution for prior is ~", 
+        mean(rexp(10000, LikelihoodRateEst^-1)), "; exp rate = ", LikelihoodRateEst^-1))
+    }
   #set prior distribution mean to BM estimate
   return(intrinsicPriorsValues)
 }

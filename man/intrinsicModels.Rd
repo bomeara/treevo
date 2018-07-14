@@ -95,8 +95,8 @@ In the various TimeSlices models, time threshold units are in time before presen
 (i.e., 65 could be 65 MYA). The last time threshold should be 0.
 
 The input parameters for this model are:
-\code{autoregressiveIntrinsicTimeSlices} params = sd-1 (sigma-1),
-attractor-1 (character mean-1), attraction-1 (alpha-1), time threshold-1,
+\code{autoregressiveIntrinsicTimeSlices} params = sd-1 (sigma-1), 
+attractor-1 (character mean-1), attraction-1 (alpha-1), time threshold-1, 
 sd-2 (sigma-2), attractor-2 (character mean-2), attraction-2 (alpha-2), time
 threshold-2
 
@@ -106,7 +106,7 @@ process with differing sigma and attraction over time
 
 The input parameters for this model are:
 \code{autoregressiveIntrinsicTimeSlicesConstantMean} params = sd-1
-(sigma-1), attraction-1 (alpha-1), time threshold-1, sd-2 (sigma-2),
+(sigma-1), attraction-1 (alpha-1), time threshold-1, sd-2 (sigma-2), 
 attraction-2 (alpha-2), time threshold-2, attractor (character mean)
 
 \code{autoregressiveIntrinsicTimeSlicesConstantSigma} describes a model of intrinsic character evolution. New
@@ -114,48 +114,48 @@ character values are generated after one time step via a discrete-time OU
 process with differing means and attraction over time.
 
 The input parameters for this model are:
-\code{autoregressiveIntrinsicTimeSlicesConstantSigma} params = sd (sigma),
-attractor-1 (character mean-1), attraction-1 (alpha-1), time threshold-1,
+\code{autoregressiveIntrinsicTimeSlicesConstantSigma} params = sd (sigma), 
+attractor-1 (character mean-1), attraction-1 (alpha-1), time threshold-1, 
 attractor-2 (character mean-2), attraction-2 (alpha-2), time threshold-2
 }
 \examples{
 \donttest{
 set.seed(1)
 # Examples of simulations with various intrinsic models (and null extrinsic model)
-tree<-rcoal(20)
+tree <- rcoal(20)
 # get realistic edge lengths
-tree$edge.length<-tree$edge.length*20
+tree$edge.length <- tree$edge.length*20
 
 #Simple Brownian motion Intrinsic Model
-char<-doSimulation(
-	phy=tree,
-	intrinsicFn=brownianIntrinsic,
-	extrinsicFn=nullExtrinsic,
-	startingValues=c(10), #root state
-	intrinsicValues=c(0.01),
-	extrinsicValues=c(0),
-	generation.time=100000)
+char <- doSimulation(
+    phy = tree, 
+    intrinsicFn = brownianIntrinsic, 
+    extrinsicFn = nullExtrinsic, 
+    startingValues = c(10), #root state
+    intrinsicValues = c(0.01), 
+    extrinsicValues = c(0), 
+    generation.time = 100000)
 
 # Simple model with BM, but a minimum bound at 0, max bound at 15
-char<-doSimulation(
-	phy=tree,
-	intrinsicFn=boundaryIntrinsic,
-	extrinsicFn=nullExtrinsic,
-	startingValues=c(10), #root state
-	intrinsicValues=c(0.01,0,15),
-	extrinsicValues=c(0),
-	generation.time=100000)
+char <- doSimulation(
+    phy = tree, 
+    intrinsicFn = boundaryIntrinsic, 
+    extrinsicFn = nullExtrinsic, 
+    startingValues = c(10), #root state
+    intrinsicValues = c(0.01, 0, 15), 
+    extrinsicValues = c(0), 
+    generation.time = 100000)
 
 # Autoregressive (Ornstein-Uhlenbeck) model
-	# with minimum bound at 0
-char<-doSimulation(
-	phy=tree,
-	intrinsicFn=minBoundaryAutoregressiveIntrinsic,
-	extrinsicFn=nullExtrinsic,
-	startingValues=c(10), #root state
-	intrinsicValues=c(0.01,3,0.1,0),
-	extrinsicValues=c(0),
-	generation.time=100000)
+       # with minimum bound at 0
+char <- doSimulation(
+    phy = tree, 
+    intrinsicFn = minBoundaryAutoregressiveIntrinsic, 
+    extrinsicFn = nullExtrinsic, 
+    startingValues = c(10), #root state
+    intrinsicValues = c(0.01, 3, 0.1, 0), 
+    extrinsicValues = c(0), 
+    generation.time = 100000)
 }
 }
 \author{

@@ -19,7 +19,7 @@ function of "weights" or "distance".}
 \item{plot.parent}{Option to plot lines on the floor of the 3d plot to show
 particle parantage.}
 
-\item{realParam}{Option to display real parameter value as a solid line,
+\item{realParam}{Option to display real parameter value as a solid line, 
 also must give actual value for this (realParamValues).  Note: this should
 only be done with simulated data where real param values are recorded.}
 
@@ -35,12 +35,12 @@ options are available to add to the plot: plotting particles by weight or
 distance, plotting particle parantage, and plotting the real parameter
 values (if known).
 
-As of version 0.6.0, rejected particles are not saved for outputting by the parallelized algorithm,
+As of version 0.6.0, rejected particles are not saved for outputting by the parallelized algorithm, 
 and thus they are no longer displayed by this function, unlike previous versions.
 }
 \note{
 This function requires access functions \code{triangulate} and the \code{as} method for
-class \code{gpc.poly} from package \code{gpclib}. As of 09-12-17, this package
+class \code{gpc.poly} from package \code{gpclib}. As of 05-30-18, this package
 was not available from CRAN as a Windows binary, and thus this function is likely
 unavailable to many (if not all) Windows users.
 
@@ -53,8 +53,8 @@ obtain than package \code{gpclib}, but may not be buildable on some UNIX worksta
 if(requireNamespace("gpclib", quietly = TRUE) & requireNamespace("rgl", quietly = TRUE)){
 
  data(simRunExample)
- plotABC_3D(particleDataFrame=results$particleDataFrame, parameter=7,
-     show.particles="none", plot.parent=FALSE, realParam=FALSE, realParamValues=NA)
+ plotABC_3D(particleDataFrame = results[[1]]$particleDataFrame, parameter = 7, 
+     show.particles = "none", plot.parent = FALSE, realParam = FALSE, realParamValues = NA)
 
 }
 }
