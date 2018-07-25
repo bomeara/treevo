@@ -5,38 +5,30 @@
 
 #' Extrinsic Character Evolution Models
 #' 
-#' Functions describing various models of 'extrinsive' evolution (i.e. evolutionary processes
+#' Functions describing various models of 'extrinsic' evolution (i.e. evolutionary processes
 #' dependent on factors extrinsic to the evolving lineage, such as environmental change, or
 #' other evolving lineages that interact with the lineage in question (competitors, predators, etc).
 #' 
 #' The following extrinsic models are:
 #' 
-#' 
 #' \code{nullExtrinsic} describes a model of no extrinsic character change.
-#' 
 #' It has no parameters, really.
-#' 
 #' 
 #' \code{nearestNeighborDisplacementExtrinsic} describes a model of extrinsic trait evolution where character
 #' values of a focal taxon depend on the values of closest relatives on the tree (e.g. competitive exclusion).
-#' 
 #' The input parameters for this model are:
-#' \code{nearestNeighborDisplacementExtrinsic} params = sd, springK, maximum force
-#' 
+#' \code{nearestNeighborDisplacementExtrinsic} with parameters \code{params = sd, springK, maximumForce}
 #' 
 #' \code{everyoneDisplacementExtrinsic} describes a model of extrinsic trait evolution where the character
 #' values of a focal taxon depend on the values of all co-extant relatives on the simulated tree.
-#' 
 #' The input parameters for this model are:
-#' \code{everyoneDisplacementExtrinsic} params = sd, springK, maximum force
-#' 
+#' \code{everyoneDisplacementExtrinsic} with parameters \code{params = sd, springK, maximumForce}
 #' 
 #' \code{ExponentiallyDecayingPushExtrinsic} describes a model of extrinsic trait evolution where the character
 #' values of a focal taxon is 'pushed' away from other taxa with similar values, but the force of that 'push'
 #' exponentially decays as lineages diverge and their character values become less similar.
-#' 
 #' The input parameters for this model are:
-#' \code{ExponentiallyDecayingPushExtrinsic} params = sd, maximum force, half distance
+#' \code{ExponentiallyDecayingPushExtrinsic} with parameters \code{params = sd, maximumForce, halfDistance}
 #' 
 
 
@@ -48,6 +40,10 @@
 #' column per state
 
 #' @param timefrompresent which time slice in the tree
+
+#' @aliases abcmodels.extrinsic
+
+#' @seealso \code{\link{abcmodels.intrinsic}}
 
 #' @return A matrix of values representing character displacement from a single
 #' time step in the tree.
