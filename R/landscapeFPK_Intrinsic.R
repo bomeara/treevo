@@ -1,3 +1,6 @@
+#' Intrinsic Trait Evolution Model for a Macroevolutionary Landscape on a Fokker-Planck-Kolmogorov Potential Surface (Boucher et al., 2018)
+#' 
+#' 
 
 
 
@@ -11,16 +14,60 @@
 		# Boucher et al essentially fix these bounds
 			# at a distance far from observed trait values
 
+	#a discrete time Fokker–Planck–Kolmogorov model (FPK)
+		# V(x)=ax4+bx2+cx 
+	# parameters: a,b,c, sigma
+		# dependent on former trait value
+	#
+	# describes a potential surface where height corresponds to
+		# tendency to change in that direction
+	# allows for multiple optima, different heights to those optima
+		#also collapses to BM and OU1
+	#
+	# From Boucher et al:
+	# Finally, note that both BM and the OU model are special cases of the FPK
+	# model: BM corresponds to V(x)=0 and OU to
+	# V(x)=((alpha/sigma^2)*x^2)-((2*alpha*theta/(sigma^2))*x)
+	#
+	# following code is loosely based on function Sim_FPK from package BBMV
+	#
+	# all of the following only need to be run
+		# when the parameters of FPK are changed
+	# this *could* be pre-calculated for a single run with lexical scoping	
+	#	
+	# landscape descriptor function
+	# over the arbitrary interval (-1.5 : 1.5)
+			
+			
 
+#' @details
+
+			
 			
 #' @inheritParams abcmodels.intrinsic
 
-#' @author David Bapst
+#' @param
 
-#' @seealso Other intrinsic models are described at \code{\link{abcmodels.intrinsic}}.
+#' @return
+
+
+#' @seealso 
+#' An alternative approach in \code{TreEvo} to estimating a macroevolutionary landscape
+#' with multiple optima is the intrinsic model \code{\link{multiOptimaIntrinsic}}, 
+#' however this model requires an \emph{a priori} choice on the number of optima
+#' and the assumption that the optima have similar attractor strength. 
+#' Other intrinsic models are described at \code{\link{abcmodels.intrinsic}}.
+		
 			
-			
-			
+
+
+
+#' @author David W. Bapst
+
+#' @references		
+#' Boucher, F. C., V. Démery, E. Conti, L. J. Harmon, and J. Uyeda. 2018.
+#' A General Model for Estimating Macroevolutionary Landscapes. \emph{Systematic Biology}
+#' 67(2):304-319.
 			
 			
 			

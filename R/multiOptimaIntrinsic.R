@@ -1,12 +1,24 @@
 
 
 
+#' @details
 
 #' @inheritParams abcmodels.intrinsic
 
-#' @author David Bapst
 
-#' @seealso Other intrinsic models are described at \code{\link{abcmodels.intrinsic}}.
+#' @return
+
+
+#' @author David W. Bapst
+
+
+#' @seealso
+#' An alternative approach in \code{TreEvo} to estimating a macroevolutionary landscape with multiple optima
+#' is the Fokker–Planck–Kolmogorov (FPK) model, which can be fit with \code{\link{landscapeFPK_Intrinsic}}.
+#' This model does not assume a set number of optima nor that they have similar attractor strength, but
+#' parameters may be difficult to interpret in isolation, and fitting this model may be slower with \code{TreEvo}
+#' due to necessary linear algebra transformations. 
+#' Other intrinsic models are described at \code{\link{abcmodels.intrinsic}}.
 
 #' @examples
 #' 
