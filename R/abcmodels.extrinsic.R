@@ -46,8 +46,9 @@
 
 #' @seealso Intrinsic models are described at \code{\link{abcmodels.intrinsic}}.
 
-#' @return A matrix of values representing character displacement from a single
-#' time step in the tree.
+#' @return
+#' A vector of values representing character displacement of that lineage over a single time step.
+
 
 #' @author Brian O'Meara and Barb Banbury
 

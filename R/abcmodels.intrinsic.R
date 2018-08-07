@@ -77,8 +77,8 @@
 
 #' @param timefrompresent The amount of time from the present - generally ignored except for time-dependent models.
 
-#' @return A matrix of values representing character displacement from a single
-#' time step in the tree.
+#' @return
+#' A vector of values representing character displacement of that lineage over a single time step.
 
 #' @aliases abcmodels.intrinsic
 

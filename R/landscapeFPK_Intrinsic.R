@@ -49,6 +49,8 @@
 #' @param
 
 #' @return
+#' A vector of values representing character displacement of that lineage over a single time step.
+
 
 
 #' @seealso 

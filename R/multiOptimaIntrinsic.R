@@ -1,4 +1,23 @@
+#' Single Evolutionary Regime Model with Multiple Optima
+#' 
+#' This model describes an evolutionary process where multiple optima exist. Lineages are attracted
+#' to an optima in their vicinity (this is handled as a stochastic process where which attract affects
+#' which population at a given point in time is weighted with respect to the proximity of a given
+#' population's trait value to the given optima), but as a lineage approaches the attractor that
+#' controls it, it may experience less directional evolution in the direction of the optima,
+#' and overall show more variation. This framework allows for the model to describe the evolution
+#' with respect to multiple optima simultaneously, without needing to treat individual transitions
+#' between optima (or macroevolutionary 'regimes') as a separate parameter. Thus, the optima exist
+#' within a single evolutionary regime, with only a scaling parameter present that allows more
+#' or less frequent transitions between optima by altering the impact of proximity to optima.
 
+
+#' @details
+#' \code{autoregressiveIntrinsic} describes a model of intrinsic character evolution. New
+#' character values are generated after one time step via a discrete-time OU
+#' process.
+#' The input parameters for this model are:
+#' \code{autoregressiveIntrinsic} with \code{params = sd (sigma), attractor (character mean), attraction (alpha)}
 
 
 #' @details
@@ -7,6 +26,8 @@
 
 
 #' @return
+#' A vector of values representing character displacement of that lineage over a single time step.
+ 
 
 
 #' @author David W. Bapst
