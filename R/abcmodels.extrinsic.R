@@ -31,19 +31,20 @@
 #' \code{ExponentiallyDecayingPushExtrinsic} with parameters \code{params = sd, maximumForce, halfDistance}
 #' 
 
+#' @inheritParams abcmodels.intrinsic
 
-#' @param params describes input paramaters for the model (see Description)
+#' @param selfstates Vector of current trait values for the population of
+#' interest. May be multiple for some models, but generally expected to be
+#' only a single value. Multivariate \code{TreEvo} is not yet supported.
 
-#' @param selfstates vector of states for each taxon
-
-#' @param otherstates matrix of character states, one row per taxon and once
-#' column per state
-
-#' @param timefrompresent which time slice in the tree
+#' @param otherstates Matrix of current trait values for all concurrent taxa/populations other
+#' than the one of interest, with one row for each taxon, and a column for each trait.
+#' May be multiple states per taxa/populations for some models, but generally expected to be
+#' only a single value. Multivariate \code{TreEvo} is not yet supported.
 
 #' @aliases abcmodels.extrinsic
 
-#' @seealso \code{\link{abcmodels.intrinsic}}
+#' @seealso Intrinsic models are described at \code{\link{abcmodels.intrinsic}}.
 
 #' @return A matrix of values representing character displacement from a single
 #' time step in the tree.

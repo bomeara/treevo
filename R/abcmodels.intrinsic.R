@@ -70,24 +70,22 @@
 #' attractor-2 (character mean-2), attraction-2 (alpha-2), time threshold-2}
 #' 
 
-#' @param params describes input paramaters for the model (see Description)
+#' @param params A vector containing input parameters for the given model (see \emph{Description} below on what parameters).
 
-#' @param states vector of states for each taxon
+#' @param states Vector of current trait values for a taxon. May be multiple for some models, but generally expected to be
+#' only a single value. Multivariate \code{TreEvo} is not yet supported.
 
-#' @param timefrompresent which time slice in the tree
+#' @param timefrompresent The amount of time from the present - generally ignored except for time-dependent models.
 
 #' @return A matrix of values representing character displacement from a single
 #' time step in the tree.
 
 #' @aliases abcmodels.intrinsic
 
-#' @seealso \code{\link{abcmodels.extrinsic}}
+#' @seealso Another intrinsic model with multiple optima is described at \code{\link{multiOptimaIntrinsic}}.
+#' Extrinsic models are described at \code{\link{abcmodels.extrinsic}}.
 
 #' @author Brian O'Meara and Barb Banbury
-
-# @references O'Meara and Banbury, unpublished
-
-# @keywords nullIntrinsic intrinsic
 
 
 #' @examples

@@ -43,7 +43,7 @@
 #' @param pls.model Output from \code{\link{returnPLSModel}}.
 
 #' @seealso
-#' Function \code{returnPLSModel} effectively wraps function \code{\link{plsr}} from package \code{mvr}.
+#' Function \code{returnPLSModel} effectively wraps function \code{\link[mvr]{plsr}} from package \code{mvr}.
 
 #' @return
 #' Function \code{returnPLSModel} returns a PLS model, and function \code{PLSTransform} returns transformed summary statistics.
