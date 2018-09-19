@@ -181,16 +181,35 @@ boundaryMinIntrinsic  <- function(params, states, timefrompresent) {
 
 #' @rdname intrinsicModels
 #' @export
+boundaryMaxIntrinsic  <- function(params, states, timefrompresent) {
+    #params[1] is sd, params[2] is max boundary
+    newdisplacement <- rpgm::rpgm.rnorm(n = length(states), mean = 0, sd = params[1])
+    for (i in length(newdisplacement)) {
+        newstate <- newdisplacement[i]+states[i]
+        if (newstate>params[2]) { #newstate less than min
+            newdisplacement[i] <- params[2]-states[i] #so, rather than go below the minimum, this moves the new state to the maximum
+        }
+    }
+    return(newdisplacement)
+    }
+	
+
+#' @rdname intrinsicModels
+#' @export
 autoregressiveIntrinsic <- function(params, states, timefrompresent) {
     #a discrete time OU, same sd, mean, and attraction for all chars
     #params[1] is sd (sigma), params[2] is attractor (ie. character mean), params[3] is attraction (ie. alpha)
     sd <- params[1]
     attractor <- params[2]
     attraction <- params[3]    #in this model, this should be between zero and one
-    newdisplacement <- rpgm::rpgm.rnorm(n = length(states), mean = (attractor-states)*attraction, sd = sd) #subtract current states because we want displacement
+    #subtract current states because we want displacement
+	newdisplacement <- rpgm::rpgm.rnorm(
+					n = length(states), 
+					mean = (attractor-states)*attraction, 
+					sd = sd) 
     return(newdisplacement)
-    }
-
+    }	
+	
 #' @rdname intrinsicModels
 #' @export
 minBoundaryAutoregressiveIntrinsic <- function(params, states, timefrompresent) {
@@ -215,7 +234,7 @@ minBoundaryAutoregressiveIntrinsic <- function(params, states, timefrompresent) 
 #' @rdname intrinsicModels
 #' @export
 autoregressiveIntrinsicTimeSlices <- function(params, states, timefrompresent) {
-    #a discrete time OU, differing mean, sigma, and attaction with time
+    #a discrete time OU, differing mean, sigma, and attraction with time
     #params = [sd1, attractor1, attraction1, timethreshold1, sd2, attractor2, attraction2, timethreshold2, ...]
     #time is time before present (i.e., 65 could be 65 MYA).
         # The last time threshold should be 0, one before that is the end of the previous epoch, etc.
