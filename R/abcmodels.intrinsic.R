@@ -225,7 +225,8 @@ autoregressiveIntrinsic <- function(params, states, timefrompresent) {
 #' @export
 minBoundaryAutoregressiveIntrinsic <- function(params, states, timefrompresent) {
     #a discrete time OU, same sd, mean, and attraction for all chars
-    #params[1] is sd (sigma), params[2] is attractor (ie. character mean), params[3] is attraction (ie. alpha), params[4] is min bound
+    #params[1] is sd (sigma), params[2] is attractor (ie. character mean),
+		#params[3] is attraction (ie. alpha), params[4] is min bound
     sd <- params[1]
     attractor <- params[2]
     attraction <- params[3]    #in this model, this should be between zero and one
@@ -246,41 +247,7 @@ minBoundaryAutoregressiveIntrinsic <- function(params, states, timefrompresent) 
     return(newdisplacement)
 }
 
-
-#' @rdname intrinsicModels
-#' @export
-maxBoundaryAutoregressiveIntrinsic <- function(params, states, timefrompresent) {
-    #a discrete time OU, same sd, mean, and attraction for all chars
-    #params[1] is sd (sigma), params[2] is attractor (ie. character mean), params[3] is attraction (ie. alpha), params[4] is min bound
-    sd <- params[1]
-    attractor <- params[2]
-    attraction <- params[3]    #in this model, this should be between zero and one
-    minBound <- params[4]
-    newdisplacement <- rpgm::rpgm.rnorm(
-		n = length(states), 
-		mean = (attractor-states)*attraction, 
-		sd = sd) #subtract current states because we want displacement
-    #message(newdisplacement)
-	for (i in length(newdisplacement)) {
-        newstate <- newdisplacement[i]+states[i]
-        if (newstate>params[2]) { #newstate less than min
-            newdisplacement[i] <- params[2]-states[i] 
-			#so, rather than go below the minimum, this moves the new state to the maximum
-        }
-    }
-    return(newdisplacement)
-}
-
-
-
 	
-
-# September 2018
-# Make two more models for Aquilegia
-# 1) trait values have three optima on gradient, with some rate of switching to next-largest optima, cannot reverse
-# 2) trait values evolve in three regimes with  successive upper bounds on gradient (so only two upper-bounds, highest regime has no bounds) with some rate of switching to next-largest regime, cannot reverse
-# addendum - maybe make rate of switching to next optima dependent on trait value?
-
 #' @rdname intrinsicModels
 #' @export
 autoregressiveIntrinsicTimeSlices <- function(params, states, timefrompresent) {
