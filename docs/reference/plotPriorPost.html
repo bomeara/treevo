@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Plotting, Summarizing and Comparing the Prior and Posterior Distributions — plotPriorPost â€¢ TreEvo</title>
+<title>Plotting, Summarizing and Comparing the Prior and Posterior Distributions â€” plotPriorPost â€¢ TreEvo</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -18,13 +18,25 @@
 <!-- Font Awesome icons -->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 
+<!-- clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
+
+<!-- sticky kit -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
-<script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-  
-  
+
+
+
+<meta property="og:title" content="Plotting, Summarizing and Comparing the Prior and Posterior Distributions â€” plotPriorPost" />
+
+<meta property="og:description" content="Assorted functions for visualizing and summarizing the prior and posterior probability distributions associated with ABC analyses." />
+<meta name="twitter:card" content="summary" />
+
+
+
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -47,8 +59,12 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">TreEvo</a>
+      <span class="navbar-brand">
+        <a class="navbar-link" href="../index.html">TreEvo</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.9.0</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
@@ -73,7 +89,7 @@
   </ul>
 </li>
 <li>
-  <a href="../news/index.html">News</a>
+  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
       
@@ -85,6 +101,7 @@
   </a>
 </li>
       </ul>
+      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -92,46 +109,51 @@
       
       </header>
 
-      <div class="row">
+<div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Plotting, Summarizing and Comparing the Prior and Posterior Distributions</h1>
+    <small class="dont-index">Source: <a href='https://github.com/bomeara/treevo/blob/master/R/plotPriorPost.R'><code>R/plotPriorPost.R</code></a></small>
+    <div class="hidden name"><code>plotPriorPost.Rd</code></div>
     </div>
 
+    <div class="ref-description">
     
     <p>Assorted functions for visualizing and summarizing the prior and posterior probability distributions associated with ABC analyses.</p>
     
+    </div>
 
-    <pre class="usage"><span class='fu'>plotPrior</span>(<span class='kw'>priorFn</span> <span class='kw'>=</span> <span class='fu'>match.arg</span>(<span class='kw'>arg</span> <span class='kw'>=</span> <span class='no'>priorFn</span>, <span class='kw'>choices</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"fixed"</span>, <span class='st'>"uniform"</span>,
-  <span class='st'>"normal"</span>, <span class='st'>"lognormal"</span>, <span class='st'>"gamma"</span>, <span class='st'>"exponential"</span>), <span class='kw'>several.ok</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>),
-  <span class='no'>priorVariables</span>, <span class='kw'>plotQuants</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>plotLegend</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+    <pre class="usage"><span class='fu'>plotPrior</span>(<span class='kw'>priorFn</span> <span class='kw'>=</span> <span class='fu'>match.arg</span>(<span class='kw'>arg</span> <span class='kw'>=</span> <span class='no'>priorFn</span>, <span class='kw'>choices</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"fixed"</span>,
+  <span class='st'>"uniform"</span>, <span class='st'>"normal"</span>, <span class='st'>"lognormal"</span>, <span class='st'>"gamma"</span>, <span class='st'>"exponential"</span>), <span class='kw'>several.ok</span> <span class='kw'>=</span>
+  <span class='fl'>FALSE</span>), <span class='no'>priorVariables</span>, <span class='kw'>plotQuants</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>plotLegend</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
 
 <span class='fu'>plotUnivariatePosteriorVsPrior</span>(<span class='no'>posteriorCurve</span>, <span class='no'>priorCurve</span>,
-  <span class='kw'>label</span> <span class='kw'>=</span> <span class='st'>"parameter"</span>, <span class='kw'>trueValue</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>prob</span> <span class='kw'>=</span> <span class='fl'>0.95</span>)
+  <span class='kw'>label</span> <span class='kw'>=</span> <span class='st'>"parameter"</span>, <span class='kw'>trueValue</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
 
 <span class='fu'>getUnivariatePriorCurve</span>(<span class='no'>priorFn</span>, <span class='no'>priorVariables</span>, <span class='kw'>nPoints</span> <span class='kw'>=</span> <span class='fl'>1e+05</span>,
-  <span class='kw'>from</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>to</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>prob</span> <span class='kw'>=</span> <span class='fl'>0.95</span>)
+  <span class='kw'>from</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>to</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>0.8</span>, <span class='kw'>coda</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>verboseMultimodal</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)
 
 <span class='fu'>getUnivariatePosteriorCurve</span>(<span class='no'>acceptedValues</span>, <span class='kw'>from</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>to</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>prob</span> <span class='kw'>=</span> <span class='fl'>0.95</span>)</pre>
+  <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>0.8</span>, <span class='no'>...</span>, <span class='kw'>coda</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>verboseMultimodal</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
     
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>priorFn</th>
-      <td><p>Prior Shape of the distribution; one of either "fixed", "uniform", "normal",
+      <td><p>Prior Shape of the distribution; one of either "fixed", "uniform", "normal", 
 "lognormal", "gamma", or "exponential".</p></td>
     </tr>
     <tr>
       <th>priorVariables</th>
       <td><p>Variables needed to describe the shape of the
 distribution, dependent on <code>priorFn</code>:</p><dl class='dl-horizontal'>
-<dt>priorFn = "uniform"</dt><dd><p>priorVariables = c(min, max)</p></dd> 
+<dt>priorFn = "uniform"</dt><dd><p>priorVariables = c(min, max)</p></dd>
 <dt>priorFn = "normal"</dt><dd><p>priorVariables = c(mean, standard deviation)</p></dd>
 <dt>priorFn = "lognormal"</dt><dd><p>priorVariables = c(mean, standard deviation)</p></dd>
 <dt>priorFn = "gamma"</dt><dd><p>priorVariables = c(shape, scale)</p></dd>
-<dt>priorFn = "exponential"</dt><dd><p>priorVariables = c(rate)</p></dd> 
+<dt>priorFn = "exponential"</dt><dd><p>priorVariables = c(rate)</p></dd>
 </dl></td>
     </tr>
     <tr>
@@ -159,20 +181,41 @@ distribution, dependent on <code>priorFn</code>:</p><dl class='dl-horizontal'>
       <td><p>True parameter value, if any such exists and is known (usually only true of simulations).</p></td>
     </tr>
     <tr>
-      <th>prob</th>
-      <td><p>Probability content of the highest posterior density (HPD).</p></td>
-    </tr>
-    <tr>
       <th>nPoints</th>
       <td><p>Number of points to draw.</p></td>
     </tr>
     <tr>
       <th>from</th>
-      <td><p>Lower bound, if any.</p></td>
+      <td><p>Lower bound, if any. By default this is <code>NULL</code> and thus ignored.</p></td>
     </tr>
     <tr>
       <th>to</th>
-      <td><p>Upper bound, if any.</p></td>
+      <td><p>Upper bound, if any. By default this is <code>NULL</code> and thus ignored.</p></td>
+    </tr>
+    <tr>
+      <th>alpha</th>
+      <td><p>The threshold used for defining the highest density frequency
+cut-off. If the highest density interval is applied to a Bayesian MCMC
+posterior sample, then the interval is effectively calculated for this
+value as a posterior probability density.</p></td>
+    </tr>
+    <tr>
+      <th>coda</th>
+      <td><p>Default is <code>FALSE</code>. If <code>TRUE</code>, unimodal highest density regions will
+instead be calculated using <code>HPDinterval</code> from package <code>coda</code>, which is
+similar to the function <code>quantile</code> in that it calculates only a single interval.</p></td>
+    </tr>
+    <tr>
+      <th>verboseMultimodal</th>
+      <td><p>If <code>TRUE</code>, the function will print a message
+indicating when the inferred highest density interval is discontinuous, and
+thus likely reflects that the supplied data is multimodal.</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Additional arguments passed to <code>density</code>, for use in both
+calculating the kernal density estimate for finding the curve, and for estimating
+the highest density interval. A user may want to mess with this to adjust bandwidth, et cetera.</p></td>
     </tr>
     <tr>
       <th>acceptedValues</th>
@@ -182,30 +225,34 @@ distribution, dependent on <code>priorFn</code>:</p><dl class='dl-horizontal'>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p><code>plotPrior</code> and <code>plotUnivariatePosteriorVsPrior</code> produce plots of the respective distributions (see above).
-
-<code>getUnivariatePriorCurve</code> and <code>getUnivariatePosteriorCurve</code> returns a list of x and y density coordinates, mean, and lower and
-upper highest posterior density (HPD), for their respective distribution.</p>
+    <p><code>plotPrior</code> and <code>plotUnivariatePosteriorVsPrior</code> produce plots of the respective distributions (see above).</p>
+<p><code>getUnivariatePriorCurve</code> returns a list of x and y density coordinates, mean, and the highest density intervals (HDI) for their respective distribution.</p>
+<p>#' <code>getUnivariatePosteriorCurve</code> does the same for a posterior sample of parameter estimates, returning a list of x and y density coordinates, mean, and the highest posterior density intervals (HPD).</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Function <code>plotPrior</code> visualizes the shape of various prior probability distributions available in TreEvo ABC analyses, while
-function <code>plotUnivariatePosteriorVsPrior</code> plots the univariate density distributions from the prior and posterior against each other for comparison.
-Function <code>getUnivariatePriorCurve</code> returns density coordinates and summary statistics from a selected prior probability distribution, while  
-function <code>getUnivariatePosteriorCurve</code> returns density coordinates and summary statistics from the posterior distribution of an ABC analysis.
-The summaries from <code>getUnivariatePriorCurve</code> and <code>getUnivariatePosteriorCurve</code> are used as the input for <code>plotUnivariatePosteriorVsPrior</code>.</p>
+    <p>Function <code>plotPrior</code> visualizes the shape of various prior probability distributions available in TreEvo ABC analyses, and
+<code>getUnivariatePriorCurve</code> returns density coordinates and summary statistics from user-selected prior probability
+distribution. Similarly, function <code>getUnivariatePosteriorCurve</code> returns density coordinates and summary
+statistics from the posterior distribution of an ABC analysis. Both <code>getUnivariatePriorCurve</code> and <code>getUnivariatePosteriorCurve</code> also calculate the highest density intervals for their respective parameters, using the function <code><a href='highestDensityInterval.html'>highestDensityInterval</a></code>.</p>
+<p>Function <code>plotUnivariatePosteriorVsPrior</code> plots the univariate density distributions from the prior and posterior against each other for comparison, along with the highest density intervals (HDI) for both.</p>
+    <p>The summaries calculated from <code>getUnivariatePriorCurve</code> and <code>getUnivariatePosteriorCurve</code> are used
+as the input for <code>plotUnivariatePosteriorVsPrior</code>, hence the relationship of these functions
+to each other, and why they are listed together here.</p>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <p><code><a href='plotPosteriors.html'>plotPosteriors</a></code> Plots multiple posteriors against their priors and potential known values.</p>
+    <div class='dont-index'><p>Highest posterior densities are calculated via <code><a href='highestDensityInterval.html'>highestDensityInterval</a></code>.</p>
+<p><code><a href='plotPosteriors.html'>plotPosteriors</a></code> Plots multiple posteriors against their priors and potential known values.</p></div>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='fu'>data</span>(<span class='no'>simRunExample</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: data set ‘simRunExample’ not found</span></div><div class='input'>
+<span class='fu'>data</span>(<span class='no'>simRunExample</span>)
+
 <span class='co'># examples with plotPrior</span>
 
-        <span class='fu'>plotPrior</span>(<span class='kw'>priorFn</span><span class='kw'>=</span><span class='st'>"exponential"</span>, <span class='kw'>priorVariables</span><span class='kw'>=</span><span class='fu'>c</span>(<span class='fl'>10</span>))</div><div class='img'><img src='plotPriorPost-1.png' alt='' width='700' height='432.632880098887' /></div><div class='output co'>#&gt;   quant quant.value
+<span class='fu'>plotPrior</span>(<span class='kw'>priorFn</span> <span class='kw'>=</span> <span class='st'>"exponential"</span>, <span class='kw'>priorVariables</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>10</span>))</div><div class='img'><img src='plotPriorPost-1.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt;   quant quant.value
 #&gt; 1  0.01 0.001005034
 #&gt; 2  0.05 0.005129329
 #&gt; 3  0.25 0.028768207
@@ -213,7 +260,7 @@ The summaries from <code>getUnivariatePriorCurve</code> and <code>getUnivariateP
 #&gt; 5  0.75 0.138629436
 #&gt; 6  0.95 0.299573227
 #&gt; 7  0.99 0.460517019</div><div class='input'>
-        <span class='fu'>plotPrior</span>(<span class='kw'>priorFn</span><span class='kw'>=</span><span class='st'>"normal"</span>, <span class='kw'>priorVariables</span><span class='kw'>=</span><span class='fu'>c</span>(<span class='fl'>1</span>,<span class='fl'>2</span>))</div><div class='img'><img src='plotPriorPost-2.png' alt='' width='700' height='432.632880098887' /></div><div class='output co'>#&gt;   quant quant.value
+<span class='fu'>plotPrior</span>(<span class='kw'>priorFn</span> <span class='kw'>=</span> <span class='st'>"normal"</span>, <span class='kw'>priorVariables</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>1</span>, <span class='fl'>2</span>))</div><div class='img'><img src='plotPriorPost-2.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt;   quant quant.value
 #&gt; 1  0.01  -3.6526957
 #&gt; 2  0.05  -2.2897073
 #&gt; 3  0.25  -0.3489795
@@ -221,7 +268,8 @@ The summaries from <code>getUnivariatePriorCurve</code> and <code>getUnivariateP
 #&gt; 5  0.75   2.3489795
 #&gt; 6  0.95   4.2897073
 #&gt; 7  0.99   5.6526957</div><div class='input'>
-        <span class='fu'>plotPrior</span>(<span class='kw'>priorFn</span><span class='kw'>=</span><span class='st'>"gamma"</span>, <span class='kw'>priorVariables</span><span class='kw'>=</span><span class='fu'>c</span>(<span class='fl'>2</span>, <span class='fl'>.2</span>), <span class='kw'>plotQuants</span><span class='kw'>=</span><span class='fl'>FALSE</span>, <span class='kw'>plotLegend</span><span class='kw'>=</span><span class='fl'>FALSE</span>)</div><div class='img'><img src='plotPriorPost-3.png' alt='' width='700' height='432.632880098887' /></div><div class='output co'>#&gt;   quant quant.value
+<span class='fu'>plotPrior</span>(<span class='kw'>priorFn</span> <span class='kw'>=</span> <span class='st'>"gamma"</span>, <span class='kw'>priorVariables</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>2</span>, <span class='fl'>.2</span>),
+   <span class='kw'>plotQuants</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>plotLegend</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</div><div class='img'><img src='plotPriorPost-3.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt;   quant quant.value
 #&gt; 1  0.01   0.7427737
 #&gt; 2  0.05   1.7768076
 #&gt; 3  0.25   4.8063938
@@ -231,356 +279,355 @@ The summaries from <code>getUnivariatePriorCurve</code> and <code>getUnivariateP
 #&gt; 7  0.99  33.1917603</div><div class='input'>
 <span class='co'># examples of getting density coordinates and summary statistics from distributions</span>
 
-<span class='no'>priorKernal</span><span class='kw'>&lt;-</span><span class='fu'>getUnivariatePriorCurve</span>(<span class='kw'>priorFn</span><span class='kw'>=</span><span class='st'>"normal"</span>, <span class='kw'>priorVariables</span><span class='kw'>=</span><span class='fu'>c</span>(<span class='fl'>28</span>,<span class='fl'>2</span>),
-        <span class='kw'>nPoints</span><span class='kw'>=</span><span class='fl'>100000</span>, <span class='kw'>from</span><span class='kw'>=</span><span class='kw'>NULL</span>, <span class='kw'>to</span><span class='kw'>=</span><span class='kw'>NULL</span>, <span class='kw'>prob</span><span class='kw'>=</span><span class='fl'>0.95</span>)
+<span class='no'>priorKernal</span> <span class='kw'>&lt;-</span> <span class='fu'>getUnivariatePriorCurve</span>(
+    <span class='kw'>priorFn</span> <span class='kw'>=</span> <span class='st'>"normal"</span>, <span class='kw'>priorVariables</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>28</span>, <span class='fl'>2</span>),
+    <span class='kw'>nPoints</span> <span class='kw'>=</span> <span class='fl'>100000</span>, <span class='kw'>from</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>to</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>0.95</span>)
 
-<span class='no'>postKernal</span><span class='kw'>&lt;-</span><span class='fu'>getUnivariatePosteriorCurve</span>(<span class='kw'>acceptedValues</span><span class='kw'>=</span><span class='no'>results</span>$<span class='no'>particleDataFrame</span>$<span class='no'>StartingStates1</span>,
-        <span class='kw'>from</span><span class='kw'>=</span><span class='kw'>NULL</span>, <span class='kw'>to</span><span class='kw'>=</span><span class='kw'>NULL</span>, <span class='kw'>prob</span><span class='kw'>=</span><span class='fl'>0.95</span>)
+<span class='no'>postKernal</span> <span class='kw'>&lt;-</span> <span class='fu'>getUnivariatePosteriorCurve</span>(
+  <span class='kw'>acceptedValues</span> <span class='kw'>=</span> <span class='no'>results</span><span class='kw'>[[</span><span class='fl'>1</span>]]$<span class='no'>particleDataFrame</span>$<span class='no'>starting_1</span>,
+     <span class='kw'>from</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>to</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>0.95</span>)
 
 <span class='no'>priorKernal</span></div><div class='output co'>#&gt; $x
-#&gt;   [1] 19.43461 19.46839 19.50216 19.53593 19.56970 19.60347 19.63724 19.67102
-#&gt;   [9] 19.70479 19.73856 19.77233 19.80610 19.83988 19.87365 19.90742 19.94119
-#&gt;  [17] 19.97496 20.00873 20.04251 20.07628 20.11005 20.14382 20.17759 20.21137
-#&gt;  [25] 20.24514 20.27891 20.31268 20.34645 20.38022 20.41400 20.44777 20.48154
-#&gt;  [33] 20.51531 20.54908 20.58285 20.61663 20.65040 20.68417 20.71794 20.75171
-#&gt;  [41] 20.78549 20.81926 20.85303 20.88680 20.92057 20.95434 20.98812 21.02189
-#&gt;  [49] 21.05566 21.08943 21.12320 21.15698 21.19075 21.22452 21.25829 21.29206
-#&gt;  [57] 21.32583 21.35961 21.39338 21.42715 21.46092 21.49469 21.52847 21.56224
-#&gt;  [65] 21.59601 21.62978 21.66355 21.69732 21.73110 21.76487 21.79864 21.83241
-#&gt;  [73] 21.86618 21.89995 21.93373 21.96750 22.00127 22.03504 22.06881 22.10259
-#&gt;  [81] 22.13636 22.17013 22.20390 22.23767 22.27144 22.30522 22.33899 22.37276
-#&gt;  [89] 22.40653 22.44030 22.47408 22.50785 22.54162 22.57539 22.60916 22.64293
-#&gt;  [97] 22.67671 22.71048 22.74425 22.77802 22.81179 22.84557 22.87934 22.91311
-#&gt; [105] 22.94688 22.98065 23.01442 23.04820 23.08197 23.11574 23.14951 23.18328
-#&gt; [113] 23.21705 23.25083 23.28460 23.31837 23.35214 23.38591 23.41969 23.45346
-#&gt; [121] 23.48723 23.52100 23.55477 23.58854 23.62232 23.65609 23.68986 23.72363
-#&gt; [129] 23.75740 23.79118 23.82495 23.85872 23.89249 23.92626 23.96003 23.99381
-#&gt; [137] 24.02758 24.06135 24.09512 24.12889 24.16267 24.19644 24.23021 24.26398
-#&gt; [145] 24.29775 24.33152 24.36530 24.39907 24.43284 24.46661 24.50038 24.53415
-#&gt; [153] 24.56793 24.60170 24.63547 24.66924 24.70301 24.73679 24.77056 24.80433
-#&gt; [161] 24.83810 24.87187 24.90564 24.93942 24.97319 25.00696 25.04073 25.07450
-#&gt; [169] 25.10828 25.14205 25.17582 25.20959 25.24336 25.27713 25.31091 25.34468
-#&gt; [177] 25.37845 25.41222 25.44599 25.47977 25.51354 25.54731 25.58108 25.61485
-#&gt; [185] 25.64862 25.68240 25.71617 25.74994 25.78371 25.81748 25.85125 25.88503
-#&gt; [193] 25.91880 25.95257 25.98634 26.02011 26.05389 26.08766 26.12143 26.15520
-#&gt; [201] 26.18897 26.22274 26.25652 26.29029 26.32406 26.35783 26.39160 26.42538
-#&gt; [209] 26.45915 26.49292 26.52669 26.56046 26.59423 26.62801 26.66178 26.69555
-#&gt; [217] 26.72932 26.76309 26.79687 26.83064 26.86441 26.89818 26.93195 26.96572
-#&gt; [225] 26.99950 27.03327 27.06704 27.10081 27.13458 27.16835 27.20213 27.23590
-#&gt; [233] 27.26967 27.30344 27.33721 27.37099 27.40476 27.43853 27.47230 27.50607
-#&gt; [241] 27.53984 27.57362 27.60739 27.64116 27.67493 27.70870 27.74248 27.77625
-#&gt; [249] 27.81002 27.84379 27.87756 27.91133 27.94511 27.97888 28.01265 28.04642
-#&gt; [257] 28.08019 28.11397 28.14774 28.18151 28.21528 28.24905 28.28282 28.31660
-#&gt; [265] 28.35037 28.38414 28.41791 28.45168 28.48545 28.51923 28.55300 28.58677
-#&gt; [273] 28.62054 28.65431 28.68809 28.72186 28.75563 28.78940 28.82317 28.85694
-#&gt; [281] 28.89072 28.92449 28.95826 28.99203 29.02580 29.05958 29.09335 29.12712
-#&gt; [289] 29.16089 29.19466 29.22843 29.26221 29.29598 29.32975 29.36352 29.39729
-#&gt; [297] 29.43107 29.46484 29.49861 29.53238 29.56615 29.59992 29.63370 29.66747
-#&gt; [305] 29.70124 29.73501 29.76878 29.80255 29.83633 29.87010 29.90387 29.93764
-#&gt; [313] 29.97141 30.00519 30.03896 30.07273 30.10650 30.14027 30.17404 30.20782
-#&gt; [321] 30.24159 30.27536 30.30913 30.34290 30.37668 30.41045 30.44422 30.47799
-#&gt; [329] 30.51176 30.54553 30.57931 30.61308 30.64685 30.68062 30.71439 30.74817
-#&gt; [337] 30.78194 30.81571 30.84948 30.88325 30.91702 30.95080 30.98457 31.01834
-#&gt; [345] 31.05211 31.08588 31.11965 31.15343 31.18720 31.22097 31.25474 31.28851
-#&gt; [353] 31.32229 31.35606 31.38983 31.42360 31.45737 31.49114 31.52492 31.55869
-#&gt; [361] 31.59246 31.62623 31.66000 31.69378 31.72755 31.76132 31.79509 31.82886
-#&gt; [369] 31.86263 31.89641 31.93018 31.96395 31.99772 32.03149 32.06527 32.09904
-#&gt; [377] 32.13281 32.16658 32.20035 32.23412 32.26790 32.30167 32.33544 32.36921
-#&gt; [385] 32.40298 32.43675 32.47053 32.50430 32.53807 32.57184 32.60561 32.63939
-#&gt; [393] 32.67316 32.70693 32.74070 32.77447 32.80824 32.84202 32.87579 32.90956
-#&gt; [401] 32.94333 32.97710 33.01088 33.04465 33.07842 33.11219 33.14596 33.17973
-#&gt; [409] 33.21351 33.24728 33.28105 33.31482 33.34859 33.38237 33.41614 33.44991
-#&gt; [417] 33.48368 33.51745 33.55122 33.58500 33.61877 33.65254 33.68631 33.72008
-#&gt; [425] 33.75385 33.78763 33.82140 33.85517 33.88894 33.92271 33.95649 33.99026
-#&gt; [433] 34.02403 34.05780 34.09157 34.12534 34.15912 34.19289 34.22666 34.26043
-#&gt; [441] 34.29420 34.32798 34.36175 34.39552 34.42929 34.46306 34.49683 34.53061
-#&gt; [449] 34.56438 34.59815 34.63192 34.66569 34.69947 34.73324 34.76701 34.80078
-#&gt; [457] 34.83455 34.86832 34.90210 34.93587 34.96964 35.00341 35.03718 35.07095
-#&gt; [465] 35.10473 35.13850 35.17227 35.20604 35.23981 35.27359 35.30736 35.34113
-#&gt; [473] 35.37490 35.40867 35.44244 35.47622 35.50999 35.54376 35.57753 35.61130
-#&gt; [481] 35.64508 35.67885 35.71262 35.74639 35.78016 35.81393 35.84771 35.88148
-#&gt; [489] 35.91525 35.94902 35.98279 36.01657 36.05034 36.08411 36.11788 36.15165
-#&gt; [497] 36.18542 36.21920 36.25297 36.28674 36.32051 36.35428 36.38805 36.42183
-#&gt; [505] 36.45560 36.48937 36.52314 36.55691 36.59069 36.62446 36.65823 36.69200
+#&gt;   [1] 19.05794 19.09185 19.12577 19.15968 19.19359 19.22751 19.26142 19.29533
+#&gt;   [9] 19.32925 19.36316 19.39707 19.43099 19.46490 19.49881 19.53273 19.56664
+#&gt;  [17] 19.60055 19.63447 19.66838 19.70229 19.73621 19.77012 19.80403 19.83795
+#&gt;  [25] 19.87186 19.90577 19.93969 19.97360 20.00752 20.04143 20.07534 20.10926
+#&gt;  [33] 20.14317 20.17708 20.21100 20.24491 20.27882 20.31274 20.34665 20.38056
+#&gt;  [41] 20.41448 20.44839 20.48230 20.51622 20.55013 20.58404 20.61796 20.65187
+#&gt;  [49] 20.68578 20.71970 20.75361 20.78752 20.82144 20.85535 20.88927 20.92318
+#&gt;  [57] 20.95709 20.99101 21.02492 21.05883 21.09275 21.12666 21.16057 21.19449
+#&gt;  [65] 21.22840 21.26231 21.29623 21.33014 21.36405 21.39797 21.43188 21.46579
+#&gt;  [73] 21.49971 21.53362 21.56753 21.60145 21.63536 21.66927 21.70319 21.73710
+#&gt;  [81] 21.77101 21.80493 21.83884 21.87276 21.90667 21.94058 21.97450 22.00841
+#&gt;  [89] 22.04232 22.07624 22.11015 22.14406 22.17798 22.21189 22.24580 22.27972
+#&gt;  [97] 22.31363 22.34754 22.38146 22.41537 22.44928 22.48320 22.51711 22.55102
+#&gt; [105] 22.58494 22.61885 22.65276 22.68668 22.72059 22.75450 22.78842 22.82233
+#&gt; [113] 22.85625 22.89016 22.92407 22.95799 22.99190 23.02581 23.05973 23.09364
+#&gt; [121] 23.12755 23.16147 23.19538 23.22929 23.26321 23.29712 23.33103 23.36495
+#&gt; [129] 23.39886 23.43277 23.46669 23.50060 23.53451 23.56843 23.60234 23.63625
+#&gt; [137] 23.67017 23.70408 23.73800 23.77191 23.80582 23.83974 23.87365 23.90756
+#&gt; [145] 23.94148 23.97539 24.00930 24.04322 24.07713 24.11104 24.14496 24.17887
+#&gt; [153] 24.21278 24.24670 24.28061 24.31452 24.34844 24.38235 24.41626 24.45018
+#&gt; [161] 24.48409 24.51800 24.55192 24.58583 24.61974 24.65366 24.68757 24.72149
+#&gt; [169] 24.75540 24.78931 24.82323 24.85714 24.89105 24.92497 24.95888 24.99279
+#&gt; [177] 25.02671 25.06062 25.09453 25.12845 25.16236 25.19627 25.23019 25.26410
+#&gt; [185] 25.29801 25.33193 25.36584 25.39975 25.43367 25.46758 25.50149 25.53541
+#&gt; [193] 25.56932 25.60324 25.63715 25.67106 25.70498 25.73889 25.77280 25.80672
+#&gt; [201] 25.84063 25.87454 25.90846 25.94237 25.97628 26.01020 26.04411 26.07802
+#&gt; [209] 26.11194 26.14585 26.17976 26.21368 26.24759 26.28150 26.31542 26.34933
+#&gt; [217] 26.38324 26.41716 26.45107 26.48498 26.51890 26.55281 26.58673 26.62064
+#&gt; [225] 26.65455 26.68847 26.72238 26.75629 26.79021 26.82412 26.85803 26.89195
+#&gt; [233] 26.92586 26.95977 26.99369 27.02760 27.06151 27.09543 27.12934 27.16325
+#&gt; [241] 27.19717 27.23108 27.26499 27.29891 27.33282 27.36673 27.40065 27.43456
+#&gt; [249] 27.46848 27.50239 27.53630 27.57022 27.60413 27.63804 27.67196 27.70587
+#&gt; [257] 27.73978 27.77370 27.80761 27.84152 27.87544 27.90935 27.94326 27.97718
+#&gt; [265] 28.01109 28.04500 28.07892 28.11283 28.14674 28.18066 28.21457 28.24848
+#&gt; [273] 28.28240 28.31631 28.35022 28.38414 28.41805 28.45197 28.48588 28.51979
+#&gt; [281] 28.55371 28.58762 28.62153 28.65545 28.68936 28.72327 28.75719 28.79110
+#&gt; [289] 28.82501 28.85893 28.89284 28.92675 28.96067 28.99458 29.02849 29.06241
+#&gt; [297] 29.09632 29.13023 29.16415 29.19806 29.23197 29.26589 29.29980 29.33372
+#&gt; [305] 29.36763 29.40154 29.43546 29.46937 29.50328 29.53720 29.57111 29.60502
+#&gt; [313] 29.63894 29.67285 29.70676 29.74068 29.77459 29.80850 29.84242 29.87633
+#&gt; [321] 29.91024 29.94416 29.97807 30.01198 30.04590 30.07981 30.11372 30.14764
+#&gt; [329] 30.18155 30.21546 30.24938 30.28329 30.31721 30.35112 30.38503 30.41895
+#&gt; [337] 30.45286 30.48677 30.52069 30.55460 30.58851 30.62243 30.65634 30.69025
+#&gt; [345] 30.72417 30.75808 30.79199 30.82591 30.85982 30.89373 30.92765 30.96156
+#&gt; [353] 30.99547 31.02939 31.06330 31.09721 31.13113 31.16504 31.19896 31.23287
+#&gt; [361] 31.26678 31.30070 31.33461 31.36852 31.40244 31.43635 31.47026 31.50418
+#&gt; [369] 31.53809 31.57200 31.60592 31.63983 31.67374 31.70766 31.74157 31.77548
+#&gt; [377] 31.80940 31.84331 31.87722 31.91114 31.94505 31.97896 32.01288 32.04679
+#&gt; [385] 32.08070 32.11462 32.14853 32.18245 32.21636 32.25027 32.28419 32.31810
+#&gt; [393] 32.35201 32.38593 32.41984 32.45375 32.48767 32.52158 32.55549 32.58941
+#&gt; [401] 32.62332 32.65723 32.69115 32.72506 32.75897 32.79289 32.82680 32.86071
+#&gt; [409] 32.89463 32.92854 32.96245 32.99637 33.03028 33.06420 33.09811 33.13202
+#&gt; [417] 33.16594 33.19985 33.23376 33.26768 33.30159 33.33550 33.36942 33.40333
+#&gt; [425] 33.43724 33.47116 33.50507 33.53898 33.57290 33.60681 33.64072 33.67464
+#&gt; [433] 33.70855 33.74246 33.77638 33.81029 33.84420 33.87812 33.91203 33.94594
+#&gt; [441] 33.97986 34.01377 34.04769 34.08160 34.11551 34.14943 34.18334 34.21725
+#&gt; [449] 34.25117 34.28508 34.31899 34.35291 34.38682 34.42073 34.45465 34.48856
+#&gt; [457] 34.52247 34.55639 34.59030 34.62421 34.65813 34.69204 34.72595 34.75987
+#&gt; [465] 34.79378 34.82769 34.86161 34.89552 34.92944 34.96335 34.99726 35.03118
+#&gt; [473] 35.06509 35.09900 35.13292 35.16683 35.20074 35.23466 35.26857 35.30248
+#&gt; [481] 35.33640 35.37031 35.40422 35.43814 35.47205 35.50596 35.53988 35.57379
+#&gt; [489] 35.60770 35.64162 35.67553 35.70944 35.74336 35.77727 35.81118 35.84510
+#&gt; [497] 35.87901 35.91293 35.94684 35.98075 36.01467 36.04858 36.08249 36.11641
+#&gt; [505] 36.15032 36.18423 36.21815 36.25206 36.28597 36.31989 36.35380 36.38771
 #&gt; 
 #&gt; $y
-#&gt;   [1] 5.002125e-05 5.298559e-05 5.490178e-05 5.578988e-05 5.576315e-05
-#&gt;   [6] 5.501013e-05 5.377076e-05 5.231172e-05 5.090542e-05 4.981552e-05
-#&gt;  [11] 4.936390e-05 4.974720e-05 5.116690e-05 5.379927e-05 5.778136e-05
-#&gt;  [16] 6.319134e-05 7.002466e-05 7.817085e-05 8.739741e-05 9.734741e-05
-#&gt;  [21] 1.075564e-04 1.174907e-04 1.266051e-04 1.342652e-04 1.402565e-04
-#&gt;  [26] 1.444979e-04 1.471317e-04 1.485064e-04 1.491344e-04 1.496290e-04
-#&gt;  [31] 1.506323e-04 1.527420e-04 1.564470e-04 1.620759e-04 1.697663e-04
-#&gt;  [36] 1.794615e-04 1.910197e-04 2.038523e-04 2.175047e-04 2.315572e-04
-#&gt;  [41] 2.456939e-04 2.597530e-04 2.737479e-04 2.878576e-04 3.023877e-04
-#&gt;  [46] 3.177116e-04 3.342051e-04 3.521891e-04 3.719076e-04 3.936675e-04
-#&gt;  [51] 4.174212e-04 4.433137e-04 4.715938e-04 5.026394e-04 5.369352e-04
-#&gt;  [56] 5.749987e-04 6.172656e-04 6.639589e-04 7.149736e-04 7.698109e-04
-#&gt;  [61] 8.275887e-04 8.871434e-04 9.471142e-04 1.006308e-03 1.064089e-03
-#&gt;  [66] 1.120336e-03 1.175454e-03 1.230295e-03 1.286013e-03 1.343915e-03
-#&gt;  [71] 1.405306e-03 1.471403e-03 1.543292e-03 1.621952e-03 1.708400e-03
-#&gt;  [76] 1.804293e-03 1.909986e-03 2.026437e-03 2.154489e-03 2.294767e-03
-#&gt;  [81] 2.447604e-03 2.613030e-03 2.790837e-03 2.980713e-03 3.182412e-03
-#&gt;  [86] 3.395907e-03 3.621451e-03 3.859671e-03 4.111782e-03 4.376450e-03
-#&gt;  [91] 4.652201e-03 4.936157e-03 5.224033e-03 5.510463e-03 5.789647e-03
-#&gt;  [96] 6.056219e-03 6.306182e-03 6.537721e-03 6.751725e-03 6.951884e-03
-#&gt; [101] 7.144333e-03 7.337849e-03 7.541186e-03 7.761626e-03 8.004889e-03
-#&gt; [106] 8.274871e-03 8.573781e-03 8.902589e-03 9.261665e-03 9.651445e-03
-#&gt; [111] 1.007298e-02 1.052820e-02 1.101992e-02 1.155219e-02 1.213062e-02
-#&gt; [116] 1.275369e-02 1.342060e-02 1.412807e-02 1.487039e-02 1.563994e-02
-#&gt; [121] 1.642814e-02 1.722650e-02 1.802772e-02 1.882666e-02 1.962081e-02
-#&gt; [126] 2.041047e-02 2.119848e-02 2.199015e-02 2.279090e-02 2.360547e-02
-#&gt; [131] 2.443735e-02 2.528832e-02 2.615837e-02 2.704578e-02 2.794755e-02
-#&gt; [136] 2.885995e-02 2.977912e-02 3.070163e-02 3.162500e-02 3.254805e-02
-#&gt; [141] 3.347146e-02 3.439781e-02 3.533140e-02 3.627818e-02 3.724546e-02
-#&gt; [146] 3.824144e-02 3.927441e-02 4.035174e-02 4.147874e-02 4.265767e-02
-#&gt; [151] 4.388702e-02 4.516141e-02 4.647277e-02 4.780996e-02 4.916018e-02
-#&gt; [156] 5.051539e-02 5.187129e-02 5.322790e-02 5.458938e-02 5.596315e-02
-#&gt; [161] 5.735856e-02 5.878541e-02 6.025256e-02 6.176698e-02 6.333319e-02
-#&gt; [166] 6.495492e-02 6.663418e-02 6.836637e-02 7.014977e-02 7.198230e-02
-#&gt; [171] 7.386137e-02 7.578354e-02 7.774414e-02 7.973706e-02 8.175481e-02
-#&gt; [176] 8.378896e-02 8.583089e-02 8.787267e-02 8.990773e-02 9.193157e-02
-#&gt; [181] 9.394361e-02 9.594430e-02 9.793447e-02 9.991419e-02 1.018819e-01
-#&gt; [186] 1.038341e-01 1.057657e-01 1.076712e-01 1.095458e-01 1.113878e-01
-#&gt; [191] 1.131993e-01 1.149875e-01 1.167674e-01 1.185580e-01 1.203787e-01
-#&gt; [196] 1.222480e-01 1.241812e-01 1.261888e-01 1.282752e-01 1.304380e-01
-#&gt; [201] 1.326690e-01 1.349545e-01 1.372771e-01 1.396169e-01 1.419523e-01
-#&gt; [206] 1.442602e-01 1.465235e-01 1.487273e-01 1.508600e-01 1.529130e-01
-#&gt; [211] 1.548805e-01 1.567596e-01 1.585498e-01 1.602523e-01 1.618703e-01
-#&gt; [216] 1.634084e-01 1.648726e-01 1.662680e-01 1.676041e-01 1.688948e-01
-#&gt; [221] 1.701515e-01 1.713858e-01 1.726092e-01 1.738317e-01 1.750614e-01
-#&gt; [226] 1.763036e-01 1.775605e-01 1.788307e-01 1.801095e-01 1.813895e-01
-#&gt; [231] 1.826608e-01 1.839122e-01 1.851353e-01 1.863239e-01 1.874739e-01
-#&gt; [236] 1.885837e-01 1.896529e-01 1.906816e-01 1.916683e-01 1.926094e-01
-#&gt; [241] 1.934985e-01 1.943263e-01 1.950822e-01 1.957516e-01 1.963246e-01
-#&gt; [246] 1.968013e-01 1.971827e-01 1.974746e-01 1.976877e-01 1.978370e-01
-#&gt; [251] 1.979401e-01 1.980168e-01 1.980866e-01 1.981670e-01 1.982709e-01
-#&gt; [256] 1.984044e-01 1.985653e-01 1.987372e-01 1.988944e-01 1.990063e-01
-#&gt; [261] 1.990400e-01 1.989646e-01 1.987552e-01 1.983959e-01 1.978815e-01
-#&gt; [266] 1.972171e-01 1.964167e-01 1.954998e-01 1.944878e-01 1.933977e-01
-#&gt; [271] 1.922467e-01 1.910461e-01 1.897992e-01 1.885066e-01 1.871682e-01
-#&gt; [276] 1.857847e-01 1.843594e-01 1.828986e-01 1.814110e-01 1.799071e-01
-#&gt; [281] 1.783973e-01 1.768911e-01 1.753951e-01 1.739101e-01 1.724301e-01
-#&gt; [286] 1.709444e-01 1.694383e-01 1.678955e-01 1.663010e-01 1.646445e-01
-#&gt; [291] 1.629227e-01 1.611414e-01 1.593155e-01 1.574673e-01 1.556229e-01
-#&gt; [296] 1.538104e-01 1.520497e-01 1.503449e-01 1.486888e-01 1.470630e-01
-#&gt; [301] 1.454409e-01 1.437927e-01 1.420901e-01 1.403110e-01 1.384423e-01
-#&gt; [306] 1.364817e-01 1.344367e-01 1.323221e-01 1.301553e-01 1.279583e-01
-#&gt; [311] 1.257477e-01 1.235338e-01 1.213229e-01 1.191190e-01 1.169256e-01
-#&gt; [316] 1.147480e-01 1.125940e-01 1.104743e-01 1.084013e-01 1.063875e-01
-#&gt; [321] 1.044424e-01 1.025747e-01 1.007784e-01 9.903938e-02 9.734012e-02
-#&gt; [326] 9.565986e-02 9.397728e-02 9.227325e-02 9.053301e-02 8.874766e-02
-#&gt; [331] 8.691464e-02 8.503748e-02 8.312480e-02 8.118894e-02 7.924486e-02
-#&gt; [336] 7.730943e-02 7.539609e-02 7.351561e-02 7.167579e-02 6.988134e-02
-#&gt; [341] 6.813414e-02 6.643381e-02 6.477840e-02 6.316521e-02 6.159143e-02
-#&gt; [346] 6.005469e-02 5.855328e-02 5.708840e-02 5.565860e-02 5.426314e-02
-#&gt; [351] 5.290243e-02 5.157695e-02 5.028707e-02 4.903296e-02 4.781433e-02
-#&gt; [356] 4.663026e-02 4.547890e-02 4.435727e-02 4.326116e-02 4.218516e-02
-#&gt; [361] 4.112326e-02 4.006723e-02 3.901026e-02 3.794681e-02 3.687283e-02
-#&gt; [366] 3.578602e-02 3.468596e-02 3.357406e-02 3.245337e-02 3.132824e-02
-#&gt; [371] 3.020402e-02 2.908665e-02 2.798228e-02 2.689869e-02 2.584124e-02
-#&gt; [376] 2.481427e-02 2.382185e-02 2.286729e-02 2.195312e-02 2.108116e-02
-#&gt; [381] 2.025251e-02 1.946752e-02 1.872579e-02 1.802613e-02 1.736654e-02
-#&gt; [386] 1.674425e-02 1.615790e-02 1.560142e-02 1.507012e-02 1.456033e-02
-#&gt; [391] 1.406901e-02 1.359401e-02 1.313413e-02 1.268916e-02 1.225954e-02
-#&gt; [396] 1.184601e-02 1.144908e-02 1.106851e-02 1.070284e-02 1.034962e-02
-#&gt; [401] 1.000310e-02 9.657648e-03 9.307886e-03 8.949421e-03 8.579601e-03
-#&gt; [406] 8.198029e-03 7.806721e-03 7.409860e-03 7.013207e-03 6.623275e-03
-#&gt; [411] 6.246427e-03 5.888053e-03 5.553824e-03 5.244272e-03 4.958899e-03
-#&gt; [416] 4.696391e-03 4.454760e-03 4.231802e-03 4.025446e-03 3.833963e-03
-#&gt; [421] 3.656044e-03 3.490767e-03 3.337498e-03 3.195774e-03 3.065187e-03
-#&gt; [426] 2.946079e-03 2.837114e-03 2.737368e-03 2.645815e-03 2.561149e-03
-#&gt; [431] 2.481789e-03 2.405934e-03 2.331675e-03 2.257153e-03 2.180731e-03
-#&gt; [436] 2.101153e-03 2.017647e-03 1.929955e-03 1.838023e-03 1.742807e-03
-#&gt; [441] 1.645200e-03 1.546177e-03 1.446826e-03 1.348358e-03 1.252127e-03
-#&gt; [446] 1.159627e-03 1.072431e-03 9.920816e-04 9.199300e-04 8.569646e-04
-#&gt; [451] 8.036563e-04 7.605728e-04 7.260656e-04 6.986974e-04 6.768566e-04
-#&gt; [456] 6.588774e-04 6.432077e-04 6.285247e-04 6.137872e-04 5.982320e-04
-#&gt; [461] 5.813313e-04 5.627346e-04 5.422201e-04 5.196713e-04 4.949317e-04
-#&gt; [466] 4.683710e-04 4.404017e-04 4.116185e-04 3.827695e-04 3.546811e-04
-#&gt; [471] 3.281616e-04 3.039013e-04 2.823902e-04 2.638683e-04 2.483168e-04
-#&gt; [476] 2.354907e-04 2.249827e-04 2.164146e-04 2.091090e-04 2.026556e-04
-#&gt; [481] 1.967340e-04 1.910964e-04 1.855410e-04 1.798836e-04 1.739360e-04
-#&gt; [486] 1.675011e-04 1.603861e-04 1.524296e-04 1.435375e-04 1.337144e-04
-#&gt; [491] 1.230363e-04 1.118492e-04 1.004800e-04 8.927148e-05 7.853675e-05
-#&gt; [496] 6.852530e-05 5.940640e-05 5.127091e-05 4.414760e-05 3.802723e-05
-#&gt; [501] 3.288617e-05 2.870256e-05 2.546220e-05 2.322219e-05 2.184768e-05
-#&gt; [506] 2.124193e-05 2.125410e-05 2.168338e-05 2.229521e-05 2.284660e-05
-#&gt; [511] 2.311584e-05 2.293063e-05
+#&gt;   [1] 2.322737e-05 2.362431e-05 2.367422e-05 2.359011e-05 2.363606e-05
+#&gt;   [6] 2.408890e-05 2.519375e-05 2.712028e-05 2.996106e-05 3.361198e-05
+#&gt;  [11] 3.779523e-05 4.218412e-05 4.640726e-05 5.009856e-05 5.294333e-05
+#&gt;  [16] 5.471296e-05 5.528379e-05 5.463867e-05 5.285364e-05 5.007468e-05
+#&gt;  [21] 4.649082e-05 4.229555e-05 3.772041e-05 3.299042e-05 2.828736e-05
+#&gt;  [26] 2.378076e-05 1.962927e-05 1.598255e-05 1.298489e-05 1.078134e-05
+#&gt;  [31] 9.526928e-06 9.397992e-06 1.060368e-05 1.339413e-05 1.813830e-05
+#&gt;  [36] 2.525200e-05 3.494572e-05 4.748104e-05 6.301588e-05 8.155936e-05
+#&gt;  [41] 1.029392e-04 1.267897e-04 1.525644e-04 1.795756e-04 2.070568e-04
+#&gt;  [46] 2.342402e-04 2.604388e-04 2.850652e-04 3.077320e-04 3.285070e-04
+#&gt;  [51] 3.475620e-04 3.652083e-04 3.818248e-04 3.977832e-04 4.133830e-04
+#&gt;  [56] 4.288066e-04 4.441025e-04 4.591974e-04 4.739359e-04 4.881395e-04
+#&gt;  [61] 5.016589e-04 5.144685e-04 5.268141e-04 5.390946e-04 5.519082e-04
+#&gt;  [66] 5.660412e-04 5.824489e-04 6.022253e-04 6.265603e-04 6.566766e-04
+#&gt;  [71] 6.937462e-04 7.387854e-04 7.925406e-04 8.555620e-04 9.281379e-04
+#&gt;  [76] 1.008967e-03 1.097064e-03 1.191295e-03 1.290574e-03 1.394038e-03
+#&gt;  [81] 1.501163e-03 1.611791e-03 1.726074e-03 1.844329e-03 1.966869e-03
+#&gt;  [86] 2.093831e-03 2.225119e-03 2.360402e-03 2.498642e-03 2.639146e-03
+#&gt;  [91] 2.781436e-03 2.925383e-03 3.071253e-03 3.219639e-03 3.371311e-03
+#&gt;  [96] 3.526996e-03 3.687164e-03 3.851848e-03 4.020583e-03 4.192469e-03
+#&gt; [101] 4.366308e-03 4.540745e-03 4.715074e-03 4.889200e-03 5.063736e-03
+#&gt; [106] 5.240005e-03 5.419946e-03 5.605979e-03 5.800850e-03 6.007492e-03
+#&gt; [111] 6.228921e-03 6.468169e-03 6.728398e-03 7.014736e-03 7.328193e-03
+#&gt; [116] 7.671219e-03 8.045720e-03 8.452789e-03 8.892411e-03 9.363238e-03
+#&gt; [121] 9.862473e-03 1.038594e-02 1.092840e-02 1.148404e-02 1.204723e-02
+#&gt; [126] 1.261336e-02 1.317969e-02 1.374661e-02 1.431776e-02 1.489949e-02
+#&gt; [131] 1.550038e-02 1.613030e-02 1.679924e-02 1.751602e-02 1.828699e-02
+#&gt; [136] 1.911492e-02 1.999820e-02 2.093054e-02 2.190130e-02 2.289684e-02
+#&gt; [141] 2.389760e-02 2.488795e-02 2.585471e-02 2.678832e-02 2.768370e-02
+#&gt; [146] 2.854054e-02 2.936304e-02 3.015927e-02 3.094024e-02 3.171878e-02
+#&gt; [151] 3.250834e-02 3.332185e-02 3.417438e-02 3.507231e-02 3.601997e-02
+#&gt; [156] 3.701866e-02 3.806666e-02 3.915996e-02 4.029322e-02 4.146097e-02
+#&gt; [161] 4.265872e-02 4.388399e-02 4.513685e-02 4.642008e-02 4.773873e-02
+#&gt; [166] 4.910298e-02 5.051688e-02 5.198424e-02 5.350683e-02 5.508360e-02
+#&gt; [171] 5.671092e-02 5.838329e-02 6.009418e-02 6.183688e-02 6.360503e-02
+#&gt; [176] 6.539290e-02 6.719511e-02 6.900624e-02 7.081987e-02 7.262799e-02
+#&gt; [181] 7.442292e-02 7.619751e-02 7.794638e-02 7.966733e-02 8.136246e-02
+#&gt; [186] 8.303874e-02 8.470790e-02 8.638547e-02 8.808909e-02 8.983636e-02
+#&gt; [191] 9.164241e-02 9.352281e-02 9.547767e-02 9.750074e-02 9.958097e-02
+#&gt; [196] 1.017024e-01 1.038459e-01 1.059912e-01 1.081191e-01 1.102133e-01
+#&gt; [201] 1.122623e-01 1.142600e-01 1.162071e-01 1.181098e-01 1.199785e-01
+#&gt; [206] 1.218309e-01 1.236827e-01 1.255467e-01 1.274325e-01 1.293458e-01
+#&gt; [211] 1.312887e-01 1.332606e-01 1.352593e-01 1.372821e-01 1.393256e-01
+#&gt; [216] 1.413860e-01 1.434582e-01 1.455341e-01 1.476003e-01 1.496414e-01
+#&gt; [221] 1.516401e-01 1.535795e-01 1.554456e-01 1.572293e-01 1.589287e-01
+#&gt; [226] 1.605491e-01 1.621025e-01 1.636061e-01 1.650792e-01 1.665402e-01
+#&gt; [231] 1.680041e-01 1.694789e-01 1.709629e-01 1.724479e-01 1.739210e-01
+#&gt; [236] 1.753672e-01 1.767722e-01 1.781246e-01 1.794184e-01 1.806532e-01
+#&gt; [241] 1.818339e-01 1.829699e-01 1.840724e-01 1.851522e-01 1.862184e-01
+#&gt; [246] 1.872750e-01 1.883195e-01 1.893454e-01 1.903424e-01 1.912992e-01
+#&gt; [251] 1.922048e-01 1.930507e-01 1.938323e-01 1.945494e-01 1.952059e-01
+#&gt; [256] 1.958085e-01 1.963631e-01 1.968762e-01 1.973516e-01 1.977870e-01
+#&gt; [261] 1.981760e-01 1.985104e-01 1.987812e-01 1.989810e-01 1.991049e-01
+#&gt; [266] 1.991517e-01 1.991236e-01 1.990252e-01 1.988626e-01 1.986397e-01
+#&gt; [271] 1.983608e-01 1.980307e-01 1.976488e-01 1.972128e-01 1.967190e-01
+#&gt; [276] 1.961628e-01 1.955396e-01 1.948443e-01 1.940721e-01 1.932192e-01
+#&gt; [281] 1.922830e-01 1.912633e-01 1.901607e-01 1.889831e-01 1.877476e-01
+#&gt; [286] 1.864701e-01 1.851675e-01 1.838560e-01 1.825486e-01 1.812533e-01
+#&gt; [291] 1.799727e-01 1.787032e-01 1.774357e-01 1.761569e-01 1.748511e-01
+#&gt; [296] 1.734998e-01 1.720847e-01 1.705973e-01 1.690316e-01 1.673865e-01
+#&gt; [301] 1.656665e-01 1.638811e-01 1.620438e-01 1.601712e-01 1.582811e-01
+#&gt; [306] 1.563907e-01 1.545152e-01 1.526657e-01 1.508488e-01 1.490644e-01
+#&gt; [311] 1.473026e-01 1.455506e-01 1.437929e-01 1.420130e-01 1.401961e-01
+#&gt; [316] 1.383307e-01 1.364105e-01 1.344346e-01 1.324079e-01 1.303397e-01
+#&gt; [321] 1.282418e-01 1.261266e-01 1.240046e-01 1.218825e-01 1.197607e-01
+#&gt; [326] 1.176365e-01 1.155047e-01 1.133605e-01 1.112013e-01 1.090281e-01
+#&gt; [331] 1.068465e-01 1.046663e-01 1.025002e-01 1.003617e-01 9.826419e-02
+#&gt; [336] 9.621967e-02 9.422737e-02 9.228396e-02 9.038146e-02 8.850894e-02
+#&gt; [341] 8.665453e-02 8.480777e-02 8.296146e-02 8.111307e-02 7.926522e-02
+#&gt; [346] 7.742517e-02 7.560338e-02 7.381185e-02 7.206374e-02 7.036104e-02
+#&gt; [351] 6.870222e-02 6.708000e-02 6.548269e-02 6.389631e-02 6.230735e-02
+#&gt; [356] 6.070539e-02 5.908527e-02 5.744830e-02 5.580232e-02 5.416055e-02
+#&gt; [361] 5.253980e-02 5.096153e-02 4.943736e-02 4.797550e-02 4.657822e-02
+#&gt; [366] 4.524216e-02 4.395948e-02 4.271958e-02 4.151094e-02 4.032284e-02
+#&gt; [371] 3.914671e-02 3.797687e-02 3.681073e-02 3.564850e-02 3.449355e-02
+#&gt; [376] 3.334962e-02 3.222121e-02 3.111281e-02 3.002853e-02 2.897200e-02
+#&gt; [381] 2.794642e-02 2.695463e-02 2.599930e-02 2.508303e-02 2.420827e-02
+#&gt; [386] 2.337716e-02 2.259111e-02 2.185407e-02 2.115983e-02 2.050393e-02
+#&gt; [391] 1.988016e-02 1.928096e-02 1.869836e-02 1.812481e-02 1.755410e-02
+#&gt; [396] 1.698190e-02 1.640600e-02 1.582627e-02 1.524417e-02 1.466219e-02
+#&gt; [401] 1.408372e-02 1.351143e-02 1.294743e-02 1.239350e-02 1.185127e-02
+#&gt; [406] 1.132247e-02 1.080920e-02 1.031395e-02 9.839578e-03 9.388995e-03
+#&gt; [411] 8.964812e-03 8.568889e-03 8.201925e-03 7.865215e-03 7.554120e-03
+#&gt; [416] 7.264623e-03 6.992414e-03 6.733155e-03 6.483007e-03 6.239041e-03
+#&gt; [421] 5.999468e-03 5.763663e-03 5.532010e-03 5.305604e-03 5.085876e-03
+#&gt; [426] 4.874215e-03 4.672346e-03 4.480058e-03 4.296756e-03 4.121432e-03
+#&gt; [431] 3.952722e-03 3.789156e-03 3.629405e-03 3.472498e-03 3.317951e-03
+#&gt; [436] 3.165813e-03 3.016612e-03 2.871232e-03 2.730743e-03 2.596725e-03
+#&gt; [441] 2.469890e-03 2.350734e-03 2.239579e-03 2.136429e-03 2.040972e-03
+#&gt; [446] 1.952584e-03 1.870347e-03 1.793084e-03 1.719422e-03 1.647876e-03
+#&gt; [451] 1.576956e-03 1.505292e-03 1.431566e-03 1.355045e-03 1.275530e-03
+#&gt; [456] 1.193219e-03 1.108736e-03 1.023083e-03 9.375652e-04 8.537010e-04
+#&gt; [461] 7.731153e-04 6.974302e-04 6.281585e-04 5.666049e-04 5.137806e-04
+#&gt; [466] 4.709118e-04 4.378647e-04 4.139739e-04 3.983945e-04 3.898649e-04
+#&gt; [471] 3.867879e-04 3.873478e-04 3.896551e-04 3.919018e-04 3.925098e-04
+#&gt; [476] 3.902525e-04 3.843345e-04 3.744210e-04 3.604303e-04 3.430367e-04
+#&gt; [481] 3.231682e-04 3.017330e-04 2.796505e-04 2.577645e-04 2.367761e-04
+#&gt; [486] 2.171987e-04 1.993345e-04 1.832730e-04 1.689110e-04 1.559908e-04
+#&gt; [491] 1.441537e-04 1.330161e-04 1.221628e-04 1.113186e-04 1.003634e-04
+#&gt; [496] 8.931273e-05 7.830389e-05 6.756721e-05 5.738767e-05 4.806348e-05
+#&gt; [501] 3.986683e-05 3.301106e-05 2.762647e-05 2.374597e-05 2.135779e-05
+#&gt; [506] 2.025132e-05 2.009524e-05 2.057251e-05 2.134902e-05 2.210652e-05
+#&gt; [511] 2.257391e-05 2.255260e-05
 #&gt; 
 #&gt; $mean
-#&gt; [1] 27.99055
+#&gt; [1] 27.99935
 #&gt; 
-#&gt; $lower
-#&gt; [1] 24.10066
-#&gt; 
-#&gt; $upper
-#&gt; [1] 31.94583
+#&gt; $HPD
+#&gt;      LowerBound_alpha=0.95 UpperBound__alpha=0.95
+#&gt; [1,]              24.03037               31.84757
 #&gt; </div><div class='input'><span class='no'>postKernal</span></div><div class='output co'>#&gt; $x
-#&gt;   [1]  8.598687  8.603633  8.608580  8.613526  8.618472  8.623418  8.628365
-#&gt;   [8]  8.633311  8.638257  8.643203  8.648150  8.653096  8.658042  8.662988
-#&gt;  [15]  8.667935  8.672881  8.677827  8.682773  8.687720  8.692666  8.697612
-#&gt;  [22]  8.702558  8.707505  8.712451  8.717397  8.722343  8.727290  8.732236
-#&gt;  [29]  8.737182  8.742128  8.747075  8.752021  8.756967  8.761913  8.766860
-#&gt;  [36]  8.771806  8.776752  8.781698  8.786645  8.791591  8.796537  8.801483
-#&gt;  [43]  8.806430  8.811376  8.816322  8.821268  8.826215  8.831161  8.836107
-#&gt;  [50]  8.841053  8.846000  8.850946  8.855892  8.860838  8.865785  8.870731
-#&gt;  [57]  8.875677  8.880623  8.885570  8.890516  8.895462  8.900408  8.905355
-#&gt;  [64]  8.910301  8.915247  8.920193  8.925140  8.930086  8.935032  8.939978
-#&gt;  [71]  8.944925  8.949871  8.954817  8.959763  8.964709  8.969656  8.974602
-#&gt;  [78]  8.979548  8.984494  8.989441  8.994387  8.999333  9.004279  9.009226
-#&gt;  [85]  9.014172  9.019118  9.024064  9.029011  9.033957  9.038903  9.043849
-#&gt;  [92]  9.048796  9.053742  9.058688  9.063634  9.068581  9.073527  9.078473
-#&gt;  [99]  9.083419  9.088366  9.093312  9.098258  9.103204  9.108151  9.113097
-#&gt; [106]  9.118043  9.122989  9.127936  9.132882  9.137828  9.142774  9.147721
-#&gt; [113]  9.152667  9.157613  9.162559  9.167506  9.172452  9.177398  9.182344
-#&gt; [120]  9.187291  9.192237  9.197183  9.202129  9.207076  9.212022  9.216968
-#&gt; [127]  9.221914  9.226861  9.231807  9.236753  9.241699  9.246646  9.251592
-#&gt; [134]  9.256538  9.261484  9.266431  9.271377  9.276323  9.281269  9.286216
-#&gt; [141]  9.291162  9.296108  9.301054  9.306001  9.310947  9.315893  9.320839
-#&gt; [148]  9.325786  9.330732  9.335678  9.340624  9.345571  9.350517  9.355463
-#&gt; [155]  9.360409  9.365356  9.370302  9.375248  9.380194  9.385141  9.390087
-#&gt; [162]  9.395033  9.399979  9.404926  9.409872  9.414818  9.419764  9.424710
-#&gt; [169]  9.429657  9.434603  9.439549  9.444495  9.449442  9.454388  9.459334
-#&gt; [176]  9.464280  9.469227  9.474173  9.479119  9.484065  9.489012  9.493958
-#&gt; [183]  9.498904  9.503850  9.508797  9.513743  9.518689  9.523635  9.528582
-#&gt; [190]  9.533528  9.538474  9.543420  9.548367  9.553313  9.558259  9.563205
-#&gt; [197]  9.568152  9.573098  9.578044  9.582990  9.587937  9.592883  9.597829
-#&gt; [204]  9.602775  9.607722  9.612668  9.617614  9.622560  9.627507  9.632453
-#&gt; [211]  9.637399  9.642345  9.647292  9.652238  9.657184  9.662130  9.667077
-#&gt; [218]  9.672023  9.676969  9.681915  9.686862  9.691808  9.696754  9.701700
-#&gt; [225]  9.706647  9.711593  9.716539  9.721485  9.726432  9.731378  9.736324
-#&gt; [232]  9.741270  9.746217  9.751163  9.756109  9.761055  9.766002  9.770948
-#&gt; [239]  9.775894  9.780840  9.785787  9.790733  9.795679  9.800625  9.805572
-#&gt; [246]  9.810518  9.815464  9.820410  9.825357  9.830303  9.835249  9.840195
-#&gt; [253]  9.845142  9.850088  9.855034  9.859980  9.864927  9.869873  9.874819
-#&gt; [260]  9.879765  9.884711  9.889658  9.894604  9.899550  9.904496  9.909443
-#&gt; [267]  9.914389  9.919335  9.924281  9.929228  9.934174  9.939120  9.944066
-#&gt; [274]  9.949013  9.953959  9.958905  9.963851  9.968798  9.973744  9.978690
-#&gt; [281]  9.983636  9.988583  9.993529  9.998475 10.003421 10.008368 10.013314
-#&gt; [288] 10.018260 10.023206 10.028153 10.033099 10.038045 10.042991 10.047938
-#&gt; [295] 10.052884 10.057830 10.062776 10.067723 10.072669 10.077615 10.082561
-#&gt; [302] 10.087508 10.092454 10.097400 10.102346 10.107293 10.112239 10.117185
-#&gt; [309] 10.122131 10.127078 10.132024 10.136970 10.141916 10.146863 10.151809
-#&gt; [316] 10.156755 10.161701 10.166648 10.171594 10.176540 10.181486 10.186433
-#&gt; [323] 10.191379 10.196325 10.201271 10.206218 10.211164 10.216110 10.221056
-#&gt; [330] 10.226003 10.230949 10.235895 10.240841 10.245788 10.250734 10.255680
-#&gt; [337] 10.260626 10.265573 10.270519 10.275465 10.280411 10.285358 10.290304
-#&gt; [344] 10.295250 10.300196 10.305143 10.310089 10.315035 10.319981 10.324927
-#&gt; [351] 10.329874 10.334820 10.339766 10.344712 10.349659 10.354605 10.359551
-#&gt; [358] 10.364497 10.369444 10.374390 10.379336 10.384282 10.389229 10.394175
-#&gt; [365] 10.399121 10.404067 10.409014 10.413960 10.418906 10.423852 10.428799
-#&gt; [372] 10.433745 10.438691 10.443637 10.448584 10.453530 10.458476 10.463422
-#&gt; [379] 10.468369 10.473315 10.478261 10.483207 10.488154 10.493100 10.498046
-#&gt; [386] 10.502992 10.507939 10.512885 10.517831 10.522777 10.527724 10.532670
-#&gt; [393] 10.537616 10.542562 10.547509 10.552455 10.557401 10.562347 10.567294
-#&gt; [400] 10.572240 10.577186 10.582132 10.587079 10.592025 10.596971 10.601917
-#&gt; [407] 10.606864 10.611810 10.616756 10.621702 10.626649 10.631595 10.636541
-#&gt; [414] 10.641487 10.646434 10.651380 10.656326 10.661272 10.666219 10.671165
-#&gt; [421] 10.676111 10.681057 10.686004 10.690950 10.695896 10.700842 10.705789
-#&gt; [428] 10.710735 10.715681 10.720627 10.725574 10.730520 10.735466 10.740412
-#&gt; [435] 10.745359 10.750305 10.755251 10.760197 10.765144 10.770090 10.775036
-#&gt; [442] 10.779982 10.784928 10.789875 10.794821 10.799767 10.804713 10.809660
-#&gt; [449] 10.814606 10.819552 10.824498 10.829445 10.834391 10.839337 10.844283
-#&gt; [456] 10.849230 10.854176 10.859122 10.864068 10.869015 10.873961 10.878907
-#&gt; [463] 10.883853 10.888800 10.893746 10.898692 10.903638 10.908585 10.913531
-#&gt; [470] 10.918477 10.923423 10.928370 10.933316 10.938262 10.943208 10.948155
-#&gt; [477] 10.953101 10.958047 10.962993 10.967940 10.972886 10.977832 10.982778
-#&gt; [484] 10.987725 10.992671 10.997617 11.002563 11.007510 11.012456 11.017402
-#&gt; [491] 11.022348 11.027295 11.032241 11.037187 11.042133 11.047080 11.052026
-#&gt; [498] 11.056972 11.061918 11.066865 11.071811 11.076757 11.081703 11.086650
-#&gt; [505] 11.091596 11.096542 11.101488 11.106435 11.111381 11.116327 11.121273
-#&gt; [512] 11.126220
+#&gt;   [1]  9.260299  9.262028  9.263757  9.265485  9.267214  9.268943  9.270672
+#&gt;   [8]  9.272401  9.274130  9.275858  9.277587  9.279316  9.281045  9.282774
+#&gt;  [15]  9.284502  9.286231  9.287960  9.289689  9.291418  9.293147  9.294875
+#&gt;  [22]  9.296604  9.298333  9.300062  9.301791  9.303520  9.305248  9.306977
+#&gt;  [29]  9.308706  9.310435  9.312164  9.313892  9.315621  9.317350  9.319079
+#&gt;  [36]  9.320808  9.322537  9.324265  9.325994  9.327723  9.329452  9.331181
+#&gt;  [43]  9.332910  9.334638  9.336367  9.338096  9.339825  9.341554  9.343283
+#&gt;  [50]  9.345011  9.346740  9.348469  9.350198  9.351927  9.353655  9.355384
+#&gt;  [57]  9.357113  9.358842  9.360571  9.362300  9.364028  9.365757  9.367486
+#&gt;  [64]  9.369215  9.370944  9.372673  9.374401  9.376130  9.377859  9.379588
+#&gt;  [71]  9.381317  9.383045  9.384774  9.386503  9.388232  9.389961  9.391690
+#&gt;  [78]  9.393418  9.395147  9.396876  9.398605  9.400334  9.402063  9.403791
+#&gt;  [85]  9.405520  9.407249  9.408978  9.410707  9.412435  9.414164  9.415893
+#&gt;  [92]  9.417622  9.419351  9.421080  9.422808  9.424537  9.426266  9.427995
+#&gt;  [99]  9.429724  9.431453  9.433181  9.434910  9.436639  9.438368  9.440097
+#&gt; [106]  9.441826  9.443554  9.445283  9.447012  9.448741  9.450470  9.452198
+#&gt; [113]  9.453927  9.455656  9.457385  9.459114  9.460843  9.462571  9.464300
+#&gt; [120]  9.466029  9.467758  9.469487  9.471216  9.472944  9.474673  9.476402
+#&gt; [127]  9.478131  9.479860  9.481588  9.483317  9.485046  9.486775  9.488504
+#&gt; [134]  9.490233  9.491961  9.493690  9.495419  9.497148  9.498877  9.500606
+#&gt; [141]  9.502334  9.504063  9.505792  9.507521  9.509250  9.510978  9.512707
+#&gt; [148]  9.514436  9.516165  9.517894  9.519623  9.521351  9.523080  9.524809
+#&gt; [155]  9.526538  9.528267  9.529996  9.531724  9.533453  9.535182  9.536911
+#&gt; [162]  9.538640  9.540369  9.542097  9.543826  9.545555  9.547284  9.549013
+#&gt; [169]  9.550741  9.552470  9.554199  9.555928  9.557657  9.559386  9.561114
+#&gt; [176]  9.562843  9.564572  9.566301  9.568030  9.569759  9.571487  9.573216
+#&gt; [183]  9.574945  9.576674  9.578403  9.580131  9.581860  9.583589  9.585318
+#&gt; [190]  9.587047  9.588776  9.590504  9.592233  9.593962  9.595691  9.597420
+#&gt; [197]  9.599149  9.600877  9.602606  9.604335  9.606064  9.607793  9.609521
+#&gt; [204]  9.611250  9.612979  9.614708  9.616437  9.618166  9.619894  9.621623
+#&gt; [211]  9.623352  9.625081  9.626810  9.628539  9.630267  9.631996  9.633725
+#&gt; [218]  9.635454  9.637183  9.638911  9.640640  9.642369  9.644098  9.645827
+#&gt; [225]  9.647556  9.649284  9.651013  9.652742  9.654471  9.656200  9.657929
+#&gt; [232]  9.659657  9.661386  9.663115  9.664844  9.666573  9.668302  9.670030
+#&gt; [239]  9.671759  9.673488  9.675217  9.676946  9.678674  9.680403  9.682132
+#&gt; [246]  9.683861  9.685590  9.687319  9.689047  9.690776  9.692505  9.694234
+#&gt; [253]  9.695963  9.697692  9.699420  9.701149  9.702878  9.704607  9.706336
+#&gt; [260]  9.708064  9.709793  9.711522  9.713251  9.714980  9.716709  9.718437
+#&gt; [267]  9.720166  9.721895  9.723624  9.725353  9.727082  9.728810  9.730539
+#&gt; [274]  9.732268  9.733997  9.735726  9.737454  9.739183  9.740912  9.742641
+#&gt; [281]  9.744370  9.746099  9.747827  9.749556  9.751285  9.753014  9.754743
+#&gt; [288]  9.756472  9.758200  9.759929  9.761658  9.763387  9.765116  9.766845
+#&gt; [295]  9.768573  9.770302  9.772031  9.773760  9.775489  9.777217  9.778946
+#&gt; [302]  9.780675  9.782404  9.784133  9.785862  9.787590  9.789319  9.791048
+#&gt; [309]  9.792777  9.794506  9.796235  9.797963  9.799692  9.801421  9.803150
+#&gt; [316]  9.804879  9.806607  9.808336  9.810065  9.811794  9.813523  9.815252
+#&gt; [323]  9.816980  9.818709  9.820438  9.822167  9.823896  9.825625  9.827353
+#&gt; [330]  9.829082  9.830811  9.832540  9.834269  9.835997  9.837726  9.839455
+#&gt; [337]  9.841184  9.842913  9.844642  9.846370  9.848099  9.849828  9.851557
+#&gt; [344]  9.853286  9.855015  9.856743  9.858472  9.860201  9.861930  9.863659
+#&gt; [351]  9.865388  9.867116  9.868845  9.870574  9.872303  9.874032  9.875760
+#&gt; [358]  9.877489  9.879218  9.880947  9.882676  9.884405  9.886133  9.887862
+#&gt; [365]  9.889591  9.891320  9.893049  9.894778  9.896506  9.898235  9.899964
+#&gt; [372]  9.901693  9.903422  9.905150  9.906879  9.908608  9.910337  9.912066
+#&gt; [379]  9.913795  9.915523  9.917252  9.918981  9.920710  9.922439  9.924168
+#&gt; [386]  9.925896  9.927625  9.929354  9.931083  9.932812  9.934540  9.936269
+#&gt; [393]  9.937998  9.939727  9.941456  9.943185  9.944913  9.946642  9.948371
+#&gt; [400]  9.950100  9.951829  9.953558  9.955286  9.957015  9.958744  9.960473
+#&gt; [407]  9.962202  9.963930  9.965659  9.967388  9.969117  9.970846  9.972575
+#&gt; [414]  9.974303  9.976032  9.977761  9.979490  9.981219  9.982948  9.984676
+#&gt; [421]  9.986405  9.988134  9.989863  9.991592  9.993321  9.995049  9.996778
+#&gt; [428]  9.998507 10.000236 10.001965 10.003693 10.005422 10.007151 10.008880
+#&gt; [435] 10.010609 10.012338 10.014066 10.015795 10.017524 10.019253 10.020982
+#&gt; [442] 10.022711 10.024439 10.026168 10.027897 10.029626 10.031355 10.033083
+#&gt; [449] 10.034812 10.036541 10.038270 10.039999 10.041728 10.043456 10.045185
+#&gt; [456] 10.046914 10.048643 10.050372 10.052101 10.053829 10.055558 10.057287
+#&gt; [463] 10.059016 10.060745 10.062473 10.064202 10.065931 10.067660 10.069389
+#&gt; [470] 10.071118 10.072846 10.074575 10.076304 10.078033 10.079762 10.081491
+#&gt; [477] 10.083219 10.084948 10.086677 10.088406 10.090135 10.091864 10.093592
+#&gt; [484] 10.095321 10.097050 10.098779 10.100508 10.102236 10.103965 10.105694
+#&gt; [491] 10.107423 10.109152 10.110881 10.112609 10.114338 10.116067 10.117796
+#&gt; [498] 10.119525 10.121254 10.122982 10.124711 10.126440 10.128169 10.129898
+#&gt; [505] 10.131626 10.133355 10.135084 10.136813 10.138542 10.140271 10.141999
+#&gt; [512] 10.143728
 #&gt; 
 #&gt; $y
-#&gt;   [1] 0.1116133 0.1135945 0.1155754 0.1175554 0.1195332 0.1215076 0.1234793
-#&gt;   [8] 0.1254436 0.1274050 0.1293565 0.1313019 0.1332393 0.1351647 0.1370854
-#&gt;  [15] 0.1389870 0.1408825 0.1427627 0.1446295 0.1464862 0.1483211 0.1501485
-#&gt;  [22] 0.1519525 0.1537442 0.1555195 0.1572733 0.1590185 0.1607325 0.1624374
-#&gt;  [29] 0.1641194 0.1657827 0.1674320 0.1690530 0.1706646 0.1722479 0.1738172
-#&gt;  [36] 0.1753677 0.1768951 0.1784132 0.1798999 0.1813779 0.1828342 0.1842738
-#&gt;  [43] 0.1857010 0.1871047 0.1885008 0.1898753 0.1912396 0.1925909 0.1939271
-#&gt;  [50] 0.1952575 0.1965700 0.1978781 0.1991756 0.2004663 0.2017520 0.2030305
-#&gt;  [57] 0.2043072 0.2055800 0.2068524 0.2081243 0.2093985 0.2106737 0.2119562
-#&gt;  [64] 0.2132421 0.2145361 0.2158396 0.2171496 0.2184776 0.2198120 0.2211676
-#&gt;  [71] 0.2225363 0.2239215 0.2253317 0.2267516 0.2282098 0.2296809 0.2311824
-#&gt;  [78] 0.2327118 0.2342611 0.2358558 0.2374662 0.2391240 0.2408088 0.2425272
-#&gt;  [85] 0.2442929 0.2460771 0.2479285 0.2498018 0.2517252 0.2536931 0.2556919
-#&gt;  [92] 0.2577596 0.2598502 0.2620091 0.2642057 0.2664486 0.2687550 0.2710863
-#&gt;  [99] 0.2735040 0.2759494 0.2784573 0.2810194 0.2836187 0.2862994 0.2890067
-#&gt; [106] 0.2917916 0.2946188 0.2974971 0.3004444 0.3034185 0.3064830 0.3095762
-#&gt; [113] 0.3127327 0.3159436 0.3191910 0.3225172 0.3258687 0.3292926 0.3327552
-#&gt; [120] 0.3362639 0.3398337 0.3434270 0.3470970 0.3507908 0.3545365 0.3583254
-#&gt; [127] 0.3621429 0.3660206 0.3699169 0.3738654 0.3778410 0.3818482 0.3858953
-#&gt; [134] 0.3899576 0.3940666 0.3981892 0.4023409 0.4065150 0.4107037 0.4149200
-#&gt; [141] 0.4191441 0.4233885 0.4276416 0.4319046 0.4361767 0.4404519 0.4447325
-#&gt; [148] 0.4490128 0.4532922 0.4575670 0.4618387 0.4660974 0.4703507 0.4745867
-#&gt; [155] 0.4788096 0.4830177 0.4871998 0.4913718 0.4955044 0.4996214 0.5037066
-#&gt; [162] 0.5077588 0.5117902 0.5157679 0.5197273 0.5236331 0.5275052 0.5313396
-#&gt; [169] 0.5351157 0.5388695 0.5425448 0.5461913 0.5497796 0.5533112 0.5568076
-#&gt; [176] 0.5602173 0.5635988 0.5668990 0.5701500 0.5733465 0.5764613 0.5795454
-#&gt; [183] 0.5825246 0.5854662 0.5883327 0.5911278 0.5938793 0.5965247 0.5991364
-#&gt; [190] 0.6016524 0.6041111 0.6065075 0.6088115 0.6110811 0.6132359 0.6153496
-#&gt; [197] 0.6173832 0.6193411 0.6212536 0.6230562 0.6248244 0.6264963 0.6281108
-#&gt; [204] 0.6296638 0.6311263 0.6325552 0.6338744 0.6351546 0.6363593 0.6374935
-#&gt; [211] 0.6385857 0.6395770 0.6405370 0.6414106 0.6422325 0.6430002 0.6436878
-#&gt; [218] 0.6443459 0.6449090 0.6454382 0.6459029 0.6463071 0.6466760 0.6469594
-#&gt; [225] 0.6472166 0.6474016 0.6475435 0.6476405 0.6476711 0.6476773 0.6476056
-#&gt; [232] 0.6475058 0.6473534 0.6471511 0.6469203 0.6466191 0.6462964 0.6459150
-#&gt; [239] 0.6454978 0.6450441 0.6445352 0.6440063 0.6434131 0.6427962 0.6421356
-#&gt; [246] 0.6414329 0.6407065 0.6399201 0.6391155 0.6382608 0.6373750 0.6364578
-#&gt; [253] 0.6354922 0.6345091 0.6334695 0.6324084 0.6313087 0.6301708 0.6290116
-#&gt; [260] 0.6277978 0.6265672 0.6252909 0.6239856 0.6226514 0.6212720 0.6198763
-#&gt; [267] 0.6184279 0.6169592 0.6154545 0.6139136 0.6123530 0.6107408 0.6091130
-#&gt; [274] 0.6074425 0.6057447 0.6040202 0.6022537 0.6004721 0.5986423 0.5967939
-#&gt; [281] 0.5949129 0.5929994 0.5910683 0.5890915 0.5871011 0.5850738 0.5830232
-#&gt; [288] 0.5809501 0.5788417 0.5767209 0.5745611 0.5723865 0.5701862 0.5679608
-#&gt; [295] 0.5657222 0.5634494 0.5611668 0.5588579 0.5565329 0.5541925 0.5518288
-#&gt; [302] 0.5494570 0.5470609 0.5446560 0.5422360 0.5398019 0.5373606 0.5349017
-#&gt; [309] 0.5324380 0.5299621 0.5274792 0.5249899 0.5224920 0.5199912 0.5174830
-#&gt; [316] 0.5149726 0.5124587 0.5099426 0.5074253 0.5049070 0.5023890 0.4998718
-#&gt; [323] 0.4973562 0.4948420 0.4923319 0.4898234 0.4873208 0.4848214 0.4823269
-#&gt; [330] 0.4798388 0.4773539 0.4748790 0.4724073 0.4699445 0.4674880 0.4650374
-#&gt; [337] 0.4625972 0.4601607 0.4577361 0.4553165 0.4529052 0.4505029 0.4481049
-#&gt; [344] 0.4457195 0.4433378 0.4409659 0.4386005 0.4362410 0.4338910 0.4315444
-#&gt; [351] 0.4292078 0.4268752 0.4245490 0.4222291 0.4199124 0.4176039 0.4152977
-#&gt; [358] 0.4129973 0.4107005 0.4084068 0.4061180 0.4038308 0.4015480 0.3992669
-#&gt; [365] 0.3969882 0.3947119 0.3924367 0.3901641 0.3878921 0.3856218 0.3833523
-#&gt; [372] 0.3810836 0.3788161 0.3765489 0.3742827 0.3720169 0.3697518 0.3674875
-#&gt; [379] 0.3652236 0.3629610 0.3606990 0.3584383 0.3561788 0.3539205 0.3516646
-#&gt; [386] 0.3494097 0.3471582 0.3449086 0.3426618 0.3404191 0.3381782 0.3359442
-#&gt; [393] 0.3337124 0.3314869 0.3292665 0.3270505 0.3248437 0.3226401 0.3204476
-#&gt; [400] 0.3182606 0.3160820 0.3139138 0.3117505 0.3096035 0.3074616 0.3053332
-#&gt; [407] 0.3032154 0.3011065 0.2990148 0.2969292 0.2948628 0.2928058 0.2907623
-#&gt; [414] 0.2887354 0.2867158 0.2847203 0.2827320 0.2807622 0.2788065 0.2768623
-#&gt; [421] 0.2749399 0.2730248 0.2711325 0.2692508 0.2673844 0.2655358 0.2636949
-#&gt; [428] 0.2618786 0.2600692 0.2582777 0.2564992 0.2547311 0.2529819 0.2512388
-#&gt; [435] 0.2495142 0.2477978 0.2460929 0.2444007 0.2427140 0.2410434 0.2393770
-#&gt; [442] 0.2377213 0.2360726 0.2344295 0.2327953 0.2311640 0.2295399 0.2279186
-#&gt; [449] 0.2263009 0.2246861 0.2230725 0.2214608 0.2198490 0.2182371 0.2166237
-#&gt; [456] 0.2150092 0.2133908 0.2117708 0.2101449 0.2085154 0.2068809 0.2052389
-#&gt; [463] 0.2035938 0.2019363 0.2002749 0.1986034 0.1969231 0.1952361 0.1935347
-#&gt; [470] 0.1918283 0.1901064 0.1883765 0.1866356 0.1848807 0.1831200 0.1813390
-#&gt; [477] 0.1795521 0.1777503 0.1759365 0.1741137 0.1722730 0.1704263 0.1685618
-#&gt; [484] 0.1666885 0.1648037 0.1629047 0.1610002 0.1590767 0.1571480 0.1552066
-#&gt; [491] 0.1532556 0.1512974 0.1493259 0.1473503 0.1453628 0.1433700 0.1413702
-#&gt; [498] 0.1393629 0.1373526 0.1353337 0.1333129 0.1312875 0.1292595 0.1272297
-#&gt; [505] 0.1251978 0.1231657 0.1211336 0.1191025 0.1170727 0.1150463 0.1130212
-#&gt; [512] 0.1110032
+#&gt;   [1] 0.3605779 0.3668310 0.3730830 0.3793315 0.3855736 0.3918043 0.3980282
+#&gt;   [8] 0.4042282 0.4104194 0.4165821 0.4227257 0.4288460 0.4349300 0.4410003
+#&gt;  [15] 0.4470135 0.4530092 0.4589583 0.4648691 0.4707479 0.4765642 0.4823592
+#&gt;  [22] 0.4880805 0.4937699 0.4994050 0.5049820 0.5105268 0.5159856 0.5214183
+#&gt;  [29] 0.5267729 0.5320817 0.5373378 0.5425204 0.5476756 0.5527319 0.5577597
+#&gt;  [36] 0.5627162 0.5676176 0.5724757 0.5772534 0.5820050 0.5866732 0.5913072
+#&gt;  [43] 0.5958859 0.6004088 0.6049026 0.6093226 0.6137223 0.6180641 0.6223746
+#&gt;  [50] 0.6266510 0.6308844 0.6351024 0.6392737 0.6434334 0.6475664 0.6516836
+#&gt;  [57] 0.6557892 0.6598810 0.6639700 0.6680556 0.6721446 0.6762391 0.6803485
+#&gt;  [64] 0.6844653 0.6886165 0.6927809 0.6969850 0.7012217 0.7054918 0.7098243
+#&gt;  [71] 0.7141798 0.7186285 0.7231128 0.7276746 0.7323126 0.7370038 0.7418208
+#&gt;  [78] 0.7466799 0.7516788 0.7567510 0.7619283 0.7672389 0.7726107 0.7781844
+#&gt;  [85] 0.7838195 0.7896280 0.7955590 0.8016089 0.8078592 0.8141804 0.8207572
+#&gt;  [92] 0.8274276 0.8342886 0.8413288 0.8484868 0.8559161 0.8634318 0.8712193
+#&gt;  [99] 0.8791474 0.8872654 0.8956210 0.9040787 0.9128749 0.9217680 0.9309279
+#&gt; [106] 0.9402756 0.9497955 0.9596053 0.9695151 0.9797663 0.9901442 1.0007639
+#&gt; [113] 1.0116112 1.0225992 1.0339142 1.0453291 1.0570470 1.0689227 1.0809991
+#&gt; [120] 1.0933269 1.1057552 1.1185232 1.1313828 1.1444887 1.1577675 1.1711957
+#&gt; [127] 1.1848744 1.1986365 1.2126679 1.2267988 1.2411078 1.2555809 1.2701493
+#&gt; [134] 1.2849349 1.2997822 1.3148085 1.3299235 1.3451450 1.3604912 1.3758842
+#&gt; [141] 1.3914221 1.4069928 1.4226490 1.4383547 1.4541009 1.4698970 1.4857068
+#&gt; [148] 1.5015436 1.5173798 1.5332152 1.5490288 1.5648305 1.5805706 1.5962859
+#&gt; [155] 1.6119202 1.6274914 1.6429910 1.6583648 1.6736916 1.6888177 1.7038742
+#&gt; [162] 1.7187612 1.7334933 1.7481062 1.7624599 1.7767251 1.7906857 1.8045003
+#&gt; [169] 1.8180835 1.8313951 1.8445674 1.8573249 1.8699541 1.8822073 1.8942157
+#&gt; [176] 1.9059623 1.9173029 1.9284957 1.9391413 1.9496062 1.9596599 1.9693557
+#&gt; [183] 1.9787918 1.9876802 1.9963899 2.0045202 2.0123756 2.0198212 2.0267918
+#&gt; [190] 2.0335341 2.0395927 2.0454508 2.0507385 2.0556543 2.0601948 2.0641506
+#&gt; [197] 2.0678984 2.0709154 2.0736857 2.0759308 2.0777155 2.0791851 2.0799803
+#&gt; [204] 2.0805627 2.0804788 2.0800733 2.0792161 2.0778288 2.0762034 2.0738444
+#&gt; [211] 2.0712792 2.0681414 2.0646247 2.0607469 2.0562981 2.0516511 2.0463358
+#&gt; [218] 2.0407887 2.0347797 2.0283602 2.0216764 2.0144154 2.0069786 1.9990086
+#&gt; [225] 1.9907768 1.9821984 1.9732090 1.9640471 1.9543398 1.9444866 1.9342371
+#&gt; [232] 1.9237232 1.9129715 1.9018409 1.8905829 1.8789142 1.8671014 1.8550192
+#&gt; [239] 1.8426986 1.8302334 1.8174524 1.8045802 1.7914417 1.7781741 1.7647455
+#&gt; [246] 1.7511307 1.7374430 1.7235286 1.7095598 1.6954460 1.6812414 1.6669599
+#&gt; [253] 1.6525659 1.6381367 1.6236081 1.6090502 1.5944409 1.5797979 1.5651356
+#&gt; [260] 1.5504493 1.5357607 1.5210717 1.5063941 1.4917297 1.4771010 1.4624858
+#&gt; [267] 1.4479416 1.4334237 1.4189730 1.4045856 1.3902491 1.3760236 1.3618368
+#&gt; [274] 1.3477866 1.3338006 1.3199204 1.3061615 1.2924674 1.2789598 1.2655101
+#&gt; [281] 1.2522329 1.2390638 1.2260150 1.2131459 1.2003428 1.1877854 1.1753053
+#&gt; [288] 1.1630089 1.1508662 1.1388397 1.1270474 1.1153321 1.1038680 1.0925178
+#&gt; [295] 1.0813445 1.0703684 1.0594912 1.0488967 1.0383854 1.0281134 1.0179916
+#&gt; [302] 1.0080272 0.9982992 0.9886563 0.9793141 0.9700692 0.9610405 0.9521954
+#&gt; [309] 0.9434811 0.9350369 0.9266791 0.9185944 0.9106376 0.9028676 0.8953112
+#&gt; [316] 0.8878552 0.8806980 0.8736264 0.8667956 0.8601209 0.8536008 0.8473208
+#&gt; [323] 0.8411255 0.8352223 0.8294183 0.8238210 0.8184057 0.8131125 0.8080829
+#&gt; [330] 0.8031359 0.7984450 0.7938796 0.7894870 0.7853000 0.7812035 0.7773919
+#&gt; [337] 0.7736602 0.7701497 0.7667889 0.7635682 0.7605749 0.7576603 0.7550125
+#&gt; [344] 0.7524606 0.7500959 0.7479032 0.7458192 0.7439820 0.7422207 0.7406907
+#&gt; [351] 0.7392794 0.7380224 0.7369570 0.7359702 0.7352461 0.7345943 0.7341387
+#&gt; [358] 0.7338214 0.7336263 0.7336380 0.7337197 0.7340342 0.7344365 0.7349994
+#&gt; [365] 0.7357153 0.7365220 0.7375439 0.7386302 0.7399088 0.7412896 0.7427954
+#&gt; [372] 0.7444610 0.7461877 0.7481277 0.7501243 0.7522712 0.7545264 0.7568717
+#&gt; [379] 0.7593726 0.7619246 0.7646403 0.7674188 0.7703053 0.7732947 0.7763416
+#&gt; [386] 0.7795252 0.7827476 0.7860815 0.7894736 0.7929329 0.7964753 0.8000483
+#&gt; [393] 0.8037190 0.8074141 0.8111698 0.8149648 0.8187906 0.8226623 0.8265474
+#&gt; [400] 0.8304674 0.8343963 0.8383393 0.8422866 0.8462359 0.8501754 0.8541083
+#&gt; [407] 0.8580188 0.8619074 0.8657720 0.8695887 0.8733874 0.8771063 0.8807951
+#&gt; [414] 0.8844139 0.8879646 0.8914649 0.8948493 0.8981939 0.9014026 0.9045428
+#&gt; [421] 0.9075787 0.9104868 0.9133321 0.9159810 0.9185691 0.9209814 0.9232748
+#&gt; [428] 0.9254456 0.9274189 0.9293211 0.9309616 0.9325116 0.9338646 0.9350403
+#&gt; [435] 0.9360920 0.9368726 0.9375654 0.9379764 0.9382488 0.9383224 0.9381579
+#&gt; [442] 0.9378839 0.9372680 0.9365525 0.9355575 0.9343744 0.9330083 0.9313481
+#&gt; [449] 0.9295845 0.9274611 0.9252113 0.9227041 0.9199645 0.9170719 0.9138409
+#&gt; [456] 0.9105043 0.9068410 0.9030151 0.8989692 0.8946583 0.8902333 0.8854440
+#&gt; [463] 0.8805537 0.8753862 0.8700305 0.8645020 0.8586932 0.8527884 0.8465646
+#&gt; [470] 0.8402267 0.8336708 0.8269169 0.8200406 0.8128900 0.8056574 0.7981795
+#&gt; [477] 0.7905788 0.7828216 0.7748759 0.7668547 0.7585885 0.7502588 0.7417584
+#&gt; [484] 0.7331433 0.7244290 0.7155557 0.7066303 0.6975417 0.6883960 0.6791480
+#&gt; [491] 0.6698109 0.6604220 0.6509227 0.6413933 0.6317796 0.6221276 0.6124298
+#&gt; [498] 0.6026846 0.5929216 0.5831122 0.5732951 0.5634577 0.5536149 0.5437677
+#&gt; [505] 0.5339271 0.5240904 0.5142764 0.5044782 0.4947065 0.4849726 0.4752593
+#&gt; [512] 0.4656143
 #&gt; 
 #&gt; $mean
-#&gt; [1] 9.852695
+#&gt; [1] 9.691003
 #&gt; 
-#&gt; $lower
-#&gt; [1] 8.804146
-#&gt; 
-#&gt; $upper
-#&gt; [1] 10.99734
+#&gt; $HPD
+#&gt;      LowerBound_alpha=0.95 UpperBound__alpha=0.95
+#&gt; [1,]              9.273459               10.15193
 #&gt; </div><div class='input'>
 <span class='co'># let's compare this (supposed) prior against the posterior in a plot</span>
 
-<span class='fu'>plotUnivariatePosteriorVsPrior</span>(<span class='kw'>posteriorCurve</span><span class='kw'>=</span><span class='no'>postKernal</span>, <span class='kw'>priorCurve</span><span class='kw'>=</span><span class='no'>priorKernal</span>,
-        <span class='kw'>label</span><span class='kw'>=</span><span class='st'>"parameter"</span>, <span class='kw'>trueValue</span><span class='kw'>=</span><span class='kw'>NULL</span>, <span class='kw'>prob</span><span class='kw'>=</span><span class='fl'>0.95</span>)</div><div class='img'><img src='plotPriorPost-4.png' alt='' width='700' height='432.632880098887' /></div><div class='input'>
+<span class='fu'>plotUnivariatePosteriorVsPrior</span>(
+  <span class='kw'>posteriorCurve</span> <span class='kw'>=</span> <span class='no'>postKernal</span>, <span class='kw'>priorCurve</span> <span class='kw'>=</span> <span class='no'>priorKernal</span>,
+     <span class='kw'>label</span> <span class='kw'>=</span> <span class='st'>"parameter"</span>, <span class='kw'>trueValue</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</div><div class='img'><img src='plotPriorPost-4.png' alt='' width='700' height='433' /></div><div class='input'>
 # cool!
 
 </div></pre>
@@ -612,11 +659,14 @@ Brian O'Meara and Barb Banbury
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
 </div>
 
       </footer>
    </div>
 
+  
+
   </body>
 </html>
+

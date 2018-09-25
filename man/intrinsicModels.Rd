@@ -27,9 +27,11 @@ minBoundaryAutoregressiveIntrinsic(params, states, timefrompresent)
 
 autoregressiveIntrinsicTimeSlices(params, states, timefrompresent)
 
-autoregressiveIntrinsicTimeSlicesConstantMean(params, states, timefrompresent)
+autoregressiveIntrinsicTimeSlicesConstantMean(params, states,
+  timefrompresent)
 
-autoregressiveIntrinsicTimeSlicesConstantSigma(params, states, timefrompresent)
+autoregressiveIntrinsicTimeSlicesConstantSigma(params, states,
+  timefrompresent)
 }
 \arguments{
 \item{params}{describes input paramaters for the model (see Description)}

@@ -8,9 +8,9 @@
 \alias{getUnivariatePosteriorCurve}
 \title{Plotting, Summarizing and Comparing the Prior and Posterior Distributions}
 \usage{
-plotPrior(priorFn = match.arg(arg = priorFn, choices = c("fixed", "uniform",
-  "normal", "lognormal", "gamma", "exponential"), several.ok = FALSE),
-  priorVariables, plotQuants = TRUE, plotLegend = TRUE)
+plotPrior(priorFn = match.arg(arg = priorFn, choices = c("fixed",
+  "uniform", "normal", "lognormal", "gamma", "exponential"), several.ok =
+  FALSE), priorVariables, plotQuants = TRUE, plotLegend = TRUE)
 
 plotUnivariatePosteriorVsPrior(posteriorCurve, priorCurve,
   label = "parameter", trueValue = NULL)

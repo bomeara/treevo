@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Pairwise Effective Sample Size — pairwiseESS • TreEvo</title>
+<title>Plotting Parent-Offspring Particles — parentOffspringPlots • TreEvo</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,10 +30,10 @@
 
 
 
-<meta property="og:title" content="Pairwise Effective Sample Size — pairwiseESS" />
+<meta property="og:title" content="Plotting Parent-Offspring Particles — parentOffspringPlots" />
 
-<meta property="og:description" content="This function calculates Effective Sample Size (ESS) on results.  Performs the best when results are
-from multiple runs." />
+<meta property="og:description" content="This function uses the particleDataFrame output by TreEvo ABC analyses and plots
+parent-offspring particles from generation to generation." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -113,53 +113,50 @@ from multiple runs." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Pairwise Effective Sample Size</h1>
-    <small class="dont-index">Source: <a href='https://github.com/bomeara/treevo/blob/master/R/PairwiseESS.R'><code>R/PairwiseESS.R</code></a></small>
-    <div class="hidden name"><code>pairwiseESS.Rd</code></div>
+    <h1>Plotting Parent-Offspring Particles</h1>
+    <small class="dont-index">Source: <a href='https://github.com/bomeara/treevo/blob/master/R/parentOffspringPlots.R'><code>R/parentOffspringPlots.R</code></a></small>
+    <div class="hidden name"><code>parentOffspringPlots.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>This function calculates Effective Sample Size (ESS) on results.  Performs the best when results are
-from multiple runs.</p>
+    <p>This function uses the <code>particleDataFrame</code> output by TreEvo ABC analyses and plots
+parent-offspring particles from generation to generation.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>pairwiseESS</span>(<span class='no'>inputData</span>)</pre>
+    <pre class="usage"><span class='fu'>parentOffspringPlots</span>(<span class='no'>particleDataFrame</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>inputData</th>
-      <td><p>inputData can be a single data frame or a
-list of data frames</p></td>
+      <th>particleDataFrame</th>
+      <td><p><code>particleDataFrame</code> output by TreEvo ABC analyses.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Returns a matrix with ESS values of all pairwise runs</p>
+    <p>Creates a set of parent-offspring plots.</p>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>Each parameter is plotted twice for parent-offspring relationships through
+the generations.  In the top row, particles are plotted as a measure of
+distance to the observed data; the farther away the particle the bigger the
+circle.  In the bottom row, 
+particles are plotted as a measure of their weights; larger circles are
+closer to observed data and therefore carry more weight in the analysis.</p>
+<p>As of version 0.6.0, rejected particles are not saved for outputting by the parallelized algorithm, 
+and thus they are no longer displayed by this function.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
 <span class='fu'>data</span>(<span class='no'>simRunExample</span>)
-
-<span class='co'># this will give a warning</span>
-<span class='fu'>pairwiseESS</span>(<span class='no'>results</span><span class='kw'>[[</span><span class='fl'>1</span>]]$<span class='no'>particleDataFrame</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: ESS on a single run should be high; consider combining several runs</span></div><div class='output co'>#&gt;             ESS
-#&gt; starting_1   36
-#&gt; intrinsic_1  36</div><div class='input'>
-<span class='co'># ESS should be calculated over multiple runs</span>
-<span class='fu'>pairwiseESS</span>(<span class='no'>results</span>)</div><div class='output co'>#&gt; <span class='message'>Multiple runs of doRun_prc found, extracting particleDataFrame objects</span></div><div class='output co'>#&gt;             1.2
-#&gt; starting_1   71
-#&gt; intrinsic_1  71</div><div class='input'>
-<span class='co'># you can also manually assemble a list of particleDataFrame tables</span>
-    <span class='co'># and use this as the input</span>
-<span class='no'>inputList</span> <span class='kw'>&lt;-</span> <span class='fu'>list</span>(<span class='no'>results</span><span class='kw'>[[</span><span class='fl'>2</span>]]$<span class='no'>particleDataFrame</span>, <span class='no'>results</span><span class='kw'>[[</span><span class='fl'>1</span>]]$<span class='no'>particleDataFrame</span>)
-<span class='fu'>pairwiseESS</span>(<span class='no'>inputList</span>)</div><div class='output co'>#&gt;             1.2
-#&gt; starting_1   71
-#&gt; intrinsic_1  71</div></pre>
+<span class='fu'>parentOffspringPlots</span>(<span class='no'>results</span><span class='kw'>[[</span><span class='fl'>1</span>]]$<span class='no'>particleDataFrame</span>)</div><div class='img'><img src='parentOffspringPlots-1.png' alt='' width='700' height='433' /></div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -167,6 +164,8 @@ list of data frames</p></td>
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
+
+      <li><a href="#details">Details</a></li>
       
       <li><a href="#examples">Examples</a></li>
     </ul>

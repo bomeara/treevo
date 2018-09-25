@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>TreEvo--abc for comparative methods � TreEvo-package • TreEvo</title>
+<title>TreEvo--abc for comparative methods — TreEvo-package • TreEvo</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -18,13 +18,25 @@
 <!-- Font Awesome icons -->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 
+<!-- clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
+
+<!-- sticky kit -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
-<script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-  
-  
+
+
+
+<meta property="og:title" content="TreEvo--abc for comparative methods — TreEvo-package" />
+
+<meta property="og:description" content="A package for applying Approximate Bayesian Computation to estimating parameters of trait evolution in comparative analyses." />
+<meta name="twitter:card" content="summary" />
+
+
+
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -47,8 +59,12 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">TreEvo</a>
+      <span class="navbar-brand">
+        <a class="navbar-link" href="../index.html">TreEvo</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.9.0</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
@@ -73,7 +89,7 @@
   </ul>
 </li>
 <li>
-  <a href="../news/index.html">News</a>
+  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
       
@@ -85,6 +101,7 @@
   </a>
 </li>
       </ul>
+      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -92,86 +109,98 @@
       
       </header>
 
-      <div class="row">
+<div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>TreEvo--abc for comparative methods</h1>
+    <small class="dont-index">Source: <a href='https://github.com/bomeara/treevo/blob/master/R/treevo-package.R'><code>R/treevo-package.R</code></a></small>
+    <div class="hidden name"><code>TreEvo-package.Rd</code></div>
     </div>
 
+    <div class="ref-description">
     
     <p>A package for applying Approximate Bayesian Computation to estimating parameters of trait evolution in comparative analyses.</p>
     
+    </div>
 
         
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <table><tr><td> Package: </td>
-<td> TreEvo</td>
-</tr><tr><td> Type: </td>
-<td> Package</td>
-</tr><tr><td> Version: </td>
-<td>
-0.3.3</td>
-</tr><tr><td> Date: </td>
-<td> 2012-07-02</td>
-</tr><tr><td> License: </td>
-<td> GPL</td>
-</tr></table>
+    <table class='table'>
+<tr><td>Package:</td><td>TreEvo</td></tr>
+<tr><td>Type:</td><td>Package</td></tr>
+<tr><td>Version:</td><td>0.3.3</td></tr>
+<tr><td>Date:</td><td>2012-07-02</td></tr>
+<tr><td>License:</td><td>GPL</td></tr>
+<tr><td></td><td>Package:</td></tr>
+</table>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># let's simulate some data, and then try to infer the parameters using ABC</span>
+    <pre class="examples"><div class='input'>
+# example analysis, using data simulated with TreEvo
 
-<span class='no'>simPhy</span><span class='kw'>&lt;-</span><span class='fu'>rcoal</span>(<span class='fl'>30</span>)
+</div><div class='input'>
+<span class='fu'>set.seed</span>(<span class='fl'>1</span>)
+<span class='co'># let's simulate some data, and then try to infer the parameters using ABC</span>
+<span class='co'># get a 30-taxon coalescent tree</span>
+<span class='no'>tree</span> <span class='kw'>&lt;-</span> <span class='fu'>rcoal</span>(<span class='fl'>20</span>)
+<span class='co'># get realistic edge lengths</span>
+<span class='no'>tree</span>$<span class='no'>edge.length</span> <span class='kw'>&lt;-</span> <span class='no'>tree</span>$<span class='no'>edge.length</span>*<span class='fl'>20</span>
 
-<span class='no'>genRate</span><span class='kw'>&lt;-</span><span class='fu'>c</span>(<span class='fl'>0.01</span>)
-<span class='no'>ancState</span><span class='kw'>&lt;-</span><span class='fu'>c</span>(<span class='fl'>10</span>)
+<span class='no'>genRate</span> <span class='kw'>&lt;-</span> <span class='fu'>c</span>(<span class='fl'>0.01</span>)
+<span class='no'>ancState</span> <span class='kw'>&lt;-</span> <span class='fu'>c</span>(<span class='fl'>10</span>)
 
 <span class='co'>#Simple Brownian motion</span>
-<span class='no'>simCharOut</span><span class='kw'>&lt;-</span><span class='fu'><a href='doSimulation.html'>doSimulation</a></span>(
-        <span class='kw'>phy</span><span class='kw'>=</span><span class='no'>simPhy</span>,
-        <span class='kw'>intrinsicFn</span><span class='kw'>=</span><span class='no'>brownianIntrinsic</span>,
-        <span class='kw'>extrinsicFn</span><span class='kw'>=</span><span class='no'>nullExtrinsic</span>,
-        <span class='kw'>startingValues</span><span class='kw'>=</span><span class='no'>ancState</span>, <span class='co'>#root state</span>
-        <span class='kw'>intrinsicValues</span><span class='kw'>=</span><span class='no'>genRate</span>,
-        <span class='kw'>extrinsicValues</span><span class='kw'>=</span><span class='fu'>c</span>(<span class='fl'>0</span>),
-        <span class='kw'>timeStep</span><span class='kw'>=</span><span class='fl'>0.0001</span>,
-        <span class='kw'>saveHistory</span><span class='kw'>=</span><span class='fl'>FALSE</span>)
-
-<span class='co'># clean for use with doRun</span>
-<span class='no'>simChar</span><span class='kw'>&lt;-</span><span class='no'>simCharOut</span>[,<span class='st'>"statesmatrix"</span>,<span class='kw'>drop</span><span class='kw'>=</span><span class='fl'>FALSE</span>]
-<span class='fu'>rownames</span>(<span class='no'>simChar</span>)<span class='kw'>&lt;-</span><span class='no'>simPhy</span>$<span class='no'>tip.label</span>[<span class='no'>simCharOut</span>$<span class='no'>taxonid</span>]
-
+<span class='no'>simChar</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='doSimulation.html'>doSimulation</a></span>(
+    <span class='kw'>phy</span> <span class='kw'>=</span> <span class='no'>tree</span>,
+    <span class='kw'>intrinsicFn</span> <span class='kw'>=</span> <span class='no'>brownianIntrinsic</span>,
+    <span class='kw'>extrinsicFn</span> <span class='kw'>=</span> <span class='no'>nullExtrinsic</span>,
+    <span class='kw'>startingValues</span> <span class='kw'>=</span> <span class='no'>ancState</span>, <span class='co'>#root state</span>
+    <span class='kw'>intrinsicValues</span> <span class='kw'>=</span> <span class='no'>genRate</span>,
+    <span class='kw'>extrinsicValues</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>0</span>),
+    <span class='kw'>generation.time</span> <span class='kw'>=</span> <span class='fl'>100000</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: You have only 15 timeSteps on the shortest branch in this dataset but should probably have a lot more if you expect change on this branch. Please consider decreasing timeStep to no more than 0.0011</span></div><div class='input'>
 <span class='co'># NOTE: the example analyses below sample too few particles, </span>
-        <span class='co'># over too few steps, with too few starting simulations</span>
-        <span class='co'># - all for the sake of examples that reasonably test the functions</span>
+    <span class='co'># over too few steps, with too few starting simulations</span>
+    <span class='co'># - all for the sake of examples that reasonably test the functions</span>
 
 <span class='co'># Please set these values to more realistic levels for your analyses!</span>
 
-<span class='no'>results</span><span class='kw'>&lt;-</span><span class='fu'><a href='doRun.html'>doRun_prc</a></span>(
-  <span class='kw'>phy</span> <span class='kw'>=</span> <span class='no'>simPhy</span>,
+<span class='no'>results</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='doRun.html'>doRun_prc</a></span>(
+  <span class='kw'>phy</span> <span class='kw'>=</span> <span class='no'>tree</span>,
   <span class='kw'>traits</span> <span class='kw'>=</span> <span class='no'>simChar</span>,
-  <span class='kw'>intrinsicFn</span><span class='kw'>=</span><span class='no'>brownianIntrinsic</span>,
-  <span class='kw'>extrinsicFn</span><span class='kw'>=</span><span class='no'>nullExtrinsic</span>,
-  <span class='kw'>startingPriorsFns</span><span class='kw'>=</span><span class='st'>"normal"</span>,
-  <span class='kw'>startingPriorsValues</span><span class='kw'>=</span><span class='fu'>matrix</span>(<span class='fu'>c</span>(<span class='fu'>mean</span>(<span class='no'>simChar</span>[,<span class='fl'>1</span>]), <span class='fu'>sd</span>(<span class='no'>simChar</span>[,<span class='fl'>1</span>]))),
-  <span class='kw'>intrinsicPriorsFns</span><span class='kw'>=</span><span class='fu'>c</span>(<span class='st'>"exponential"</span>),
-  <span class='kw'>intrinsicPriorsValues</span><span class='kw'>=</span><span class='fu'>matrix</span>(<span class='fu'>c</span>(<span class='fl'>10</span>, <span class='fl'>10</span>), <span class='kw'>nrow</span><span class='kw'>=</span><span class='fl'>2</span>, <span class='kw'>byrow</span><span class='kw'>=</span><span class='fl'>FALSE</span>),
-  <span class='kw'>extrinsicPriorsFns</span><span class='kw'>=</span><span class='fu'>c</span>(<span class='st'>"fixed"</span>),
-  <span class='kw'>extrinsicPriorsValues</span><span class='kw'>=</span><span class='fu'>matrix</span>(<span class='fu'>c</span>(<span class='fl'>0</span>, <span class='fl'>0</span>), <span class='kw'>nrow</span><span class='kw'>=</span><span class='fl'>2</span>, <span class='kw'>byrow</span><span class='kw'>=</span><span class='fl'>FALSE</span>),
-  <span class='kw'>generation.time</span><span class='kw'>=</span><span class='fl'>1000</span>,
-  <span class='kw'>standardDevFactor</span><span class='kw'>=</span><span class='fl'>0.2</span>,
-  <span class='kw'>plot</span><span class='kw'>=</span><span class='fl'>FALSE</span>,
-  <span class='kw'>StartSims</span><span class='kw'>=</span><span class='fl'>10</span>,
-  <span class='kw'>epsilonProportion</span><span class='kw'>=</span><span class='fl'>0.7</span>,
-  <span class='kw'>epsilonMultiplier</span><span class='kw'>=</span><span class='fl'>0.7</span>,
-  <span class='kw'>nStepsPRC</span><span class='kw'>=</span><span class='fl'>3</span>,
-  <span class='kw'>numParticles</span><span class='kw'>=</span><span class='fl'>20</span>,
-  <span class='kw'>jobName</span><span class='kw'>=</span><span class='st'>"examplerun_prc"</span>,
-  <span class='kw'>stopRule</span><span class='kw'>=</span><span class='fl'>FALSE</span>,
-  <span class='kw'>multicore</span><span class='kw'>=</span><span class='fl'>FALSE</span>,
-  <span class='kw'>coreLimit</span><span class='kw'>=</span><span class='fl'>1</span>
-  )</div><div class='output co'>#&gt; <span class='error'>Error in proc.time[[3]]: object of type 'builtin' is not subsettable</span></div></pre>
+  <span class='kw'>intrinsicFn</span> <span class='kw'>=</span> <span class='no'>brownianIntrinsic</span>,
+  <span class='kw'>extrinsicFn</span> <span class='kw'>=</span> <span class='no'>nullExtrinsic</span>,
+  <span class='kw'>startingPriorsFns</span> <span class='kw'>=</span> <span class='st'>"normal"</span>,
+  <span class='kw'>startingPriorsValues</span> <span class='kw'>=</span> <span class='fu'>matrix</span>(<span class='fu'>c</span>(<span class='fu'>mean</span>(<span class='no'>simChar</span>[, <span class='fl'>1</span>]), <span class='fu'>sd</span>(<span class='no'>simChar</span>[, <span class='fl'>1</span>]))),
+  <span class='kw'>intrinsicPriorsFns</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"exponential"</span>),
+  <span class='kw'>intrinsicPriorsValues</span> <span class='kw'>=</span> <span class='fu'>matrix</span>(<span class='fu'>c</span>(<span class='fl'>10</span>, <span class='fl'>10</span>), <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>byrow</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>),
+  <span class='kw'>extrinsicPriorsFns</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"fixed"</span>),
+  <span class='kw'>extrinsicPriorsValues</span> <span class='kw'>=</span> <span class='fu'>matrix</span>(<span class='fu'>c</span>(<span class='fl'>0</span>, <span class='fl'>0</span>), <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>byrow</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>),
+  <span class='kw'>generation.time</span> <span class='kw'>=</span> <span class='fl'>100000</span>,
+  <span class='kw'>nRuns</span> <span class='kw'>=</span> <span class='fl'>2</span>,
+  <span class='kw'>nStepsPRC</span> <span class='kw'>=</span> <span class='fl'>3</span>,
+  <span class='kw'>numParticles</span> <span class='kw'>=</span> <span class='fl'>20</span>,
+     <span class='kw'>nInitialSimsPerParam</span> <span class='kw'>=</span> <span class='fl'>10</span>,
+  <span class='kw'>jobName</span> <span class='kw'>=</span> <span class='st'>"examplerun_prc"</span>,
+  <span class='kw'>stopRule</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>multicore</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>coreLimit</span> <span class='kw'>=</span> <span class='fl'>1</span>
+  )</div><div class='output co'>#&gt; <span class='message'>The effective timeStep for this tree will be 0.0035, as a proportion of tree height (root to furthest tip)...</span></div><div class='output co'>#&gt; <span class='message'>Rescaling edge lengths relative to maximum tip-to-root distance...</span></div><div class='output co'>#&gt; <span class='message'>The smallest edge length on the input tree is 0.0019</span></div><div class='output co'>#&gt; <span class='message'>(This is 53000 in the same TreeYears units as used for the input generation.time ( = 1e+05))</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Tree has rescaled branches shorter than generation.time/TreeYears; no trait evolution will be simulated on these branches, and thus ML summary stat functions may fail or produce unexpected results.</span></div><div class='output co'>#&gt; <span class='message'>Given generation time, a total of 1389 generations are expected to occur over this tree</span></div><div class='output co'>#&gt; <span class='message'>Number of initial simulations to be performed (nInitialSims) not given</span>
+#&gt; <span class='message'>Number of initial simulations will instead be product of the number of free parameters multiplied by 10</span>
+#&gt; <span class='message'>( = 20 initial simulations)</span></div><div class='output co'>#&gt; <span class='message'>Beginning PRC Run 1 out of a total of 2...</span></div><div class='output co'>#&gt; <span class='message'>Number of initial simulations set to 20</span></div><div class='output co'>#&gt; <span class='message'>Doing initial simulations...</span></div><div class='output co'>#&gt; <span class='message'>Initial simulations took 12.509 seconds</span></div><div class='output co'>#&gt; <span class='message'>Finding distribution of distances...</span></div><div class='output co'>#&gt; <span class='message'>Beginning partial rejection control algorithm...</span></div><div class='output co'>#&gt; <span class='message'></span>
+#&gt; <span class='message'>STARTING DATA GENERATION STEP 1</span></div><div class='output co'>#&gt; <span class='message'>Successes   Attempts   Distance   starting_1  intrinsic_1  </span></div><div class='output co'>#&gt; <span class='message'>1           40         270        9.3         0.095                   </span></div><div class='output co'>#&gt; <span class='message'>2           40         240        8.4         0.078                   </span></div><div class='output co'>#&gt; <span class='message'>3           40         190        10         0.05                   </span></div><div class='output co'>#&gt; <span class='message'>4           40         140        8.9         0.048                   </span></div><div class='output co'>#&gt; <span class='message'>5           40         170        8.9         0.052                   </span></div><div class='output co'>#&gt; <span class='message'>6           40         190        10         0.047                   </span></div><div class='output co'>#&gt; <span class='message'>7           40         43        9.7         0.013                   </span></div><div class='output co'>#&gt; <span class='message'>8           40         69        8.8         0.011                   </span></div><div class='output co'>#&gt; <span class='message'>9           40         140        8.5         0.031                   </span></div><div class='output co'>#&gt; <span class='message'>10           40         210        9         0.063                   </span></div><div class='output co'>#&gt; <span class='message'>11           40         170        9.1         0.047                   </span></div><div class='output co'>#&gt; <span class='message'>12           40         130        10         0.0035                   </span></div><div class='output co'>#&gt; <span class='message'>13           40         250        9.1         0.1                   </span></div><div class='output co'>#&gt; <span class='message'>14           40         210        8.8         0.053                   </span></div><div class='output co'>#&gt; <span class='message'>15           40         92        9.3         0.028                   </span></div><div class='output co'>#&gt; <span class='message'>16           40         240        9.7         0.073                   </span></div><div class='output co'>#&gt; <span class='message'>17           40         77        9.3         0.0046                   </span></div><div class='output co'>#&gt; <span class='message'>18           40         71        9.1         0.016                   </span></div><div class='output co'>#&gt; <span class='message'>19           40         120        10         0.03                   </span></div><div class='output co'>#&gt; <span class='message'>20           40         8.3        10         0.0092                   </span></div><div class='output co'>#&gt; <span class='message'>21           40         31        9.5         0.0057                   </span></div><div class='output co'>#&gt; <span class='message'>22           40         200        10         0.049                   </span></div><div class='output co'>#&gt; <span class='message'>23           40         150        9.3         0.039                   </span></div><div class='output co'>#&gt; <span class='message'></span>
+#&gt; <span class='message'>STARTING DATA GENERATION STEP 2</span></div><div class='output co'>#&gt; <span class='message'>Successes   Attempts   Distance   starting_1  intrinsic_1  </span></div><div class='output co'>#&gt; <span class='message'>1           48         180        10         0.044                   </span></div><div class='output co'>#&gt; <span class='message'>2           48         16        11         0.0092                   </span></div><div class='output co'>#&gt; <span class='message'>3           48         170        9.4         0.037                   </span></div><div class='output co'>#&gt; <span class='message'>4           48         74        10         0.013                   </span></div><div class='output co'>#&gt; <span class='message'>5           48         88        9.9         0.015                   </span></div><div class='output co'>#&gt; <span class='message'>6           48         46        10         0.012                   </span></div><div class='output co'>#&gt; <span class='message'>7           48         4.3        9.4         0.011                   </span></div><div class='output co'>#&gt; <span class='message'>8           48         140        9.3         0.0026                   </span></div><div class='output co'>#&gt; <span class='message'>9           48         110        10         0.021                   </span></div><div class='output co'>#&gt; <span class='message'>10           48         130        9.4         0.026                   </span></div><div class='output co'>#&gt; <span class='message'>11           48         150        9.7         0.0022                   </span></div><div class='output co'>#&gt; <span class='message'>12           48         67        9.2         0.014                   </span></div><div class='output co'>#&gt; <span class='message'>13           48         140        10         0.044                   </span></div><div class='output co'>#&gt; <span class='message'>14           48         150        8.7         0.0019                   </span></div><div class='output co'>#&gt; <span class='message'>15           48         190        8.6         0.041                   </span></div><div class='output co'>#&gt; <span class='message'>16           48         130        8.8         0.035                   </span></div><div class='output co'>#&gt; <span class='message'>17           48         88        9.1         0.014                   </span></div><div class='output co'>#&gt; <span class='message'>18           48         190        9.7         0.037                   </span></div><div class='output co'>#&gt; <span class='message'>19           48         59        9.4         0.02                   </span></div><div class='output co'>#&gt; <span class='message'>20           48         130        8.7         0.032                   </span></div><div class='output co'>#&gt; <span class='message'>21           48         120        8.8         0.024                   </span></div><div class='output co'>#&gt; <span class='message'></span>
+#&gt; <span class='message'>STARTING DATA GENERATION STEP 3</span></div><div class='output co'>#&gt; <span class='message'>Successes   Attempts   Distance   starting_1  intrinsic_1  </span></div><div class='output co'>#&gt; <span class='message'>1           48         94        10         0.024                   </span></div><div class='output co'>#&gt; <span class='message'>2           48         100        9.2         0.024                   </span></div><div class='output co'>#&gt; <span class='message'>3           48         6.2        8.8         0.0065                   </span></div><div class='output co'>#&gt; <span class='message'>4           48         25        10         0.013                   </span></div><div class='output co'>#&gt; <span class='message'>5           48         46        10         0.011                   </span></div><div class='output co'>#&gt; <span class='message'>6           48         64        9.3         0.013                   </span></div><div class='output co'>#&gt; <span class='message'>7           48         83        9.1         0.018                   </span></div><div class='output co'>#&gt; <span class='message'>8           48         130        9.3         0.029                   </span></div><div class='output co'>#&gt; <span class='message'>9           48         120        9.3         0.022                   </span></div><div class='output co'>#&gt; <span class='message'>10           48         92        9.3         0.018                   </span></div><div class='output co'>#&gt; <span class='message'>11           48         37        10         0.008                   </span></div><div class='output co'>#&gt; <span class='message'>12           48         110        9.2         0.02                   </span></div><div class='output co'>#&gt; <span class='message'>13           48         100        9.3         0.015                   </span></div><div class='output co'>#&gt; <span class='message'>14           48         120        9.4         0.025                   </span></div><div class='output co'>#&gt; <span class='message'>15           48         40        10         0.011                   </span></div><div class='output co'>#&gt; <span class='message'>16           48         95        9.4         0.015                   </span></div><div class='output co'>#&gt; <span class='message'>17           48         71        9.4         0.018                   </span></div><div class='output co'>#&gt; <span class='message'>18           48         120        10         0.028                   </span></div><div class='output co'>#&gt; <span class='message'>19           48         24        8.8         0.012                   </span></div><div class='output co'>#&gt; <span class='message'>20           48         99        10         0.016                   </span></div><div class='output co'>#&gt; <span class='message'>21           48         130        8.7         0.025                   </span></div><div class='output co'>#&gt; <span class='message'>Collection of simulation particles under PRC completed in 31.75 seconds...</span></div><div class='output co'>#&gt; <span class='message'>Run finished...</span>
+#&gt; <span class='message'>...</span>
+#&gt; <span class='message'></span></div><div class='output co'>#&gt; <span class='message'>Beginning PRC Run 2 out of a total of 2...</span></div><div class='output co'>#&gt; <span class='message'>Number of initial simulations set to 20</span></div><div class='output co'>#&gt; <span class='message'>Doing initial simulations...</span></div><div class='output co'>#&gt; <span class='message'>Initial simulations took 13.413 seconds</span></div><div class='output co'>#&gt; <span class='message'>Finding distribution of distances...</span></div><div class='output co'>#&gt; <span class='message'>Beginning partial rejection control algorithm...</span></div><div class='output co'>#&gt; <span class='message'></span>
+#&gt; <span class='message'>STARTING DATA GENERATION STEP 1</span></div><div class='output co'>#&gt; <span class='message'>Successes   Attempts   Distance   starting_1  intrinsic_1  </span></div><div class='output co'>#&gt; <span class='message'>1           45         150        9.3         0.03                   </span></div><div class='output co'>#&gt; <span class='message'>2           45         290        9.5         0.12                   </span></div><div class='output co'>#&gt; <span class='message'>3           45         95        9.4         0.019                   </span></div><div class='output co'>#&gt; <span class='message'>4           45         300        8.2         0.099                   </span></div><div class='output co'>#&gt; <span class='message'>5           45         260        9.7         0.05                   </span></div><div class='output co'>#&gt; <span class='message'>6           45         240        10         0.06                   </span></div><div class='output co'>#&gt; <span class='message'>7           45         84        11         0.02                   </span></div><div class='output co'>#&gt; <span class='message'>8           45         250        9.3         0.063                   </span></div><div class='output co'>#&gt; <span class='message'>9           45         270        8.9         0.11                   </span></div><div class='output co'>#&gt; <span class='message'>10           45         280        9.6         0.087                   </span></div><div class='output co'>#&gt; <span class='message'>11           45         180        9.8         0.037                   </span></div><div class='output co'>#&gt; <span class='message'>12           45         99        10         0.016                   </span></div><div class='output co'>#&gt; <span class='message'>13           45         300        9.7         0.079                   </span></div><div class='output co'>#&gt; <span class='message'>14           45         170        9.5         0.034                   </span></div><div class='output co'>#&gt; <span class='message'>15           45         190        9         0.034                   </span></div><div class='output co'>#&gt; <span class='message'>16           45         130        9.5         0.022                   </span></div><div class='output co'>#&gt; <span class='message'>17           45         150        9.7         0.027                   </span></div><div class='output co'>#&gt; <span class='message'>18           45         290        9.2         0.076                   </span></div><div class='output co'>#&gt; <span class='message'>19           45         100        10         0.019                   </span></div><div class='output co'>#&gt; <span class='message'>20           45         270        9.6         0.05                   </span></div><div class='output co'>#&gt; <span class='message'></span>
+#&gt; <span class='message'>STARTING DATA GENERATION STEP 2</span></div><div class='output co'>#&gt; <span class='message'>Successes   Attempts   Distance   starting_1  intrinsic_1  </span></div><div class='output co'>#&gt; <span class='message'>1           43         180        9.5         0.037                   </span></div><div class='output co'>#&gt; <span class='message'>2           43         100        10         0.021                   </span></div><div class='output co'>#&gt; <span class='message'>3           43         170        9.5         0.029                   </span></div><div class='output co'>#&gt; <span class='message'>4           43         210        9.7         0.052                   </span></div><div class='output co'>#&gt; <span class='message'>5           43         77        9.7         0.023                   </span></div><div class='output co'>#&gt; <span class='message'>6           43         49        9.5         0.012                   </span></div><div class='output co'>#&gt; <span class='message'>7           43         180        9.6         0.027                   </span></div><div class='output co'>#&gt; <span class='message'>8           43         170        9.6         0.036                   </span></div><div class='output co'>#&gt; <span class='message'>9           43         110        9.2         0.026                   </span></div><div class='output co'>#&gt; <span class='message'>10           43         100        10         0.015                   </span></div><div class='output co'>#&gt; <span class='message'>11           43         210        10         0.036                   </span></div><div class='output co'>#&gt; <span class='message'>12           43         210        9.6         0.043                   </span></div><div class='output co'>#&gt; <span class='message'>13           43         11        9.3         0.0062                   </span></div><div class='output co'>#&gt; <span class='message'>14           43         200        9.4         0.045                   </span></div><div class='output co'>#&gt; <span class='message'>15           43         9.8        9.6         0.0084                   </span></div><div class='output co'>#&gt; <span class='message'>16           43         61        9.7         0.014                   </span></div><div class='output co'>#&gt; <span class='message'>17           43         68        9.2         0.013                   </span></div><div class='output co'>#&gt; <span class='message'>18           43         110        9.3         0.019                   </span></div><div class='output co'>#&gt; <span class='message'>19           43         190        8.9         0.043                   </span></div><div class='output co'>#&gt; <span class='message'>20           43         180        9.7         0.03                   </span></div><div class='output co'>#&gt; <span class='message'>21           43         130        9.2         0.04                   </span></div><div class='output co'>#&gt; <span class='message'>22           43         160        11         0.033                   </span></div><div class='output co'>#&gt; <span class='message'></span>
+#&gt; <span class='message'>STARTING DATA GENERATION STEP 3</span></div><div class='output co'>#&gt; <span class='message'>Successes   Attempts   Distance   starting_1  intrinsic_1  </span></div><div class='output co'>#&gt; <span class='message'>1           40         15        9.4         0.008                   </span></div><div class='output co'>#&gt; <span class='message'>2           40         100        9.6         0.016                   </span></div><div class='output co'>#&gt; <span class='message'>3           40         95        9.4         0.013                   </span></div><div class='output co'>#&gt; <span class='message'>4           40         90        9.7         0.022                   </span></div><div class='output co'>#&gt; <span class='message'>5           40         120        9.5         0.023                   </span></div><div class='output co'>#&gt; <span class='message'>6           40         140        9.6         0.027                   </span></div><div class='output co'>#&gt; <span class='message'>7           40         72        9.6         0.018                   </span></div><div class='output co'>#&gt; <span class='message'>8           40         23        9.4         0.012                   </span></div><div class='output co'>#&gt; <span class='message'>9           40         10        9.7         0.0069                   </span></div><div class='output co'>#&gt; <span class='message'>10           40         66        9.3         0.014                   </span></div><div class='output co'>#&gt; <span class='message'>11           40         35        9.2         0.012                   </span></div><div class='output co'>#&gt; <span class='message'>12           40         57        9.2         0.0062                   </span></div><div class='output co'>#&gt; <span class='message'>13           40         150        10         0.024                   </span></div><div class='output co'>#&gt; <span class='message'>14           40         91        10         0.022                   </span></div><div class='output co'>#&gt; <span class='message'>15           40         19        10         0.01                   </span></div><div class='output co'>#&gt; <span class='message'>16           40         80        9.4         0.017                   </span></div><div class='output co'>#&gt; <span class='message'>17           40         67        9.8         0.0097                   </span></div><div class='output co'>#&gt; <span class='message'>18           40         120        9.6         0.0028                   </span></div><div class='output co'>#&gt; <span class='message'>19           40         120        9.5         0.016                   </span></div><div class='output co'>#&gt; <span class='message'>20           40         120        9.5         0.021                   </span></div><div class='output co'>#&gt; <span class='message'>Collection of simulation particles under PRC completed in 28.032 seconds...</span></div><div class='output co'>#&gt; <span class='message'>Run finished...</span>
+#&gt; <span class='message'>...</span>
+#&gt; <span class='message'></span></div><div class='output co'>#&gt; <span class='message'>Function completed in 210 seconds.</span></div><div class='input'>
+
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -197,11 +226,14 @@ Maintainer: David Bapst &lt;dwbapst@gmail.com&gt;
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
 </div>
 
       </footer>
    </div>
 
+  
+
   </body>
 </html>
+

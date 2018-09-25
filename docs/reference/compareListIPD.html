@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Plot Interparticle Distance between Runs — compareListIPD â€¢ TreEvo</title>
+<title>Plot Interparticle Distance between Runs â€” compareListIPD â€¢ TreEvo</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -18,13 +18,26 @@
 <!-- Font Awesome icons -->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 
+<!-- clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
+
+<!-- sticky kit -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
-<script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-  
-  
+
+
+
+<meta property="og:title" content="Plot Interparticle Distance between Runs â€” compareListIPD" />
+
+<meta property="og:description" content="This function plots interparticle distance (IPD) between runs for each free
+parameter." />
+<meta name="twitter:card" content="summary" />
+
+
+
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -47,8 +60,12 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">TreEvo</a>
+      <span class="navbar-brand">
+        <a class="navbar-link" href="../index.html">TreEvo</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.9.0</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
@@ -73,7 +90,7 @@
   </ul>
 </li>
 <li>
-  <a href="../news/index.html">News</a>
+  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
       
@@ -85,6 +102,7 @@
   </a>
 </li>
       </ul>
+      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -92,20 +110,24 @@
       
       </header>
 
-      <div class="row">
+<div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Plot Interparticle Distance between Runs</h1>
+    <small class="dont-index">Source: <a href='https://github.com/bomeara/treevo/blob/master/R/compareListIPD.R'><code>R/compareListIPD.R</code></a></small>
+    <div class="hidden name"><code>compareListIPD.Rd</code></div>
     </div>
 
+    <div class="ref-description">
     
     <p>This function plots interparticle distance (IPD) between runs for each free
 parameter.</p>
     
+    </div>
 
     <pre class="usage"><span class='fu'>compareListIPD</span>(<span class='no'>particleDataFrameList</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
@@ -125,79 +147,11 @@ parameter.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='fu'>data</span>(<span class='no'>simRunExample</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: data set ‘simRunExample’ not found</span></div><div class='input'>
-<span class='no'>pdfList</span><span class='kw'>&lt;-</span><span class='fu'>list</span>(<span class='no'>results</span>$<span class='no'>particleDataFrame</span>,<span class='no'>resultsBound</span>$<span class='no'>particleDataFrame</span>)
+<span class='fu'>data</span>(<span class='no'>simRunExample</span>)
 
-<span class='fu'>compareListIPD</span>(<span class='kw'>particleDataFrameList</span><span class='kw'>=</span><span class='no'>pdfList</span>, <span class='kw'>verbose</span><span class='kw'>=</span><span class='fl'>TRUE</span>)</div><div class='img'><img src='compareListIPD-1.png' alt='' width='700' height='432.632880098887' /></div><div class='output co'>#&gt; [1] "param= StartingStates1"
-#&gt;      genvector IPDvector
-#&gt; [1,]         1 1.1356387
-#&gt; [2,]         1 1.0701276
-#&gt; [3,]         1 0.9806428
-#&gt; [1] "param= StartingStates1"
-#&gt;      genvector IPDvector
-#&gt; [1,]         1 1.1356387
-#&gt; [2,]         1 1.0701276
-#&gt; [3,]         1 0.9806428
-#&gt; [4,]         2 1.2695369
-#&gt; [5,]         2 1.0975795
-#&gt; [6,]         2 0.6642100
-#&gt; [1] "param= StartingStates1"
-#&gt;       genvector IPDvector
-#&gt;  [1,]         1 1.1356387
-#&gt;  [2,]         1 1.0701276
-#&gt;  [3,]         1 0.9806428
-#&gt;  [4,]         2 1.2695369
-#&gt;  [5,]         2 1.0975795
-#&gt;  [6,]         2 0.6642100
-#&gt;  [7,]         3 0.8512918
-#&gt;  [8,]         3 1.0911743
-#&gt;  [9,]         3 0.5755941</div><div class='output co'>#&gt; [1] "param= IntrinsicValue1"
-#&gt;      genvector  IPDvector
-#&gt; [1,]         1 0.07966274
-#&gt; [2,]         1 0.07273062
-#&gt; [3,]         1 0.05531329
-#&gt; [1] "param= IntrinsicValue1"
-#&gt;      genvector  IPDvector
-#&gt; [1,]         1 0.07966274
-#&gt; [2,]         1 0.07273062
-#&gt; [3,]         1 0.05531329
-#&gt; [4,]         2 0.05735066
-#&gt; [5,]         2 0.04901710
-#&gt; [6,]         2 0.04185083
-#&gt; [1] "param= IntrinsicValue1"
-#&gt;       genvector  IPDvector
-#&gt;  [1,]         1 0.07966274
-#&gt;  [2,]         1 0.07273062
-#&gt;  [3,]         1 0.05531329
-#&gt;  [4,]         2 0.05735066
-#&gt;  [5,]         2 0.04901710
-#&gt;  [6,]         2 0.04185083
-#&gt;  [7,]         3 0.04714160
-#&gt;  [8,]         3 0.04087727
-#&gt;  [9,]         3 0.03723394</div><div class='output co'>#&gt; [1] "param= ExtrinsicValue1"
-#&gt;      genvector IPDvector
-#&gt; [1,]         1   0.00000
-#&gt; [2,]         1  20.39713
-#&gt; [3,]         1   2.02392
-#&gt; [1] "param= ExtrinsicValue1"
-#&gt;      genvector IPDvector
-#&gt; [1,]         1  0.000000
-#&gt; [2,]         1 20.397135
-#&gt; [3,]         1  2.023920
-#&gt; [4,]         2  0.000000
-#&gt; [5,]         2 20.745322
-#&gt; [6,]         2  2.161226
-#&gt; [1] "param= ExtrinsicValue1"
-#&gt;       genvector IPDvector
-#&gt;  [1,]         1  0.000000
-#&gt;  [2,]         1 20.397135
-#&gt;  [3,]         1  2.023920
-#&gt;  [4,]         2  0.000000
-#&gt;  [5,]         2 20.745322
-#&gt;  [6,]         2  2.161226
-#&gt;  [7,]         3  0.000000
-#&gt;  [8,]         3 21.259415
-#&gt;  [9,]         3  2.109978</div><div class='img'><img src='compareListIPD-2.png' alt='' width='700' height='432.632880098887' /></div><div class='input'>
+<span class='no'>pdfList</span> <span class='kw'>&lt;-</span> <span class='fu'>list</span>(<span class='no'>results</span><span class='kw'>[[</span><span class='fl'>1</span>]]$<span class='no'>particleDataFrame</span>, <span class='no'>resultsBound</span><span class='kw'>[[</span><span class='fl'>1</span>]]$<span class='no'>particleDataFrame</span>)
+
+<span class='fu'>compareListIPD</span>(<span class='kw'>particleDataFrameList</span> <span class='kw'>=</span> <span class='no'>pdfList</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; <span class='message'>param =  starting_1</span></div><div class='output co'>#&gt; <span class='message'>1110.4200881308644460.4238785489819780.416872803292252</span></div><div class='output co'>#&gt; <span class='message'>param =  starting_1</span></div><div class='output co'>#&gt; <span class='message'>1112220.4200881308644460.4238785489819780.4168728032922520.5054533711503030.4360046464440650.315164639599303</span></div><div class='output co'>#&gt; <span class='message'>param =  starting_1</span></div><div class='output co'>#&gt; <span class='message'>1112223330.4200881308644460.4238785489819780.4168728032922520.5054533711503030.4360046464440650.3151646395993030.3730690875003710.3315069892359390.233538055180679</span></div><div class='img'><img src='compareListIPD-1.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; <span class='message'>param =  intrinsic_1</span></div><div class='output co'>#&gt; <span class='message'>1110.08508702459994330.07559048771551260.0665156829421807</span></div><div class='output co'>#&gt; <span class='message'>param =  intrinsic_1</span></div><div class='output co'>#&gt; <span class='message'>1112220.08508702459994330.07559048771551260.06651568294218070.05361626275130870.04627051123775210.0127158914057798</span></div><div class='output co'>#&gt; <span class='message'>param =  intrinsic_1</span></div><div class='output co'>#&gt; <span class='message'>1112223330.08508702459994330.07559048771551260.06651568294218070.05361626275130870.04627051123775210.01271589140577980.04884204150503250.07238373186023340.00638531436257563</span></div><div class='img'><img src='compareListIPD-2.png' alt='' width='700' height='433' /></div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -223,11 +177,14 @@ Brian O'Meara and Barb Banbury
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
 </div>
 
       </footer>
    </div>
 
+  
+
   </body>
 </html>
+

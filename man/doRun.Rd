@@ -13,19 +13,21 @@ doRun_prc(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
   nInitialSimsPerParam = 100, generation.time = 1000,
   TreeYears = max(branching.times(phy)) * 1e+06, multicore = FALSE,
   coreLimit = NA, multicoreSuppress = FALSE, standardDevFactor = 0.2,
-  epsilonProportion = 0.7, epsilonMultiplier = 0.7, validation = "CV",
-  scale = TRUE, variance.cutoff = 95, stopRule = FALSE,
-  stopValue = 0.05, maxAttempts = Inf, diagnosticPRCmode = FALSE,
-  jobName = NA, saveData = FALSE, verboseParticles = TRUE)
+  epsilonProportion = 0.7, epsilonMultiplier = 0.7,
+  validation = "CV", scale = TRUE, variance.cutoff = 95,
+  stopRule = FALSE, stopValue = 0.05, maxAttempts = Inf,
+  diagnosticPRCmode = FALSE, jobName = NA, saveData = FALSE,
+  verboseParticles = TRUE)
 
 doRun_rej(phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues,
   startingPriorsFns, intrinsicPriorsValues, intrinsicPriorsFns,
   extrinsicPriorsValues, extrinsicPriorsFns, generation.time = 1000,
   TreeYears = max(branching.times(phy)) * 1e+06, multicore = FALSE,
-  coreLimit = NA, validation = "CV", scale = TRUE, nInitialSims = NULL,
-  nInitialSimsPerParam = 100, variance.cutoff = 95,
-  standardDevFactor = 0.2, jobName = NA, abcTolerance = 0.1,
-  checkpointFile = NULL, checkpointFreq = 24, savesims = FALSE)
+  coreLimit = NA, validation = "CV", scale = TRUE,
+  nInitialSims = NULL, nInitialSimsPerParam = 100,
+  variance.cutoff = 95, standardDevFactor = 0.2, jobName = NA,
+  abcTolerance = 0.1, checkpointFile = NULL, checkpointFreq = 24,
+  savesims = FALSE)
 }
 \arguments{
 \item{phy}{A phylogenetic tree, in package \code{ape}'s \code{phylo} format.}

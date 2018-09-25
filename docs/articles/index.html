@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Pairwise Effective Sample Size — pairwiseESS • TreEvo</title>
+<title>Articles • TreEvo</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,11 +30,7 @@
 
 
 
-<meta property="og:title" content="Pairwise Effective Sample Size — pairwiseESS" />
-
-<meta property="og:description" content="This function calculates Effective Sample Size (ESS) on results.  Performs the best when results are
-from multiple runs." />
-<meta name="twitter:card" content="summary" />
+<meta property="og:title" content="Articles" />
 
 
 
@@ -50,7 +46,7 @@ from multiple runs." />
   </head>
 
   <body>
-    <div class="container template-reference-topic">
+    <div class="container template-article-index">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -113,68 +109,17 @@ from multiple runs." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Pairwise Effective Sample Size</h1>
-    <small class="dont-index">Source: <a href='https://github.com/bomeara/treevo/blob/master/R/PairwiseESS.R'><code>R/PairwiseESS.R</code></a></small>
-    <div class="hidden name"><code>pairwiseESS.Rd</code></div>
+      <h1>Articles</h1>
     </div>
 
-    <div class="ref-description">
-    
-    <p>This function calculates Effective Sample Size (ESS) on results.  Performs the best when results are
-from multiple runs.</p>
-    
+    <div class="section ">
+      <h3>All vignettes</h3>
+      <p class="section-desc"></p>
+
+      <ul>
+        <li><a href="treevo_ABC_vignette.html">Analyzing Trait Evolution with Approximate Bayesian Computation in TreEvo</a></li>
+      </ul>
     </div>
-
-    <pre class="usage"><span class='fu'>pairwiseESS</span>(<span class='no'>inputData</span>)</pre>
-    
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>inputData</th>
-      <td><p>inputData can be a single data frame or a
-list of data frames</p></td>
-    </tr>
-    </table>
-    
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>Returns a matrix with ESS values of all pairwise runs</p>
-    
-
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-<span class='fu'>data</span>(<span class='no'>simRunExample</span>)
-
-<span class='co'># this will give a warning</span>
-<span class='fu'>pairwiseESS</span>(<span class='no'>results</span><span class='kw'>[[</span><span class='fl'>1</span>]]$<span class='no'>particleDataFrame</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: ESS on a single run should be high; consider combining several runs</span></div><div class='output co'>#&gt;             ESS
-#&gt; starting_1   36
-#&gt; intrinsic_1  36</div><div class='input'>
-<span class='co'># ESS should be calculated over multiple runs</span>
-<span class='fu'>pairwiseESS</span>(<span class='no'>results</span>)</div><div class='output co'>#&gt; <span class='message'>Multiple runs of doRun_prc found, extracting particleDataFrame objects</span></div><div class='output co'>#&gt;             1.2
-#&gt; starting_1   71
-#&gt; intrinsic_1  71</div><div class='input'>
-<span class='co'># you can also manually assemble a list of particleDataFrame tables</span>
-    <span class='co'># and use this as the input</span>
-<span class='no'>inputList</span> <span class='kw'>&lt;-</span> <span class='fu'>list</span>(<span class='no'>results</span><span class='kw'>[[</span><span class='fl'>2</span>]]$<span class='no'>particleDataFrame</span>, <span class='no'>results</span><span class='kw'>[[</span><span class='fl'>1</span>]]$<span class='no'>particleDataFrame</span>)
-<span class='fu'>pairwiseESS</span>(<span class='no'>inputList</span>)</div><div class='output co'>#&gt;             1.2
-#&gt; starting_1   71
-#&gt; intrinsic_1  71</div></pre>
-  </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
-      
-      <li><a href="#value">Value</a></li>
-      
-      <li><a href="#examples">Examples</a></li>
-    </ul>
-
-    <h2>Author</h2>
-    
-Brian O'Meara and Barb Banbury
-
   </div>
 </div>
 

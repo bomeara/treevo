@@ -5,18 +5,18 @@
 \alias{parallelSimulateWithPriors}
 \title{Simulate data for initial TreEvo analysis}
 \usage{
-simulateWithPriors(phy = NULL, intrinsicFn, extrinsicFn, startingPriorsFns,
-  startingPriorsValues, intrinsicPriorsFns, intrinsicPriorsValues,
-  extrinsicPriorsFns, extrinsicPriorsValues, generation.time = 1000,
-  TreeYears = max(branching.times(phy)) * 1e+06, timeStep = NULL,
-  giveUpAttempts = 10, verbose = FALSE, checks = TRUE, taxonDF = NULL,
-  freevector = NULL)
+simulateWithPriors(phy = NULL, intrinsicFn, extrinsicFn,
+  startingPriorsFns, startingPriorsValues, intrinsicPriorsFns,
+  intrinsicPriorsValues, extrinsicPriorsFns, extrinsicPriorsValues,
+  generation.time = 1000, TreeYears = max(branching.times(phy)) *
+  1e+06, timeStep = NULL, giveUpAttempts = 10, verbose = FALSE,
+  checks = TRUE, taxonDF = NULL, freevector = NULL)
 
 parallelSimulateWithPriors(nrepSim, multicore, coreLimit, phy, intrinsicFn,
   extrinsicFn, startingPriorsFns, startingPriorsValues, intrinsicPriorsFns,
   intrinsicPriorsValues, extrinsicPriorsFns, extrinsicPriorsValues,
-  generation.time = 1000, TreeYears = max(branching.times(phy)) * 1e+06,
-  timeStep = NULL, checkpointFile = NULL, checkpointFreq = 24,
+  generation.time = 1000, TreeYears = max(branching.times(phy)) *
+  1e+06, timeStep = NULL, checkpointFile = NULL, checkpointFreq = 24,
   verbose = TRUE, checkTimeStep = TRUE, verboseNested = FALSE,
   freevector = NULL, taxonDF = NULL, giveUpAttempts = 10)
 }

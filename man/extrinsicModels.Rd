@@ -13,7 +13,8 @@ nullExtrinsic(params, selfstates, otherstates, timefrompresent)
 nearestNeighborDisplacementExtrinsic(params, selfstates, otherstates,
   timefrompresent)
 
-everyoneDisplacementExtrinsic(params, selfstates, otherstates, timefrompresent)
+everyoneDisplacementExtrinsic(params, selfstates, otherstates,
+  timefrompresent)
 
 ExponentiallyDecayingPushExtrinsic(params, selfstates, otherstates,
   timefrompresent)
