@@ -37,6 +37,7 @@ Suggests:
     paleotree,
     knitr,
     rmarkdown
+BugReports: https://github.com/bomeara/TreEvo/issues
 LazyData: yes
 Description: Various functions for estimating parameters of trait evolution in comparative analyses using Approximate Bayesian Computation.
 License: GPL
