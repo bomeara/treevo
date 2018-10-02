@@ -75,7 +75,7 @@
 #' @return
 #' A vector of values representing character displacement of that lineage over a single time step.
 
-#' @aliases abcmodels.intrinsic 
+#' @aliases abcmodels.intrinsic  
 
 #' @seealso Another intrinsic model with multiple optima is described at \code{\link{multiOptimaIntrinsic}}.
 #' Extrinsic models are described at \code{\link{abcmodels.extrinsic}}.

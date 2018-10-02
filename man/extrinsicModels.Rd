@@ -20,6 +20,8 @@ ExponentiallyDecayingPushExtrinsic(params, selfstates, otherstates,
   timefrompresent)
 }
 \arguments{
+\item{params}{A vector containing input parameters for the given model (see \emph{Description} below on what parameters).}
+
 \item{selfstates}{Vector of current trait values for the population of
 interest. May be multiple for some models, but generally expected to be
 only a single value. Multivariate \code{TreEvo} is not yet supported.}
@@ -28,6 +30,8 @@ only a single value. Multivariate \code{TreEvo} is not yet supported.}
 than the one of interest, with one row for each taxon, and a column for each trait.
 May be multiple states per taxa/populations for some models, but generally expected to be
 only a single value. Multivariate \code{TreEvo} is not yet supported.}
+
+\item{timefrompresent}{The amount of time from the present - generally ignored except for time-dependent models.}
 }
 \value{
 A vector of values representing character displacement of that lineage over a single time step.
@@ -102,7 +106,7 @@ char <- doSimulation(
 }
 }
 \seealso{
-Intrinsic models are described at \code{\link{abcmodels.intrinsic}}.
+Intrinsic models are described at \code{\link{intrinsicModels}}.
 }
 \author{
 Brian O'Meara and Barb Banbury

@@ -31,7 +31,7 @@
 #' \code{ExponentiallyDecayingPushExtrinsic} with parameters \code{params = sd, maximumForce, halfDistance}
 #' 
 
-#' @inheritParams abcmodels.intrinsic
+#' @inheritParams intrinsicModels
 
 #' @param selfstates Vector of current trait values for the population of
 #' interest. May be multiple for some models, but generally expected to be
@@ -44,7 +44,7 @@
 
 #' @aliases abcmodels.extrinsic
 
-#' @seealso Intrinsic models are described at \code{\link{abcmodels.intrinsic}}.
+#' @seealso Intrinsic models are described at \code{\link{intrinsicModels}}.
 
 #' @return
 #' A vector of values representing character displacement of that lineage over a single time step.

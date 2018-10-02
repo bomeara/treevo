@@ -44,7 +44,7 @@
 
 			
 			
-#' @inheritParams abcmodels.intrinsic
+#' @inheritParams intrinsicModels
 
 #' @param
 
@@ -58,7 +58,7 @@
 #' with multiple optima is the intrinsic model \code{\link{multiOptimaIntrinsic}}, 
 #' however this model requires an \emph{a priori} choice on the number of optima
 #' and the assumption that the optima have similar attractor strength. 
-#' Other intrinsic models are described at \code{\link{abcmodels.intrinsic}}.
+#' Other intrinsic models are described at \code{\link{intrinsicModels}}.
 		
 			
 

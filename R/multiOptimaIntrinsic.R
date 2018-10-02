@@ -18,26 +18,17 @@
 #' process with a particular optima assigned to a particular regime, and each time-step 
 #' a lineage has some finite probability of switching to a new regime, and being drawn to that regime's optima.
 #' The chance of a lineage being drawn to a particular optima is based on proximity to
-#' that optima, but the chance of switching to another regime should never be completely negligible.
-#' 
+#' that optima, but the chance of switching to another regime is never completely negligible.
+#' The strength of the draw to the optima, the attraction strength, 'alpha', is the same for all regimes (all optima).
 #
-#' The input parameters for this model are:
-#' \code{multiOptimaIntrinsic} with \code{params = sd (sigma), attractor (character mean), attraction (alpha)}
+#' This model has \emph{n} input parameters:
+#' \code{multiOptimaIntrinsic} with \code{params = sigma} (rate of dispersion), 
+#' \code{alpha} (strength of attraction to an optima),
+#' \code{rho} (an exponent scaling the weighting of distance to optima --
+#' this parameter will control the probability of a lineage switching optima),
+#' and two or more \code{theta} values, which are the optima for the different macroevolutionary adaptiv regimes. 
 
-
-
-    #a discrete time OU with multiple optima in the same regime 
-		# with equal attraction (alpha) to all optima (theta 1:N)
-	# breakdown of params:
-		# params[1] is dispersion (sigma)
-		# params[2] is alpha (strength of attraction to an optima)
-		# params[3] is rho, an exponent scaling the weighting of distance to optima
-			# this parameter will control switching optima
-		# params[4:n] describes theta values
-			# n-2 = N # of optima describe by this model
-	# In this model, optima represent fixed trait values conveying adaptive benefit
-		# the proximity of a population to an optima makes it more likely to be under that regime
-		# a point equidistant between multiple regimes may be drawn to any
+# The interpretation we offer for this model, is a scenario in which optima represent fixed phenotypic trait values conveying maximum adaptive benefit among neighboring values in trait space. The proximity of a population to an optima makes it more likely to be fall under the influence of that regime, with points lying equidistant between multiple optima being equally likely t may be drawn to any
 	# the draw to any specific optima is inverse to distance from optima
 	# thus a lineage at an optima may show large variance as it circles the plateau
 		# then suddenly feel drawn to another optima, and show sudden, giant shifts toward that optima
@@ -65,7 +56,7 @@
 #' This model does not assume a set number of optima nor that they have similar attractor strength, but
 #' parameters may be difficult to interpret in isolation, and fitting this model may be slower with \code{TreEvo}
 #' due to necessary linear algebra transformations. 
-#' Other intrinsic models are described at \code{\link{abcmodels.intrinsic}}.
+#' Other intrinsic models are described at \code{\link{intrinsicModels}}.
 
 #' @examples
 #' 
