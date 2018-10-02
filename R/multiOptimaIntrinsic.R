@@ -13,16 +13,42 @@
 
 
 #' @details
-#' \code{autoregressiveIntrinsic} describes a model of intrinsic character evolution. New
-#' character values are generated after one time step via a discrete-time OU
-#' process.
+#' \code{multiOptimaIntrinsic} describes a model of intrinsic character evolution with
+#' multiple regimes. New character values are generated after one time step via a discrete-time OU
+#' process with a particular optima assigned to a particular regime, and each time-step 
+#' a lineage has some finite probability of switching to a new regime, and being drawn to that regime's optima.
+#' The chance of a lineage being drawn to a particular optima is based on proximity to
+#' that optima, but the chance of switching to another regime should never be completely negligible.
+#' 
+#
 #' The input parameters for this model are:
-#' \code{autoregressiveIntrinsic} with \code{params = sd (sigma), attractor (character mean), attraction (alpha)}
+#' \code{multiOptimaIntrinsic} with \code{params = sd (sigma), attractor (character mean), attraction (alpha)}
 
 
-#' @details
 
-#' @inheritParams abcmodels.intrinsic
+    #a discrete time OU with multiple optima in the same regime 
+		# with equal attraction (alpha) to all optima (theta 1:N)
+	# breakdown of params:
+		# params[1] is dispersion (sigma)
+		# params[2] is alpha (strength of attraction to an optima)
+		# params[3] is rho, an exponent scaling the weighting of distance to optima
+			# this parameter will control switching optima
+		# params[4:n] describes theta values
+			# n-2 = N # of optima describe by this model
+	# In this model, optima represent fixed trait values conveying adaptive benefit
+		# the proximity of a population to an optima makes it more likely to be under that regime
+		# a point equidistant between multiple regimes may be drawn to any
+	# the draw to any specific optima is inverse to distance from optima
+	# thus a lineage at an optima may show large variance as it circles the plateau
+		# then suddenly feel drawn to another optima, and show sudden, giant shifts toward that optima
+
+
+
+
+
+
+
+#' @inheritParams intrinsicModels
 
 
 #' @return

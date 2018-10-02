@@ -3,6 +3,7 @@
 \name{extrinsicModels}
 \alias{extrinsicModels}
 \alias{nullExtrinsic}
+\alias{abcmodels.extrinsic}
 \alias{nearestNeighborDisplacementExtrinsic}
 \alias{everyoneDisplacementExtrinsic}
 \alias{ExponentiallyDecayingPushExtrinsic}
@@ -19,21 +20,20 @@ ExponentiallyDecayingPushExtrinsic(params, selfstates, otherstates,
   timefrompresent)
 }
 \arguments{
-\item{params}{describes input paramaters for the model (see Description)}
+\item{selfstates}{Vector of current trait values for the population of
+interest. May be multiple for some models, but generally expected to be
+only a single value. Multivariate \code{TreEvo} is not yet supported.}
 
-\item{selfstates}{vector of states for each taxon}
-
-\item{otherstates}{matrix of character states, one row per taxon and once
-column per state}
-
-\item{timefrompresent}{which time slice in the tree}
+\item{otherstates}{Matrix of current trait values for all concurrent taxa/populations other
+than the one of interest, with one row for each taxon, and a column for each trait.
+May be multiple states per taxa/populations for some models, but generally expected to be
+only a single value. Multivariate \code{TreEvo} is not yet supported.}
 }
 \value{
-A matrix of values representing character displacement from a single
-time step in the tree.
+A vector of values representing character displacement of that lineage over a single time step.
 }
 \description{
-Functions describing various models of 'extrinsive' evolution (i.e. evolutionary processes
+Functions describing various models of 'extrinsic' evolution (i.e. evolutionary processes
 dependent on factors extrinsic to the evolving lineage, such as environmental change, or
 other evolving lineages that interact with the lineage in question (competitors, predators, etc).
 }
@@ -41,27 +41,23 @@ other evolving lineages that interact with the lineage in question (competitors,
 The following extrinsic models are:
 
 \code{nullExtrinsic} describes a model of no extrinsic character change.
-
 It has no parameters, really.
 
 \code{nearestNeighborDisplacementExtrinsic} describes a model of extrinsic trait evolution where character
 values of a focal taxon depend on the values of closest relatives on the tree (e.g. competitive exclusion).
-
 The input parameters for this model are:
-\code{nearestNeighborDisplacementExtrinsic} params = sd, springK, maximum force
+\code{nearestNeighborDisplacementExtrinsic} with parameters \code{params = sd, springK, maximumForce}
 
 \code{everyoneDisplacementExtrinsic} describes a model of extrinsic trait evolution where the character
 values of a focal taxon depend on the values of all co-extant relatives on the simulated tree.
-
 The input parameters for this model are:
-\code{everyoneDisplacementExtrinsic} params = sd, springK, maximum force
+\code{everyoneDisplacementExtrinsic} with parameters \code{params = sd, springK, maximumForce}
 
 \code{ExponentiallyDecayingPushExtrinsic} describes a model of extrinsic trait evolution where the character
 values of a focal taxon is 'pushed' away from other taxa with similar values, but the force of that 'push'
 exponentially decays as lineages diverge and their character values become less similar.
-
 The input parameters for this model are:
-\code{ExponentiallyDecayingPushExtrinsic} params = sd, maximum force, half distance
+\code{ExponentiallyDecayingPushExtrinsic} with parameters \code{params = sd, maximumForce, halfDistance}
 }
 \examples{
 \donttest{
@@ -104,6 +100,9 @@ char <- doSimulation(
     extrinsicValues = c(0.1, 0.1, 2), 
     generation.time = 100000)
 }
+}
+\seealso{
+Intrinsic models are described at \code{\link{abcmodels.intrinsic}}.
 }
 \author{
 Brian O'Meara and Barb Banbury

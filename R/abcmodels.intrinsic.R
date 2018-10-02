@@ -1,15 +1,10 @@
-#intrinsic models
-#note that these work for univariate, but need to be generalized for multivariate
-#otherstates has one row per taxon, one column per state
-#states is a vector for each taxon, with length = nchar
-
-
-
 #' Intrinsic Character Evolution Models
 #' 
 #' Functions describing various models of 'intrinsic' evolution (i.e. evolutionary processes intrinsic to the evolving
 #' lineage, independent of other evolving lineages (competitors, predators, etc).
 #' 
+
+#' @details 
 #' The following intrinsic models are:
 #' 
 #' \code{nullIntrinsic} describes a model of no intrinsic character change.
@@ -59,7 +54,7 @@
 #' The input parameters for this model are:
 #' \code{autoregressiveIntrinsicTimeSlicesConstantMean} with parameters \code{params = sd-1
 #' (sigma-1), attraction-1 (alpha-1), time threshold-1, sd-2 (sigma-2), 
-#' attraction-2 (alpha-2), time threshold-2, attractor (character mean)
+#' attraction-2 (alpha-2), time threshold-2, attractor (character mean)}
 #' 
 #' \code{autoregressiveIntrinsicTimeSlicesConstantSigma} describes a model of intrinsic character evolution. New
 #' character values are generated after one time step via a discrete-time OU
@@ -80,7 +75,7 @@
 #' @return
 #' A vector of values representing character displacement of that lineage over a single time step.
 
-#' @aliases abcmodels.intrinsic
+#' @aliases abcmodels.intrinsic 
 
 #' @seealso Another intrinsic model with multiple optima is described at \code{\link{multiOptimaIntrinsic}}.
 #' Extrinsic models are described at \code{\link{abcmodels.extrinsic}}.
@@ -139,8 +134,16 @@
 #'     intrinsicValues = c(0.01, 3, 0.1, 1), 
 #'     extrinsicValues = c(0), 
 #'     generation.time = 100000)
-#
+#'
 #' }
+
+#intrinsic models
+#note that these work for univariate, but need to be generalized for multivariate
+#otherstates has one row per taxon, one column per state
+#states is a vector for each taxon, with length = nchar
+
+
+
 
 
 #' @name intrinsicModels
