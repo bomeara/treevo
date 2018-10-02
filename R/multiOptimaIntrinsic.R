@@ -26,33 +26,34 @@
 #' \code{alpha} (strength of attraction to an optima),
 #' \code{rho} (an exponent scaling the weighting of distance to optima --
 #' this parameter will control the probability of a lineage switching optima),
-#' and two or more \code{theta} values, which are the optima for the different macroevolutionary adaptiv regimes. 
-
-# The interpretation we offer for this model, is a scenario in which optima represent fixed phenotypic trait values conveying maximum adaptive benefit among neighboring values in trait space. The proximity of a population to an optima makes it more likely to be fall under the influence of that regime, with points lying equidistant between multiple optima being equally likely t may be drawn to any
-	# the draw to any specific optima is inverse to distance from optima
-	# thus a lineage at an optima may show large variance as it circles the plateau
-		# then suddenly feel drawn to another optima, and show sudden, giant shifts toward that optima
-
-
-
-
-
-
+#' and, finally, \emph{n} (two or more) \code{theta} values, which are the
+#' optima for the different macroevolutionary adaptiv regimes. 
+#' 
+#' Our biological interpretation for this model is a scenario in which optima
+#' represent fixed phenotypic trait values, conveying maximum adaptive benefit
+#' relative to neighboring values in trait space. The proximity of a population
+#' to an optima makes it more likely to fall under the influence of that regime,
+#' and thus experience directional selection in the direction of that optima. However,
+#' as there are multiple optima, a lineage might be influenced by multiple nearby
+#' optima over its evolutionary history, rather than simply the closest trait optimum.
+#' Lineages equidistant between ultiple optima should be equally likely to be drawn
+#' to any specific optima, and populations in general should experience the influence
+#' of nearby optima inversely relative to their distance from the optima. Thus, a
+#' lineage very close to an optimum would show a large variance in its trait values
+#' as it circles the adaptive plateau, with infrequent but sudden, far-spanning
+#' movements toward a different optimum.
+#'
 
 #' @inheritParams intrinsicModels
 
-
 #' @return
 #' A vector of values representing character displacement of that lineage over a single time step.
- 
-
 
 #' @author David W. Bapst
 
-
 #' @seealso
 #' An alternative approach in \code{TreEvo} to estimating a macroevolutionary landscape with multiple optima
-#' is the Fokker–Planck–Kolmogorov (FPK) model, which can be fit with \code{\link{landscapeFPK_Intrinsic}}.
+#' is the Fokker–Planck–Kolmogorov (FPK) model, which can be fit with \code{landscapeFPK_Intrinsic}.
 #' This model does not assume a set number of optima nor that they have similar attractor strength, but
 #' parameters may be difficult to interpret in isolation, and fitting this model may be slower with \code{TreEvo}
 #' due to necessary linear algebra transformations. 

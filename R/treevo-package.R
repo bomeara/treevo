@@ -100,6 +100,7 @@
 #' @importFrom grDevices dev.off gray pdf rgb
 #' @importFrom methods as setAs
 #' @importFrom rpgm rpgm.rnorm
+#' @importFrom mvr plsr
 #' @importFrom utils capture.output
 
 
