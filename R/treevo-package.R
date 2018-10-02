@@ -100,10 +100,10 @@
 #' @importFrom grDevices dev.off gray pdf rgb
 #' @importFrom methods as setAs
 #' @importFrom rpgm rpgm.rnorm
-#' @importFrom mvr plsr
 #' @importFrom utils capture.output
 
-
+# package mvr doesn't exist, was it renamed pls?
+# @importFrom mvr plsr
 
 
 # @importFrom plotrix listDepth

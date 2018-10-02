@@ -100,7 +100,7 @@ PLSTransform(summaryValuesMatrix = summaryValuesMat, pls.model = PLSmodel)
 
 }
 \seealso{
-Function \code{returnPLSModel} effectively wraps function \code{\link[mvr]{plsr}} from package \code{mvr}.
+Function \code{returnPLSModel} effectively wraps function \code{\link[pls]{plsr}} from package \code{pls}.
 }
 \author{
 Brian O'Meara and Barb Banbury
