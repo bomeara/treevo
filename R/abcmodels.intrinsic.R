@@ -167,7 +167,7 @@ brownianIntrinsic <- function(params, states, timefrompresent) {
 boundaryIntrinsic <- function(params, states, timefrompresent) {
     #params[1] is sd, params[2] is min, params[3] is max. params[2] could be 0 or -Inf, for example
     newdisplacement <- rpgm::rpgm.rnorm(n = length(states), mean = 0, sd = params[1])
-    for (i in length(newdisplacement)) {
+    for (i in 1:length(newdisplacement)) {
         newstate <- newdisplacement[i]+states[i]
         if (newstate<params[2]) { #newstate less than min
             newdisplacement[i] <- params[2]-states[i] #so, rather than go below the minimum, this moves the new state to the minimum
@@ -184,7 +184,7 @@ boundaryIntrinsic <- function(params, states, timefrompresent) {
 boundaryMinIntrinsic  <- function(params, states, timefrompresent) {
     #params[1] is sd, params[2] is min boundary
     newdisplacement <- rpgm::rpgm.rnorm(n = length(states), mean = 0, sd = params[1])
-    for (i in length(newdisplacement)) {
+    for (i in 1:length(newdisplacement)) {
         newstate <- newdisplacement[i]+states[i]
         if (newstate<params[2]) { #newstate less than min
             newdisplacement[i] <- params[2]-states[i] #so, rather than go below the minimum, this moves the new state to the minimum
@@ -198,7 +198,7 @@ boundaryMinIntrinsic  <- function(params, states, timefrompresent) {
 boundaryMaxIntrinsic  <- function(params, states, timefrompresent) {
     #params[1] is sd, params[2] is max boundary
     newdisplacement <- rpgm::rpgm.rnorm(n = length(states), mean = 0, sd = params[1])
-    for (i in length(newdisplacement)) {
+    for (i in 1:length(newdisplacement)) {
         newstate <- newdisplacement[i]+states[i]
         if (newstate>params[2]) { #newstate less than min
             newdisplacement[i] <- params[2]-states[i] #so, rather than go below the minimum, this moves the new state to the maximum
@@ -239,7 +239,7 @@ minBoundaryAutoregressiveIntrinsic <- function(params, states, timefrompresent) 
 		mean = (attractor-states)*attraction, 
 		sd = sd) #subtract current states because we want displacement
     #message(newdisplacement)
-    for (i in length(newdisplacement)) {
+    for (i in 1:length(newdisplacement)) {
         newstate <- newdisplacement[i] + states[i]
         #message(newstate)
 		#so, rather than go below the minimum, this moves the new state to the minimum
@@ -388,7 +388,7 @@ varyingBoundariesFixedSigmaIntrinsic <- function(params, states, timefrompresent
     }
     #message(paste("sd = ", sd, " attractor = ", attractor, " attraction = ", attraction))
     newdisplacement <- rpgm::rpgm.rnorm(n = length(states), mean = 0, sd = sd)
-        for (i in length(newdisplacement)) {
+        for (i in 1:length(newdisplacement)) {
         newstate <- newdisplacement[i]+states[i]
         if (newstate<minBound) { #newstate less than min
             newdisplacement[i] <- minBound-states[i] #so, rather than go below the minimum, this moves the new state to the minimum
@@ -433,7 +433,7 @@ varyingBoundariesVaryingSigmaIntrinsic <- function(params, states, timefromprese
     }
     #message(paste("sd = ", sd, " attractor = ", attractor, " attraction = ", attraction))
     newdisplacement <- rpgm::rpgm.rnorm(n = length(states), mean = 0, sd = sd)
-        for (i in length(newdisplacement)) {
+        for (i in 1:length(newdisplacement)) {
         newstate <- newdisplacement[i]+states[i]
         if (newstate<minBound) { #newstate less than min
             newdisplacement[i] <- minBound-states[i] #so, rather than go below the minimum, this moves the new state to the minimum
@@ -454,7 +454,7 @@ genomeDuplicationAttraction <- function(params, states, timefrompresent) {
     attraction <- params[3]    #in this model, this should be between zero and one
     doubling.prob <- params[4]
     newdisplacement <- rpgm::rpgm.rnorm(n = length(states), mean = (attractor-states)*attraction, sd = sd) #subtract current states because we want displacement
-    for (i in length(newdisplacement)) {
+    for (i in 1:length(newdisplacement)) {
         newstate <- newdisplacement[i]+states[i]
         if (newstate<0) { #newstate less than min
             newdisplacement[i] <- 0-states[i] #so, rather than go below the minimum, this moves the new state to the minimum
