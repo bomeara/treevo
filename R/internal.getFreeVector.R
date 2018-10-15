@@ -4,24 +4,24 @@ getFreeVector <- function(startingPriorsFns, startingPriorsValues,
                         intrinsicPriorsFns, intrinsicPriorsValues, 
                         extrinsicPriorsFns, extrinsicPriorsValues){
     #checks
-    if(!is.matrix(startingPriorsValues)){
-        stop("startingPriorsValues must be a matrix, with columns representing separate prior distributions parameters, and rows representing parameters for those priors")
+    if(!is.list(startingPriorsValues)){
+        stop("startingPriorsValues must be a list, with elements representing separate prior distributions parameters, and each element a vector consisting of the parameters for those priors")
         }
-    if(!is.matrix(intrinsicPriorsValues)){
-        stop("intrinsicPriorsValues must be a matrix, with columns representing separate prior distributions parameters, and rows representing parameters for those priors")
+    if(!is.list(intrinsicPriorsValues)){
+        stop("intrinsicPriorsValues must be a list, with elements representing separate prior distributions parameters, and each element a vector consisting of the parameters for those priors")
         }    
-    if(!is.matrix(extrinsicPriorsValues)){
-        stop("extrinsicPriorsValues must be a matrix, with columns representing separate prior distributions parameters, and rows representing parameters for those priors")
+    if(!is.list(extrinsicPriorsValues)){
+        stop("extrinsicPriorsValues must be a list, with elements representing separate prior distributions parameters, and each element a vector consisting of the parameters for those priors")
         }    
     #
     if(length(startingPriorsValues) != length(startingPriorsFns)){
-        stop("startingPriorsValues must have the same number of columns as functions names in startingPriorsFns")
+        stop("startingPriorsValues must have the same length as functions names in startingPriorsFns")
         }
     if(length(intrinsicPriorsValues) != length(intrinsicPriorsFns)){
-        stop("intrinsicPriorsValues must have the same number of columns as functions names in intrinsicPriorsFns")
+        stop("intrinsicPriorsValues must have the same length as functions names in intrinsicPriorsFns")
         }
     if(length(extrinsicPriorsValues) != length(extrinsicPriorsFns)){
-        stop("extrinsicPriorsValues must have the same number of columns as functions names in extrinsicPriorsFns")
+        stop("extrinsicPriorsValues must have the same length as functions names in extrinsicPriorsFns")
         }
     #                    
     #figure out number of free params
@@ -46,7 +46,7 @@ getFreeVector <- function(startingPriorsFns, startingPriorsValues,
             parFree <- FALSE
         }else{
             #numberParametersStarting <- numberParametersStarting+1
-            #freevariables <- cbind(freevariables, startingPriorsValues[, i])
+            #freevariables <- cbind(freevariables, startingPriorsValues[[i]])
             #titlevector  <- c(titlevector, paste("Starting", numberParametersStarting))
             parFree <- TRUE
             }
@@ -63,7 +63,7 @@ getFreeVector <- function(startingPriorsFns, startingPriorsValues,
             parFree <- FALSE
         }else{
             #numberParametersIntrinsic <- numberParametersIntrinsic+1
-            #freevariables <- cbind(freevariables, intrinsicPriorsValues[, j])
+            #freevariables <- cbind(freevariables, intrinsicPriorsValues[[j]])
             #titlevector  <- c(titlevector, paste("Intrinsic", numberParametersIntrinsic))
             parFree <- TRUE
             }

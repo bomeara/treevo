@@ -201,13 +201,13 @@ simulateWithPriors <- function(
         trueIntrinsic <- rep(NaN, length(intrinsicPriorsValues))
         trueExtrinsic <- rep(NaN, length(extrinsicPriorsValues))
         for (j in 1:length(startingPriorsValues)) {
-            trueStarting[j] <- pullFromPrior(startingPriorsValues[, j], startingPriorsFns[j])
+            trueStarting[j] <- pullFromPrior(startingPriorsValues[[j]], startingPriorsFns[j])
         }
         for (j in 1:length(intrinsicPriorsValues)) {
-            trueIntrinsic[j] <- pullFromPrior(intrinsicPriorsValues[, j], intrinsicPriorsFns[j])
+            trueIntrinsic[j] <- pullFromPrior(intrinsicPriorsValues[[j]], intrinsicPriorsFns[j])
         }
         for (j in 1:length(extrinsicPriorsValues)) {
-            trueExtrinsic[j] <- pullFromPrior(extrinsicPriorsValues[, j], extrinsicPriorsFns[j])
+            trueExtrinsic[j] <- pullFromPrior(extrinsicPriorsValues[[j]], extrinsicPriorsFns[j])
         }
         trueInitial <- c(trueStarting, trueIntrinsic, trueExtrinsic)
         trueFreeValues <- trueInitial[freevector]

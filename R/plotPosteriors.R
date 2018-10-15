@@ -14,11 +14,22 @@
 #' be layered over each other to check for repeatability.  The relative gray-scale of
 #' posterior distributions in the plot depends on their total number of runs.
 
-#' @param priorsMat A \code{PriorMatrix} object s returned by TreEvo \code{\link{doRun}} functions. Can be a single such matrix
-#' or a list of matrices from a series of analyses.
-#' If the \code{PriorMatrix} is a list of matrices, only the first matrix will be
-#' evaluated, and all other matrices will be ignored.
-#' In other words, prior matrices are expected to be identical for all runs considered to the first matrix given.
+#' @param priorsMat A \code{priorList} list object, returned by TreEvo \code{\link{doRun}} functions. Can be a
+#' single such list, or a list of \code{priorList} lists from a series of analyses (i.e. a list of depth 2).
+#' If the \code{priorList} is a list of lists (if it is found to be a list of depth 2, only the first list will be
+#' evaluated, and all other lists will be ignored.
+#' In other words, priors are expected to be identical for all runs considered by this function, such
+#' the choice of using the list of priors from the first analysis in the list is acceptable for all comparisons.
+
+getListDepth<-function(aList){
+	depth<-0
+	while(isList(aList)){
+		depth<-depth+1
+		aList <- aList[[1]]
+		}
+	return(depth)
+	}
+	
 
 #' @param realParam If \code{TRUE}, this function will plot line segments where real
 #' parameter values are known. (Usually only true when simulated data is analyzed.)
@@ -44,7 +55,7 @@
 #' resultsPDFlist <- lapply(results, function(x) x$particleDataFrame)
 #' 
 #' plotPosteriors(resultsPDFlist, 
-#'    priorsMat = results[[1]]$PriorMatrix, 
+#'    priorsMat = results[[1]]$priorList, 
 #'    realParam = TRUE, realParamValues = c(ancState, genRate))
 
 
@@ -58,7 +69,7 @@ plotPosteriors <- function(particleDataFrame, priorsMat, realParam = FALSE, real
     #     same to make comparison across runs, therefore if a list of priorsMat is
     #     given, this function will extract only the first matrix)
     #
-    # priorsMat should be $PriorMatrix from TreEvo output
+    # priorsMat should be $priorList from TreEvo output
     #
     # realParamValues should include a real value for every prior (fixed or not).
     #

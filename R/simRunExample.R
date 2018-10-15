@@ -41,7 +41,7 @@
 #' 
 #' The objects \code{results} and \code{resultsBound} are lists composed of a number
 #' of elements (see the documentation for the \code{\link{doRun_prc}} function for more detail). These elements are
-#' respectively \code{input.data}, \code{PriorMatrix}, \code{particleDataFrame}, \code{toleranceVector}, \code{phy}, 
+#' respectively \code{input.data}, \code{priorList}, \code{particleDataFrame}, \code{toleranceVector}, \code{phy}, 
 #' \code{traits}, \code{simTime}, \code{time.per.gen}, and \code{postSummary}.
 #' 
 

@@ -1,5 +1,5 @@
 # function for getting prior matrix for doRun_prc
-getPriorMatrix <- function(
+getPriorList <- function(
     startingPriorsValues, 
     intrinsicPriorsValues, 
     extrinsicPriorsValues, 
@@ -9,30 +9,36 @@ getPriorMatrix <- function(
     numberParametersTotal){
     #
     #
-    #create PriorMatrix
-    namesForPriorMatrix <- c()
-    PriorMatrix <- matrix(c(startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns), nrow = 1, ncol = numberParametersTotal)
+    #combing prior functions
+	priorFuns <- c(startingPriorsFns, 
+		intrinsicPriorsFns, extrinsicPriorsFns)
+    #
+	# combine prior values lists
+	priorList <- c(startingPriorsValues, 
+            intrinsicPriorsValues, 
+            extrinsicPriorsValues
+            )
+	if(length(priorFuns)!=length(priorList)){
+		stop("the number of priors doesn't match the number of priors given parameters as input")
+		}
+	# append function name to each element of priorList
+	priorList <- lapply(1:length(priorList), function(x) 
+			list(fun = priorFuns[[x]], params=priorList[[x]]))
+	# create vector of names for priorList
     for (a in 1:length(startingPriorsValues)){
-        namesForPriorMatrix <- c(paste0("starting_", a, sep = ""))
+        namesForPriorList <- c(paste0("starting_", a, sep = ""))
         }
     #
     for (b in 1:length(intrinsicPriorsValues)){
-        namesForPriorMatrix <- append(namesForPriorMatrix, paste0("intrinsic_", b, sep = ""))
+        namesForPriorList <- append(namesForPriorList, paste0("intrinsic_", b, sep = ""))
         }
     #
     #message(extrinsicPriorsValues)
     for (c in 1:length(extrinsicPriorsValues)){
-        namesForPriorMatrix  <- append(namesForPriorMatrix, paste0("extrinsic_", c, sep = ""))
-        }
-    #
-    PriorMatrix <- rbind(
-        PriorMatrix, 
-        cbind(startingPriorsValues, 
-            intrinsicPriorsValues, 
-            extrinsicPriorsValues
-            )
-        )
-    colnames(PriorMatrix) <- namesForPriorMatrix
-    rownames(PriorMatrix) <- c("shape", "value1", "value2")
-    return(PriorMatrix)
+        namesForPriorList  <- append(namesForPriorList, paste0("extrinsic_", c, sep = ""))
+        }	
+	#
+    names(priorList) <- namesForPriorList
+    #rownames(priorList) <- c("shape", "value1", "value2")
+    return(priorList)
     }

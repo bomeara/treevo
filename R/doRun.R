@@ -120,7 +120,7 @@
 #' generation.time, TreeYears, timeStep, totalGenerations, epsilonProportion, 
 #' epsilonMultiplier, nRuns, nStepsPRC, numParticles, standardDevFactor}
 
-#' \item{PriorMatrix}{Matrix of prior distributions. This is used for doing post-analysis comparisons between prior and posterior distributions, such as with function \code{plotPosteriors}}
+#' \item{priorList}{List of prior distributions. This is used for doing post-analysis comparisons between prior and posterior distributions, such as with function \code{plotPosteriors}}
 
 #' \item{particleDataFrame}{DataFrame with information from each simulation, 
 #' including generation, attempt, id, parentid, distance, weight, and parameter states}
@@ -150,7 +150,7 @@
 #' generation.time, TreeYears, timeStep, totalGenerations, epsilonProportion, 
 #' epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor}
 
-#' \item{PriorMatrix}{Matrix of prior distributions. This is used for doing post-analysis comparisons between prior and posterior distributions, such as with function \code{plotPosteriors}}
+#' \item{priorList}{List of prior distributions. This is used for doing post-analysis comparisons between prior and posterior distributions, such as with function \code{plotPosteriors}}
 
 #' \item{phy}{Input phylogeny}
 
@@ -358,8 +358,8 @@ doRun_prc <- function(
         }
     namesParFree <- names(freevector)[freevector]
     #
-    # get prior matrix
-    PriorMatrix <- getPriorMatrix(
+    # get prior list
+    priorList <- getPriorList(
         startingPriorsValues = startingPriorsValues, 
         intrinsicPriorsValues = intrinsicPriorsValues, 
         extrinsicPriorsValues = extrinsicPriorsValues, 
@@ -730,7 +730,7 @@ doRun_prc <- function(
                 #
                 prcResults <- list()
                 prcResults$input.data <- input.data
-                prcResults$PriorMatrix <- PriorMatrix
+                prcResults$priorList <- priorList
                 prcResults$particleDataFrame <- particleDataFrame
                 names(prcResults$particleDataFrame) <- nameVector
                 prcResults$toleranceVector <- initialSimsRes$toleranceVector
@@ -758,7 +758,7 @@ doRun_prc <- function(
         # save them to prcResults (this hasn't been done yet if save.data = FALSE)
         prcResults <- list()
         prcResults$input.data <- input.data
-        prcResults$PriorMatrix <- PriorMatrix
+        prcResults$priorList <- priorList
         prcResults$particleDataFrame <- particleDataFrame
         #names(prcResults$particleDataFrame) <- nameVector
         prcResults$toleranceVector <- initialSimsRes$toleranceVector
