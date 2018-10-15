@@ -14,21 +14,12 @@
 #' be layered over each other to check for repeatability.  The relative gray-scale of
 #' posterior distributions in the plot depends on their total number of runs.
 
-#' @param priorsMat A \code{priorList} list object, returned by TreEvo \code{\link{doRun}} functions. Can be a
+#' @param priorsList A \code{priorList} list object, returned by TreEvo \code{\link{doRun}} functions. Can be a
 #' single such list, or a list of \code{priorList} lists from a series of analyses (i.e. a list of depth 2).
 #' If the \code{priorList} is a list of lists (if it is found to be a list of depth 2, only the first list will be
 #' evaluated, and all other lists will be ignored.
 #' In other words, priors are expected to be identical for all runs considered by this function, such
 #' the choice of using the list of priors from the first analysis in the list is acceptable for all comparisons.
-
-getListDepth<-function(aList){
-	depth<-0
-	while(isList(aList)){
-		depth<-depth+1
-		aList <- aList[[1]]
-		}
-	return(depth)
-	}
 	
 
 #' @param realParam If \code{TRUE}, this function will plot line segments where real
@@ -55,28 +46,27 @@ getListDepth<-function(aList){
 #' resultsPDFlist <- lapply(results, function(x) x$particleDataFrame)
 #' 
 #' plotPosteriors(resultsPDFlist, 
-#'    priorsMat = results[[1]]$priorList, 
+#'    priorsList = results[[1]]$priorList, 
 #'    realParam = TRUE, realParamValues = c(ancState, genRate))
 
 
 #' @name plotPosteriors
 #' @rdname plotPosteriors
 #' @export
-plotPosteriors <- function(particleDataFrame, priorsMat, realParam = FALSE, realParamValues = NA) {
+plotPosteriors <- function(particleDataFrame, priorsList, realParam = FALSE, realParamValues = NA) {
     # particleDataFrame can be single or a list of particleDataFrames (1:n)
     #
-    # priorsMat can also be single matrix or a list of matrices (Note that priorsMat have to be the
-    #     same to make comparison across runs, therefore if a list of priorsMat is
+    # priorsList can also be single matrix or a list of matrices (Note that priorsList have to be the
+    #     same to make comparison across runs, therefore if a list of priorsList is
     #     given, this function will extract only the first matrix)
     #
-    # priorsMat should be $priorList from TreEvo output
+    # priorsList should be $priorList from TreEvo output
     #
     # realParamValues should include a real value for every prior (fixed or not).
     #
     # fix this function so it works when "fixed" params are not last (ie the second param)
 
-
-    if(class(particleDataFrame) == "data.frame"){
+	if(class(particleDataFrame) == "data.frame"){
          # ugh ugh
         #generation <- NULL #to appease R CMD CHECK
         # yes??? I think this is right, not sure
@@ -99,12 +89,14 @@ plotPosteriors <- function(particleDataFrame, priorsMat, realParam = FALSE, real
             all <- rbind(all, particleDataFrame[[list]])        
         }
     }
-    if (class(priorsMat) == "list"){
-        priorsMat <- priorsMat[[1]]    
-    }
+	
+	# if priors list is a list of lists, use first list only
+	if(is.list(priorsList[[1]])){
+		priorsList<-priorsList[[1]]
+		}
 
 
-    freeParams <- dim(subset(priorsMat[, which(priorsMat[1, ]  !=  "fixed")])[, ])[2]
+    freeParams <- dim(subset(priorsList[, which(priorsList[1, ]  !=  "fixed")])[, ])[2]
     #dev.new(width = 2.5*freeParams, height = 3)
     nf <- layout(matrix(1:freeParams, nrow = 1, byrow = TRUE), respect = TRUE)
     #layout.show(nf)
@@ -116,16 +108,16 @@ plotPosteriors <- function(particleDataFrame, priorsMat, realParam = FALSE, real
     v <- vector("list", max(all$run))
     nParticles <- dim(subset(all[which(all$weight>0), ], run == max(all$run)))[1]
 
-    for (param in 1:dim(priorsMat)[2]) {
+    for (param in 1:dim(priorsList)[2]) {
         #message(param)
         #v <- vector("list", max(all$run))
         which.param <- param+7
         r <- c()
         q <- c()
 
-        if (priorsMat[1, param]  !=  "fixed") {
+        if (priorsList[1, param]  !=  "fixed") {
 
-            if (priorsMat[1, param]  ==  "uniform" || priorsMat[1, param]  ==  "exponential") {
+            if (priorsList[1, param]  ==  "uniform" || priorsList[1, param]  ==  "exponential") {
                 for (dens in 1:max(all$run)) {
                     v[[dens]] <- density(subset(all[which(all$run == dens), ], )[, which.param], 
                         weights = nParticles*subset(all[which(all$weight>0), ], run == dens)[, 7]/sum(
@@ -138,9 +130,9 @@ plotPosteriors <- function(particleDataFrame, priorsMat, realParam = FALSE, real
                     r <- c(r, v[[dens]]$y)
                 }
             }else{
-                if (priorsMat[1, param]  ==  "normal" ||
-                        priorsMat[1, param]  ==  "lognormal" ||
-                        priorsMat[1, param]  ==  "gamma"){
+                if (priorsList[1, param]  ==  "normal" ||
+                        priorsList[1, param]  ==  "lognormal" ||
+                        priorsList[1, param]  ==  "gamma"){
                     ####################################
                     for (dens in 1:max(all$run)) {
                         v[[dens]] <- density(subset(all[which(all$run == dens), ], )[, which.param], 
@@ -152,10 +144,10 @@ plotPosteriors <- function(particleDataFrame, priorsMat, realParam = FALSE, real
                     }
                 }
 
-            if (priorsMat[1, param] == "uniform") {
+            if (priorsList[1, param] == "uniform") {
                 #message("made it to uniform priorFn")
-                min = as.numeric(min(priorsMat[2, param], priorsMat[3, param]))
-                max = as.numeric(max(priorsMat[2, param], priorsMat[3, param]))
+                min = as.numeric(min(priorsList[2, param], priorsList[3, param]))
+                max = as.numeric(max(priorsList[2, param], priorsList[3, param]))
                 x <- runif(1000, min, max)
                 poly <- curve(dunif(x), 
                     xlim = c(min(min-(.3*(max-min)),
@@ -170,10 +162,10 @@ plotPosteriors <- function(particleDataFrame, priorsMat, realParam = FALSE, real
                         max(1.5, max(r)), col = "red", lwd = 1.5)
                 }
             }
-            else if (priorsMat[1, param] == "normal") {
+            else if (priorsList[1, param] == "normal") {
                 #message("made it to normal priorFn")
-                mean = as.numeric(priorsMat[2, param])
-                stdev = as.numeric(priorsMat[3, param])
+                mean = as.numeric(priorsList[2, param])
+                stdev = as.numeric(priorsList[3, param])
                 x <- rnorm(1000, mean, stdev)
                 w <- density(x)
                 poly <- curve(dnorm(x, mean, stdev), 
@@ -188,9 +180,9 @@ plotPosteriors <- function(particleDataFrame, priorsMat, realParam = FALSE, real
                         max(max(w$y), max(r)), col = "red", lwd = 1.5)
                 }
             }
-            else if (priorsMat[1, param] == "lognormal") {
-                mean = as.numeric(priorsMat[2, param])
-                stdev = as.numeric(priorsMat[3, param])
+            else if (priorsList[1, param] == "lognormal") {
+                mean = as.numeric(priorsList[2, param])
+                stdev = as.numeric(priorsList[3, param])
                 x <- rlnorm(1000, mean, stdev)
                 w <- density(x)
                 poly <- curve(dlnorm(x, mean, stdev), 
@@ -205,9 +197,9 @@ plotPosteriors <- function(particleDataFrame, priorsMat, realParam = FALSE, real
                         max(max(w$y), max(r)), col = "red", lwd = 1.5)
                 }
             }
-            else if (priorsMat[1, param] == "gamma") {
-                shape = as.numeric(priorsMat[2, param])
-                scale = as.numeric(priorsMat[3, param])
+            else if (priorsList[1, param] == "gamma") {
+                shape = as.numeric(priorsList[2, param])
+                scale = as.numeric(priorsList[3, param])
                 x <- rgamma(1000, shape, scale)
                 w <- density(x)
                 poly <- curve(dgamma(x, shape, scale), 
@@ -220,9 +212,9 @@ plotPosteriors <- function(particleDataFrame, priorsMat, realParam = FALSE, real
                         max(max(w$y), max(r)), col = "red", lwd = 1.5)
                 }
             }
-            else if (priorsMat[1, param] == "exponential") {
+            else if (priorsList[1, param] == "exponential") {
                 #message("made it to exponential priorFn")
-                rate = as.numeric(priorsMat[2, param])
+                rate = as.numeric(priorsList[2, param])
                 x <- rexp(1000, rate)
                 w <- density(x)
                 poly <- curve(dexp(x, rate), from = 0, to = qexp(0.99, rate), 
@@ -250,7 +242,7 @@ plotPosteriors <- function(particleDataFrame, priorsMat, realParam = FALSE, real
                     border = NA,
                     col = rgb(0, 0, 0, (.7/max(all$run))))
             }
-        } #if (priorsMat[1, param]  !=  "fixed")
+        } #if (priorsList[1, param]  !=  "fixed")
     } #for
     layout(1)
     }
