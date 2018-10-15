@@ -158,7 +158,12 @@ nullIntrinsic <- function(params, states, timefrompresent) {
 #' @rdname intrinsicModels
 #' @export
 brownianIntrinsic <- function(params, states, timefrompresent) {
-    newdisplacement <- rpgm::rpgm.rnorm(n = length(states), mean = 0, sd = params) #mean = 0 because we ADD this to existing values
+    newdisplacement <- rpgm::rpgm.rnorm(
+		#mean = 0 because we ADD this to existing values
+		n = length(states), 
+		mean = 0, 
+		sd = params
+		) 
     return(newdisplacement)
     }
 

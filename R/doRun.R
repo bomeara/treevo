@@ -200,11 +200,11 @@
 #'   intrinsicFn = brownianIntrinsic, 
 #'   extrinsicFn = nullExtrinsic, 
 #'   startingPriorsFns = "normal", 
-#'   startingPriorsValues = matrix(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
+#'   startingPriorsValues = list(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
 #'   intrinsicPriorsFns = c("exponential"), 
-#'   intrinsicPriorsValues = matrix(c(10, 10), nrow = 2, byrow = FALSE), 
+#'   intrinsicPriorsValues = list(c(10, 10)), 
 #'   extrinsicPriorsFns = c("fixed"), 
-#'   extrinsicPriorsValues = matrix(c(0, 0), nrow = 2, byrow = FALSE), 
+#'   extrinsicPriorsValues = list(c(0, 0)), 
 #'   generation.time = 10000, 
 #'   nRuns = 2, 
 #'   nStepsPRC = 3, 
@@ -226,11 +226,11 @@
 #'     intrinsicFn = brownianIntrinsic, 
 #'     extrinsicFn = nullExtrinsic, 
 #'     startingPriorsFns = "normal", 
-#'     startingPriorsValues = matrix(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
+#'     startingPriorsValues = list(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
 #'     intrinsicPriorsFns = c("exponential"), 
-#'     intrinsicPriorsValues = matrix(c(10, 10), nrow = 2, byrow = FALSE), #grep for normal in pkg
+#'     intrinsicPriorsValues = list(c(10, 10)), #grep for normal in pkg
 #'     extrinsicPriorsFns = c("fixed"), 
-#'     extrinsicPriorsValues = matrix(c(0, 0), nrow = 2, byrow = FALSE), 
+#'     extrinsicPriorsValues = list(c(0, 0)), 
 #'    generation.time = 10000, 
 #'     jobName = "examplerun_rej", 
 #'     abcTolerance = 0.05, 
@@ -476,7 +476,7 @@ doRun_prc <- function(
                 }
             #stores parameters in model for each particle
             particleParameters <- matrix(nrow = numParticles, 
-                ncol = dim(startingPriorsValues)[2] +  dim(intrinsicPriorsValues)[2] + dim(extrinsicPriorsValues)[2])
+                ncol = length(startingPriorsValues) +  length(intrinsicPriorsValues) + length(extrinsicPriorsValues))
             #
             weightScaling = 0;
             #

@@ -14,18 +14,18 @@ getFreeVector <- function(startingPriorsFns, startingPriorsValues,
         stop("extrinsicPriorsValues must be a matrix, with columns representing separate prior distributions parameters, and rows representing parameters for those priors")
         }    
     #
-    if(dim(startingPriorsValues)[2] != length(startingPriorsFns)){
+    if(length(startingPriorsValues) != length(startingPriorsFns)){
         stop("startingPriorsValues must have the same number of columns as functions names in startingPriorsFns")
         }
-    if(dim(intrinsicPriorsValues)[2] != length(intrinsicPriorsFns)){
+    if(length(intrinsicPriorsValues) != length(intrinsicPriorsFns)){
         stop("intrinsicPriorsValues must have the same number of columns as functions names in intrinsicPriorsFns")
         }
-    if(dim(extrinsicPriorsValues)[2] != length(extrinsicPriorsFns)){
+    if(length(extrinsicPriorsValues) != length(extrinsicPriorsFns)){
         stop("extrinsicPriorsValues must have the same number of columns as functions names in extrinsicPriorsFns")
         }
     #                    
     #figure out number of free params
-    #numberParametersTotal <- dim(startingPriorsValues)[2] +  dim(intrinsicPriorsValues)[2] + dim(extrinsicPriorsValues)[2]
+    #numberParametersTotal <- length(startingPriorsValues) +  length(intrinsicPriorsValues) + length(extrinsicPriorsValues)
     #numberParametersFree <- numberParametersTotal
     #freevariables <- matrix(data = NA, nrow = 2, ncol = 0)
     #numberParametersStarting <- 0
@@ -35,8 +35,8 @@ getFreeVector <- function(startingPriorsFns, startingPriorsValues,
     freevector <- logical()
     #
     #Calculate freevector
-    for (i in 1:dim(startingPriorsValues)[2]) {
-        if(dim(startingPriorsValues)[2])
+    for (i in 1:length(startingPriorsValues)) {
+        if(length(startingPriorsValues))
         priorFn <- match.arg(arg = startingPriorsFns[i], 
             choices = c("fixed", "uniform", "normal", "lognormal", "gamma", "exponential"), 
             several.ok = FALSE)
@@ -53,7 +53,7 @@ getFreeVector <- function(startingPriorsFns, startingPriorsValues,
         names(parFree) <- paste0("starting_", i)
         freevector <- c(freevector, parFree)
         }
-    for (j in 1:dim(intrinsicPriorsValues)[2]) {
+    for (j in 1:length(intrinsicPriorsValues)) {
         priorFn <- match.arg(arg = intrinsicPriorsFns[j], 
             choices = c("fixed", "uniform", "normal", "lognormal", "gamma", "exponential"), 
             several.ok = FALSE)
@@ -70,7 +70,7 @@ getFreeVector <- function(startingPriorsFns, startingPriorsValues,
         names(parFree) <- paste0("intrinsic_", j)
         freevector <- c(freevector, parFree)
         }
-    for (k in 1:dim(extrinsicPriorsValues)[2]) {
+    for (k in 1:length(extrinsicPriorsValues)) {
         priorFn <- match.arg(arg = extrinsicPriorsFns[k], 
             choices = c("fixed", "uniform", "normal", "lognormal", "gamma", "exponential"), 
             several.ok = FALSE)
