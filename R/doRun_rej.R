@@ -61,29 +61,25 @@ doRun_rej <- function(
                         extrinsicPriorsFns = extrinsicPriorsFns, 
                         extrinsicPriorsValues = extrinsicPriorsValues
                         )
+	#
     numberParametersTotal <- length(freevector)
     numberParametersFree <- sum(freevector)
-
-    #create priorList
-    namesForPriorMatrix <- c()
-    priorList <- matrix(c(startingPriorsFns,
-        intrinsicPriorsFns,
-        extrinsicPriorsFns),
-        nrow = 1,
-        ncol = numberParametersTotal)
-    for (a in 1:length(startingPriorsValues)) {
-        namesForPriorMatrix <- c(paste0("starting_", a, sep = ""))
-    }
-    for (b in 1:length(intrinsicPriorsValues)) {
-        namesForPriorMatrix <- append(namesForPriorMatrix, paste0("intrinsic_", b, sep = ""))
-    }
-    #message(extrinsicPriorsValues)
-    for (c in 1:length(extrinsicPriorsValues)) {
-        namesForPriorMatrix  <- append(namesForPriorMatrix, paste0("extrinsic_", c, sep = ""))
-    }
-    priorList <- rbind(priorList, cbind(startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues))
-    colnames(priorList) <- namesForPriorMatrix
-    rownames(priorList) <- c("shape", "value1", "value2")    
+	#
+    if(numberParametersFree<1){
+        stop("No freely varying parameters found; analysis cannot continue. Check prior functions and values")
+        }
+    namesParFree <- names(freevector)[freevector]
+    #
+    # get prior list
+    priorList <- getPriorList(
+        startingPriorsValues = startingPriorsValues, 
+        intrinsicPriorsValues = intrinsicPriorsValues, 
+        extrinsicPriorsValues = extrinsicPriorsValues, 
+        startingPriorsFns = startingPriorsFns, 
+        intrinsicPriorsFns = intrinsicPriorsFns, 
+        extrinsicPriorsFns = extrinsicPriorsFns, 
+        numberParametersTotal = numberParametersTotal
+        )							
     #
     #initialize guesses, if needed
     #if (length(startingValuesGuess) == 0) { #if no user guesses, try pulling a value from the prior

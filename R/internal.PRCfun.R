@@ -129,9 +129,12 @@ simParticlePRC <- function(
         #    ))
         #    
         newparticle <- mutateStates(particle = oldparticle, 
-            startingPriorsValues = startingPriorsValues, startingPriorsFns = startingPriorsFns, 
-            intrinsicPriorsValues = intrinsicPriorsValues, intrinsicPriorsFns = intrinsicPriorsFns, 
-            extrinsicPriorsValues = extrinsicPriorsValues, extrinsicPriorsFns = extrinsicPriorsFns, 
+            startingPriorsValues = startingPriorsValues, 
+			startingPriorsFns = startingPriorsFns, 
+            intrinsicPriorsValues = intrinsicPriorsValues, 
+			intrinsicPriorsFns = intrinsicPriorsFns, 
+            extrinsicPriorsValues = extrinsicPriorsValues, 
+			extrinsicPriorsFns = extrinsicPriorsFns, 
             standardDevFactor = standardDevFactor
             )
         newparticle$parentid <- particleToSelect
@@ -238,9 +241,17 @@ getlnTransitionProb <- function(newvalue, meantouse, Fn, priorValues, stdFactor)
     }    
 
 sumLogTranProb <- function(prevGenParticleList
-    , newStartingValues, newIntrinsicValues, newExtrinsicValues
-    , startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns
-    , startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues
+    , newStartingValues
+	, newIntrinsicValues
+	, newExtrinsicValues
+	#
+    , startingPriorsFns
+	, intrinsicPriorsFns
+	, extrinsicPriorsFns
+	#
+    , startingPriorsValues
+	, intrinsicPriorsValues
+	, extrinsicPriorsValues
     , standardDevFactor){
     #now get weights, using correction in Sisson et al. 2007
     #
