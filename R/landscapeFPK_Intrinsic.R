@@ -1,57 +1,64 @@
 #' Intrinsic Trait Evolution Model for a Macroevolutionary Landscape on a Fokker-Planck-Kolmogorov Potential Surface (Boucher et al., 2018)
 #' 
-#' 
+#' This function describes a discrete-time Fokker-Planck-Kolmogorov Potential Surface model
+#' (the FPK model for short), described for trait macroevolution by Boucher et al. (2018),
+#' and included here in \code{TreEvo} for use as an intrinsic trait model. This model can
+#' be used to describe a complex landscape of hills and valleys for a bounded univariate trait space.
 
-
-
-
-# FPK model is a four param intrinsic model
-	# three to describe landscape
-	# one to describe sigma (dispersion parameter)
-
-	# bounds are treated as two additional parameters
-		# but these are intended to be nuisance parameters 
-		# Boucher et al essentially fix these bounds
-			# at a distance far from observed trait values
-
-	#a discrete time Fokker–Planck–Kolmogorov model (FPK)
-		# V(x)=ax4+bx2+cx 
-	# parameters: a,b,c, sigma
-		# dependent on former trait value
-	#
-	# describes a potential surface where height corresponds to
-		# tendency to change in that direction
-	# allows for multiple optima, different heights to those optima
-		#also collapses to BM and OU1
-	#
-	# From Boucher et al:
-	# Finally, note that both BM and the OU model are special cases of the FPK
-	# model: BM corresponds to V(x)=0 and OU to
-	# V(x)=((alpha/sigma^2)*x^2)-((2*alpha*theta/(sigma^2))*x)
-	#
-	# following code is loosely based on function Sim_FPK from package BBMV
-	#
-	# all of the following only need to be run
-		# when the parameters of FPK are changed
-	# this *could* be pre-calculated for a single run with lexical scoping	
-	#	
-	# landscape descriptor function
-	# over the arbitrary interval (-1.5 : 1.5)
-			
-			
 
 #' @details
-
-			
+#' The FPK model is a four parameter model for describing the evolution of a trait without
+#' reference to the traits of other taxa (i.e. an intrinsic model in the terminology of
+#' package \code{TreEvo}). Three of these parameters are used to describe the shape of the
+#' landscape, which dictates a lineage's overall deterministic evolutionary trajectory on
+#' the landscape, while the fourth parameter (sigma) is a dispersion parameter that
+#' describes the rate of unpredictable, stochastic change. 
+#' 
+#' The bounds on the trait space are treated as two additional parameters, but these are
+#' intended in the model as described by Boucher et al. to be treated as nuisance parameters.
+#' Boucher et al. intentionally fix these bounds at a far distance beyond the range of
+#' observed trait values, so in order to ensure they have as little effect on the evolutionary trajectories as possible.
+#' 
+#' The discrete time Fokker-Planck-Kolmogorov model used here describes a landscape specific
+#' to a population at a particular time, with a particular trait value. This landscape
+#' represents a potential surface, where height corresponds to a tendency to change in that
+#' direction. This allows for multiple optima, and assigns different heights to those optima,
+#' which represent the current attraction for a population to move toward that trait value.
+#' The shape of this potential surface is the macroevolutionary landscape. which Boucher
+#' et al describe the shape of using a fourth-order polynomial with the cubic component removed:
+#' 
+#' \deqn{V(x) = ax^4 + bx^2 + cx}
+#' 
+#' Where x is the trait values within the bounded interval - for simplicity, these are
+#' internally rescaled to sit within the arbitrary interval \code{(-1.5 : 1.5)}. The parameters
+#' thus that describe the landscape shape are the coefficients \emph{a}, \emph{b}, and
+#' \emph{c}. To calculate the landscape, the trait space is discretized into fine intervals,
+#' and the potential calculated for each interval. The scale of this discretization can be controlled by the user.
+#' 
+#' Note that if the landscape has a single peak, or if the potential surface is flat, the
+#' model effectively collapses to Brownian Motion, or Ornstein-Uhlenbeck with a single
+#' optima. To (roughly) quote Boucher et al: \sQuote{Finally, note that both BM and the
+#' OU model are special cases of the FPK model: BM corresponds to V(x)=0 and OU to V(x)=((alpha/sigma^2)*x^2)-((2*alpha*theta/(sigma^2))*x).}
+#' 
+#' 
 			
 #' @inheritParams intrinsicModels
 
-#' @param
+#' @param	grainScaleFPK To calculate the potential-surface landscape, the trait
+#' space is discretized into fine intervals, and the potential calculated for each
+#' interval. The scale of this discretization can be controlled with this argument,
+#' which specifies the number of intervals used (default is 1000 intervals).
+
+#' @param	traitName The name given to the trait, mainly for use in the
+#' macroevolutionary landscape plot.
+
+#' @param	plotLandscape If \code{TRUE}, the estimated macroevolutionary
+#' landscape is plotted by the function.
+
+#' @param	traitData A set of trait data to calculate distant bounds from for use with this model.
 
 #' @return
 #' A vector of values representing character displacement of that lineage over a single time step.
-
-
 
 #' @seealso 
 #' An alternative approach in \code{TreEvo} to estimating a macroevolutionary landscape
@@ -60,18 +67,13 @@
 #' and the assumption that the optima have similar attractor strength. 
 #' Other intrinsic models are described at \code{\link{intrinsicModels}}.
 		
-			
-
-
-
-#' @author David W. Bapst
+#' @author David W. Bapst, loosely based on studying the code for function \code{Sim_FPK} from package \code{BBMV}.
 
 #' @references		
-#' Boucher, F. C., V. Démery, E. Conti, L. J. Harmon, and J. Uyeda. 2018.
+#' Boucher, F. C., V. Demery, E. Conti, L. J. Harmon, and J. Uyeda. 2018.
 #' A General Model for Estimating Macroevolutionary Landscapes. \emph{Systematic Biology}
 #' 67(2):304-319.
-			
-			
+						
 			
 #' @examples
 #' 
@@ -89,6 +91,7 @@
 #' 	c=0,
 #' 	sigma=1,
 #' 	bounds)
+#' 
 #' plot_landscapeFPK_model(params)
 #' 
 #' # simulate under this model - simulated trait DIVERGENCE
@@ -123,54 +126,15 @@
 #' hist(repSim,main="Simulated Trait Values")
 #' 
 			
+
 			
-#' @rdname landscapeFPK_Intrinsic
-#' @export				
-getTraitBoundsFPK<-function(traitData){
-	# get actualistic bounds on function
-	bounds <- c(
-		min(traitData)-((max(traitData) - min(traitData))/2),
-		max(traitData)+((max(traitData) - min(traitData))/2)
-		)
-	return(bounds)
-	}
+# all of the following only need to be run
+		# when the parameters of FPK are changed
+	# this *could* be pre-calculated for a single run with lexical scoping	
+	#	
 
 	
-#' @rdname landscapeFPK_Intrinsic
-#' @export	
-plot_landscapeFPK_model<-function(params,
-		grainScaleFPK=1000,
-		traitName="Trait",
-		plotLandscape=TRUE
-		){
-	#
-	# get bounds from params
-	bounds <- params[5:6]
-	# get trait sequence
-	origSequence<-seq(from=bounds[1],to=bounds[2],
-		length.out=grainScaleFPK)
-	# V(x)=ax4+bx2+cx 
-	potentialVector<-potentialFunFPK(
-		a=params[1],b=params[2],c=params[3],
-		x=seq(from=-1.5,to=1.5,
-			length.out=grainScaleFPK))
-	#
-	if(plotLandscape){
-		#potentialVector<-1*exp(-potentialVector)
-		# equation from Boucher's BBMV tutorial (??)
-		potentialVector<-exp(-potentialVector)/sum(exp(-potentialVector)
-				*((bounds[2]-bounds[1])/grainScaleFPK))
-		yLabel<-"Macroevolutionary Landscape (N*exp(-V))"	
-	}else{
-		potentialVector<-potentialVector/max(potentialVector)
-		yLabel<-"Evolutionary Potential (Rescaled to Max Potential)"
-		}
-	#
-	plot(origSequence,potentialVector,type="l",
-		xlab=paste0(traitName," (Original Scale)"),
-		ylab=yLabel)
-	}
-
+	
 #' @name landscapeFPK_Intrinsic
 #' @rdname landscapeFPK_Intrinsic
 #' @export
@@ -178,7 +142,7 @@ landscapeFPK_Intrinsic <- function(params, states, timefrompresent,
 		grainScaleFPK = 100	# sim controls
 		) {
 	#
-	#a discrete time Fokker–Planck–Kolmogorov model (FPK)
+	#a discrete time Fokker-Planck-Kolmogorov model (FPK)
 		# V(x)=ax4+bx2+cx 
 	# parameters: a,b,c, sigma
 		# dependent on former trait value
@@ -294,6 +258,53 @@ landscapeFPK_Intrinsic <- function(params, states, timefrompresent,
 	return(newDisplacement)
 	}
 	
+
+#' @rdname landscapeFPK_Intrinsic
+#' @export				
+getTraitBoundsFPK<-function(traitData){
+	# get actualistic bounds on function
+	bounds <- c(
+		min(traitData)-((max(traitData) - min(traitData))/2),
+		max(traitData)+((max(traitData) - min(traitData))/2)
+		)
+	return(bounds)
+	}
+
+	
+#' @rdname landscapeFPK_Intrinsic
+#' @export	
+plot_landscapeFPK_model<-function(params,
+		grainScaleFPK=1000,
+		traitName="Trait",
+		plotLandscape=TRUE
+		){
+	#
+	# get bounds from params
+	bounds <- params[5:6]
+	# get trait sequence
+	origSequence<-seq(from=bounds[1],to=bounds[2],
+		length.out=grainScaleFPK)
+	# V(x)=ax4+bx2+cx 
+	potentialVector<-potentialFunFPK(
+		a=params[1],b=params[2],c=params[3],
+		x=seq(from=-1.5,to=1.5,
+			length.out=grainScaleFPK))
+	#
+	if(plotLandscape){
+		#potentialVector<-1*exp(-potentialVector)
+		# equation from Boucher's BBMV tutorial (??)
+		potentialVector<-exp(-potentialVector)/sum(exp(-potentialVector)
+				*((bounds[2]-bounds[1])/grainScaleFPK))
+		yLabel<-"Macroevolutionary Landscape (N*exp(-V))"	
+	}else{
+		potentialVector<-potentialVector/max(potentialVector)
+		yLabel<-"Evolutionary Potential (Rescaled to Max Potential)"
+		}
+	#
+	plot(origSequence,potentialVector,type="l",
+		xlab=paste0(traitName," (Original Scale)"),
+		ylab=yLabel)
+	}
 	
 
 getTraitIntervalDensityFPK<-function(trait,origIntLength,
@@ -336,14 +347,9 @@ getTraitIntervalDensityFPK<-function(trait,origIntLength,
 
 
 
-
 # equation for getting potential under FPK	
 potentialFunFPK<-function(x,a,b,c){
 	# V(x)=ax4+bx2+cx 
 	Vres <- (a*(x^4))+(b*(x^2))+(c*x)
 	return(Vres)
 	}
-
-
-
-
