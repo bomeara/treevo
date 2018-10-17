@@ -507,7 +507,7 @@ genomeDuplicationPartialDoublingLogScale <- function(params, states, timefrompre
 GetGenomeDuplicationPriors <- function(numSteps, phy, data) {
     #returns a matrix with 3 priors for genome duplication (genomeDuplicationPartialDoublingLogScale)
     timeStep <- 1/numSteps  #out of doRun_rej code
-    sd <- getBMRatePrior(phy=phy, traits=traits, timeStep=timeStep)  #new TreEvo function
+    sd <- getBMRatePrior(phy=phy, traits=data, timeStep=timeStep)  #new TreEvo function
     beta.shape1 <- 1 #for(i in 1:10) {lines(density(1+rbeta(10000, 10^runif(1, 0, 2), 1)), xlim = c(1, 2))}  seems to produce nice distributions, but how to justify using 3?
     duplication.prob <- 2 #exponential, but which rate?
 
