@@ -43,7 +43,8 @@
 #' @param pls.model Output from \code{\link{returnPLSModel}}.
 
 #' @seealso
-#' Function \code{returnPLSModel} effectively wraps function \code{\link[pls]{plsr}} from package \code{pls}.
+#' Function \code{returnPLSModel} effectively wraps function \code{plsr}
+#' from package \code{pls} (see documentation at \code{\link[pls]{mvr}}). 
 
 #' @return
 #' Function \code{returnPLSModel} returns a PLS model, and function \code{PLSTransform} returns transformed summary statistics.
@@ -71,9 +72,9 @@
 #'   startingPriorsFns = "normal", 
 #'   startingPriorsValues = list(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
 #'   intrinsicPriorsFns = c("exponential"), 
-#'   intrinsicPriorsValues = list(c(10, 10)), 
+#'   intrinsicPriorsValues = list(10), 
 #'   extrinsicPriorsFns = c("fixed"), 
-#'   extrinsicPriorsValues = list(c(0, 0)), 
+#'   extrinsicPriorsValues = list(0), 
 #'   generation.time = 10000, 
 #'   checkpointFile = NULL, 
 #'   checkpointFreq = 24, 

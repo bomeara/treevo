@@ -97,9 +97,9 @@
 #'     startingPriorsFns = "normal", 
 #'     startingPriorsValues = list(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
 #'     intrinsicPriorsFns = c("exponential"), 
-#'     intrinsicPriorsValues = list(c(10, 10)), 
+#'     intrinsicPriorsValues = list(10), 
 #'     extrinsicPriorsFns = c("fixed"), 
-#'     extrinsicPriorsValues = list(c(0, 0)), 
+#'     extrinsicPriorsValues = list(0), 
 #'     generation.time = 10000, 
 #'     nRuns = 2, 
 #'     nStepsPRC = 3, 
@@ -120,9 +120,9 @@
 #'     startingPriorsFns = "normal", 
 #'     startingPriorsValues = list(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
 #'     intrinsicPriorsFns = c("exponential", "normal"), 
-#'     intrinsicPriorsValues = matrix(c(10, 10, -10, 1), nrow = 2, byrow = FALSE), 
+#'     intrinsicPriorsValues = list(10,c(-10,1)), 
 #'     extrinsicPriorsFns = c("fixed"), 
-#'     extrinsicPriorsValues = list(c(0, 0)), 
+#'     extrinsicPriorsValues = list(0), 
 #'     generation.time = 10000, 
 #'     nRuns = 2, 
 #'     nStepsPRC = 3, 
@@ -137,7 +137,7 @@
 #' 
 #' rm(.Random.seed)
 #' save.image(file = "simRunExample.rdata")
-#' 
+#' if(interactive()){savehistory("simRunExample.Rhistory")}
 #' 
 #' }
 #' 

@@ -246,9 +246,9 @@ resultsPRC <- doRun_prc(
   startingPriorsFns = "normal", 
   startingPriorsValues = list(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
   intrinsicPriorsFns = c("exponential"), 
-  intrinsicPriorsValues = list(c(10, 10)), 
+  intrinsicPriorsValues = list(10), 
   extrinsicPriorsFns = c("fixed"), 
-  extrinsicPriorsValues = list(c(0, 0)), 
+  extrinsicPriorsValues = list(0), 
   generation.time = 10000, 
   nRuns = 2, 
   nStepsPRC = 3, 
@@ -272,9 +272,9 @@ resultsRej <- doRun_rej(
     startingPriorsFns = "normal", 
     startingPriorsValues = list(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
     intrinsicPriorsFns = c("exponential"), 
-    intrinsicPriorsValues = list(c(10, 10)), #grep for normal in pkg
+    intrinsicPriorsValues = list(10), #grep for normal in pkg
     extrinsicPriorsFns = c("fixed"), 
-    extrinsicPriorsValues = list(c(0, 0)), 
+    extrinsicPriorsValues = list(0), 
    generation.time = 10000, 
     jobName = "examplerun_rej", 
     abcTolerance = 0.05, 

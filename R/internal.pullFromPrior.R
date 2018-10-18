@@ -1,6 +1,6 @@
 #   Pull value from prior
 #
-#   This function retreives random value from variable prior functions
+#   This function retrieves random value from variable prior functions
 #
 #
 #   @param priorValues Matrix with ncol = number of states (characters) at root
