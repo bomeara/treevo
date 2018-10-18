@@ -17,7 +17,7 @@ test_that("plotPosteriors works", {
     data(simRunExample)
     plotPosteriors(
         particleDataFrame = results[[1]]$particleDataFrame,
-        priorsMat = results[[1]]$PriorMatrix,
+        priorsMat = results[[1]]$priorList,
         realParam = TRUE,
         realParamValues = c(ancState, genRate)
         )
@@ -29,7 +29,7 @@ test_that("plotPosteriors correctly gives an error", {
     expect_error(
         plotPosteriors(
             results[[1]]$particleDataFrame,
-            results[[1]]$PriorMatrix)
+            results[[1]]$priorList)
         ,NA)
 })
 

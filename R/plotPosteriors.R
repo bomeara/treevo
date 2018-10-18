@@ -49,7 +49,9 @@
 #' 
 #' plotPosteriors(resultsPDFlist, 
 #'    priorsList = results[[1]]$priorList, 
-#'    realParam = TRUE, realParamValues = c(ancState, genRate))
+#'    realParam = TRUE, 
+#'    realParamValues = c(ancState, genRate))
+#' 
 
 
 #' @name plotPosteriors
@@ -77,7 +79,9 @@ plotPosteriors <- function(particleDataFrame, priorsList, realParam = FALSE, rea
         generation <- particleDataFrame$generation
     
         #make generation and other names by column so it works for partial and complete
-        data1 <- subset(particleDataFrame[which(particleDataFrame$weight>0), ], generation == max(particleDataFrame$generation))
+        data1 <- subset(particleDataFrame[which(particleDataFrame$weight>0), ],
+			generation == max(particleDataFrame$generation)
+			)
         run <- rep(1, dim(data1)[1])
         all <- cbind(run, data1)
         }
@@ -99,7 +103,8 @@ plotPosteriors <- function(particleDataFrame, priorsList, realParam = FALSE, rea
 		priorsList<-priorsList[[1]]
 		}
 	#
-	areFreeParam <- priorsList[[1]]  !=  "fixed"
+	areFreeParam <- sapply(priorsList,function(x) 
+		x[[1]]  !=  "fixed")
     nFreeParams <- length(which(areFreeParam))
     #dev.new(width = 2.5 * nFreeParams, height = 3)
     nf <- layout(

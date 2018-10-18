@@ -103,7 +103,7 @@ resultsBound <- doRun_prc(
     startingPriorsFns = "normal", 
     startingPriorsValues = list(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
     intrinsicPriorsFns = c("exponential", "normal"), 
-    intrinsicPriorsValues = matrix(c(10, 10, -10, 1), nrow = 2, byrow = FALSE), 
+    intrinsicPriorsValues = list(10,c(-10,1)), 
     extrinsicPriorsFns = c("fixed"), 
     extrinsicPriorsValues = list(0), 
     generation.time = 10000, 
@@ -120,7 +120,7 @@ resultsBound <- doRun_prc(
 
 rm(.Random.seed)
 save.image(file = "simRunExample.rdata")
-
+if(interactive()){savehistory("simRunExample.Rhistory")}
 
 }
 

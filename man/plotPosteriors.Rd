@@ -48,7 +48,9 @@ resultsPDFlist <- lapply(results, function(x) x$particleDataFrame)
 
 plotPosteriors(resultsPDFlist, 
    priorsList = results[[1]]$priorList, 
-   realParam = TRUE, realParamValues = c(ancState, genRate))
+   realParam = TRUE, 
+   realParamValues = c(ancState, genRate))
+
 }
 \seealso{
 \code{\link{plotPrior}} for a set of functions for visualizing and summarizing

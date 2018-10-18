@@ -45,7 +45,7 @@ test_that("simParticlePRCParallel run correctly", {
     numberParametersFree<-sum(freevector)
     #
     # get prior matrix
-    PriorMatrix<-getPriorMatrix(
+    priorList<-getPriorList(
         startingPriorsValues=startingPriorsValues,
         intrinsicPriorsValues=intrinsicPriorsValues,
         extrinsicPriorsValues=extrinsicPriorsValues,
@@ -57,10 +57,10 @@ test_that("simParticlePRCParallel run correctly", {
     ##    
     #initialize weighted mean sd matrices
     weightedMeanParam<-matrix(nrow=nStepsPRC, ncol=numberParametersTotal)
-    colnames(weightedMeanParam)<-colnames(PriorMatrix)
+    colnames(weightedMeanParam)<-colnames(priorList)
     rownames(weightedMeanParam)<-paste0("Gen ", c(1: nStepsPRC), sep="")
     param.stdev<-matrix(nrow=nStepsPRC, ncol=numberParametersTotal)
-    colnames(param.stdev)<-colnames(PriorMatrix)
+    colnames(param.stdev)<-colnames(priorList)
     rownames(param.stdev)<-paste0("Gen ", c(1: nStepsPRC), sep="")
     #
     # save input data for use later
@@ -181,7 +181,7 @@ test_that("simParticlePRC run correctly", {
     numberParametersFree<-sum(freevector)
     #
     # get prior matrix
-    PriorMatrix<-getPriorMatrix(
+    priorList<-getPriorList(
         startingPriorsValues=startingPriorsValues,
         intrinsicPriorsValues=intrinsicPriorsValues,
         extrinsicPriorsValues=extrinsicPriorsValues,
@@ -193,10 +193,10 @@ test_that("simParticlePRC run correctly", {
     ##    
     #initialize weighted mean sd matrices
     weightedMeanParam<-matrix(nrow=nStepsPRC, ncol=numberParametersTotal)
-    colnames(weightedMeanParam)<-colnames(PriorMatrix)
+    colnames(weightedMeanParam)<-colnames(priorList)
     rownames(weightedMeanParam)<-paste0("Gen ", c(1: nStepsPRC), sep="")
     param.stdev<-matrix(nrow=nStepsPRC, ncol=numberParametersTotal)
-    colnames(param.stdev)<-colnames(PriorMatrix)
+    colnames(param.stdev)<-colnames(priorList)
     rownames(param.stdev)<-paste0("Gen ", c(1: nStepsPRC), sep="")
     #
     # save input data for use later
