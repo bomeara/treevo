@@ -6,7 +6,7 @@ test_that("simParticlePRCParallel run correctly", {
     traits = simChar
     intrinsicFn=brownianIntrinsic
     extrinsicFn=nullExtrinsic
-    startingPriorsFns="normal"
+    startingPriorsFns="normal",
 	startingPriorsValues = list(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
 	intrinsicPriorsFns = c("exponential"),
 	intrinsicPriorsValues = list(10),
@@ -144,7 +144,7 @@ test_that("simParticlePRC run correctly", {
     traits = simChar
     intrinsicFn=brownianIntrinsic
     extrinsicFn=nullExtrinsic
-    startingPriorsFns="normal"
+    startingPriorsFns="normal",
 	startingPriorsValues = list(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
 	intrinsicPriorsFns = c("exponential"),
 	intrinsicPriorsValues = list(10),
