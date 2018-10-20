@@ -379,7 +379,9 @@ doRun_prc <- function(
     rownames(param.stdev) <- paste0("Gen ", c(1: nStepsPRC), sep = "")
     #
     if (is.null(nInitialSims)) {
-        nInitialSims <- nInitialSimsPerParam*numberParametersFree    #modified from 1000, which is rather computationally abusive
+        #modified from 1000, which is rather computationally abusive
+		nInitialSims <- nInitialSimsPerParam*numberParametersFree    
+		#
         message(paste0("Number of initial simulations to be performed (nInitialSims) not given\n", 
             "Number of initial simulations will instead be product of the number of free parameters multiplied by ",
             nInitialSimsPerParam, 
