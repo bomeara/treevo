@@ -249,7 +249,11 @@ autoregressiveWanderingUnknownOptimumIntrinsic <- function(params, states, timef
 	
 	# 10-20-18
 	# can't do it with an unknown optimum because the model function doesn't talk to other
-	# instances of the model 
+	# instances of the model, so how would they know what the optimum is at a particular time-point
+	# ->>>>>>>>>>>>>>>> 
+	#       We need a dataset with an environmental dataset
+	#            that we can treat as an optimum being tracked
+	# but what? and this will require another argument.
 		
 
 
