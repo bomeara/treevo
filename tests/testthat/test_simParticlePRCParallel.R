@@ -43,8 +43,9 @@ test_that("simParticlePRCParallel run correctly", {
                         extrinsicPriorsFns=extrinsicPriorsFns, extrinsicPriorsValues=extrinsicPriorsValues)
     numberParametersTotal<-length(freevector)
     numberParametersFree<-sum(freevector)
+	namesParFree <- names(freevector)[freevector]
     #
-    # get prior matrix
+    # get prior list
     priorList<-getPriorList(
         startingPriorsValues=startingPriorsValues,
         intrinsicPriorsValues=intrinsicPriorsValues,
@@ -58,11 +59,10 @@ test_that("simParticlePRCParallel run correctly", {
     #initialize weighted mean sd matrices
     weightedMeanParam <- matrix(nrow = nStepsPRC, 
         ncol = numberParametersFree)
-    colnames(weightedMeanParam) <- namesParFree
-    rownames(weightedMeanParam) <- paste0("Gen ", c(1: nStepsPRC), sep = "")
     param.stdev <- matrix(nrow = nStepsPRC, ncol = numberParametersFree)
-    colnames(param.stdev) <- namesParFree
-    rownames(param.stdev) <- paste0("Gen ", c(1: nStepsPRC), sep = "")
+    #
+	colnames(weightedMeanParam) <- colnames(param.stdev) <- namesParFree 
+    rownames(weightedMeanParam) <- rownames(param.stdev) <- paste0("Gen ", c(1: nStepsPRC), sep = "") 
     #
     #
     # save input data for use later
@@ -181,6 +181,7 @@ test_that("simParticlePRC run correctly", {
                         extrinsicPriorsFns=extrinsicPriorsFns, extrinsicPriorsValues=extrinsicPriorsValues)
     numberParametersTotal<-length(freevector)
     numberParametersFree<-sum(freevector)
+	namesParFree <- names(freevector)[freevector]
     #
     # get prior matrix
     priorList<-getPriorList(
@@ -194,12 +195,12 @@ test_that("simParticlePRC run correctly", {
     #    
     ##    
     #initialize weighted mean sd matrices
-    weightedMeanParam<-matrix(nrow=nStepsPRC, ncol=numberParametersTotal)
-    colnames(weightedMeanParam)<-colnames(priorList)
-    rownames(weightedMeanParam)<-paste0("Gen ", c(1: nStepsPRC), sep="")
-    param.stdev<-matrix(nrow=nStepsPRC, ncol=numberParametersTotal)
-    colnames(param.stdev)<-colnames(priorList)
-    rownames(param.stdev)<-paste0("Gen ", c(1: nStepsPRC), sep="")
+    weightedMeanParam <- matrix(nrow = nStepsPRC, 
+        ncol = numberParametersFree)
+    param.stdev <- matrix(nrow = nStepsPRC, ncol = numberParametersFree)
+    #
+	colnames(weightedMeanParam) <- colnames(param.stdev) <- namesParFree 
+    rownames(weightedMeanParam) <- rownames(param.stdev) <- paste0("Gen ", c(1: nStepsPRC), sep = "") 
     #
     # save input data for use later
     input.data<-rbind(jobName, Ntips = Ntip(phy), nInitialSims, generation.time, TreeYears, timeStep, totalGenerations,
@@ -250,9 +251,9 @@ test_that("simParticlePRC run correctly", {
     results <- simParticlePRC<-function(
         phy=phy
         ,taxonDF=taxonDF
-        , timeStep=timeStep
+        ,timeStep=timeStep
         ,intrinsicFn=intrinsicFn
-        , extrinsicFn=extrinsicFn 
+        ,extrinsicFn=extrinsicFn 
         ,startingPriorsValues=startingPriorsValues
         ,intrinsicPriorsValues=intrinsicPriorsValues
         ,extrinsicPriorsValues=extrinsicPriorsValues

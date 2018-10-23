@@ -17,10 +17,10 @@ test_that("plotPosteriors works", {
     data(simRunExample)
     plotPosteriors(
         particleDataFrame = results[[1]]$particleDataFrame,
-        priorsMat = results[[1]]$priorList,
+        priorsList = results[[1]]$priorList,
         realParam = TRUE,
         realParamValues = c(ancState, genRate)
-        )
+        )		
 })
 
 test_that("plotPosteriors correctly gives an error", {

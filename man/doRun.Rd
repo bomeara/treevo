@@ -258,7 +258,7 @@ resultsPRC <- doRun_prc(
   stopRule = FALSE, 
   multicore = FALSE, 
   coreLimit = 1
-)
+  )
 
 resultsPRC
 
@@ -275,7 +275,7 @@ resultsRej <- doRun_rej(
     intrinsicPriorsValues = list(10), #grep for normal in pkg
     extrinsicPriorsFns = c("fixed"), 
     extrinsicPriorsValues = list(0), 
-   generation.time = 10000, 
+    generation.time = 10000, 
     jobName = "examplerun_rej", 
     abcTolerance = 0.05, 
     multicore = FALSE, 

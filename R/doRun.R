@@ -214,7 +214,7 @@
 #'   stopRule = FALSE, 
 #'   multicore = FALSE, 
 #'   coreLimit = 1
-#' )
+#'   )
 #' 
 #' resultsPRC
 #' 
@@ -231,7 +231,7 @@
 #'     intrinsicPriorsValues = list(10), #grep for normal in pkg
 #'     extrinsicPriorsFns = c("fixed"), 
 #'     extrinsicPriorsValues = list(0), 
-#'    generation.time = 10000, 
+#'     generation.time = 10000, 
 #'     jobName = "examplerun_rej", 
 #'     abcTolerance = 0.05, 
 #'     multicore = FALSE, 
@@ -372,11 +372,10 @@ doRun_prc <- function(
     #initialize weighted mean sd matrices
     weightedMeanParam <- matrix(nrow = nStepsPRC, 
         ncol = numberParametersFree)
-    colnames(weightedMeanParam) <- namesParFree
-    rownames(weightedMeanParam) <- paste0("Gen ", c(1: nStepsPRC), sep = "")
     param.stdev <- matrix(nrow = nStepsPRC, ncol = numberParametersFree)
-    colnames(param.stdev) <- namesParFree
-    rownames(param.stdev) <- paste0("Gen ", c(1: nStepsPRC), sep = "")
+    #
+	colnames(weightedMeanParam) <- colnames(param.stdev) <- namesParFree 
+    rownames(weightedMeanParam) <- rownames(param.stdev) <- paste0("Gen ", c(1: nStepsPRC), sep = "") 
     #
     if (is.null(nInitialSims)) {
         #modified from 1000, which is rather computationally abusive

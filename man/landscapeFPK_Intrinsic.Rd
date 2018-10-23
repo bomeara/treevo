@@ -79,6 +79,7 @@ OU model are special cases of the FPK model: BM corresponds to V(x)=0 and OU to 
 }
 \examples{
 
+\donttest{
 set.seed(444)
 traitData<-rnorm(100,0,1)
 # need traits to calculate bounds
@@ -126,6 +127,8 @@ landscapeFPK_Intrinsic(params=params, states=trait, timefrompresent=NULL)
 
 repSim<-replicate(30,repeatSimSteps(params,trait,20))
 hist(repSim,main="Simulated Trait Values")
+
+}
 
 }
 \references{

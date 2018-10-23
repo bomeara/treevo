@@ -82,12 +82,6 @@
 #'     extrinsicValues = c(0), 
 #'     generation.time = 10000
 #'     )
-
-# 
-# # clean for use with doRun
-# simChar <- simCharOut[, "statesmatrix", drop = FALSE]
-# rownames(simChar) <- simPhy$tip.label[simCharOut$taxonid]
-
 #' 
 #' results <- doRun_prc(
 #'     phy = simPhy, 

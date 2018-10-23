@@ -77,6 +77,7 @@
 			
 #' @examples
 #' 
+#' \donttest{
 #' set.seed(444)
 #' traitData<-rnorm(100,0,1)
 #' # need traits to calculate bounds
@@ -124,6 +125,8 @@
 #' 
 #' repSim<-replicate(30,repeatSimSteps(params,trait,20))
 #' hist(repSim,main="Simulated Trait Values")
+#' 
+#' }
 #' 
 			
 
