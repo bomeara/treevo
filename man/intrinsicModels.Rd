@@ -9,7 +9,7 @@
 \alias{boundaryMinIntrinsic}
 \alias{boundaryMaxIntrinsic}
 \alias{autoregressiveIntrinsic}
-\alias{autoregressiveWanderingUnknownOptimumIntrinsic}
+\alias{maxBoundaryAutoregressiveIntrinsic}
 \alias{minBoundaryAutoregressiveIntrinsic}
 \alias{autoregressiveIntrinsicTimeSlices}
 \alias{autoregressiveIntrinsicTimeSlicesConstantMean}
@@ -28,7 +28,7 @@ boundaryMaxIntrinsic(params, states, timefrompresent)
 
 autoregressiveIntrinsic(params, states, timefrompresent)
 
-autoregressiveWanderingUnknownOptimumIntrinsic(params, states, timefrompresent)
+maxBoundaryAutoregressiveIntrinsic(params, states, timefrompresent)
 
 minBoundaryAutoregressiveIntrinsic(params, states, timefrompresent)
 

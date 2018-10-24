@@ -142,10 +142,6 @@
 #otherstates has one row per taxon, one column per state
 #states is a vector for each taxon, with length = nchar
 
-
-
-
-
 #' @name intrinsicModels
 #' @rdname intrinsicModels
 #' @export
@@ -205,8 +201,8 @@ boundaryMaxIntrinsic  <- function(params, states, timefrompresent) {
     newdisplacement <- rpgm::rpgm.rnorm(n = length(states), mean = 0, sd = params[1])
     for (i in 1:length(newdisplacement)) {
         newstate <- newdisplacement[i]+states[i]
-        if (newstate>params[2]) { #newstate less than min
-            newdisplacement[i] <- params[2]-states[i] #so, rather than go below the minimum, this moves the new state to the maximum
+        if (newstate>params[2]) { #newstate MORE than MAX
+            newdisplacement[i] <- params[2]-states[i] #so, rather than go ABOVE the MAXIMUM, this moves the new state to the maximum
         }
     }
     return(newdisplacement)
@@ -231,47 +227,31 @@ autoregressiveIntrinsic <- function(params, states, timefrompresent) {
 	
 
 
-
-	
-# and presumably the tracked env factor will be analyzed many times over
-
-
-
 #' @rdname intrinsicModels
 #' @export
-autoregressiveWanderingUnknownOptimumIntrinsic <- function(params, states, timefrompresent) {
-	# 3) Time - autoregressive model with optimum based on a
-		# factor that changes through time (like O2 concentration)
-	# Parameters of the regression: 
-		# a single variable function to convert O2 to optimal gill size or whatever
-		# strength of pull
-		# BM wiggle
-	
-	# 10-20-18
-	# can't do it with an unknown optimum because the model function doesn't talk to other
-	# instances of the model, so how would they know what the optimum is at a particular time-point
-	# ->>>>>>>>>>>>>>>> 
-	#       We need a dataset with an environmental dataset
-	#            that we can treat as an optimum being tracked
-	# but what? and this will require another argument.
-		
-
-
-
+maxBoundaryAutoregressiveIntrinsic <- function(params, states, timefrompresent) {
     #a discrete time OU, same sd, mean, and attraction for all chars
-    #params[1] is sd (sigma), params[2] is attractor (ie. character mean), params[3] is attraction (ie. alpha)
+    #params[1] is sd (sigma), params[2] is attractor (ie. character mean),
+		#params[3] is attraction (ie. alpha), params[4] is max bound
     sd <- params[1]
     attractor <- params[2]
     attraction <- params[3]    #in this model, this should be between zero and one
-    #subtract current states because we want displacement
-	newdisplacement <- rpgm::rpgm.rnorm(
-					n = length(states), 
-					mean = (attractor-states)*attraction, 
-					sd = sd) 
+    minBound <- params[4]
+    newdisplacement <- rpgm::rpgm.rnorm(
+		n = length(states), 
+		mean = (attractor-states)*attraction, 
+		sd = sd) #subtract current states because we want displacement
+    #message(newdisplacement)
+    for (i in 1:length(newdisplacement)) {
+        newstate <- newdisplacement[i] + states[i]
+        #message(newstate)
+		#so, rather than go above the maximum, this moves the new state to the maximum
+		if (newstate > params[4]) { #newstate more than max
+			newdisplacement[i] <- params[4] - states[i]
+		}
+    }
     return(newdisplacement)
-    }	
-
-	
+}
 	
 #' @rdname intrinsicModels
 #' @export
@@ -304,7 +284,8 @@ minBoundaryAutoregressiveIntrinsic <- function(params, states, timefrompresent) 
 #' @export
 autoregressiveIntrinsicTimeSlices <- function(params, states, timefrompresent) {
     #a discrete time OU, differing mean, sigma, and attraction with time
-    #params = [sd1, attractor1, attraction1, timethreshold1, sd2, attractor2, attraction2, timethreshold2, ...]
+    #params = [sd1, attractor1, attraction1, timethreshold1,
+		# sd2, attractor2, attraction2, timethreshold2, ...]
     #time is time before present (i.e., 65 could be 65 MYA).
         # The last time threshold should be 0, one before that is the end of the previous epoch, etc.
     numRegimes <- length(params)/4
@@ -324,13 +305,16 @@ autoregressiveIntrinsicTimeSlices <- function(params, states, timefrompresent) {
                 sd <- params[1+4*(regime-1)]
                 attractor <- params[2+4*(regime-1)]
                 attraction <- params[3+4*(regime-1)]
-                    #message(paste("sd = ", sd, " attractor = ", attractor, " attraction = ", attraction))
+                    #message(paste("sd = ", sd, " attractor = ",
+						# attractor, " attraction = ", attraction))
 
             }
         }
     }
-    #message(paste("sd = ", sd, " attractor = ", attractor, " attraction = ", attraction))
-    newdisplacement <- rpgm::rpgm.rnorm(n = length(states), mean = (attractor-states)*attraction, sd = sd)
+    #message(paste("sd = ", sd, " attractor = ",
+		# attractor, " attraction = ", attraction))
+    newdisplacement <- rpgm::rpgm.rnorm(n = length(states),
+		mean = (attractor-states)*attraction, sd = sd)
     return(newdisplacement)
     }
 
@@ -357,7 +341,11 @@ autoregressiveIntrinsicTimeSlicesConstantMean <- function(params, states, timefr
         }
         previousThresholdTime <- thresholdTime
     }
-    newdisplacement <- rpgm::rpgm.rnorm(n = length(states), mean = attraction*states + attractor, sd = sd)-states
+    newdisplacement <- rpgm::rpgm.rnorm(
+			n = length(states),
+			mean = attraction*states + attractor,
+			sd = sd
+		)-states
     return(newdisplacement)
     }
 
