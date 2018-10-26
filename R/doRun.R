@@ -170,6 +170,8 @@
 # \item{credibleInt}{Credible Interval calculation for each free parameter of the final generation}
 
 #' \item{postSummary}{Summarizes the posterior distribution from the final generation for all free parameters, giving the mean, standard deviation and Highest Posterior Density (at a 0.8 alpha) for each parameter.}
+
+#' \item{parMeansList}{A list of parameter means for both fixed and unfixed parameters, sorted into a list of three vectors (starting, intrinsic, extrinsic).}
 #' }
 #' 
 #' 
@@ -771,6 +773,7 @@ doRun_prc <- function(
         #######################################
         if(nrow(particleDataFrame)>2){
             prcResults$postSummary  <- summarizePosterior(particleDataFrame, verboseMultimodal = FALSE)
+			prcResults$parMeansList  <- getSummaryMeans(prcResults$postSummary)
         }else{
             warning("Posterior Summaries were not calculated as the number of accepted particles was less than 2")
             }
