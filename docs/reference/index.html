@@ -18,13 +18,22 @@
 <!-- Font Awesome icons -->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 
+<!-- clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
+
+<!-- sticky kit -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
-<script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-  
-  
+
+
+
+<meta property="og:title" content="Function reference" />
+
+
+
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -47,8 +56,12 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">TreEvo</a>
+      <span class="navbar-brand">
+        <a class="navbar-link" href="../index.html">TreEvo</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.9.0</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
@@ -73,7 +86,7 @@
   </ul>
 </li>
 <li>
-  <a href="../news/index.html">News</a>
+  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
       
@@ -85,6 +98,7 @@
   </a>
 </li>
       </ul>
+      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -92,154 +106,150 @@
       
       </header>
 
-      <div class="row">
-  <div class="col-md-9">
+<div class="row">
+  <div class="contents col-md-9">
     <div class="page-header">
-      <h1>
-        Reference
-        <small>version&nbsp;0.4.4</small>
-      </h1>
+      <h1>Reference</h1>
     </div>
 
-    <div class="contents">
-      <table class="ref-index">
+    <table class="ref-index">
 
-      <colgroup>
-        <col class="alias" />
-        <col class="title" />
-      </colgroup>
+    <colgroup>
+      
+      <col class="alias" />
+      <col class="title" />
+    </colgroup>
 
-      <tbody>
-        <tr>
-          <th colspan="2">
-            <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
-            <p class="section-desc"></p>
-          </th>
-        </tr>
-        <tr>
-          <!--  -->
-          <td>
-            <p><code><a href="bayesCoverageProb.html">bayesCoverageProb</a></code> </p>
-          </td>
-          <td><p>Bayesian Coverage Probability</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="boxcoxTransformation.html">boxcoxTransformation</a></code> <code><a href="boxcoxTransformation.html">boxcoxTransformationMatrix</a></code> </p>
-          </td>
-          <td><p>Box-Cox Transformation for Simulation Summary Values</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="compareListIPD.html">compareListIPD</a></code> </p>
-          </td>
-          <td><p>Plot Interparticle Distance between Runs</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="credibleInt.html">credibleInt</a></code> </p>
-          </td>
-          <td><p>Bayesian Credible Interval</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="doRun.html">doRun_prc</a></code> <code><a href="doRun.html">doRun_rej</a></code> </p>
-          </td>
-          <td><p>Run Approximate Bayesian Computation for Phylogenetic Comparative Methods</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="doSimulation.html">doSimulation</a></code> <code><a href="doSimulation.html">doSimulationForPlotting</a></code> <code><a href="doSimulation.html">doSimulationWithPossibleExtinction</a></code> </p>
-          </td>
-          <td><p>Discrete-Time Character Simulation</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="extrinsicModels.html">nullExtrinsic</a></code> <code><a href="extrinsicModels.html">nearestNeighborDisplacementExtrinsic</a></code> <code><a href="extrinsicModels.html">everyoneDisplacementExtrinsic</a></code> <code><a href="extrinsicModels.html">ExponentiallyDecayingPushExtrinsic</a></code> </p>
-          </td>
-          <td><p>Extrinsic Character Evolution Models</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="GetBMRatePrior.html">GetBMRatePrior</a></code> </p>
-          </td>
-          <td><p>Get Brownian Motion Rate Prior</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="highestPostDens.html">highestPostDens</a></code> </p>
-          </td>
-          <td><p>Highest Posterior Density</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="intrinsicModels.html">nullIntrinsic</a></code> <code><a href="intrinsicModels.html">brownianIntrinsic</a></code> <code><a href="intrinsicModels.html">boundaryIntrinsic</a></code> <code><a href="intrinsicModels.html">boundaryMinIntrinsic</a></code> <code><a href="intrinsicModels.html">autoregressiveIntrinsic</a></code> <code><a href="intrinsicModels.html">minBoundaryAutoregressiveIntrinsic</a></code> <code><a href="intrinsicModels.html">autoregressiveIntrinsicTimeSlices</a></code> <code><a href="intrinsicModels.html">autoregressiveIntrinsicTimeSlicesConstantMean</a></code> <code><a href="intrinsicModels.html">autoregressiveIntrinsicTimeSlicesConstantSigma</a></code> </p>
-          </td>
-          <td><p>Intrinsic Character Evolution Models</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="PairwiseESS.html">PairwiseESS</a></code> </p>
-          </td>
-          <td><p>Pairwise Effective Sample Size</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="PairwiseKS.html">PairwiseKS</a></code> </p>
-          </td>
-          <td><p>Pairwise Kolmogorov-Smirnov test</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="parentOffspringPlots.html">parentOffspringPlots</a></code> </p>
-          </td>
-          <td><p>Plotting Parent-Offspring Particles</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="plotABC_3D.html">plotABC_3D</a></code> </p>
-          </td>
-          <td><p>3D ABCplots</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="plotPosteriors.html">plotPosteriors</a></code> </p>
-          </td>
-          <td><p>Plot posterior distributions</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="plotPriorPost.html">plotPrior</a></code> <code><a href="plotPriorPost.html">plotUnivariatePosteriorVsPrior</a></code> <code><a href="plotPriorPost.html">getUnivariatePriorCurve</a></code> <code><a href="plotPriorPost.html">getUnivariatePosteriorCurve</a></code> </p>
-          </td>
-          <td><p>Plotting, Summarizing and Comparing the Prior and Posterior Distributions</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="PLSmethods.html">returnPLSModel</a></code> <code><a href="PLSmethods.html">PLSTransform</a></code> </p>
-          </td>
-          <td><p>Fitting Univariate Partial Least Squares Models to Free Parameters in ABC</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="simRunExample.html">simRunExample</a></code> </p>
-          </td>
-          <td><p>Example Analysis Output of a Simulated Dataset</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="simulateWithPriors.html">simulateWithPriors</a></code> <code><a href="simulateWithPriors.html">parallelSimulateWithPriors</a></code> </p>
-          </td>
-          <td><p>Simulate data for initial TreEvo analysis</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="TreEvo-package.html">TreEvo-package</a></code> </p>
-          </td>
-          <td><p>TreEvo--abc for comparative methods</p></td>
-        </tr>
-      </tbody>
-      </table>
-    </div>
+    <tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      <tr>
+        
+        <td>
+          <p><code><a href="TreEvo-package.html">TreEvo-package</a></code> </p>
+        </td>
+        <td><p>TreEvo--abc for comparative methods</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="boxcoxTransformation.html">boxcoxTransformation()</a></code> <code><a href="boxcoxTransformation.html">boxcoxTransformationMatrix()</a></code> </p>
+        </td>
+        <td><p>Box-Cox Transformation for Simulation Summary Values</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="compareListIPD.html">compareListIPD()</a></code> </p>
+        </td>
+        <td><p>Plot Interparticle Distance between Runs</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="doRun.html">doRun_prc()</a></code> <code><a href="doRun.html">doRun_rej()</a></code> </p>
+        </td>
+        <td><p>Run Approximate Bayesian Computation for Phylogenetic Comparative Methods</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="doSimulation.html">doSimulation()</a></code> </p>
+        </td>
+        <td><p>Discrete-Time Character Simulation</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="extrinsicModels.html">nullExtrinsic()</a></code> <code><a href="extrinsicModels.html">nearestNeighborDisplacementExtrinsic()</a></code> <code><a href="extrinsicModels.html">everyoneDisplacementExtrinsic()</a></code> <code><a href="extrinsicModels.html">ExponentiallyDecayingPushExtrinsic()</a></code> </p>
+        </td>
+        <td><p>Extrinsic Character Evolution Models</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="getBMRatePrior.html">getBMRatePrior()</a></code> </p>
+        </td>
+        <td><p>Get Brownian Motion Rate Prior</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="highestDensityInterval.html">highestDensityInterval()</a></code> </p>
+        </td>
+        <td><p>Highest Density Interval</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="intrinsicModels.html">nullIntrinsic()</a></code> <code><a href="intrinsicModels.html">brownianIntrinsic()</a></code> <code><a href="intrinsicModels.html">boundaryIntrinsic()</a></code> <code><a href="intrinsicModels.html">boundaryMinIntrinsic()</a></code> <code><a href="intrinsicModels.html">autoregressiveIntrinsic()</a></code> <code><a href="intrinsicModels.html">minBoundaryAutoregressiveIntrinsic()</a></code> <code><a href="intrinsicModels.html">autoregressiveIntrinsicTimeSlices()</a></code> <code><a href="intrinsicModels.html">autoregressiveIntrinsicTimeSlicesConstantMean()</a></code> <code><a href="intrinsicModels.html">autoregressiveIntrinsicTimeSlicesConstantSigma()</a></code> </p>
+        </td>
+        <td><p>Intrinsic Character Evolution Models</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="methodsPLS.html">returnPLSModel()</a></code> <code><a href="methodsPLS.html">PLSTransform()</a></code> </p>
+        </td>
+        <td><p>Fitting Univariate Partial Least Squares Models to Free Parameters in ABC</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="pairwiseESS.html">pairwiseESS()</a></code> </p>
+        </td>
+        <td><p>Pairwise Effective Sample Size</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="pairwiseKS.html">pairwiseKS()</a></code> </p>
+        </td>
+        <td><p>Pairwise Kolmogorov-Smirnov test</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="parentOffspringPlots.html">parentOffspringPlots()</a></code> </p>
+        </td>
+        <td><p>Plotting Parent-Offspring Particles</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plotABC_3D.html">plotABC_3D()</a></code> </p>
+        </td>
+        <td><p>3D ABCplots</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plotPosteriors.html">plotPosteriors()</a></code> </p>
+        </td>
+        <td><p>Plot posterior distributions</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plotPriorPost.html">plotPrior()</a></code> <code><a href="plotPriorPost.html">plotUnivariatePosteriorVsPrior()</a></code> <code><a href="plotPriorPost.html">getUnivariatePriorCurve()</a></code> <code><a href="plotPriorPost.html">getUnivariatePosteriorCurve()</a></code> </p>
+        </td>
+        <td><p>Plotting, Summarizing and Comparing the Prior and Posterior Distributions</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="simRunExample.html">simRunExample</a></code> </p>
+        </td>
+        <td><p>Example Analysis Output of a Simulated Dataset</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="simulateWithPriors.html">simulateWithPriors()</a></code> <code><a href="simulateWithPriors.html">parallelSimulateWithPriors()</a></code> </p>
+        </td>
+        <td><p>Simulate data for initial TreEvo analysis</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="summarizePosterior.html">summarizePosterior()</a></code> </p>
+        </td>
+        <td><p>Summarize Posterior Distribution for a Free Parameter</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="testMultivarOutlierHDR.html">testMultivarOutlierHDR()</a></code> </p>
+        </td>
+        <td><p>Test If an Outlier Is Within a Highest Density Region of a Multivariate Cloud of Data Points</p></td>
+      </tr>
+    </tbody>
+    </table>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -256,11 +266,14 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
 </div>
 
       </footer>
    </div>
 
+  
+
   </body>
 </html>
+

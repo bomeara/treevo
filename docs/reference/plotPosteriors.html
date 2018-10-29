@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Pairwise Effective Sample Size — pairwiseESS • TreEvo</title>
+<title>Plot posterior distributions — plotPosteriors • TreEvo</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,10 +30,10 @@
 
 
 
-<meta property="og:title" content="Pairwise Effective Sample Size — pairwiseESS" />
+<meta property="og:title" content="Plot posterior distributions — plotPosteriors" />
 
-<meta property="og:description" content="This function calculates Effective Sample Size (ESS) on results.  Performs the best when results are
-from multiple runs." />
+<meta property="og:description" content="For each free parameter in the posterior, this function creates a plot of the distribution of values estimated in the last generation.
+This function can also be used to visually compare against true (generating) parameter values in a simulation." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -113,53 +113,76 @@ from multiple runs." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Pairwise Effective Sample Size</h1>
-    <small class="dont-index">Source: <a href='https://github.com/bomeara/treevo/blob/master/R/PairwiseESS.R'><code>R/PairwiseESS.R</code></a></small>
-    <div class="hidden name"><code>pairwiseESS.Rd</code></div>
+    <h1>Plot posterior distributions</h1>
+    <small class="dont-index">Source: <a href='https://github.com/bomeara/treevo/blob/master/R/plotPosteriors.R'><code>R/plotPosteriors.R</code></a></small>
+    <div class="hidden name"><code>plotPosteriors.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>This function calculates Effective Sample Size (ESS) on results.  Performs the best when results are
-from multiple runs.</p>
+    <p>For each free parameter in the posterior, this function creates a plot of the distribution of values estimated in the last generation.
+This function can also be used to visually compare against true (generating) parameter values in a simulation.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>pairwiseESS</span>(<span class='no'>inputData</span>)</pre>
+    <pre class="usage"><span class='fu'>plotPosteriors</span>(<span class='no'>particleDataFrame</span>, <span class='no'>priorsMat</span>, <span class='kw'>realParam</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>realParamValues</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>inputData</th>
-      <td><p>inputData can be a single data frame or a
-list of data frames</p></td>
+      <th>particleDataFrame</th>
+      <td><p>A <code>particleDataFrame</code> object returned by TreEvo ABC analyses, can be a
+single data frame or a list of data frames.
+If the <code>particleDataFrame</code> is a list of separate TreEvo runs, posteriors will
+be layered over each other to check for repeatability.  The relative gray-scale of
+posterior distributions in the plot depends on their total number of runs.</p></td>
+    </tr>
+    <tr>
+      <th>priorsMat</th>
+      <td><p>A <code>PriorMatrix</code> object s returned by TreEvo <code><a href='doRun.html'>doRun</a></code> functions. Can be a single such matrix
+or a list of matrices from a series of analyses.
+If the <code>PriorMatrix</code> is a list of matrices, only the first matrix will be
+evaluated, and all other matrices will be ignored.
+In other words, prior matrices are expected to be identical for all runs considered to the first matrix given.</p></td>
+    </tr>
+    <tr>
+      <th>realParam</th>
+      <td><p>If <code>TRUE</code>, this function will plot line segments where real
+parameter values are known. (Usually only true when simulated data is analyzed.)</p></td>
+    </tr>
+    <tr>
+      <th>realParamValues</th>
+      <td><p>Values for real parameters, include a value for each
+parameter (including fixed values). Otherwise should be <code>NA</code>.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Returns a matrix with ESS values of all pairwise runs</p>
+    <p>Returns a plot for each free parameter.</p>
+    
+    <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
+
+    <p><code>realParam</code> and <code>realParamValues</code> should only be used with simulated data, where
+the true values are known.</p>
+    
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><code><a href='plotPriorPost.html'>plotPrior</a></code> for a set of functions for visualizing and summarizing
+prior and posterior distributions, including a visual comparison for single parameters.</p></div>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-<span class='fu'>data</span>(<span class='no'>simRunExample</span>)
+    <pre class="examples"><div class='input'><span class='fu'>data</span>(<span class='no'>simRunExample</span>)
 
-<span class='co'># this will give a warning</span>
-<span class='fu'>pairwiseESS</span>(<span class='no'>results</span><span class='kw'>[[</span><span class='fl'>1</span>]]$<span class='no'>particleDataFrame</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: ESS on a single run should be high; consider combining several runs</span></div><div class='output co'>#&gt;             ESS
-#&gt; starting_1   36
-#&gt; intrinsic_1  36</div><div class='input'>
-<span class='co'># ESS should be calculated over multiple runs</span>
-<span class='fu'>pairwiseESS</span>(<span class='no'>results</span>)</div><div class='output co'>#&gt; <span class='message'>Multiple runs of doRun_prc found, extracting particleDataFrame objects</span></div><div class='output co'>#&gt;             1.2
-#&gt; starting_1   71
-#&gt; intrinsic_1  71</div><div class='input'>
-<span class='co'># you can also manually assemble a list of particleDataFrame tables</span>
-    <span class='co'># and use this as the input</span>
-<span class='no'>inputList</span> <span class='kw'>&lt;-</span> <span class='fu'>list</span>(<span class='no'>results</span><span class='kw'>[[</span><span class='fl'>2</span>]]$<span class='no'>particleDataFrame</span>, <span class='no'>results</span><span class='kw'>[[</span><span class='fl'>1</span>]]$<span class='no'>particleDataFrame</span>)
-<span class='fu'>pairwiseESS</span>(<span class='no'>inputList</span>)</div><div class='output co'>#&gt;             1.2
-#&gt; starting_1   71
-#&gt; intrinsic_1  71</div></pre>
+<span class='co'># make a list of particleDataFrames to plot multiple runs</span>
+<span class='no'>resultsPDFlist</span> <span class='kw'>&lt;-</span> <span class='fu'>lapply</span>(<span class='no'>results</span>, <span class='kw'>function</span>(<span class='no'>x</span>) <span class='no'>x</span>$<span class='no'>particleDataFrame</span>)
+
+<span class='fu'>plotPosteriors</span>(<span class='no'>resultsPDFlist</span>,
+   <span class='kw'>priorsMat</span> <span class='kw'>=</span> <span class='no'>results</span><span class='kw'>[[</span><span class='fl'>1</span>]]$<span class='no'>PriorMatrix</span>,
+   <span class='kw'>realParam</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>realParamValues</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='no'>ancState</span>, <span class='no'>genRate</span>))</div><div class='img'><img src='plotPosteriors-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -167,13 +190,17 @@ list of data frames</p></td>
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
+
+      <li><a href="#note">Note</a></li>
+
+      <li><a href="#see-also">See also</a></li>
       
       <li><a href="#examples">Examples</a></li>
     </ul>
 
     <h2>Author</h2>
     
-Brian O'Meara and Barb Banbury
+Barb Banbury and Brian O'Meara
 
   </div>
 </div>
