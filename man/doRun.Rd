@@ -190,6 +190,7 @@ epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor}
 \item{particleDataFrame}{DataFrame with information from each
 simulation, including generation, attempt, id, parentid, distance, weight, and parameter states}
 \item{postSummary}{Summarizes the posterior distribution from the final generation for all free parameters, giving the mean, standard deviation and Highest Posterior Density (at a 0.8 alpha) for each parameter.}
+\item{parMeansList}{A list of parameter means for both fixed and unfixed parameters, sorted into a list of three vectors (starting, intrinsic, extrinsic).}
 }
 }
 \description{
