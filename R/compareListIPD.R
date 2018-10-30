@@ -95,8 +95,8 @@ compareListIPD <- function(particleDataFrameList, verbose = FALSE){
 
 interparticleDistance <- function(x, y, abs = TRUE) {
    distances <- matrix(nrow = length(x), ncol = length(y))
-   for (i in sequence(length(x))) {
-      for (j in sequence(length(y))) {
+   for (i in 1:length(x)) {
+      for (j in 1:length(y)) {
         distances[i, j] <- x[i]-y[j]
       }
    }

@@ -61,11 +61,11 @@
 #'   intrinsicFn = brownianIntrinsic, 
 #'   extrinsicFn = nullExtrinsic, 
 #'   startingPriorsFns = "normal", 
-#'   startingPriorsValues = matrix(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
+#'   startingPriorsValues = list(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
 #'   intrinsicPriorsFns = c("exponential"), 
-#'   intrinsicPriorsValues = matrix(c(10, 10), nrow = 2, byrow = FALSE), 
+#'   intrinsicPriorsValues = list(10), 
 #'   extrinsicPriorsFns = c("fixed"), 
-#'   extrinsicPriorsValues = matrix(c(0, 0), nrow = 2, byrow = FALSE), 
+#'   extrinsicPriorsValues = list(0), 
 #'   generation.time = 100000, 
 #'   nRuns = 2, 
 #'   nStepsPRC = 3, 
@@ -102,7 +102,8 @@
 #' @importFrom rpgm rpgm.rnorm
 #' @importFrom utils capture.output
 
-
+# package mvr doesn't exist, was it renamed pls?
+# @importFrom mvr plsr
 
 
 # @importFrom plotrix listDepth

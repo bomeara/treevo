@@ -11,7 +11,8 @@
 
 #' @inheritParams highestDensityInterval
 
-#' @return Returns a list, wherein each element of the list is secondary list containing
+#' @return 
+#' Returns a list, wherein each element of the list is secondary list containing
 #' the weighted mean, standard deviation, and a matrix giving the highest density
 #' intervals (e.g. the highest posterior density intervals). Because posterior
 #' estimates of parameter values may be multimodal, multiple sets of bounds

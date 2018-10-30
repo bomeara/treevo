@@ -73,11 +73,11 @@ simDataParallel <- parallelSimulateWithPriors(
   intrinsicFn = brownianIntrinsic, 
   extrinsicFn = nullExtrinsic, 
   startingPriorsFns = "normal", 
-  startingPriorsValues = matrix(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
+  startingPriorsValues = list(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
   intrinsicPriorsFns = c("exponential"), 
-  intrinsicPriorsValues = matrix(c(10, 10), nrow = 2, byrow = FALSE), 
+  intrinsicPriorsValues = list(10), 
   extrinsicPriorsFns = c("fixed"), 
-  extrinsicPriorsValues = matrix(c(0, 0), nrow = 2, byrow = FALSE), 
+  extrinsicPriorsValues = list(0), 
   generation.time = 10000, 
   checkpointFile = NULL, 
   checkpointFreq = 24, 
@@ -101,7 +101,8 @@ PLSTransform(summaryValuesMatrix = summaryValuesMat, pls.model = PLSmodel)
 
 }
 \seealso{
-Function \code{returnPLSModel} effectively wraps function \code{\link{plsr}} from package \code{mvr}.
+Function \code{returnPLSModel} effectively wraps function \code{plsr}
+from package \code{pls} (see documentation at \code{\link[pls]{mvr}}).
 }
 \author{
 Brian O'Meara and Barb Banbury

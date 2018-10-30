@@ -61,47 +61,43 @@ doRun_rej <- function(
                         extrinsicPriorsFns = extrinsicPriorsFns, 
                         extrinsicPriorsValues = extrinsicPriorsValues
                         )
+	#
     numberParametersTotal <- length(freevector)
     numberParametersFree <- sum(freevector)
-
-    #create PriorMatrix
-    namesForPriorMatrix <- c()
-    PriorMatrix <- matrix(c(startingPriorsFns,
-        intrinsicPriorsFns,
-        extrinsicPriorsFns),
-        nrow = 1,
-        ncol = numberParametersTotal)
-    for (a in 1:dim(startingPriorsValues)[2]) {
-        namesForPriorMatrix <- c(paste0("starting_", a, sep = ""))
-    }
-    for (b in 1:dim(intrinsicPriorsValues)[2]) {
-        namesForPriorMatrix <- append(namesForPriorMatrix, paste0("intrinsic_", b, sep = ""))
-    }
-    #message(extrinsicPriorsValues)
-    for (c in 1:dim(extrinsicPriorsValues)[2]) {
-        namesForPriorMatrix  <- append(namesForPriorMatrix, paste0("extrinsic_", c, sep = ""))
-    }
-    PriorMatrix <- rbind(PriorMatrix, cbind(startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues))
-    colnames(PriorMatrix) <- namesForPriorMatrix
-    rownames(PriorMatrix) <- c("shape", "value1", "value2")    
+	#
+    if(numberParametersFree<1){
+        stop("No freely varying parameters found; analysis cannot continue. Check prior functions and values")
+        }
+    namesParFree <- names(freevector)[freevector]
+    #
+    # get prior list
+    priorList <- getPriorList(
+        startingPriorsValues = startingPriorsValues, 
+        intrinsicPriorsValues = intrinsicPriorsValues, 
+        extrinsicPriorsValues = extrinsicPriorsValues, 
+        startingPriorsFns = startingPriorsFns, 
+        intrinsicPriorsFns = intrinsicPriorsFns, 
+        extrinsicPriorsFns = extrinsicPriorsFns, 
+        numberParametersTotal = numberParametersTotal
+        )							
     #
     #initialize guesses, if needed
     #if (length(startingValuesGuess) == 0) { #if no user guesses, try pulling a value from the prior
     #    startingValuesGuess <- rep(NA, length(startingPriorsFns))
     #    for (i in 1:length(startingPriorsFns)) {
-    #        startingValuesGuess[i] <- pullFromPrior(startingPriorsValues[, i], startingPriorsFns[i])
+    #        startingValuesGuess[i] <- pullFromPrior(startingPriorsValues[[i]], startingPriorsFns[i])
     #    }
     #}
     #if (length(intrinsicValuesGuess) == 0) { #if no user guesses, try pulling a value from the prior
     #    intrinsicValuesGuess <- rep(NA, length(intrinsicPriorsFns))
     #    for (i in 1:length(intrinsicPriorsFns)) {
-    #        intrinsicValuesGuess[i] <- pullFromPrior(intrinsicPriorsValues[, i], intrinsicPriorsFns[i])
+    #        intrinsicValuesGuess[i] <- pullFromPrior(intrinsicPriorsValues[[i]], intrinsicPriorsFns[i])
     #    }
     #}
     #if (length(extrinsicValuesGuess) == 0) { #if no user guesses, try pulling a value from the prior
     #    extrinsicValuesGuess <- rep(NA, length(extrinsicPriorsFns))
     #    for (i in 1:length(extrinsicPriorsFns)) {
-    #        extrinsicValuesGuess[i] <- pullFromPrior(extrinsicPriorsValues[, i], extrinsicPriorsFns[i])
+    #        extrinsicValuesGuess[i] <- pullFromPrior(extrinsicPriorsValues[[i]], extrinsicPriorsFns[i])
     #    }
     #}
     #
@@ -184,7 +180,7 @@ doRun_rej <- function(
         nInitialSims, nAcceptedSims, standardDevFactor, abcTolerance)
     #
     rejectionResults$input.data <- input.data
-    rejectionResults$PriorMatrix <- PriorMatrix
+    rejectionResults$priorList <- priorList
     rejectionResults$phy <- phy
     rejectionResults$traits <- traits
     rejectionResults$trueFreeValuesANDSummaryValues <- trueFreeValuesANDSummaryValues

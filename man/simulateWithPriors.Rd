@@ -33,20 +33,30 @@ of other taxa.}
 \item{startingPriorsFns}{Vector containing names of prior distributions to
 use for root states: can be one of \code{"fixed"}, \code{"uniform"}, \code{"normal"},}
 
-\item{startingPriorsValues}{Matrix with number of columns equal to the number of states (characters)
-at root and number of rows equal to two (representing two parameters to pass to prior distribution).}
+\item{startingPriorsValues}{A list of the same length as the number of prior distributions specified in
+\code{startingPriorsFns} (for starting values, this should be one prior function specified for each trait
+- thus one for most univariate trait analyses), with each element of the list a vector the same length
+as the appropriate number of parameters for that prior distribution (1 for \code{"fixed"}, 2 for
+\code{"uniform"}, 2 for \code{"normal"}, 2 for \code{"lognormal"}, 2 for \code{"gamma"}, 1
+for \code{"exponential"}).}
 
 \item{intrinsicPriorsFns}{Vector containing names of prior distributions to
 use for intrinsic function parameters: can be one of \code{"fixed"}, \code{"uniform"}, \code{"normal"},}
 
-\item{intrinsicPriorsValues}{Matrix with number of columns equal to the number of parameters to pass
-to the intrinsic function and number of rows equal to two (representing two parameters to pass to prior distribution).}
+\item{intrinsicPriorsValues}{A list of the same length as the number of prior distributions specified
+in \code{intrinsicPriorsFns} (one prior function specified for each parameter in the intrinsic model),
+with each element of the list a vector the same length as the appropriate number of parameters
+for that prior distribution (1 for \code{"fixed"}, 2 for \code{"uniform"}, 2 for \code{"normal"},
+2 for \code{"lognormal"}, 2 for \code{"gamma"}, 1 for \code{"exponential"}).}
 
 \item{extrinsicPriorsFns}{Vector containing names of prior distributions to
 use for extrinsic function parameters: can be one of \code{"fixed"}, \code{"uniform"}, \code{"normal"},}
 
-\item{extrinsicPriorsValues}{Matrix with number of columns equal to the number of parameters to pass
-to the extrinsic function and number of rows equal to two (representing two parameters to pass to prior distribution).}
+\item{extrinsicPriorsValues}{A list of the same length as the number of prior distributions
+specified in \code{extrinsicPriorsFns} (one prior function specified for each parameter
+in the extrinsic model), with each element of the list a vector the same length as the appropriate
+number of parameters for that prior distribution (1 for \code{"fixed"}, 2 for \code{"uniform"},
+2 for \code{"normal"}, 2 for \code{"lognormal"}, 2 for \code{"gamma"}, 1 for \code{"exponential"}).}
 
 \item{generation.time}{The number of years per generation. This sets the coarseness of the simulation; if it's set to 1000, 
 for example, the population's trait values change every 1000 calender years. Note that this is in calender years (see description
@@ -145,11 +155,11 @@ simData <- simulateWithPriors(phy = tree,
   intrinsicFn = brownianIntrinsic, 
   extrinsicFn = nullExtrinsic, 
   startingPriorsFns = "normal", 
-  startingPriorsValues = matrix(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
+  startingPriorsValues = list(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
   intrinsicPriorsFns = c("exponential"), 
-  intrinsicPriorsValues = matrix(c(10, 10), nrow = 2, byrow = FALSE), 
+  intrinsicPriorsValues = list(10), 
   extrinsicPriorsFns = c("fixed"), 
-  extrinsicPriorsValues = matrix(c(0, 0), nrow = 2, byrow = FALSE), 
+  extrinsicPriorsValues = list(0), 
   generation.time = 100000, 
      freevector = NULL,     
      giveUpAttempts = 10, 
@@ -163,11 +173,11 @@ simDataParallel <- parallelSimulateWithPriors(
   intrinsicFn = brownianIntrinsic, 
   extrinsicFn = nullExtrinsic, 
   startingPriorsFns = "normal", 
-  startingPriorsValues = matrix(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
+  startingPriorsValues = list(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
   intrinsicPriorsFns = c("exponential"), 
-  intrinsicPriorsValues = matrix(c(10, 10), nrow = 2, byrow = FALSE), 
+  intrinsicPriorsValues = list(10), 
   extrinsicPriorsFns = c("fixed"), 
-  extrinsicPriorsValues = matrix(c(0, 0), nrow = 2, byrow = FALSE), 
+  extrinsicPriorsValues = list(0), 
   generation.time = 100000, 
   checkpointFile = NULL, checkpointFreq = 24, 
   verbose = TRUE, freevector = NULL, taxonDF = NULL)

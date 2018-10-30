@@ -120,7 +120,7 @@
 #' generation.time, TreeYears, timeStep, totalGenerations, epsilonProportion, 
 #' epsilonMultiplier, nRuns, nStepsPRC, numParticles, standardDevFactor}
 
-#' \item{PriorMatrix}{Matrix of prior distributions. This is used for doing post-analysis comparisons between prior and posterior distributions, such as with function \code{plotPosteriors}}
+#' \item{priorList}{List of prior distributions. This is used for doing post-analysis comparisons between prior and posterior distributions, such as with function \code{plotPosteriors}}
 
 #' \item{particleDataFrame}{DataFrame with information from each simulation, 
 #' including generation, attempt, id, parentid, distance, weight, and parameter states}
@@ -150,7 +150,7 @@
 #' generation.time, TreeYears, timeStep, totalGenerations, epsilonProportion, 
 #' epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor}
 
-#' \item{PriorMatrix}{Matrix of prior distributions. This is used for doing post-analysis comparisons between prior and posterior distributions, such as with function \code{plotPosteriors}}
+#' \item{priorList}{List of prior distributions. This is used for doing post-analysis comparisons between prior and posterior distributions, such as with function \code{plotPosteriors}}
 
 #' \item{phy}{Input phylogeny}
 
@@ -170,6 +170,8 @@
 # \item{credibleInt}{Credible Interval calculation for each free parameter of the final generation}
 
 #' \item{postSummary}{Summarizes the posterior distribution from the final generation for all free parameters, giving the mean, standard deviation and Highest Posterior Density (at a 0.8 alpha) for each parameter.}
+
+#' \item{parMeansList}{A list of parameter means for both fixed and unfixed parameters, sorted into a list of three vectors (starting, intrinsic, extrinsic).}
 #' }
 #' 
 #' 
@@ -200,11 +202,11 @@
 #'   intrinsicFn = brownianIntrinsic, 
 #'   extrinsicFn = nullExtrinsic, 
 #'   startingPriorsFns = "normal", 
-#'   startingPriorsValues = matrix(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
+#'   startingPriorsValues = list(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
 #'   intrinsicPriorsFns = c("exponential"), 
-#'   intrinsicPriorsValues = matrix(c(10, 10), nrow = 2, byrow = FALSE), 
+#'   intrinsicPriorsValues = list(10), 
 #'   extrinsicPriorsFns = c("fixed"), 
-#'   extrinsicPriorsValues = matrix(c(0, 0), nrow = 2, byrow = FALSE), 
+#'   extrinsicPriorsValues = list(0), 
 #'   generation.time = 10000, 
 #'   nRuns = 2, 
 #'   nStepsPRC = 3, 
@@ -214,7 +216,7 @@
 #'   stopRule = FALSE, 
 #'   multicore = FALSE, 
 #'   coreLimit = 1
-#' )
+#'   )
 #' 
 #' resultsPRC
 #' 
@@ -226,12 +228,12 @@
 #'     intrinsicFn = brownianIntrinsic, 
 #'     extrinsicFn = nullExtrinsic, 
 #'     startingPriorsFns = "normal", 
-#'     startingPriorsValues = matrix(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
+#'     startingPriorsValues = list(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
 #'     intrinsicPriorsFns = c("exponential"), 
-#'     intrinsicPriorsValues = matrix(c(10, 10), nrow = 2, byrow = FALSE), #grep for normal in pkg
+#'     intrinsicPriorsValues = list(10), #grep for normal in pkg
 #'     extrinsicPriorsFns = c("fixed"), 
-#'     extrinsicPriorsValues = matrix(c(0, 0), nrow = 2, byrow = FALSE), 
-#'    generation.time = 10000, 
+#'     extrinsicPriorsValues = list(0), 
+#'     generation.time = 10000, 
 #'     jobName = "examplerun_rej", 
 #'     abcTolerance = 0.05, 
 #'     multicore = FALSE, 
@@ -358,8 +360,8 @@ doRun_prc <- function(
         }
     namesParFree <- names(freevector)[freevector]
     #
-    # get prior matrix
-    PriorMatrix <- getPriorMatrix(
+    # get prior list
+    priorList <- getPriorList(
         startingPriorsValues = startingPriorsValues, 
         intrinsicPriorsValues = intrinsicPriorsValues, 
         extrinsicPriorsValues = extrinsicPriorsValues, 
@@ -372,14 +374,15 @@ doRun_prc <- function(
     #initialize weighted mean sd matrices
     weightedMeanParam <- matrix(nrow = nStepsPRC, 
         ncol = numberParametersFree)
-    colnames(weightedMeanParam) <- namesParFree
-    rownames(weightedMeanParam) <- paste0("Gen ", c(1: nStepsPRC), sep = "")
     param.stdev <- matrix(nrow = nStepsPRC, ncol = numberParametersFree)
-    colnames(param.stdev) <- namesParFree
-    rownames(param.stdev) <- paste0("Gen ", c(1: nStepsPRC), sep = "")
+    #
+	colnames(weightedMeanParam) <- colnames(param.stdev) <- namesParFree 
+    rownames(weightedMeanParam) <- rownames(param.stdev) <- paste0("Gen ", c(1: nStepsPRC), sep = "") 
     #
     if (is.null(nInitialSims)) {
-        nInitialSims <- nInitialSimsPerParam*numberParametersFree    #modified from 1000, which is rather computationally abusive
+        #modified from 1000, which is rather computationally abusive
+		nInitialSims <- nInitialSimsPerParam*numberParametersFree    
+		#
         message(paste0("Number of initial simulations to be performed (nInitialSims) not given\n", 
             "Number of initial simulations will instead be product of the number of free parameters multiplied by ",
             nInitialSimsPerParam, 
@@ -476,7 +479,7 @@ doRun_prc <- function(
                 }
             #stores parameters in model for each particle
             particleParameters <- matrix(nrow = numParticles, 
-                ncol = dim(startingPriorsValues)[2] +  dim(intrinsicPriorsValues)[2] + dim(extrinsicPriorsValues)[2])
+                ncol = length(startingPriorsValues) +  length(intrinsicPriorsValues) + length(extrinsicPriorsValues))
             #
             weightScaling = 0;
             #
@@ -730,7 +733,7 @@ doRun_prc <- function(
                 #
                 prcResults <- list()
                 prcResults$input.data <- input.data
-                prcResults$PriorMatrix <- PriorMatrix
+                prcResults$priorList <- priorList
                 prcResults$particleDataFrame <- particleDataFrame
                 names(prcResults$particleDataFrame) <- nameVector
                 prcResults$toleranceVector <- initialSimsRes$toleranceVector
@@ -749,7 +752,8 @@ doRun_prc <- function(
         names(particleDataFrame) <- nameVector
         #
         particleTime <- proc.time()[[3]]-particleStartTime
-        message(paste0("Collection of simulation particles under PRC completed in ", particleTime, " seconds..."))
+        message(paste0("Collection of simulation particles under PRC completed in ",
+			signif(particleTime,2), " seconds..."))
         #---------------------- ABC-PRC (End) --------------------------------
         #
         time3 <- proc.time()[[3]]
@@ -758,7 +762,7 @@ doRun_prc <- function(
         # save them to prcResults (this hasn't been done yet if save.data = FALSE)
         prcResults <- list()
         prcResults$input.data <- input.data
-        prcResults$PriorMatrix <- PriorMatrix
+        prcResults$priorList <- priorList
         prcResults$particleDataFrame <- particleDataFrame
         #names(prcResults$particleDataFrame) <- nameVector
         prcResults$toleranceVector <- initialSimsRes$toleranceVector
@@ -769,6 +773,7 @@ doRun_prc <- function(
         #######################################
         if(nrow(particleDataFrame)>2){
             prcResults$postSummary  <- summarizePosterior(particleDataFrame, verboseMultimodal = FALSE)
+			prcResults$parMeansList  <- getSummaryMeans(prcResults$postSummary)
         }else{
             warning("Posterior Summaries were not calculated as the number of accepted particles was less than 2")
             }

@@ -15,16 +15,24 @@
 
 #' @inheritParams doSimulation
 
+#' @param startingPriorsValues A list of the same length as the number of prior distributions specified in
+#' \code{startingPriorsFns} (for starting values, this should be one prior function specified for each trait
+#' - thus one for most univariate trait analyses), with each element of the list a vector the same length
+#' as the appropriate number of parameters for that prior distribution (1 for \code{"fixed"}, 2 for
+#' \code{"uniform"}, 2 for \code{"normal"}, 2 for \code{"lognormal"}, 2 for \code{"gamma"}, 1
+#' for \code{"exponential"}).
 
-#' @param startingPriorsValues Matrix with number of columns equal to the number of states (characters)
-#' at root and number of rows equal to two (representing two parameters to pass to prior distribution).
+#' @param intrinsicPriorsValues A list of the same length as the number of prior distributions specified
+#' in \code{intrinsicPriorsFns} (one prior function specified for each parameter in the intrinsic model),
+#' with each element of the list a vector the same length as the appropriate number of parameters
+#' for that prior distribution (1 for \code{"fixed"}, 2 for \code{"uniform"}, 2 for \code{"normal"},
+#' 2 for \code{"lognormal"}, 2 for \code{"gamma"}, 1 for \code{"exponential"}).
 
-#' @param intrinsicPriorsValues Matrix with number of columns equal to the number of parameters to pass
-#' to the intrinsic function and number of rows equal to two (representing two parameters to pass to prior distribution).
-
-#' @param extrinsicPriorsValues Matrix with number of columns equal to the number of parameters to pass
-#' to the extrinsic function and number of rows equal to two (representing two parameters to pass to prior distribution).
-
+#' @param extrinsicPriorsValues A list of the same length as the number of prior distributions
+#' specified in \code{extrinsicPriorsFns} (one prior function specified for each parameter
+#' in the extrinsic model), with each element of the list a vector the same length as the appropriate
+#' number of parameters for that prior distribution (1 for \code{"fixed"}, 2 for \code{"uniform"},
+#' 2 for \code{"normal"}, 2 for \code{"lognormal"}, 2 for \code{"gamma"}, 1 for \code{"exponential"}).
 
 #' @param startingPriorsFns Vector containing names of prior distributions to
 #' use for root states: can be one of \code{"fixed"}, \code{"uniform"}, \code{"normal"}, 
@@ -102,11 +110,11 @@
 #'   intrinsicFn = brownianIntrinsic, 
 #'   extrinsicFn = nullExtrinsic, 
 #'   startingPriorsFns = "normal", 
-#'   startingPriorsValues = matrix(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
+#'   startingPriorsValues = list(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
 #'   intrinsicPriorsFns = c("exponential"), 
-#'   intrinsicPriorsValues = matrix(c(10, 10), nrow = 2, byrow = FALSE), 
+#'   intrinsicPriorsValues = list(10), 
 #'   extrinsicPriorsFns = c("fixed"), 
-#'   extrinsicPriorsValues = matrix(c(0, 0), nrow = 2, byrow = FALSE), 
+#'   extrinsicPriorsValues = list(0), 
 #'   generation.time = 100000, 
 #'      freevector = NULL,     
 #'      giveUpAttempts = 10, 
@@ -120,11 +128,11 @@
 #'   intrinsicFn = brownianIntrinsic, 
 #'   extrinsicFn = nullExtrinsic, 
 #'   startingPriorsFns = "normal", 
-#'   startingPriorsValues = matrix(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
+#'   startingPriorsValues = list(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
 #'   intrinsicPriorsFns = c("exponential"), 
-#'   intrinsicPriorsValues = matrix(c(10, 10), nrow = 2, byrow = FALSE), 
+#'   intrinsicPriorsValues = list(10), 
 #'   extrinsicPriorsFns = c("fixed"), 
-#'   extrinsicPriorsValues = matrix(c(0, 0), nrow = 2, byrow = FALSE), 
+#'   extrinsicPriorsValues = list(0), 
 #'   generation.time = 100000, 
 #'   checkpointFile = NULL, checkpointFreq = 24, 
 #'   verbose = TRUE, freevector = NULL, taxonDF = NULL)
@@ -189,17 +197,17 @@ simulateWithPriors <- function(
         if (n.attempts>giveUpAttempts) {
             stop("Error: keep getting NA in the output of simulateWithPriors")
         }
-        trueStarting <- rep(NaN, dim(startingPriorsValues)[2])
-        trueIntrinsic <- rep(NaN, dim(intrinsicPriorsValues)[2])
-        trueExtrinsic <- rep(NaN, dim(extrinsicPriorsValues)[2])
-        for (j in 1:dim(startingPriorsValues)[2]) {
-            trueStarting[j] <- pullFromPrior(startingPriorsValues[, j], startingPriorsFns[j])
+        trueStarting <- rep(NaN, length(startingPriorsValues))
+        trueIntrinsic <- rep(NaN, length(intrinsicPriorsValues))
+        trueExtrinsic <- rep(NaN, length(extrinsicPriorsValues))
+        for (j in 1:length(startingPriorsValues)) {
+            trueStarting[j] <- pullFromPrior(startingPriorsValues[[j]], startingPriorsFns[j])
         }
-        for (j in 1:dim(intrinsicPriorsValues)[2]) {
-            trueIntrinsic[j] <- pullFromPrior(intrinsicPriorsValues[, j], intrinsicPriorsFns[j])
+        for (j in 1:length(intrinsicPriorsValues)) {
+            trueIntrinsic[j] <- pullFromPrior(intrinsicPriorsValues[[j]], intrinsicPriorsFns[j])
         }
-        for (j in 1:dim(extrinsicPriorsValues)[2]) {
-            trueExtrinsic[j] <- pullFromPrior(extrinsicPriorsValues[, j], extrinsicPriorsFns[j])
+        for (j in 1:length(extrinsicPriorsValues)) {
+            trueExtrinsic[j] <- pullFromPrior(extrinsicPriorsValues[[j]], extrinsicPriorsFns[j])
         }
         trueInitial <- c(trueStarting, trueIntrinsic, trueExtrinsic)
         trueFreeValues <- trueInitial[freevector]

@@ -7,11 +7,11 @@ test_that("simParticlePRCParallel run correctly", {
     intrinsicFn=brownianIntrinsic
     extrinsicFn=nullExtrinsic
     startingPriorsFns="normal"
-    startingPriorsValues=matrix(c(mean(simChar[,1]), sd(simChar[,1])))
-    intrinsicPriorsFns=c("exponential")
-    intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE)
-    extrinsicPriorsFns=c("fixed")
-    extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE)
+	startingPriorsValues = list(c(mean(simChar[, 1]), sd(simChar[, 1])))
+	intrinsicPriorsFns = c("exponential")
+	intrinsicPriorsValues = list(10)
+	extrinsicPriorsFns = c("fixed")
+	extrinsicPriorsValues = list(0)
     generation.time=1000000
     standardDevFactor=0.2
     nInitialSims=10
@@ -43,9 +43,10 @@ test_that("simParticlePRCParallel run correctly", {
                         extrinsicPriorsFns=extrinsicPriorsFns, extrinsicPriorsValues=extrinsicPriorsValues)
     numberParametersTotal<-length(freevector)
     numberParametersFree<-sum(freevector)
+	namesParFree <- names(freevector)[freevector]
     #
-    # get prior matrix
-    PriorMatrix<-getPriorMatrix(
+    # get prior list
+    priorList<-getPriorList(
         startingPriorsValues=startingPriorsValues,
         intrinsicPriorsValues=intrinsicPriorsValues,
         extrinsicPriorsValues=extrinsicPriorsValues,
@@ -56,16 +57,17 @@ test_that("simParticlePRCParallel run correctly", {
     #    
     ##    
     #initialize weighted mean sd matrices
-    weightedMeanParam<-matrix(nrow=nStepsPRC, ncol=numberParametersTotal)
-    colnames(weightedMeanParam)<-colnames(PriorMatrix)
-    rownames(weightedMeanParam)<-paste0("Gen ", c(1: nStepsPRC), sep="")
-    param.stdev<-matrix(nrow=nStepsPRC, ncol=numberParametersTotal)
-    colnames(param.stdev)<-colnames(PriorMatrix)
-    rownames(param.stdev)<-paste0("Gen ", c(1: nStepsPRC), sep="")
+    weightedMeanParam <- matrix(nrow = nStepsPRC, 
+        ncol = numberParametersFree)
+    param.stdev <- matrix(nrow = nStepsPRC, ncol = numberParametersFree)
+    #
+	colnames(weightedMeanParam) <- colnames(param.stdev) <- namesParFree 
+    rownames(weightedMeanParam) <- rownames(param.stdev) <- paste0("Gen ", c(1: nStepsPRC), sep = "") 
+    #
     #
     # save input data for use later
-    input.data<-rbind(jobName, Ntips = Ntip(phy), nInitialSims, generation.time, TreeYears, timeStep, totalGenerations,
-        epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor)
+    #input.data<-rbind(jobName, Ntips = Ntip(phy), nInitialSims, generation.time, TreeYears, timeStep, totalGenerations,
+     #   epsilonProportion, epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor)
     #
     # get summary values for observed data
     originalSummaryValues<-summaryStatsLong(
@@ -143,11 +145,11 @@ test_that("simParticlePRC run correctly", {
     intrinsicFn=brownianIntrinsic
     extrinsicFn=nullExtrinsic
     startingPriorsFns="normal"
-    startingPriorsValues=matrix(c(mean(simChar[,1]), sd(simChar[,1])))
-    intrinsicPriorsFns=c("exponential")
-    intrinsicPriorsValues=matrix(c(10, 10), nrow=2, byrow=FALSE)
-    extrinsicPriorsFns=c("fixed")
-    extrinsicPriorsValues=matrix(c(0, 0), nrow=2, byrow=FALSE)
+	startingPriorsValues = list(c(mean(simChar[, 1]), sd(simChar[, 1]))) 
+	intrinsicPriorsFns = c("exponential")
+	intrinsicPriorsValues = list(10)
+	extrinsicPriorsFns = c("fixed")
+	extrinsicPriorsValues = list(0)
     generation.time=1000000
     standardDevFactor=0.2
     nInitialSims=10
@@ -179,9 +181,10 @@ test_that("simParticlePRC run correctly", {
                         extrinsicPriorsFns=extrinsicPriorsFns, extrinsicPriorsValues=extrinsicPriorsValues)
     numberParametersTotal<-length(freevector)
     numberParametersFree<-sum(freevector)
+	namesParFree <- names(freevector)[freevector]
     #
     # get prior matrix
-    PriorMatrix<-getPriorMatrix(
+    priorList<-getPriorList(
         startingPriorsValues=startingPriorsValues,
         intrinsicPriorsValues=intrinsicPriorsValues,
         extrinsicPriorsValues=extrinsicPriorsValues,
@@ -192,12 +195,12 @@ test_that("simParticlePRC run correctly", {
     #    
     ##    
     #initialize weighted mean sd matrices
-    weightedMeanParam<-matrix(nrow=nStepsPRC, ncol=numberParametersTotal)
-    colnames(weightedMeanParam)<-colnames(PriorMatrix)
-    rownames(weightedMeanParam)<-paste0("Gen ", c(1: nStepsPRC), sep="")
-    param.stdev<-matrix(nrow=nStepsPRC, ncol=numberParametersTotal)
-    colnames(param.stdev)<-colnames(PriorMatrix)
-    rownames(param.stdev)<-paste0("Gen ", c(1: nStepsPRC), sep="")
+    weightedMeanParam <- matrix(nrow = nStepsPRC, 
+        ncol = numberParametersFree)
+    param.stdev <- matrix(nrow = nStepsPRC, ncol = numberParametersFree)
+    #
+	colnames(weightedMeanParam) <- colnames(param.stdev) <- namesParFree 
+    rownames(weightedMeanParam) <- rownames(param.stdev) <- paste0("Gen ", c(1: nStepsPRC), sep = "") 
     #
     # save input data for use later
     input.data<-rbind(jobName, Ntips = Ntip(phy), nInitialSims, generation.time, TreeYears, timeStep, totalGenerations,
@@ -248,9 +251,9 @@ test_that("simParticlePRC run correctly", {
     results <- simParticlePRC<-function(
         phy=phy
         ,taxonDF=taxonDF
-        , timeStep=timeStep
+        ,timeStep=timeStep
         ,intrinsicFn=intrinsicFn
-        , extrinsicFn=extrinsicFn 
+        ,extrinsicFn=extrinsicFn 
         ,startingPriorsValues=startingPriorsValues
         ,intrinsicPriorsValues=intrinsicPriorsValues
         ,extrinsicPriorsValues=extrinsicPriorsValues

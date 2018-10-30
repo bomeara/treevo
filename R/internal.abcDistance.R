@@ -38,11 +38,11 @@
 #    intrinsicFn = brownianIntrinsic, 
 #    extrinsicFn = nullExtrinsic, 
 #    startingPriorsFns = "normal", 
-#    startingPriorsValues = matrix(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
+#    startingPriorsValues = list(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
 #    intrinsicPriorsFns = c("exponential"), 
-#    intrinsicPriorsValues = matrix(c(10, 10), nrow = 2, byrow = FALSE), 
+#    intrinsicPriorsValues = list(10), 
 #    extrinsicPriorsFns = c("fixed"), 
-#    extrinsicPriorsValues = matrix(c(0, 0), nrow = 2, byrow = FALSE), 
+#    extrinsicPriorsValues = list(0), 
 #    timeStep = 10^-6, 
 #    checkpointFile = NULL, checkpointFreq = 24, 
 #    verbose = FALSE, 
@@ -74,7 +74,7 @@
 #  @rdname abcDistance
 #  @export
 abcDistance <- function(summaryValuesMatrix, originalSummaryValues, pls.model.list) {
-  abcDistancesRaw <- sapply(sequence(length(pls.model.list)), 
+  abcDistancesRaw <- sapply(1:length(pls.model.list), 
     SingleParameterPLSDistanceSquaredFixedPLS, 
         pls.model.list = pls.model.list, summaryValuesMatrix = summaryValuesMatrix, 
         originalSummaryValues = originalSummaryValues, scale = scale

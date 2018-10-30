@@ -27,7 +27,7 @@ trait values as a one-column matrix with row names indicating tip labels, as des
 
 The objects \code{results} and \code{resultsBound} are lists composed of a number
 of elements (see the documentation for the \code{\link{doRun_prc}} function for more detail). These elements are
-respectively \code{input.data}, \code{PriorMatrix}, \code{particleDataFrame}, \code{toleranceVector}, \code{phy}, 
+respectively \code{input.data}, \code{priorList}, \code{particleDataFrame}, \code{toleranceVector}, \code{phy}, 
 \code{traits}, \code{simTime}, \code{time.per.gen}, and \code{postSummary}.}
 \description{
 Simulated 30-taxon coalescent tree and simulated character data from a Brownian Motion
@@ -78,11 +78,11 @@ results <- doRun_prc(
     intrinsicFn = brownianIntrinsic, 
     extrinsicFn = nullExtrinsic, 
     startingPriorsFns = "normal", 
-    startingPriorsValues = matrix(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
+    startingPriorsValues = list(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
     intrinsicPriorsFns = c("exponential"), 
-    intrinsicPriorsValues = matrix(c(10, 10), nrow = 2, byrow = FALSE), 
+    intrinsicPriorsValues = list(10), 
     extrinsicPriorsFns = c("fixed"), 
-    extrinsicPriorsValues = matrix(c(0, 0), nrow = 2, byrow = FALSE), 
+    extrinsicPriorsValues = list(0), 
     generation.time = 10000, 
     nRuns = 2, 
     nStepsPRC = 3, 
@@ -101,11 +101,11 @@ resultsBound <- doRun_prc(
     intrinsicFn = boundaryMinIntrinsic, 
     extrinsicFn = nullExtrinsic, 
     startingPriorsFns = "normal", 
-    startingPriorsValues = matrix(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
+    startingPriorsValues = list(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
     intrinsicPriorsFns = c("exponential", "normal"), 
-    intrinsicPriorsValues = matrix(c(10, 10, -10, 1), nrow = 2, byrow = FALSE), 
+    intrinsicPriorsValues = list(10,c(-10,1)), 
     extrinsicPriorsFns = c("fixed"), 
-    extrinsicPriorsValues = matrix(c(0, 0), nrow = 2, byrow = FALSE), 
+    extrinsicPriorsValues = list(0), 
     generation.time = 10000, 
     nRuns = 2, 
     nStepsPRC = 3, 
@@ -120,7 +120,7 @@ resultsBound <- doRun_prc(
 
 rm(.Random.seed)
 save.image(file = "simRunExample.rdata")
-
+if(interactive()){savehistory("simRunExample.Rhistory")}
 
 }
 

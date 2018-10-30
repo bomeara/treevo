@@ -5,52 +5,50 @@
 
 #' Extrinsic Character Evolution Models
 #' 
-#' Functions describing various models of 'extrinsive' evolution (i.e. evolutionary processes
+#' Functions describing various models of 'extrinsic' evolution (i.e. evolutionary processes
 #' dependent on factors extrinsic to the evolving lineage, such as environmental change, or
 #' other evolving lineages that interact with the lineage in question (competitors, predators, etc).
 #' 
 #' The following extrinsic models are:
 #' 
-#' 
 #' \code{nullExtrinsic} describes a model of no extrinsic character change.
-#' 
 #' It has no parameters, really.
-#' 
 #' 
 #' \code{nearestNeighborDisplacementExtrinsic} describes a model of extrinsic trait evolution where character
 #' values of a focal taxon depend on the values of closest relatives on the tree (e.g. competitive exclusion).
-#' 
 #' The input parameters for this model are:
-#' \code{nearestNeighborDisplacementExtrinsic} params = sd, springK, maximum force
-#' 
+#' \code{nearestNeighborDisplacementExtrinsic} with parameters \code{params = sd, springK, maximumForce}
 #' 
 #' \code{everyoneDisplacementExtrinsic} describes a model of extrinsic trait evolution where the character
 #' values of a focal taxon depend on the values of all co-extant relatives on the simulated tree.
-#' 
 #' The input parameters for this model are:
-#' \code{everyoneDisplacementExtrinsic} params = sd, springK, maximum force
-#' 
+#' \code{everyoneDisplacementExtrinsic} with parameters \code{params = sd, springK, maximumForce}
 #' 
 #' \code{ExponentiallyDecayingPushExtrinsic} describes a model of extrinsic trait evolution where the character
 #' values of a focal taxon is 'pushed' away from other taxa with similar values, but the force of that 'push'
 #' exponentially decays as lineages diverge and their character values become less similar.
-#' 
 #' The input parameters for this model are:
-#' \code{ExponentiallyDecayingPushExtrinsic} params = sd, maximum force, half distance
+#' \code{ExponentiallyDecayingPushExtrinsic} with parameters \code{params = sd, maximumForce, halfDistance}
 #' 
 
+#' @inheritParams intrinsicModels
 
-#' @param params describes input paramaters for the model (see Description)
+#' @param selfstates Vector of current trait values for the population of
+#' interest. May be multiple for some models, but generally expected to be
+#' only a single value. Multivariate \code{TreEvo} is not yet supported.
 
-#' @param selfstates vector of states for each taxon
+#' @param otherstates Matrix of current trait values for all concurrent taxa/populations other
+#' than the one of interest, with one row for each taxon, and a column for each trait.
+#' May be multiple states per taxa/populations for some models, but generally expected to be
+#' only a single value. Multivariate \code{TreEvo} is not yet supported.
 
-#' @param otherstates matrix of character states, one row per taxon and once
-#' column per state
+#' @aliases abcmodels.extrinsic
 
-#' @param timefrompresent which time slice in the tree
+#' @seealso Intrinsic models are described at \code{\link{intrinsicModels}}.
 
-#' @return A matrix of values representing character displacement from a single
-#' time step in the tree.
+#' @return
+#' A vector of values representing character displacement of that lineage over a single time step.
+
 
 #' @author Brian O'Meara and Barb Banbury
 
@@ -180,7 +178,7 @@ EstimateRate <- function(diff, quantile = 0.95) {
 GetExpPushPriors <- function(numSteps, phy, data) {
   #returns a matrix with exponential rates for the three Exponential push priors
   timeStep <- 1/numSteps  #out of doRun_rej code
-  sd <- getBMRatePrior(phy, data, timeStep)  #new TreEvo function
+  sd <- getBMRatePrior(phy=phy, traits=data, timeStep=timeStep)  #new TreEvo function
   data.sort <- sort(data[, 1])
   data.min.diff <- min(abs(data.sort[1:(length(data.sort)-1)]-data.sort[2:(length(data.sort))]))
   data.max.diff <- abs(max(data.sort)-min(data.sort))

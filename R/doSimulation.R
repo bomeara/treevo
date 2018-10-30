@@ -379,7 +379,7 @@ doSimulationInternal <- function(
             ##            message(paste0("taxonIndex ", taxonIndex, "\n", 
             ##                            "aliveRows ", paste0(aliveRows, collapse = ", "), "\n", 
             ##                            "length(aliveRows) ", length(aliveRows), "\n", 
-            ##                            "sequence(length(aliveRows))", paste(sequence(length(aliveRows)), collapse = ", "), "\n", 
+            ##                            "1:length(aliveRows)", paste(1:length(aliveRows)), collapse = ", "), "\n", 
             ##                            "currentStates ", paste(currentStates, collapse = ", "), "\n", 
             ##                            "params ", extrinsicValues, "\n", 
             ##                            "selfstates ", currentStates[taxonIndex], "\n", 
@@ -422,7 +422,7 @@ doSimulationInternal <- function(
         #
         # now speciate and pass one state to descendant
         if(length(ids.speciating)>0) {
-            for (speciating.taxonIndex in sequence(length(ids.speciating))) {
+            for (speciating.taxonIndex in 1:length(ids.speciating)) {
                 ancestor.row <- which(taxonID == ids.speciating[speciating.taxonIndex])
                 descendant.rows <- which(taxonAnc == taxonID[ancestor.row])
                 taxonStates[descendant.rows] <- taxonStates[ancestor.row]

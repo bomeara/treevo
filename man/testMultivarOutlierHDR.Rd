@@ -195,7 +195,7 @@ testMultivarOutlierHDR(dataMatrix = data,
 }
 \seealso{
 This function is essentially a wrapper for applying \code{highestDensityInterval} to
-multivariate data, along with \code{\link{princomp}} in package \code{stats}.
+multivariate data, along with \code{\link[stats]{princomp}} in package \code{stats}.
 }
 \author{
 David W. Bapst
