@@ -129,9 +129,12 @@ simParticlePRC <- function(
         #    ))
         #    
         newparticle <- mutateStates(particle = oldparticle, 
-            startingPriorsValues = startingPriorsValues, startingPriorsFns = startingPriorsFns, 
-            intrinsicPriorsValues = intrinsicPriorsValues, intrinsicPriorsFns = intrinsicPriorsFns, 
-            extrinsicPriorsValues = extrinsicPriorsValues, extrinsicPriorsFns = extrinsicPriorsFns, 
+            startingPriorsValues = startingPriorsValues, 
+			startingPriorsFns = startingPriorsFns, 
+            intrinsicPriorsValues = intrinsicPriorsValues, 
+			intrinsicPriorsFns = intrinsicPriorsFns, 
+            extrinsicPriorsValues = extrinsicPriorsValues, 
+			extrinsicPriorsFns = extrinsicPriorsFns, 
             standardDevFactor = standardDevFactor
             )
         newparticle$parentid <- particleToSelect
@@ -203,7 +206,7 @@ getlnTransitionProb <- function(newvalue, meantouse, Fn, priorValues, stdFactor)
         #newvalue = newparticleList[[1]]$startingValues[j], 
         #meantouse = prevGenParticleList[[i]]$startingValues[j], 
         #Fn = startingPriorsFns[j], 
-        #priorValues =  startingPriorsValues[, j], 
+        #priorValues =  startingPriorsValues[[j]], 
         #stdFactor = standardDevFactor
                                         
     if (Fn == "uniform") {
@@ -238,9 +241,17 @@ getlnTransitionProb <- function(newvalue, meantouse, Fn, priorValues, stdFactor)
     }    
 
 sumLogTranProb <- function(prevGenParticleList
-    , newStartingValues, newIntrinsicValues, newExtrinsicValues
-    , startingPriorsFns, intrinsicPriorsFns, extrinsicPriorsFns
-    , startingPriorsValues, intrinsicPriorsValues, extrinsicPriorsValues
+    , newStartingValues
+	, newIntrinsicValues
+	, newExtrinsicValues
+	#
+    , startingPriorsFns
+	, intrinsicPriorsFns
+	, extrinsicPriorsFns
+	#
+    , startingPriorsValues
+	, intrinsicPriorsValues
+	, extrinsicPriorsValues
     , standardDevFactor){
     #now get weights, using correction in Sisson et al. 2007
     #
@@ -248,30 +259,34 @@ sumLogTranProb <- function(prevGenParticleList
     #
     for (i in 1:length(prevGenParticleList)) {
         #
-        LLTPstart <- sapply(length(newStartingValues), 
+		# 10-15-18
+		# this *must* be wrong, why is this only done for the last parameter for starting/intrinsic/extrinsic
+			# instead of all parameters? currently just sapply on length(), have now changed to 1:length()
+		#
+        LLTPstart <- sapply(1:length(newStartingValues), 
             function(j) getlnTransitionProb(
                 newvalue = newStartingValues[j], 
                 meantouse = prevGenParticleList[[i]]$startingValues[j], 
                 Fn = startingPriorsFns[j], 
-                priorValues =  startingPriorsValues[, j], 
+                priorValues =  startingPriorsValues[[j]], 
                 stdFactor = standardDevFactor
                 )
             )
-        LLTPintr <- sapply(length(newIntrinsicValues), 
+        LLTPintr <- sapply(1:length(newIntrinsicValues), 
             function(j) getlnTransitionProb(
                 newvalue = newIntrinsicValues[j], 
                 meantouse = prevGenParticleList[[i]]$intrinsicValues[j], 
                 Fn = intrinsicPriorsFns[j], 
-                priorValues =  intrinsicPriorsValues[, j], 
+                priorValues =  intrinsicPriorsValues[[j]], 
                 stdFactor = standardDevFactor
                 )
             )
-        LLTPextr <- sapply(length(newExtrinsicValues), 
+        LLTPextr <- sapply(1:length(newExtrinsicValues), 
             function(j) getlnTransitionProb(
                 newvalue = newExtrinsicValues[j], 
                 meantouse = prevGenParticleList[[i]]$extrinsicValues[j], 
                 Fn = extrinsicPriorsFns[j], 
-                priorValues =  extrinsicPriorsValues[, j], 
+                priorValues =  extrinsicPriorsValues[[j]], 
                 stdFactor = standardDevFactor
                 )
             )

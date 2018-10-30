@@ -205,7 +205,7 @@ The function `summarizePosterior` provides us with the mean, standard deviation,
 
 For example, for each Brownian Motion run:
 
-```{r}
+```{r eval=FALSE}
 
 summarizePosterior(resultsBM[[1]]$particleDataFrame, alpha = 0.8)
 summarizePosterior(resultsBM[[2]]$particleDataFrame, alpha = 0.8)
@@ -214,14 +214,14 @@ summarizePosterior(resultsBM[[3]]$particleDataFrame, alpha = 0.8)
 
 Or just to look at the first run of the Bounded BM run:
 
-```{r}
+```{r eval=FALSE}
 summarizePosterior(resultsBound[[1]]$particleDataFrame, alpha = 0.8)
 
 ```
 
 
 
-```{r }
+```{r eval=FALSE}
 
 # This function calculates Effective Sample Size (ESS) on results.  
 # Performs the best when results are from multiple runs.
@@ -238,7 +238,7 @@ pairwiseESS(resultsBound)
 ```
 
 
-```{r fig.width = 7, fig.asp=0.4}
+```{r fig.width = 7, fig.asp=0.4, eval=FALSE}
 
 # plotPosteriors
     # for each free parameter in the posterior, a plot is made of the distribution of values estimate in the last generation

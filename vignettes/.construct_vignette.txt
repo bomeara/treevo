@@ -2,9 +2,11 @@ cd C:\Users\notDave\Desktop\remoteWorkplace && powershell -Command "(New-Object 
 
 
 
+ 
 
 
-
+####################################################################################
+# NOT THESE
 
 
 cd C:\Users\notDave\Desktop\remoteWorkplace && R CMD BATCH --no-save --no-restore https://raw.githubusercontent.com/bomeara/treevo/vignette_third_try/vignettes/.constructing_treevo_vignette.R

@@ -42,20 +42,30 @@ traits evolve within a lineage, regardless of the trait values of other taxa.}
 traits evolve within a lineage, based on their own ('internal') trait vlaue and the trait values
 of other taxa.}
 
-\item{startingPriorsValues}{Matrix with number of columns equal to the number of states (characters)
-at root and number of rows equal to two (representing two parameters to pass to prior distribution).}
+\item{startingPriorsValues}{A list of the same length as the number of prior distributions specified in
+\code{startingPriorsFns} (for starting values, this should be one prior function specified for each trait
+- thus one for most univariate trait analyses), with each element of the list a vector the same length
+as the appropriate number of parameters for that prior distribution (1 for \code{"fixed"}, 2 for
+\code{"uniform"}, 2 for \code{"normal"}, 2 for \code{"lognormal"}, 2 for \code{"gamma"}, 1
+for \code{"exponential"}).}
 
 \item{startingPriorsFns}{Vector containing names of prior distributions to
 use for root states: can be one of \code{"fixed"}, \code{"uniform"}, \code{"normal"},}
 
-\item{intrinsicPriorsValues}{Matrix with number of columns equal to the number of parameters to pass
-to the intrinsic function and number of rows equal to two (representing two parameters to pass to prior distribution).}
+\item{intrinsicPriorsValues}{A list of the same length as the number of prior distributions specified
+in \code{intrinsicPriorsFns} (one prior function specified for each parameter in the intrinsic model),
+with each element of the list a vector the same length as the appropriate number of parameters
+for that prior distribution (1 for \code{"fixed"}, 2 for \code{"uniform"}, 2 for \code{"normal"},
+2 for \code{"lognormal"}, 2 for \code{"gamma"}, 1 for \code{"exponential"}).}
 
 \item{intrinsicPriorsFns}{Vector containing names of prior distributions to
 use for intrinsic function parameters: can be one of \code{"fixed"}, \code{"uniform"}, \code{"normal"},}
 
-\item{extrinsicPriorsValues}{Matrix with number of columns equal to the number of parameters to pass
-to the extrinsic function and number of rows equal to two (representing two parameters to pass to prior distribution).}
+\item{extrinsicPriorsValues}{A list of the same length as the number of prior distributions
+specified in \code{extrinsicPriorsFns} (one prior function specified for each parameter
+in the extrinsic model), with each element of the list a vector the same length as the appropriate
+number of parameters for that prior distribution (1 for \code{"fixed"}, 2 for \code{"uniform"},
+2 for \code{"normal"}, 2 for \code{"lognormal"}, 2 for \code{"gamma"}, 1 for \code{"exponential"}).}
 
 \item{extrinsicPriorsFns}{Vector containing names of prior distributions to
 use for extrinsic function parameters: can be one of \code{"fixed"}, \code{"uniform"}, \code{"normal"},}
@@ -156,7 +166,7 @@ which differ slightly in their content among the two functions. For \code{doRun_
 \item{input.data}{Input variables: jobName, number of taxa, nInitialSims, 
 generation.time, TreeYears, timeStep, totalGenerations, epsilonProportion, 
 epsilonMultiplier, nRuns, nStepsPRC, numParticles, standardDevFactor}
-\item{PriorMatrix}{Matrix of prior distributions. This is used for doing post-analysis comparisons between prior and posterior distributions, such as with function \code{plotPosteriors}}
+\item{priorList}{List of prior distributions. This is used for doing post-analysis comparisons between prior and posterior distributions, such as with function \code{plotPosteriors}}
 \item{particleDataFrame}{DataFrame with information from each simulation, 
 including generation, attempt, id, parentid, distance, weight, and parameter states}
 \item{toleranceVector}{Final tolerance vector}
@@ -173,7 +183,7 @@ For \code{doRun_rej}, the output is:
 \item{input.data}{Input variables: jobName, number of taxa, nInitialSims, 
 generation.time, TreeYears, timeStep, totalGenerations, epsilonProportion, 
 epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor}
-\item{PriorMatrix}{Matrix of prior distributions. This is used for doing post-analysis comparisons between prior and posterior distributions, such as with function \code{plotPosteriors}}
+\item{priorList}{List of prior distributions. This is used for doing post-analysis comparisons between prior and posterior distributions, such as with function \code{plotPosteriors}}
 \item{phy}{Input phylogeny}
 \item{traits}{Input traits}
 \item{trueFreeValuesANDSummaryValues}{Parameter estimates and summary stats from all sims}
@@ -182,6 +192,7 @@ epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor}
 \item{particleDataFrame}{DataFrame with information from each
 simulation, including generation, attempt, id, parentid, distance, weight, and parameter states}
 \item{postSummary}{Summarizes the posterior distribution from the final generation for all free parameters, giving the mean, standard deviation and Highest Posterior Density (at a 0.8 alpha) for each parameter.}
+\item{parMeansList}{A list of parameter means for both fixed and unfixed parameters, sorted into a list of three vectors (starting, intrinsic, extrinsic).}
 }
 }
 \description{
@@ -236,11 +247,11 @@ resultsPRC <- doRun_prc(
   intrinsicFn = brownianIntrinsic, 
   extrinsicFn = nullExtrinsic, 
   startingPriorsFns = "normal", 
-  startingPriorsValues = matrix(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
+  startingPriorsValues = list(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
   intrinsicPriorsFns = c("exponential"), 
-  intrinsicPriorsValues = matrix(c(10, 10), nrow = 2, byrow = FALSE), 
+  intrinsicPriorsValues = list(10), 
   extrinsicPriorsFns = c("fixed"), 
-  extrinsicPriorsValues = matrix(c(0, 0), nrow = 2, byrow = FALSE), 
+  extrinsicPriorsValues = list(0), 
   generation.time = 10000, 
   nRuns = 2, 
   nStepsPRC = 3, 
@@ -250,7 +261,7 @@ resultsPRC <- doRun_prc(
   stopRule = FALSE, 
   multicore = FALSE, 
   coreLimit = 1
-)
+  )
 
 resultsPRC
 
@@ -262,12 +273,12 @@ resultsRej <- doRun_rej(
     intrinsicFn = brownianIntrinsic, 
     extrinsicFn = nullExtrinsic, 
     startingPriorsFns = "normal", 
-    startingPriorsValues = matrix(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
+    startingPriorsValues = list(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
     intrinsicPriorsFns = c("exponential"), 
-    intrinsicPriorsValues = matrix(c(10, 10), nrow = 2, byrow = FALSE), #grep for normal in pkg
+    intrinsicPriorsValues = list(10), #grep for normal in pkg
     extrinsicPriorsFns = c("fixed"), 
-    extrinsicPriorsValues = matrix(c(0, 0), nrow = 2, byrow = FALSE), 
-   generation.time = 10000, 
+    extrinsicPriorsValues = list(0), 
+    generation.time = 10000, 
     jobName = "examplerun_rej", 
     abcTolerance = 0.05, 
     multicore = FALSE, 

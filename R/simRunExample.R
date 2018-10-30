@@ -41,7 +41,7 @@
 #' 
 #' The objects \code{results} and \code{resultsBound} are lists composed of a number
 #' of elements (see the documentation for the \code{\link{doRun_prc}} function for more detail). These elements are
-#' respectively \code{input.data}, \code{PriorMatrix}, \code{particleDataFrame}, \code{toleranceVector}, \code{phy}, 
+#' respectively \code{input.data}, \code{priorList}, \code{particleDataFrame}, \code{toleranceVector}, \code{phy}, 
 #' \code{traits}, \code{simTime}, \code{time.per.gen}, and \code{postSummary}.
 #' 
 
@@ -82,12 +82,6 @@
 #'     extrinsicValues = c(0), 
 #'     generation.time = 10000
 #'     )
-
-# 
-# # clean for use with doRun
-# simChar <- simCharOut[, "statesmatrix", drop = FALSE]
-# rownames(simChar) <- simPhy$tip.label[simCharOut$taxonid]
-
 #' 
 #' results <- doRun_prc(
 #'     phy = simPhy, 
@@ -95,11 +89,11 @@
 #'     intrinsicFn = brownianIntrinsic, 
 #'     extrinsicFn = nullExtrinsic, 
 #'     startingPriorsFns = "normal", 
-#'     startingPriorsValues = matrix(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
+#'     startingPriorsValues = list(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
 #'     intrinsicPriorsFns = c("exponential"), 
-#'     intrinsicPriorsValues = matrix(c(10, 10), nrow = 2, byrow = FALSE), 
+#'     intrinsicPriorsValues = list(10), 
 #'     extrinsicPriorsFns = c("fixed"), 
-#'     extrinsicPriorsValues = matrix(c(0, 0), nrow = 2, byrow = FALSE), 
+#'     extrinsicPriorsValues = list(0), 
 #'     generation.time = 10000, 
 #'     nRuns = 2, 
 #'     nStepsPRC = 3, 
@@ -118,11 +112,11 @@
 #'     intrinsicFn = boundaryMinIntrinsic, 
 #'     extrinsicFn = nullExtrinsic, 
 #'     startingPriorsFns = "normal", 
-#'     startingPriorsValues = matrix(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
+#'     startingPriorsValues = list(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
 #'     intrinsicPriorsFns = c("exponential", "normal"), 
-#'     intrinsicPriorsValues = matrix(c(10, 10, -10, 1), nrow = 2, byrow = FALSE), 
+#'     intrinsicPriorsValues = list(10,c(-10,1)), 
 #'     extrinsicPriorsFns = c("fixed"), 
-#'     extrinsicPriorsValues = matrix(c(0, 0), nrow = 2, byrow = FALSE), 
+#'     extrinsicPriorsValues = list(0), 
 #'     generation.time = 10000, 
 #'     nRuns = 2, 
 #'     nStepsPRC = 3, 
@@ -137,7 +131,7 @@
 #' 
 #' rm(.Random.seed)
 #' save.image(file = "simRunExample.rdata")
-#' 
+#' if(interactive()){savehistory("simRunExample.Rhistory")}
 #' 
 #' }
 #' 

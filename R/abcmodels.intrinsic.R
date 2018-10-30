@@ -1,101 +1,86 @@
-#intrinsic models
-#note that these work for univariate, but need to be generalized for multivariate
-#otherstates has one row per taxon, one column per state
-#states is a vector for each taxon, with length = nchar
-
-
-
 #' Intrinsic Character Evolution Models
 #' 
 #' Functions describing various models of 'intrinsic' evolution (i.e. evolutionary processes intrinsic to the evolving
 #' lineage, independent of other evolving lineages (competitors, predators, etc).
 #' 
+
+#' @details 
 #' The following intrinsic models are:
 #' 
 #' \code{nullIntrinsic} describes a model of no intrinsic character change.
-#' 
 #' It has no parameters, really.
 #' 
 #' \code{brownianIntrinsic} describes a model of intrinsic character evolution via
-#' Brownian motion.
-#' 
-#' The input parameters for this model are:
-#' \code{boundaryIntrinsic} params = sd
+#' Brownian motion. The input parameters for this model are:
+#' \code{boundaryIntrinsic} with parameters \code{params = sd}
 #' 
 #' \code{boundaryIntrinsic} describes a model of intrinsic character evolution where character
 #' change is restricted above a minimum and below a maximum threshold.
-#' 
 #' The input parameters for this model are:
-#' \code{boundaryMinIntrinsic} params = sd, minimum, maximum
+#' \code{boundaryMinIntrinsic} with parameters \code{params = sd, minimum, maximum}
 #' 
 #' \code{boundaryMinIntrinsic} describes a model of intrinsic character evolution where character
 #' change is restricted above a minimum threshold.
-#' 
 #' The input parameters for this model are:
-#' \code{boundaryMinIntrinsic} params = sd, minimum
+#' \code{boundaryMinIntrinsic} with parameters \code{params = sd, minimum}
 #' 
 #' \code{autoregressiveIntrinsic} describes a model of intrinsic character evolution. New
 #' character values are generated after one time step via a discrete-time OU
 #' process.
-#' 
 #' The input parameters for this model are:
-#' \code{autoregressiveIntrinsic} params = sd (sigma), attractor (character
-#' mean), attraction (alpha)
+#' \code{autoregressiveIntrinsic} with \code{params = sd (sigma), attractor (character mean), attraction (alpha)}
 #' 
 #' \code{minBoundaryAutoregressiveIntrinsic} describes a model of intrinsic character evolution. New
 #' character values are generated after one time step via a discrete-time OU
 #' process with a minimum bound.
-#' 
 #' The input parameters for this model are:
-#' \code{MinBoundaryAutoregressiveIntrinsic} params = sd (sigma), attractor
-#' (character mean), attraction (alpha), minimum
+#' \code{MinBoundaryAutoregressiveIntrinsic} with parameters \code{params = sd (sigma), attractor
+#' (character mean), attraction (alpha), minimum}
 #' 
 #' \code{autoregressiveIntrinsicTimeSlices} describes a model of intrinsic character evolution. New
 #' character values are generated after one time step via a discrete-time OU
-#' process with differing means, sigma, and attraction over time
-#' 
-#' In the various TimeSlices models, time threshold units are in time before present
+#' process with differing means, sigma, and attraction over time.
+#' In the various \emph{TimeSlices} models, time threshold units are in time before present
 #' (i.e., 65 could be 65 MYA). The last time threshold should be 0.
-#' 
 #' The input parameters for this model are:
-#' \code{autoregressiveIntrinsicTimeSlices} params = sd-1 (sigma-1), 
+#' \code{autoregressiveIntrinsicTimeSlices} with parameters \code{params = sd-1 (sigma-1), 
 #' attractor-1 (character mean-1), attraction-1 (alpha-1), time threshold-1, 
 #' sd-2 (sigma-2), attractor-2 (character mean-2), attraction-2 (alpha-2), time
-#' threshold-2
+#' threshold-2}
 #' 
 #' \code{autoregressiveIntrinsicTimeSlicesConstantMean} describes a model of intrinsic character evolution. New
 #' character values are generated after one time step via a discrete-time OU
 #' process with differing sigma and attraction over time
-#' 
 #' The input parameters for this model are:
-#' \code{autoregressiveIntrinsicTimeSlicesConstantMean} params = sd-1
+#' \code{autoregressiveIntrinsicTimeSlicesConstantMean} with parameters \code{params = sd-1
 #' (sigma-1), attraction-1 (alpha-1), time threshold-1, sd-2 (sigma-2), 
-#' attraction-2 (alpha-2), time threshold-2, attractor (character mean)
+#' attraction-2 (alpha-2), time threshold-2, attractor (character mean)}
 #' 
 #' \code{autoregressiveIntrinsicTimeSlicesConstantSigma} describes a model of intrinsic character evolution. New
 #' character values are generated after one time step via a discrete-time OU
 #' process with differing means and attraction over time.
-#' 
 #' The input parameters for this model are:
-#' \code{autoregressiveIntrinsicTimeSlicesConstantSigma} params = sd (sigma), 
+#' \code{autoregressiveIntrinsicTimeSlicesConstantSigma} with parameters \code{params = sd (sigma), 
 #' attractor-1 (character mean-1), attraction-1 (alpha-1), time threshold-1, 
-#' attractor-2 (character mean-2), attraction-2 (alpha-2), time threshold-2
+#' attractor-2 (character mean-2), attraction-2 (alpha-2), time threshold-2}
 #' 
 
-#' @param params describes input paramaters for the model (see Description)
+#' @param params A vector containing input parameters for the given model (see \emph{Description} below on what parameters).
 
-#' @param states vector of states for each taxon
+#' @param states Vector of current trait values for a taxon. May be multiple for some models, but generally expected to be
+#' only a single value. Multivariate \code{TreEvo} is not yet supported.
 
-#' @param timefrompresent which time slice in the tree
+#' @param timefrompresent The amount of time from the present - generally ignored except for time-dependent models.
 
-#' @return A matrix of values representing character displacement from a single
-#' time step in the tree.
+#' @return
+#' A vector of values representing character displacement of that lineage over a single time step.
+
+#' @aliases abcmodels.intrinsic  
+
+#' @seealso Another intrinsic model with multiple optima is described at \code{\link{multiOptimaIntrinsic}}.
+#' Extrinsic models are described at \code{\link{abcmodels.extrinsic}}.
 
 #' @author Brian O'Meara and Barb Banbury
-
-# @references O'Meara and Banbury, unpublished
-
-# @keywords nullIntrinsic intrinsic
 
 
 #' @examples
@@ -138,9 +123,24 @@
 #'     intrinsicValues = c(0.01, 3, 0.1, 0), 
 #'     extrinsicValues = c(0), 
 #'     generation.time = 100000)
-#
+#' 
+#' # Autoregressive (Ornstein-Uhlenbeck) model
+#'        # with max bound at 1
+#' char <- doSimulation(
+#'     phy = tree, 
+#'     intrinsicFn = maxBoundaryAutoregressiveIntrinsic, 
+#'     extrinsicFn = nullExtrinsic, 
+#'     startingValues = c(10), #root state
+#'     intrinsicValues = c(0.01, 3, 0.1, 1), 
+#'     extrinsicValues = c(0), 
+#'     generation.time = 100000)
+#'
 #' }
 
+#intrinsic models
+#note that these work for univariate, but need to be generalized for multivariate
+#otherstates has one row per taxon, one column per state
+#states is a vector for each taxon, with length = nchar
 
 #' @name intrinsicModels
 #' @rdname intrinsicModels
@@ -154,7 +154,12 @@ nullIntrinsic <- function(params, states, timefrompresent) {
 #' @rdname intrinsicModels
 #' @export
 brownianIntrinsic <- function(params, states, timefrompresent) {
-    newdisplacement <- rpgm::rpgm.rnorm(n = length(states), mean = 0, sd = params) #mean = 0 because we ADD this to existing values
+    newdisplacement <- rpgm::rpgm.rnorm(
+		#mean = 0 because we ADD this to existing values
+		n = length(states), 
+		mean = 0, 
+		sd = params
+		) 
     return(newdisplacement)
     }
 
@@ -163,7 +168,7 @@ brownianIntrinsic <- function(params, states, timefrompresent) {
 boundaryIntrinsic <- function(params, states, timefrompresent) {
     #params[1] is sd, params[2] is min, params[3] is max. params[2] could be 0 or -Inf, for example
     newdisplacement <- rpgm::rpgm.rnorm(n = length(states), mean = 0, sd = params[1])
-    for (i in length(newdisplacement)) {
+    for (i in 1:length(newdisplacement)) {
         newstate <- newdisplacement[i]+states[i]
         if (newstate<params[2]) { #newstate less than min
             newdisplacement[i] <- params[2]-states[i] #so, rather than go below the minimum, this moves the new state to the minimum
@@ -180,7 +185,7 @@ boundaryIntrinsic <- function(params, states, timefrompresent) {
 boundaryMinIntrinsic  <- function(params, states, timefrompresent) {
     #params[1] is sd, params[2] is min boundary
     newdisplacement <- rpgm::rpgm.rnorm(n = length(states), mean = 0, sd = params[1])
-    for (i in length(newdisplacement)) {
+    for (i in 1:length(newdisplacement)) {
         newstate <- newdisplacement[i]+states[i]
         if (newstate<params[2]) { #newstate less than min
             newdisplacement[i] <- params[2]-states[i] #so, rather than go below the minimum, this moves the new state to the minimum
@@ -191,42 +196,96 @@ boundaryMinIntrinsic  <- function(params, states, timefrompresent) {
 
 #' @rdname intrinsicModels
 #' @export
+boundaryMaxIntrinsic  <- function(params, states, timefrompresent) {
+    #params[1] is sd, params[2] is max boundary
+    newdisplacement <- rpgm::rpgm.rnorm(n = length(states), mean = 0, sd = params[1])
+    for (i in 1:length(newdisplacement)) {
+        newstate <- newdisplacement[i]+states[i]
+        if (newstate>params[2]) { #newstate MORE than MAX
+            newdisplacement[i] <- params[2]-states[i] #so, rather than go ABOVE the MAXIMUM, this moves the new state to the maximum
+        }
+    }
+    return(newdisplacement)
+    }
+	
+
+#' @rdname intrinsicModels
+#' @export
 autoregressiveIntrinsic <- function(params, states, timefrompresent) {
     #a discrete time OU, same sd, mean, and attraction for all chars
     #params[1] is sd (sigma), params[2] is attractor (ie. character mean), params[3] is attraction (ie. alpha)
     sd <- params[1]
     attractor <- params[2]
     attraction <- params[3]    #in this model, this should be between zero and one
-    newdisplacement <- rpgm::rpgm.rnorm(n = length(states), mean = (attractor-states)*attraction, sd = sd) #subtract current states because we want displacement
+    #subtract current states because we want displacement
+	newdisplacement <- rpgm::rpgm.rnorm(
+					n = length(states), 
+					mean = (attractor-states)*attraction, 
+					sd = sd) 
     return(newdisplacement)
-    }
+    }	
+	
+
 
 #' @rdname intrinsicModels
 #' @export
-minBoundaryAutoregressiveIntrinsic <- function(params, states, timefrompresent) {
+maxBoundaryAutoregressiveIntrinsic <- function(params, states, timefrompresent) {
     #a discrete time OU, same sd, mean, and attraction for all chars
-    #params[1] is sd (sigma), params[2] is attractor (ie. character mean), params[3] is attraction (ie. alpha), params[4] is min bound
+    #params[1] is sd (sigma), params[2] is attractor (ie. character mean),
+		#params[3] is attraction (ie. alpha), params[4] is max bound
     sd <- params[1]
     attractor <- params[2]
     attraction <- params[3]    #in this model, this should be between zero and one
     minBound <- params[4]
-    newdisplacement <- rpgm::rpgm.rnorm(n = length(states), mean = (attractor-states)*attraction, sd = sd) #subtract current states because we want displacement
+    newdisplacement <- rpgm::rpgm.rnorm(
+		n = length(states), 
+		mean = (attractor-states)*attraction, 
+		sd = sd) #subtract current states because we want displacement
     #message(newdisplacement)
-    for (i in length(newdisplacement)) {
+    for (i in 1:length(newdisplacement)) {
         newstate <- newdisplacement[i] + states[i]
         #message(newstate)
-            if (newstate <params[4]) { #newstate less than min
-                newdisplacement[i] <- params[4] - states[i] #so, rather than go below the minimum, this moves the new state to the minimum
-            }
+		#so, rather than go above the maximum, this moves the new state to the maximum
+		if (newstate > params[4]) { #newstate more than max
+			newdisplacement[i] <- params[4] - states[i]
+		}
+    }
+    return(newdisplacement)
+}
+	
+#' @rdname intrinsicModels
+#' @export
+minBoundaryAutoregressiveIntrinsic <- function(params, states, timefrompresent) {
+    #a discrete time OU, same sd, mean, and attraction for all chars
+    #params[1] is sd (sigma), params[2] is attractor (ie. character mean),
+		#params[3] is attraction (ie. alpha), params[4] is min bound
+    sd <- params[1]
+    attractor <- params[2]
+    attraction <- params[3]    #in this model, this should be between zero and one
+    minBound <- params[4]
+    newdisplacement <- rpgm::rpgm.rnorm(
+		n = length(states), 
+		mean = (attractor-states)*attraction, 
+		sd = sd) #subtract current states because we want displacement
+    #message(newdisplacement)
+    for (i in 1:length(newdisplacement)) {
+        newstate <- newdisplacement[i] + states[i]
+        #message(newstate)
+		#so, rather than go below the minimum, this moves the new state to the minimum
+		if (newstate <params[4]) { #newstate less than min
+			newdisplacement[i] <- params[4] - states[i] 
+		}
     }
     return(newdisplacement)
 }
 
+	
 #' @rdname intrinsicModels
 #' @export
 autoregressiveIntrinsicTimeSlices <- function(params, states, timefrompresent) {
-    #a discrete time OU, differing mean, sigma, and attaction with time
-    #params = [sd1, attractor1, attraction1, timethreshold1, sd2, attractor2, attraction2, timethreshold2, ...]
+    #a discrete time OU, differing mean, sigma, and attraction with time
+    #params = [sd1, attractor1, attraction1, timethreshold1,
+		# sd2, attractor2, attraction2, timethreshold2, ...]
     #time is time before present (i.e., 65 could be 65 MYA).
         # The last time threshold should be 0, one before that is the end of the previous epoch, etc.
     numRegimes <- length(params)/4
@@ -246,17 +305,18 @@ autoregressiveIntrinsicTimeSlices <- function(params, states, timefrompresent) {
                 sd <- params[1+4*(regime-1)]
                 attractor <- params[2+4*(regime-1)]
                 attraction <- params[3+4*(regime-1)]
-                    #message(paste("sd = ", sd, " attractor = ", attractor, " attraction = ", attraction))
+                    #message(paste("sd = ", sd, " attractor = ",
+						# attractor, " attraction = ", attraction))
 
             }
         }
     }
-    #message(paste("sd = ", sd, " attractor = ", attractor, " attraction = ", attraction))
-    newdisplacement <- rpgm::rpgm.rnorm(n = length(states), mean = (attractor-states)*attraction, sd = sd)
+    #message(paste("sd = ", sd, " attractor = ",
+		# attractor, " attraction = ", attraction))
+    newdisplacement <- rpgm::rpgm.rnorm(n = length(states),
+		mean = (attractor-states)*attraction, sd = sd)
     return(newdisplacement)
     }
-
-
 
 
 #' @rdname intrinsicModels
@@ -281,7 +341,11 @@ autoregressiveIntrinsicTimeSlicesConstantMean <- function(params, states, timefr
         }
         previousThresholdTime <- thresholdTime
     }
-    newdisplacement <- rpgm::rpgm.rnorm(n = length(states), mean = attraction*states + attractor, sd = sd)-states
+    newdisplacement <- rpgm::rpgm.rnorm(
+			n = length(states),
+			mean = attraction*states + attractor,
+			sd = sd
+		)-states
     return(newdisplacement)
     }
 
@@ -361,7 +425,7 @@ varyingBoundariesFixedSigmaIntrinsic <- function(params, states, timefrompresent
     }
     #message(paste("sd = ", sd, " attractor = ", attractor, " attraction = ", attraction))
     newdisplacement <- rpgm::rpgm.rnorm(n = length(states), mean = 0, sd = sd)
-        for (i in length(newdisplacement)) {
+        for (i in 1:length(newdisplacement)) {
         newstate <- newdisplacement[i]+states[i]
         if (newstate<minBound) { #newstate less than min
             newdisplacement[i] <- minBound-states[i] #so, rather than go below the minimum, this moves the new state to the minimum
@@ -406,7 +470,7 @@ varyingBoundariesVaryingSigmaIntrinsic <- function(params, states, timefromprese
     }
     #message(paste("sd = ", sd, " attractor = ", attractor, " attraction = ", attraction))
     newdisplacement <- rpgm::rpgm.rnorm(n = length(states), mean = 0, sd = sd)
-        for (i in length(newdisplacement)) {
+        for (i in 1:length(newdisplacement)) {
         newstate <- newdisplacement[i]+states[i]
         if (newstate<minBound) { #newstate less than min
             newdisplacement[i] <- minBound-states[i] #so, rather than go below the minimum, this moves the new state to the minimum
@@ -427,7 +491,7 @@ genomeDuplicationAttraction <- function(params, states, timefrompresent) {
     attraction <- params[3]    #in this model, this should be between zero and one
     doubling.prob <- params[4]
     newdisplacement <- rpgm::rpgm.rnorm(n = length(states), mean = (attractor-states)*attraction, sd = sd) #subtract current states because we want displacement
-    for (i in length(newdisplacement)) {
+    for (i in 1:length(newdisplacement)) {
         newstate <- newdisplacement[i]+states[i]
         if (newstate<0) { #newstate less than min
             newdisplacement[i] <- 0-states[i] #so, rather than go below the minimum, this moves the new state to the minimum
@@ -475,7 +539,7 @@ genomeDuplicationPartialDoublingLogScale <- function(params, states, timefrompre
 GetGenomeDuplicationPriors <- function(numSteps, phy, data) {
     #returns a matrix with 3 priors for genome duplication (genomeDuplicationPartialDoublingLogScale)
     timeStep <- 1/numSteps  #out of doRun_rej code
-    sd <- getBMRatePrior(phy, data, timeStep)  #new TreEvo function
+    sd <- getBMRatePrior(phy=phy, traits=data, timeStep=timeStep)  #new TreEvo function
     beta.shape1 <- 1 #for(i in 1:10) {lines(density(1+rbeta(10000, 10^runif(1, 0, 2), 1)), xlim = c(1, 2))}  seems to produce nice distributions, but how to justify using 3?
     duplication.prob <- 2 #exponential, but which rate?
 

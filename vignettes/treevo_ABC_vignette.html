@@ -12,7 +12,7 @@
 
 <meta name="author" content="David W. Bapst" />
 
-<meta name="date" content="2018-05-30" />
+<meta name="date" content="2018-09-28" />
 
 <title>Analyzing Trait Evolution with Approximate Bayesian Computation in TreEvo</title>
 
@@ -20,46 +20,256 @@
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
-div.sourceCode { overflow-x: auto; }
-table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
-  margin: 0; padding: 0; vertical-align: baseline; border: none; }
-table.sourceCode { width: 100%; line-height: 100%; }
-td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
-td.sourceCode { padding-left: 5px; }
-code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code > span.dt { color: #902000; } /* DataType */
-code > span.dv { color: #40a070; } /* DecVal */
-code > span.bn { color: #40a070; } /* BaseN */
-code > span.fl { color: #40a070; } /* Float */
-code > span.ch { color: #4070a0; } /* Char */
-code > span.st { color: #4070a0; } /* String */
-code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code > span.ot { color: #007020; } /* Other */
-code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code > span.fu { color: #06287e; } /* Function */
-code > span.er { color: #ff0000; font-weight: bold; } /* Error */
-code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-code > span.cn { color: #880000; } /* Constant */
-code > span.sc { color: #4070a0; } /* SpecialChar */
-code > span.vs { color: #4070a0; } /* VerbatimString */
-code > span.ss { color: #bb6688; } /* SpecialString */
-code > span.im { } /* Import */
-code > span.va { color: #19177c; } /* Variable */
-code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code > span.op { color: #666666; } /* Operator */
-code > span.bu { } /* BuiltIn */
-code > span.ex { } /* Extension */
-code > span.pp { color: #bc7a00; } /* Preprocessor */
-code > span.at { color: #7d9029; } /* Attribute */
-code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; position: absolute; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; }
+pre.numberSource a.sourceLine:empty
+  { position: absolute; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: absolute; left: -5em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
 
 
-<link href="data:text/css;charset=utf-8,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23header%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%20code%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" rel="stylesheet" type="text/css" />
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#header {
+text-align: center;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
 
 </head>
 
@@ -70,16 +280,15 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Analyzing Trait Evolution with Approximate Bayesian Computation in TreEvo</h1>
 <h4 class="author"><em>David W. Bapst</em></h4>
-<h4 class="date"><em>2018-05-30</em></h4>
+<h4 class="date"><em>2018-09-28</em></h4>
 
 
 
 <p>For this vignette, we will use the tree of ammonite genera, and the continuous character data for those ammonites, taken from Raia et al. (2015, American Naturalist). This data is taken from their supplemental appendix, available at the American Naturalist website, and is available as an example dataset in R package <code>paleotree</code>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(paleotree)</code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw">library</span>(paleotree)</a></code></pre></div>
 <pre><code>## Loading required package: ape</code></pre>
-<pre><code>## Warning: package 'ape' was built under R version 3.4.4</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data</span>(RaiaCopesRule)</code></pre></div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ls</span>()</code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw">data</span>(RaiaCopesRule)</a></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="kw">ls</span>()</a></code></pre></div>
 <pre><code>##  [1] &quot;ammoniteTraitsRaia&quot;   &quot;ammoniteTreeRaia&quot;     &quot;ceratopsianTreeRaia&quot; 
 ##  [4] &quot;cervidTreeRaia&quot;       &quot;charData&quot;             &quot;coreLimit&quot;           
 ##  [7] &quot;generation.time&quot;      &quot;multicore&quot;            &quot;nInitialSimsPerParam&quot;
@@ -88,169 +297,256 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 ## [16] &quot;sutureComplexity&quot;     &quot;tree&quot;</code></pre>
 <p>The trees for the three groups examined in this paper all appear to be trees dated to the last appearance times (as opposed to the first appearance time) <em>and</em> specifically the end-boundary of the interval containing the last appearance.</p>
 <p>First, let’s plot the tree:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(<span class="kw">ladderize</span>(ammoniteTreeRaia), <span class="dt">show.tip.label=</span><span class="ot">FALSE</span>)
-<span class="kw">axisPhylo</span>()</code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="kw">plot</span>(<span class="kw">ladderize</span>(ammoniteTreeRaia), <span class="dt">show.tip.label=</span><span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb6-2" data-line-number="2"><span class="kw">axisPhylo</span>()</a></code></pre></div>
 <p><img src="data:image/png;base64,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" /><!-- --></p>
 <p>This tree has polytomies - we will have to deal with that. Let’s randomly resolve tree using <code>multi2di</code> from ape, and then use function <code>addTermBranchLength</code> from package <code>paleotree</code></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tree&lt;-<span class="kw">multi2di</span>(ammoniteTreeRaia)
-
-<span class="co"># let's apply ATBL</span>
-tree&lt;-<span class="kw">addTermBranchLength</span>(tree,<span class="fl">0.01</span>)
-
-<span class="co"># let's try plotting it again</span>
-<span class="kw">plot</span>(<span class="kw">ladderize</span>(tree), <span class="dt">show.tip.label=</span><span class="ot">FALSE</span>)
-<span class="kw">axisPhylo</span>()</code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1">tree&lt;-<span class="kw">multi2di</span>(ammoniteTreeRaia)</a>
+<a class="sourceLine" id="cb7-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb7-3" data-line-number="3"><span class="co"># let's apply ATBL</span></a>
+<a class="sourceLine" id="cb7-4" data-line-number="4">tree&lt;-<span class="kw">addTermBranchLength</span>(tree,<span class="fl">0.01</span>)</a>
+<a class="sourceLine" id="cb7-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb7-6" data-line-number="6"><span class="co"># let's try plotting it again</span></a>
+<a class="sourceLine" id="cb7-7" data-line-number="7"><span class="kw">plot</span>(<span class="kw">ladderize</span>(tree), <span class="dt">show.tip.label=</span><span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb7-8" data-line-number="8"><span class="kw">axisPhylo</span>()</a></code></pre></div>
 <p><img src="data:image/png;base64,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" /><!-- --></p>
-<p>Because we aren’t adjust the internal edges at all, <code>multi2di</code> has just inserted a number of zero-length internal edges between internodes within the tree. This means that alternative resolutions of the tree (as multi2di is stochastic) won’t create meaningfully different variance-covariance matrices, so we likely don’t need to worry about resolving multiple trees in this case (because we’re taking the trees used by Raia et al. at total face-value, which perhaps is the truly unsupported assumption).</p>
+<p>Because we aren’t adjust the internal edges at all, <code>multi2di</code> has just inserted a number of zero-length internal edges between internodes within the tree. This means that alternative resolutions of the tree (as multi2di is stochastic) won’t create meaningfully different variance-covariance matrices, so we likely don’t need to worry about resolving multiple trees in this case (because we’re taking the trees used by Raia et al. at total face-value, which perhaps is the truly unsupported assumption).</p>
 <p>Let’s plot a traitgram of the data.</p>
 <p>maybe use phytools rather than mine?</p>
 <pre><code>## Plotting ancestral reconstructions for nodes.
 ## Plotting ancestral reconstructions for nodes.</code></pre>
 <p><img src="data:image/png;base64,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" /><img src="data:image/png;base64,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" /></p>
 <p>how small is the smallest branch length, even after extending terminal branches?</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">brlen&lt;-tree<span class="op">$</span>edge.length
-<span class="kw">min</span>(brlen)</code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1">brlen&lt;-tree<span class="op">$</span>edge.length</a>
+<a class="sourceLine" id="cb9-2" data-line-number="2"><span class="kw">min</span>(brlen)</a></code></pre></div>
 <pre><code>## [1] 0</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># zero-length branches!</span></code></pre></div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># what about not zero-length branches?</span>
-<span class="kw">min</span>(brlen[brlen<span class="op">!=</span><span class="dv">0</span>])</code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="co"># zero-length branches!</span></a></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1"><span class="co"># what about not zero-length branches?</span></a>
+<a class="sourceLine" id="cb12-2" data-line-number="2"><span class="kw">min</span>(brlen[brlen<span class="op">!=</span><span class="dv">0</span>])</a></code></pre></div>
 <pre><code>## [1] 0.199982</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># in years</span>
-<span class="kw">min</span>(brlen[brlen<span class="op">!=</span><span class="dv">0</span>])<span class="op">*</span><span class="dv">10</span><span class="op">^</span><span class="dv">6</span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1"><span class="co"># in years</span></a>
+<a class="sourceLine" id="cb14-2" data-line-number="2"><span class="kw">min</span>(brlen[brlen<span class="op">!=</span><span class="dv">0</span>])<span class="op">*</span><span class="dv">10</span><span class="op">^</span><span class="dv">6</span></a></code></pre></div>
 <pre><code>## [1] 199982</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># let's look at the distribution of these edge lengths, ignoring zero-length</span>
-<span class="kw">hist</span>(brlen[brlen<span class="op">!=</span><span class="dv">0</span>], <span class="dt">main=</span><span class="st">&quot;&quot;</span>,<span class="dt">xlab=</span><span class="st">&quot;edge length&quot;</span>)</code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1"><span class="co"># let's look at the distribution of these edge lengths, ignoring zero-length</span></a>
+<a class="sourceLine" id="cb16-2" data-line-number="2"><span class="kw">hist</span>(brlen[brlen<span class="op">!=</span><span class="dv">0</span>], <span class="dt">main=</span><span class="st">&quot;&quot;</span>,<span class="dt">xlab=</span><span class="st">&quot;edge length&quot;</span>)</a></code></pre></div>
 <p><img src="data:image/png;base64,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" /><!-- --></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># total number of zero-length branches</span>
-<span class="kw">sum</span>(brlen<span class="op">==</span><span class="dv">0</span>)</code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1"><span class="co"># total number of zero-length branches</span></a>
+<a class="sourceLine" id="cb17-2" data-line-number="2"><span class="kw">sum</span>(brlen<span class="op">==</span><span class="dv">0</span>)</a></code></pre></div>
 <pre><code>## [1] 113</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># proportion of edges that are zero-length</span>
-<span class="kw">sum</span>(brlen<span class="op">==</span><span class="dv">0</span>)<span class="op">/</span><span class="kw">length</span>(brlen)</code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" data-line-number="1"><span class="co"># proportion of edges that are zero-length</span></a>
+<a class="sourceLine" id="cb19-2" data-line-number="2"><span class="kw">sum</span>(brlen<span class="op">==</span><span class="dv">0</span>)<span class="op">/</span><span class="kw">length</span>(brlen)</a></code></pre></div>
 <pre><code>## [1] 0.2354167</code></pre>
 <p>Yeesh - nearly a quarter of branches on this tree are zero-length branches. Not looking so good.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># number of zero-length internal branches</span>
-<span class="kw">sum</span>(brlen<span class="op">==</span><span class="dv">0</span> <span class="op">&amp;</span><span class="st"> </span>tree<span class="op">$</span>edge[,<span class="dv">2</span>]<span class="op">&gt;</span><span class="kw">Ntip</span>(tree))</code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" data-line-number="1"><span class="co"># number of zero-length internal branches</span></a>
+<a class="sourceLine" id="cb21-2" data-line-number="2"><span class="kw">sum</span>(brlen<span class="op">==</span><span class="dv">0</span> <span class="op">&amp;</span><span class="st"> </span>tree<span class="op">$</span>edge[,<span class="dv">2</span>]<span class="op">&gt;</span><span class="kw">Ntip</span>(tree))</a></code></pre></div>
 <pre><code>## [1] 113</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># number of zero-length terminal branches </span>
-  <span class="co"># (shouldn't be any because of our application of ATBL)</span>
-<span class="kw">sum</span>(brlen<span class="op">==</span><span class="dv">0</span> <span class="op">&amp;</span><span class="st"> </span>tree<span class="op">$</span>edge[,<span class="dv">2</span>]<span class="op">&lt;=</span><span class="kw">Ntip</span>(tree))</code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" data-line-number="1"><span class="co"># number of zero-length terminal branches </span></a>
+<a class="sourceLine" id="cb23-2" data-line-number="2">  <span class="co"># (shouldn't be any because of our application of ATBL)</span></a>
+<a class="sourceLine" id="cb23-3" data-line-number="3"><span class="kw">sum</span>(brlen<span class="op">==</span><span class="dv">0</span> <span class="op">&amp;</span><span class="st"> </span>tree<span class="op">$</span>edge[,<span class="dv">2</span>]<span class="op">&lt;=</span><span class="kw">Ntip</span>(tree))</a></code></pre></div>
 <pre><code>## [1] 0</code></pre>
 <p>Let’s use TreEvo!</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(TreEvo)</code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" data-line-number="1"><span class="kw">library</span>(TreEvo)</a></code></pre></div>
 <pre><code>## 
 ## Attaching package: 'TreEvo'</code></pre>
 <pre><code>## The following object is masked _by_ '.GlobalEnv':
 ## 
 ##     resultsBound</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># character data for doRun must be in matrix form</span>
-  <span class="co"># with rows labeled with taxon names</span>
-
-charData&lt;-<span class="kw">matrix</span>(sutureComplexity,<span class="dt">ncol=</span><span class="dv">1</span>)
-<span class="kw">rownames</span>(charData)&lt;-<span class="kw">names</span>(sutureComplexity)</code></pre></div>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb28-1" data-line-number="1"><span class="co"># character data for doRun must be in matrix form</span></a>
+<a class="sourceLine" id="cb28-2" data-line-number="2">  <span class="co"># with rows labeled with taxon names</span></a>
+<a class="sourceLine" id="cb28-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb28-4" data-line-number="4">charData&lt;-<span class="kw">matrix</span>(sutureComplexity,<span class="dt">ncol=</span><span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb28-5" data-line-number="5"><span class="kw">rownames</span>(charData)&lt;-<span class="kw">names</span>(sutureComplexity)</a></code></pre></div>
 <p>Let’s analyze it with ordinary BM</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">resultsBM&lt;-<span class="kw">doRun_prc</span>(
-  <span class="dt">phy =</span> tree,
-  <span class="dt">traits =</span> charData,
-  <span class="dt">intrinsicFn=</span>brownianIntrinsic,
-  <span class="dt">extrinsicFn=</span>nullExtrinsic,
-  <span class="dt">startingPriorsFns=</span><span class="st">&quot;normal&quot;</span>,
-  <span class="dt">startingPriorsValues=</span><span class="kw">matrix</span>(<span class="kw">c</span>(<span class="kw">mean</span>(charData[,<span class="dv">1</span>]), <span class="kw">sd</span>(charData[,<span class="dv">1</span>]))),
-  <span class="dt">intrinsicPriorsFns=</span><span class="kw">c</span>(<span class="st">&quot;exponential&quot;</span>),
-  <span class="dt">intrinsicPriorsValues=</span><span class="kw">matrix</span>(<span class="kw">c</span>(<span class="dv">10</span>, <span class="dv">10</span>), <span class="dt">nrow=</span><span class="dv">2</span>, <span class="dt">byrow=</span><span class="ot">FALSE</span>),
-  <span class="dt">extrinsicPriorsFns=</span><span class="kw">c</span>(<span class="st">&quot;fixed&quot;</span>),
-  <span class="dt">extrinsicPriorsValues=</span><span class="kw">matrix</span>(<span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">0</span>), <span class="dt">nrow=</span><span class="dv">2</span>, <span class="dt">byrow=</span><span class="ot">FALSE</span>),
-  <span class="dt">generation.time=</span>generation.time,
-  <span class="dt">standardDevFactor=</span><span class="fl">0.2</span>,
-  <span class="dt">plot=</span><span class="ot">FALSE</span>,
-  <span class="dt">StartSims=</span><span class="dv">10</span>,
-  <span class="dt">epsilonProportion=</span><span class="fl">0.7</span>,
-  <span class="dt">epsilonMultiplier=</span><span class="fl">0.7</span>,
-  <span class="dt">nStepsPRC=</span><span class="dv">3</span>,
-  <span class="dt">numParticles=</span><span class="dv">20</span>,
-  <span class="dt">jobName=</span><span class="st">&quot;typicalBMrun&quot;</span>,
-  <span class="dt">stopRule=</span><span class="ot">FALSE</span>,
-  <span class="dt">multicore=</span>multicore,
-  <span class="dt">coreLimit=</span>coreLimit,
-  <span class="dt">verboseParticles=</span><span class="ot">TRUE</span>
-  )</code></pre></div>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb29-1" data-line-number="1">resultsBM&lt;-<span class="kw">doRun_prc</span>(</a>
+<a class="sourceLine" id="cb29-2" data-line-number="2">  <span class="dt">phy =</span> tree,</a>
+<a class="sourceLine" id="cb29-3" data-line-number="3">  <span class="dt">traits =</span> charData,</a>
+<a class="sourceLine" id="cb29-4" data-line-number="4">  <span class="dt">intrinsicFn=</span>brownianIntrinsic,</a>
+<a class="sourceLine" id="cb29-5" data-line-number="5">  <span class="dt">extrinsicFn=</span>nullExtrinsic,</a>
+<a class="sourceLine" id="cb29-6" data-line-number="6">  <span class="dt">startingPriorsFns=</span><span class="st">&quot;normal&quot;</span>,</a>
+<a class="sourceLine" id="cb29-7" data-line-number="7">  <span class="dt">startingPriorsValues=</span><span class="kw">matrix</span>(<span class="kw">c</span>(<span class="kw">mean</span>(charData[,<span class="dv">1</span>]), <span class="kw">sd</span>(charData[,<span class="dv">1</span>]))),</a>
+<a class="sourceLine" id="cb29-8" data-line-number="8">  <span class="dt">intrinsicPriorsFns=</span><span class="kw">c</span>(<span class="st">&quot;exponential&quot;</span>),</a>
+<a class="sourceLine" id="cb29-9" data-line-number="9">  <span class="dt">intrinsicPriorsValues=</span><span class="kw">matrix</span>(<span class="kw">c</span>(<span class="dv">10</span>, <span class="dv">10</span>), <span class="dt">nrow=</span><span class="dv">2</span>, <span class="dt">byrow=</span><span class="ot">FALSE</span>),</a>
+<a class="sourceLine" id="cb29-10" data-line-number="10">  <span class="dt">extrinsicPriorsFns=</span><span class="kw">c</span>(<span class="st">&quot;fixed&quot;</span>),</a>
+<a class="sourceLine" id="cb29-11" data-line-number="11">  <span class="dt">extrinsicPriorsValues=</span><span class="kw">matrix</span>(<span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">0</span>), <span class="dt">nrow=</span><span class="dv">2</span>, <span class="dt">byrow=</span><span class="ot">FALSE</span>),</a>
+<a class="sourceLine" id="cb29-12" data-line-number="12">  <span class="dt">generation.time=</span>generation.time,</a>
+<a class="sourceLine" id="cb29-13" data-line-number="13">  <span class="dt">standardDevFactor=</span><span class="fl">0.2</span>,</a>
+<a class="sourceLine" id="cb29-14" data-line-number="14">  <span class="dt">plot=</span><span class="ot">FALSE</span>,</a>
+<a class="sourceLine" id="cb29-15" data-line-number="15">  <span class="dt">StartSims=</span><span class="dv">10</span>,</a>
+<a class="sourceLine" id="cb29-16" data-line-number="16">  <span class="dt">epsilonProportion=</span><span class="fl">0.7</span>,</a>
+<a class="sourceLine" id="cb29-17" data-line-number="17">  <span class="dt">epsilonMultiplier=</span><span class="fl">0.7</span>,</a>
+<a class="sourceLine" id="cb29-18" data-line-number="18">  <span class="dt">nStepsPRC=</span><span class="dv">3</span>,</a>
+<a class="sourceLine" id="cb29-19" data-line-number="19">  <span class="dt">numParticles=</span><span class="dv">20</span>,</a>
+<a class="sourceLine" id="cb29-20" data-line-number="20">  <span class="dt">jobName=</span><span class="st">&quot;typicalBMrun&quot;</span>,</a>
+<a class="sourceLine" id="cb29-21" data-line-number="21">  <span class="dt">stopRule=</span><span class="ot">FALSE</span>,</a>
+<a class="sourceLine" id="cb29-22" data-line-number="22">  <span class="dt">multicore=</span>multicore,</a>
+<a class="sourceLine" id="cb29-23" data-line-number="23">  <span class="dt">coreLimit=</span>coreLimit,</a>
+<a class="sourceLine" id="cb29-24" data-line-number="24">  <span class="dt">verboseParticles=</span><span class="ot">TRUE</span></a>
+<a class="sourceLine" id="cb29-25" data-line-number="25">  )</a></code></pre></div>
 <p>Let’s analyze it with ordinary BM with a bound</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">resultsBound&lt;-<span class="kw">doRun_prc</span>(
-  <span class="dt">phy =</span> tree,
-  <span class="dt">traits =</span> charData,
-  <span class="dt">intrinsicFn=</span>boundaryMinIntrinsic,
-  <span class="dt">extrinsicFn=</span>nullExtrinsic,
-  <span class="dt">startingPriorsFns=</span><span class="st">&quot;normal&quot;</span>,
-  <span class="dt">startingPriorsValues=</span><span class="kw">matrix</span>(<span class="kw">c</span>(<span class="kw">mean</span>(charData[,<span class="dv">1</span>]), <span class="kw">sd</span>(charData[,<span class="dv">1</span>]))),
-  <span class="dt">intrinsicPriorsFns=</span><span class="kw">c</span>(<span class="st">&quot;exponential&quot;</span>,<span class="st">&quot;normal&quot;</span>),
-  <span class="dt">intrinsicPriorsValues=</span><span class="kw">matrix</span>(<span class="kw">c</span>(<span class="dv">10</span>, <span class="dv">10</span>, <span class="op">-</span><span class="dv">10</span>, <span class="dv">1</span>), <span class="dt">nrow=</span><span class="dv">2</span>, <span class="dt">byrow=</span><span class="ot">FALSE</span>),
-  <span class="dt">extrinsicPriorsFns=</span><span class="kw">c</span>(<span class="st">&quot;fixed&quot;</span>),
-  <span class="dt">extrinsicPriorsValues=</span><span class="kw">matrix</span>(<span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">0</span>), <span class="dt">nrow=</span><span class="dv">2</span>, <span class="dt">byrow=</span><span class="ot">FALSE</span>),
-  <span class="dt">generation.time=</span>generation.time,
-  <span class="dt">standardDevFactor=</span><span class="fl">0.2</span>,
-  <span class="dt">plot=</span><span class="ot">FALSE</span>,
-  <span class="dt">StartSims=</span><span class="dv">10</span>,
-  <span class="dt">epsilonProportion=</span><span class="fl">0.7</span>,
-  <span class="dt">epsilonMultiplier=</span><span class="fl">0.7</span>,
-  <span class="dt">nStepsPRC=</span><span class="dv">3</span>,
-  <span class="dt">numParticles=</span><span class="dv">20</span>,
-  <span class="dt">jobName=</span><span class="st">&quot;BMwithBoundRun&quot;</span>,
-  <span class="dt">stopRule=</span><span class="ot">FALSE</span>,
-  <span class="dt">multicore=</span>multicore,
-  <span class="dt">coreLimit=</span>coreLimit,
-  <span class="dt">verboseParticles=</span><span class="ot">FALSE</span>
-  )</code></pre></div>
-<p>The function <code>highestPostDens</code> provides us with the weighted mean, standard deviation, upper and lower highest posterior density (HPD) for each free parameter in the posterior sample, for each individual run.</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb30-1" data-line-number="1">resultsBound&lt;-<span class="kw">doRun_prc</span>(</a>
+<a class="sourceLine" id="cb30-2" data-line-number="2">  <span class="dt">phy =</span> tree,</a>
+<a class="sourceLine" id="cb30-3" data-line-number="3">  <span class="dt">traits =</span> charData,</a>
+<a class="sourceLine" id="cb30-4" data-line-number="4">  <span class="dt">intrinsicFn=</span>boundaryMinIntrinsic,</a>
+<a class="sourceLine" id="cb30-5" data-line-number="5">  <span class="dt">extrinsicFn=</span>nullExtrinsic,</a>
+<a class="sourceLine" id="cb30-6" data-line-number="6">  <span class="dt">startingPriorsFns=</span><span class="st">&quot;normal&quot;</span>,</a>
+<a class="sourceLine" id="cb30-7" data-line-number="7">  <span class="dt">startingPriorsValues=</span><span class="kw">matrix</span>(<span class="kw">c</span>(<span class="kw">mean</span>(charData[,<span class="dv">1</span>]), <span class="kw">sd</span>(charData[,<span class="dv">1</span>]))),</a>
+<a class="sourceLine" id="cb30-8" data-line-number="8">  <span class="dt">intrinsicPriorsFns=</span><span class="kw">c</span>(<span class="st">&quot;exponential&quot;</span>,<span class="st">&quot;normal&quot;</span>),</a>
+<a class="sourceLine" id="cb30-9" data-line-number="9">  <span class="dt">intrinsicPriorsValues=</span><span class="kw">matrix</span>(<span class="kw">c</span>(<span class="dv">10</span>, <span class="dv">10</span>, <span class="dv">-10</span>, <span class="dv">1</span>), <span class="dt">nrow=</span><span class="dv">2</span>, <span class="dt">byrow=</span><span class="ot">FALSE</span>),</a>
+<a class="sourceLine" id="cb30-10" data-line-number="10">  <span class="dt">extrinsicPriorsFns=</span><span class="kw">c</span>(<span class="st">&quot;fixed&quot;</span>),</a>
+<a class="sourceLine" id="cb30-11" data-line-number="11">  <span class="dt">extrinsicPriorsValues=</span><span class="kw">matrix</span>(<span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">0</span>), <span class="dt">nrow=</span><span class="dv">2</span>, <span class="dt">byrow=</span><span class="ot">FALSE</span>),</a>
+<a class="sourceLine" id="cb30-12" data-line-number="12">  <span class="dt">generation.time=</span>generation.time,</a>
+<a class="sourceLine" id="cb30-13" data-line-number="13">  <span class="dt">standardDevFactor=</span><span class="fl">0.2</span>,</a>
+<a class="sourceLine" id="cb30-14" data-line-number="14">  <span class="dt">plot=</span><span class="ot">FALSE</span>,</a>
+<a class="sourceLine" id="cb30-15" data-line-number="15">  <span class="dt">StartSims=</span><span class="dv">10</span>,</a>
+<a class="sourceLine" id="cb30-16" data-line-number="16">  <span class="dt">epsilonProportion=</span><span class="fl">0.7</span>,</a>
+<a class="sourceLine" id="cb30-17" data-line-number="17">  <span class="dt">epsilonMultiplier=</span><span class="fl">0.7</span>,</a>
+<a class="sourceLine" id="cb30-18" data-line-number="18">  <span class="dt">nStepsPRC=</span><span class="dv">3</span>,</a>
+<a class="sourceLine" id="cb30-19" data-line-number="19">  <span class="dt">numParticles=</span><span class="dv">20</span>,</a>
+<a class="sourceLine" id="cb30-20" data-line-number="20">  <span class="dt">jobName=</span><span class="st">&quot;BMwithBoundRun&quot;</span>,</a>
+<a class="sourceLine" id="cb30-21" data-line-number="21">  <span class="dt">stopRule=</span><span class="ot">FALSE</span>,</a>
+<a class="sourceLine" id="cb30-22" data-line-number="22">  <span class="dt">multicore=</span>multicore,</a>
+<a class="sourceLine" id="cb30-23" data-line-number="23">  <span class="dt">coreLimit=</span>coreLimit,</a>
+<a class="sourceLine" id="cb30-24" data-line-number="24">  <span class="dt">verboseParticles=</span><span class="ot">FALSE</span></a>
+<a class="sourceLine" id="cb30-25" data-line-number="25">  )</a></code></pre></div>
+<p>The function <code>summarizePosterior</code> provides us with the mean, standard deviation, and highest posterior density (HPD) for each free parameter in the posterior sample, for each individual run. We can specify the probability density we would like to receive the bounds for using the <code>alpha</code> argument.</p>
 <p>For example, for each Brownian Motion run:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">highestPostDens</span>(resultsBM[[<span class="dv">1</span>]]<span class="op">$</span>particleDataFrame, <span class="dt">percent=</span><span class="fl">0.95</span>, <span class="dt">returnData=</span><span class="ot">FALSE</span>)</code></pre></div>
-<pre><code>##                   mean         sd LowerHPD_0.95 UpperHPD_0.95
-## starting_1  1.33834562 0.13793340   1.021249518    1.57056524
-## intrinsic_1 0.03216874 0.01882001   0.001664682    0.06370977</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">highestPostDens</span>(resultsBM[[<span class="dv">2</span>]]<span class="op">$</span>particleDataFrame, <span class="dt">percent=</span><span class="fl">0.95</span>, <span class="dt">returnData=</span><span class="ot">FALSE</span>)</code></pre></div>
-<pre><code>##                    mean          sd LowerHPD_0.95 UpperHPD_0.95
-## starting_1  1.309352676 0.140024028   1.069590192   1.608641901
-## intrinsic_1 0.004698786 0.002421889   0.001006683   0.009412206</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">highestPostDens</span>(resultsBM[[<span class="dv">3</span>]]<span class="op">$</span>particleDataFrame, <span class="dt">percent=</span><span class="fl">0.95</span>, <span class="dt">returnData=</span><span class="ot">FALSE</span>)</code></pre></div>
-<pre><code>##                   mean         sd LowerHPD_0.95 UpperHPD_0.95
-## starting_1  1.30033960 0.13900824   1.064014910    1.56605425
-## intrinsic_1 0.04580618 0.02540993   0.004501062    0.09381653</code></pre>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb31-1" data-line-number="1"><span class="kw">summarizePosterior</span>(resultsBM[[<span class="dv">1</span>]]<span class="op">$</span>particleDataFrame, <span class="dt">alpha =</span> <span class="fl">0.8</span>)</a></code></pre></div>
+<pre><code>## $starting_1
+## $starting_1$mean
+## [1] 1.338346
+## 
+## $starting_1$sd
+## [1] 0.1379334
+## 
+## $starting_1$HPD
+##      LowerBound_alpha=0.8 UpperBound__alpha=0.8
+## [1,]              1.17999              1.520336
+## 
+## 
+## $intrinsic_1
+## $intrinsic_1$mean
+## [1] 0.03216874
+## 
+## $intrinsic_1$sd
+## [1] 0.01882001
+## 
+## $intrinsic_1$HPD
+##      LowerBound_alpha=0.8 UpperBound__alpha=0.8
+## [1,]          0.004458576            0.05605334</code></pre>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb33-1" data-line-number="1"><span class="kw">summarizePosterior</span>(resultsBM[[<span class="dv">2</span>]]<span class="op">$</span>particleDataFrame, <span class="dt">alpha =</span> <span class="fl">0.8</span>)</a></code></pre></div>
+<pre><code>## $starting_1
+## $starting_1$mean
+## [1] 1.309353
+## 
+## $starting_1$sd
+## [1] 0.140024
+## 
+## $starting_1$HPD
+##      LowerBound_alpha=0.8 UpperBound__alpha=0.8
+## [1,]              1.08707              1.457697
+## 
+## 
+## $intrinsic_1
+## $intrinsic_1$mean
+## [1] 0.004698786
+## 
+## $intrinsic_1$sd
+## [1] 0.002421889
+## 
+## $intrinsic_1$HPD
+##      LowerBound_alpha=0.8 UpperBound__alpha=0.8
+## [1,]          0.001300522            0.00813148</code></pre>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb35-1" data-line-number="1"><span class="kw">summarizePosterior</span>(resultsBM[[<span class="dv">3</span>]]<span class="op">$</span>particleDataFrame, <span class="dt">alpha =</span> <span class="fl">0.8</span>)</a></code></pre></div>
+<pre><code>## $starting_1
+## $starting_1$mean
+## [1] 1.30034
+## 
+## $starting_1$sd
+## [1] 0.1390082
+## 
+## $starting_1$HPD
+##      LowerBound_alpha=0.8 UpperBound__alpha=0.8
+## [1,]             1.118637              1.500256
+## 
+## 
+## $intrinsic_1
+## $intrinsic_1$mean
+## [1] 0.04580618
+## 
+## $intrinsic_1$sd
+## [1] 0.02540993
+## 
+## $intrinsic_1$HPD
+##      LowerBound_alpha=0.8 UpperBound__alpha=0.8
+## [1,]          0.008022971            0.07925108</code></pre>
 <p>Or just to look at the first run of the Bounded BM run:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">highestPostDens</span>(resultsBound[[<span class="dv">1</span>]]<span class="op">$</span>particleDataFrame, <span class="dt">percent=</span><span class="fl">0.95</span>, <span class="dt">returnData=</span><span class="ot">FALSE</span>)</code></pre></div>
-<pre><code>##                     mean          sd LowerHPD_0.95 UpperHPD_0.95
-## starting_1   1.236393488 0.156517158  8.588836e-01   1.450642886
-## intrinsic_1  0.003819127 0.001981337  5.437479e-04   0.006845075
-## intrinsic_2 -9.820410582 0.884737422 -1.130345e+01  -7.945004938</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># This function calculates Effective Sample Size (ESS) on results.  </span>
-<span class="co"># Performs the best when results are from multiple runs.</span>
-
-<span class="co"># ESS for single runs</span>
-<span class="kw">pairwiseESS</span>(resultsBM)</code></pre></div>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb37-1" data-line-number="1"><span class="kw">summarizePosterior</span>(resultsBound[[<span class="dv">1</span>]]<span class="op">$</span>particleDataFrame, <span class="dt">alpha =</span> <span class="fl">0.8</span>)</a></code></pre></div>
+<pre><code>## $starting_1
+## $starting_1$mean
+## [1] 1.236393
+## 
+## $starting_1$sd
+## [1] 0.1565172
+## 
+## $starting_1$HPD
+##      LowerBound_alpha=0.8 UpperBound__alpha=0.8
+## [1,]             1.098027              1.461625
+## 
+## 
+## $intrinsic_1
+## $intrinsic_1$mean
+## [1] 0.003819127
+## 
+## $intrinsic_1$sd
+## [1] 0.001981337
+## 
+## $intrinsic_1$HPD
+##      LowerBound_alpha=0.8 UpperBound__alpha=0.8
+## [1,]          0.001135231           0.006654571
+## 
+## 
+## $intrinsic_2
+## $intrinsic_2$mean
+## [1] -9.820411
+## 
+## $intrinsic_2$sd
+## [1] 0.8847374
+## 
+## $intrinsic_2$HPD
+##      LowerBound_alpha=0.8 UpperBound__alpha=0.8
+## [1,]            -11.10327             -8.734233</code></pre>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb39-1" data-line-number="1"><span class="co"># This function calculates Effective Sample Size (ESS) on results.  </span></a>
+<a class="sourceLine" id="cb39-2" data-line-number="2"><span class="co"># Performs the best when results are from multiple runs.</span></a>
+<a class="sourceLine" id="cb39-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb39-4" data-line-number="4"><span class="co"># ESS for single runs</span></a>
+<a class="sourceLine" id="cb39-5" data-line-number="5"><span class="kw">pairwiseESS</span>(resultsBM)</a></code></pre></div>
 <pre><code>## Multiple runs of doRun_prc found, extracting particleDataFrame objects</code></pre>
 <pre><code>##                    1.2      1.3        2.3     1.2.3
 ## starting_1  270.000000 278.6239 288.000000 439.00000
 ## intrinsic_1   2.556685 320.0000   5.695156  12.45637</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">pairwiseESS</span>(resultsBound)</code></pre></div>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb42-1" data-line-number="1"><span class="kw">pairwiseESS</span>(resultsBound)</a></code></pre></div>
 <pre><code>## Multiple runs of doRun_prc found, extracting particleDataFrame objects</code></pre>
 <pre><code>##                    1.2      1.3       2.3      1.2.3
 ## starting_1  259.000000 212.0000 249.00000 360.000000
 ## intrinsic_1   7.202053 259.6097  14.93587   8.891902
 ## intrinsic_2 259.000000 212.0000 249.00000 360.000000</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># ESS for parameters shared between BM and bound</span>
-<span class="co">#pairwiseESS(list(resultsBM$particleDataFrame,resultsBound$particleDataFrame))</span></code></pre></div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># plotPosteriors</span>
-    <span class="co"># for each free parameter in the posterior, a plot is made of the distribution of values estimate in the last generation</span>
-
-<span class="co"># collect the particleDataFrames into lists</span>
-
-resultsBMpart&lt;-<span class="kw">lapply</span>(resultsBM,<span class="cf">function</span>(x) x<span class="op">$</span>particleDataFrame)
-
-resultsBoundpart&lt;-<span class="kw">lapply</span>(resultsBound,<span class="cf">function</span>(x) x<span class="op">$</span>particleDataFrame)
-
-<span class="kw">plotPosteriors</span>(<span class="dt">particleDataFrame=</span>resultsBMpart,
-   <span class="dt">priorsMat=</span>resultsBM[[<span class="dv">1</span>]]<span class="op">$</span>PriorMatrix)</code></pre></div>
-<p><img src="data:image/png;base64,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" /><!-- --></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plotPosteriors</span>(<span class="dt">particleDataFrame=</span>resultsBoundpart,
-   <span class="dt">priorsMat=</span>resultsBound[[<span class="dv">1</span>]]<span class="op">$</span>PriorMatrix)</code></pre></div>
-<p><img src="data:image/png;base64,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" /><!-- --></p>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb45-1" data-line-number="1"><span class="co"># ESS for parameters shared between BM and bound</span></a>
+<a class="sourceLine" id="cb45-2" data-line-number="2"><span class="co">#pairwiseESS(list(resultsBM$particleDataFrame,resultsBound$particleDataFrame))</span></a></code></pre></div>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb46-1" data-line-number="1"><span class="co"># plotPosteriors</span></a>
+<a class="sourceLine" id="cb46-2" data-line-number="2">    <span class="co"># for each free parameter in the posterior, a plot is made of the distribution of values estimate in the last generation</span></a>
+<a class="sourceLine" id="cb46-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb46-4" data-line-number="4"><span class="co"># collect the particleDataFrames into lists</span></a>
+<a class="sourceLine" id="cb46-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb46-6" data-line-number="6">resultsBMpart&lt;-<span class="kw">lapply</span>(resultsBM,<span class="cf">function</span>(x) x<span class="op">$</span>particleDataFrame)</a>
+<a class="sourceLine" id="cb46-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb46-8" data-line-number="8">resultsBoundpart&lt;-<span class="kw">lapply</span>(resultsBound,<span class="cf">function</span>(x) x<span class="op">$</span>particleDataFrame)</a>
+<a class="sourceLine" id="cb46-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb46-10" data-line-number="10"><span class="kw">plotPosteriors</span>(<span class="dt">particleDataFrame=</span>resultsBMpart,</a>
+<a class="sourceLine" id="cb46-11" data-line-number="11">   <span class="dt">priorsMat=</span>resultsBM[[<span class="dv">1</span>]]<span class="op">$</span>PriorMatrix)</a></code></pre></div>
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAqAAAAEMCAMAAAAs1PT/AAAAdVBMVEUAAAAAADoAAGYAAHQAAJcAAMQAAP8AOjoAOpAAZrY6AAA6ADo6AGY6Ojo6kNtmAABmADpmtrZmtv90dHSQOgCQZgCQkGaQ2/+Xl5e2ZgC2tma225C2/7a2///ExMTbkDrb/7bb////tmb/25D//7b//9v///9i2/irAAAACXBIWXMAAA7DAAAOwwHHb6hkAAANK0lEQVR4nO2dD1+jOB6H66icund2buqt7d1uO1bt+3+JBwQoKYRQCPCFPs9+1um0MRN+ecw/MFmdAIRZTV0AgCYQFKRBUJAGQUEaBAVpEBSkQVCQBkFBGgQFaRAUpEFQkAZBQRoEBWkQFKRBUJAGQUEaBAVpEBSkQVCQBkFBGgQFaRAUpEFQkAZBQRoEBWkQFKRBUJAGQUEaBAVpEBSkQVCQBkFBGgQFaRAUpEFQkAZBQRoEBWkQFKRBUJAGQUEaBAVpEBSkQVCQBkFBGgQFaRAUpEFQkAZBQRoEBWkQFKRBUJAGQUEaBAVpEBSkQVCQBkFBGgQFaRAUpEFQkAZBQRoEBWkQFKRBUJAGQUEaBAVpEBSkQVCQBkFBGgQFaRAUpEFQkAZBQRoEBWkQFKRBUJAGQUEaBAVpEBSk0RF0VTB1SUAIQRsEiwSTIWiDYJFgMgRtCFukffyfLN9vZlDz42/7fYY7BYIRCCzoVlfQw+rVvDjmLy4RrJ6REYxA0CLtY0FVDf1+K7Q8PH3UJqnEQvVaBgNBp+Nr/St/ebzs5DMQ9AYEle3jaUFbsHhBt7qCxmPQrAltPwaVvZahuAlBZWv1a23m6o72E0EXL+heW1AvCHoLgur28V4QFEGn5BB37+kw9MAs3sFtCCparYe793gY+nxCUDdLF3QrLKhZZvp+i6dICOpiKkE/X365ProZQfOF+t3Tx4Wg7nvxmlcyIGMLmi+s1D0iMUCRpAUtFup3z7SgLkZvQbM1aVrQ03nkGf/UIqiD8bv4r3WyLF0VdIhHzMwcSdjQ7FbS9xuCOggqaNwSPLdItosnr+O0oBMK2jIWHhA0cAuaLOw5bitbqV4XL2jbWDSDoOG7+Db18vnyj3EE3W4m7eJ7O4qgQ4xBD+4Zes7322oMQbcTC9oqFk0gaHBBj+ndu3T1uSNhBd1MKKgnFl2W3BC0F0nITW24HhFvQUhBN7mgk8ySfLFwTt4LEDTwLD6en/cmXJH2uaATNKGtYvH95pnpI2hYQX+aOunRfJ5CFinp4afq49vF4ugeiqcg6CCCum7ctWNZgnaKBffiCwIKujuHNezSSmfKgo5bs4PFAkH7kLca/Qgt6GaSWdJAsUDQ6QlWpP2UgoYBQW9EUNnHRTwgaDhBv9avxcqzxiTJFnTMqh0uFgg6PQEF3Wxm3scj6JIF3SLo/Al9q/M1eTyi03344A8s76cVtE8sChA0rKC7p4/Pl+fTrtejuuEF3Uwh6DCxQNA+JL+mmNy807jVeSnouHU7UCwQtA9JpeziCtG41Tm9oAPEAkF7sXtOfiXObJbRmWUI2isW3IsvCP486N279xkyDwMIOk0TOkQsEHR6AhVpP7GgQUDQBQu6RdAFEFZQ17k/VxFO0M2Z8QVtEwtvGgQNPEnqZWbGQgRtEYsO5yQhaB+Smyf9GUTQzX5kQ1vEglM+WhB8HbQ/SxHUGwvOSWpBUEH7LqoYwhTJmiNN0Me3iAUtaAvCjkF9v6TYimEE3Yw9CG0RC85J8hN6dzv/zPX6gwM6URF05Ca0VSw4J8nL6OugHQ4O6EQu6H3MRPP4ACDo2IJ2OTigE0ZQI2f6dU4PLXMvviCwoHGf9fSxa1hg6XJwQCeMn3n/fj+BoN5YmLXSz5fVyrlLDoIGniTdvR+SJ3jctdLl4IAuJA3o/f15BHq/GftXO/2xMH7+8d6wJoWggZeZXtMFk6ZnIDscHNCFWNAHa450P7KgLWKRymueuGeZyUXwhfok1I1PkV9/cEAX9tsHexK/uX8Y1dAWsUiSZD0KC/UuBmlBd71+UyxIkWI/LwTdxG+NKGibWCSt54EWtJEhxqCHfsv1yxC0TSy+1j/+TpvQo2uWhKDhZ/ENc9J2hCjS/uFynT6Zxj+Meu5xm1gczbqF864ogi70geXEz6qg24e51S+CLlPQaOsSdGYVjKAD3Ivvt5dGiCJFJ4egIzahA8UCQXuwyx4C6Xm+Wu8iReYM2c0lyZuPUd/c2zFULBC0O8VUtOGYwzYEELSuAc22YYz65t6KnrHgXnxBOEFLT+hOuzdTdGoQdJt8PDjDxQJBO1O66zzp1jdRfkp8vaCjNKHDxQJBO9PiN2zaMbCgYzShw8UCQTsjImiU+1kVNOvjRzB0sFjMbZmsP8sVtOongs6QpQkanbIpklPQ/QiGImgwQgrqPVy6uSQhnqiPTg09vBF0jCa0bywKEHRZtzqj5Itb0LyPH2WpKQgIuihBo/Tr1i/oKYpClHR4EHRJgkbp14YGtOjjZ9OGIujyBG1oQEuCzsRQBF2QoJH5o0nQcx+vbahzwoigAnQsUmT+2PoFnYGhOQh6Y4KWm9A5GFoj6Bx38OnBUgTNp+UeP+fWhFYFzZikNFOwEEGj7M+9T9CZNaFOQW9G0WUIGuUvvH5aTaj+cmhF0HSPPnPL9jYUXYSgUf7C34DaTai8opexeHwoLnFGm/X1Yf6CRmfH2vh5aah2P19tQR9ibsnQ2QsanV+28zPjXLlRNVMZKoKa3001kt7ESHR8Qa8/vKqBcg99lZ/pnvVFJlFN1mNwdSz2m/wiE0kfH5dv6PhbgF9/eJWDyBJrX9mU3ke5i5zG0etjcRbUdPKPj49RFE33EzY802wBntJ6R7caLuXc769ys0bR0/j13CEWF4KeLyC6ZKAyj87YgrqfNXfef67EfsDwj1rDHWLRmrqgNdHjMoZFsAW9GYhFCyYYg/oOr7odiIWf8Wfx3sOrbghi4UVwHbTMalqmvvwKtxeDqf99D+2LN23KsWhXovFTDcfU/74HBLVBUDEQ1AZBxUBQGwQVA0FtEFQMBLVBUDEQ1AZBxUBQGwQVA0FtEBRACgQFaRAUpEFQkAZBQRoEBWkQFKRBUJAGQUEaBAVpEBSkQVCQBkFBGk1Bj6vV3Xv22vzu+LMz7ec/i11jyt/WmLIxz3TLuWIjBU+e42AVwlmi8gf2RTjzitnV/lK+lerzpakChkVS0GMcm2Men88/Gv34WhfbGlnf1piyKc/vtziLQ14hnjzHwSqEs0TlD+yLcOaV/L121wj7X4xTfK0nMlRRULNn0S5XpPG44ON5c03725pSNub5+ZLsR3MwKTx5joNVCGeJrA+si3CmOqV9SY2gNf9iTV6joCioHd1Dkx3H1Wshm7NSKimb8zTJTfPRnOdIWIVwlqjmg5qG9jLV4ek/NYLa/2JzFzYwkoKmEcl12v3LNZoynAW1vq0ppTfPOEW5cpob8cGxCuEsUc0HO2+q+K91Y1Ar1fHHX2tPtAZEUVDzg5/9+H+tkwDu3PEpgm19W2NKb57FdnPePMfAKoSzRNUP6vbMs1MlvXedoFaqQzI0+n5jDFpQUwdt2sX2gvrzLM+R5iro0TVHOqdKtiX1C3o3ZS+iKGhNZ2UGRbV06eI9eZ6bnhl38fV7jlbz8nbxZijaUAODIilodbjfMFBvOUk6VQV15Xk4V+18J0mH+lGjleqQ7bBYUc9KZcI21VRJUdCaBZM27aJ3SehCZVeeh1KFzXWZyboId6qEuhbUSmW20qeLL2EtE6dhajNJ8i6ql2bxDXl+vpTfn+lCvX0RzrwSau8kWamSkWppP/1xkRQ06XuS6Jip466uEzqTamdSHppvS5ZSNuSZ9Xt3763yHAcrHs4SlVIVF+HJ6+S61WmlOvoW5QZEU1CADAQFaRAUpEFQkAZBQRoEBWkQFKRBUJAGQUEaBAVpEBSkQVCQBkFBGgQFaRAUpEFQkAZBQRoEBWkQFKRBUJAGQUEaBAVpEBSkQVCQBkFBGgQFaRAUpFmCoMfKLkvxO2ZPtiZK59fMHeti83DURcAZFdlgLEDQatD9cp6sU2kWRauLr36TajBuVtDyqTSLoougwsGYs6DJAWirX8nXZKt1s6Hi188/040Hn36vk27+32uzzWL86d2f1qb35VNpZs/X+WLTcPyOo/Djr3IETKwyew8Xx+wpB2PGgqb7JB9Xv9KgJ1vSJrv9pwd4mPpK/k/OW4v/T85jOV7ulilbJ9dTvljzuoiCedOKlYmTveGnbDBmLGge07Qifr4bY9PAnwV9Td81W37vli6oudjidflNK1brms1oZYMxY0HzgX0+6DoWfdhZUPMXE/3LfbNl6+R6yhdbfl168xyr2vM6ZIMxY0HNib5ZJcTDqh//e3EIerh5Qcuxqj2vQzYYcxY0YWcGXWmr8OkSlBY0TVWO1SWywZi7oFmNpPE9urr47NifWxe0+JAx6CikLeIxaRVes8Zz9ZrXyKtdPbcxi88Ffa0Keo5VNou/PHtTNhgzFjQ9HSUJ/G719JEem5L1Yek7v632YxcPUf97UQeydXI99k+juXj7zSxW9eugJ+FgzFnQK5GtA2jgJgRNx6C1Qy9Q5yYETTu41S9zv891AtutMZNg3IagMFsQFKRBUJAGQUEaBAVpEBSkQVCQBkFBGgQFaRAUpEFQkAZBQRoEBWkQFKRBUJAGQUEaBAVpEBSkQVCQBkFBGgQFaf4PE/OpwAufpyYAAAAASUVORK5CYII=" /><!-- --></p>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb47-1" data-line-number="1"><span class="kw">plotPosteriors</span>(<span class="dt">particleDataFrame=</span>resultsBoundpart,</a>
+<a class="sourceLine" id="cb47-2" data-line-number="2">   <span class="dt">priorsMat=</span>resultsBound[[<span class="dv">1</span>]]<span class="op">$</span>PriorMatrix)</a></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
 
 
 
