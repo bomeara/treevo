@@ -4,7 +4,7 @@ Title: Using ABC to Understand Trait Evolution
 Version: 0.10.0
 Date: 2018-10-23
 Authors@R: c(person("Brian", "O'Meara", role=c("aut"), email="omeara.brian@gmail.com"),
-    person("Barb", "Banbury", role=c("aut")),
+    person("Barb", "Banbury", role=c("aut")), 
     person("David","Bapst", role=c("aut", "cre"), email="dwbapst@gmail.com"))
 Maintainer: David Bapst <dwbapst@gmail.com>
 Depends:
