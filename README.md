@@ -7,7 +7,7 @@ Currently, TreEvo is adapted only for univariate, continuous traits.
 
 This work was initially written by Barb Banbury and Brian O'Meara, and since July 2017, has been largely editted and maintained by David W. Bapst. The software is open-source licensed under the GNU General Protection License (most recent version).
 
-CRAN submission is hopefully coming soon. The latest pre-release version of TreEvo can be found at github:
+CRAN submission is coming soon. The latest pre-release version of TreEvo can be found at github:
 
 	https://github.com/bomeara/treevo
 	
