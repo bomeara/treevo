@@ -22,4 +22,8 @@ The current build status is indicated here:
 
 You can see a version of help created with  at http://bomeara.github.io/treevo/reference/index.html
 
+A poster about this work was presented at Geological Society of America 2018 and is available here:
+
+	https://github.com/bomeara/treevo_paper/raw/master/gsa%20poster%20Nov%202018/poster_TreEvo_11-02-18_final.pdf
+
 [![DOI](https://zenodo.org/badge/41578359.svg)](https://zenodo.org/badge/latestdoi/41578359)
