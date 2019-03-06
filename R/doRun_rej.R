@@ -27,7 +27,7 @@ doRun_rej <- function(
     ####################################################
     
     
-    if (!is.binary.tree(phy)) {
+    if (!ape::is.binary.phylo(phy)) {
         warning("Tree is not fully dichotomous, this may lead to issues")
     }
     startTime <- proc.time()[[3]]

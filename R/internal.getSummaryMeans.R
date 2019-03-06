@@ -11,15 +11,25 @@
 	
 # internal function
 
+# this could then be used for easily generating new simulations from the median param values
+
 
 
 getSummaryMeans<-function(doRunOutput){
-
+	# this contains means for unfixed parameters
 	sumPostOutput<-doRunOutput$postSummary
-	sumPostOutput # this contains means for unfixed parameters
+	
+	
 	# need to sort into intrinsic, extrinsic, starting
+		# this should be indicated easily by other aspects of the outut
 
-# need to get out both fixed and unfixed parameters
+	
+	
+	# need to get out both fixed and unfixed parameters
+	
+	sumPostOutput 
+	
+
 
 
 	# output list of vectors for starting, intrinsic, extrinsic

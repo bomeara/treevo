@@ -306,7 +306,7 @@ doRun_prc <- function(
     #
     functionStartTime <- proc.time()[[3]]
     #
-    if (!is.binary.tree(phy)) {
+    if (!ape::is.binary.phylo(phy)) {
         warning("Tree is not fully dichotomous, this may cause issues!")
         }
     #    
