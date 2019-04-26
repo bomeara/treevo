@@ -99,8 +99,11 @@
 #' @importFrom graphics curve layout legend lines plot plot.new points polygon rect segments symbols text title
 #' @importFrom grDevices dev.off gray pdf rgb
 #' @importFrom methods as setAs
-#' @importFrom rpgm rpgm.rnorm
 #' @importFrom utils capture.output
+#' @importFrom RcppZiggurat znorm
+
+# package rpgm deprecated on CRAN as of Jan 2019 (04-25-19)
+# @importFrom rpgm rpgm.rnorm
 
 # package mvr doesn't exist, was it renamed pls?
 # @importFrom mvr plsr

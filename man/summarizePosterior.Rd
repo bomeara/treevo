@@ -36,10 +36,13 @@ may be reported for complex posterior distributions, which each constitute one
 row of the output matrix. See \code{\link{highestDensityInterval}} for details.
 }
 \description{
-This function summarizes the distribution of parameter estimates from
-the posterior of an ABC analysis sing the \code{doRun} functions in \code{TreEvo}, for all
-freely varying parameters. Only the final generation is considered. This summary includes
-the mean, standard deviation and Highest Posterior Density (at a 0.8 alpha) for each parameter.
+This function summarizes the distribution of parameter
+estimates from the posterior of an ABC analysis using the
+\code{doRun} functions in \code{TreEvo}, for all
+freely varying parameters. Only the final
+generation is considered. This summary includes
+the mean, standard deviation and Highest Posterior
+Density (at a 0.8 alpha) for each parameter.
 }
 \examples{
 # example with output from doRun_prc

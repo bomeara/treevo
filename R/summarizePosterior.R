@@ -1,9 +1,12 @@
 #' Summarize Posterior Distribution for a Free Parameter
 #' 
-#' This function summarizes the distribution of parameter estimates from
-#' the posterior of an ABC analysis sing the \code{doRun} functions in \code{TreEvo}, for all
-#' freely varying parameters. Only the final generation is considered. This summary includes
-#' the mean, standard deviation and Highest Posterior Density (at a 0.8 alpha) for each parameter.
+#' This function summarizes the distribution of parameter
+#' estimates from the posterior of an ABC analysis using the
+#' \code{doRun} functions in \code{TreEvo}, for all
+#' freely varying parameters. Only the final
+#' generation is considered. This summary includes
+#' the mean, standard deviation and Highest Posterior
+#' Density (at a 0.8 alpha) for each parameter.
 #' 
 
 #' @param particleDataFrame A \code{particleDataFrame} object, as
@@ -62,8 +65,9 @@ summarizePosterior <- function(particleDataFrame,
     # get the max generation
     maxGen <- max(particleDataFrame$generation)
     # subset on particles from the last generation
-    subpDF <- particleDataFrame[particleDataFrame$generation == maxGen
-        & particleDataFrame$weight>0, ]    
+    subpDF <- particleDataFrame[
+		particleDataFrame$generation == maxGen & particleDataFrame$weight>0,
+		]    
     #
     # now only get the parameter estimates
     subpDF <- as.data.frame(subpDF[, 7:dim(particleDataFrame)[2]])
@@ -80,21 +84,32 @@ summarizePosterior <- function(particleDataFrame,
             }
         }
     #
-    res<-apply(subpDF,2,getSummary,
-        alpha = alpha, coda = coda, 
-        verboseMultimodal=verboseMultimodal, ...)
+    res<-apply(
+		subpDF,2,getSummary,
+        alpha = alpha, 
+		coda = coda, 
+        verboseMultimodal=verboseMultimodal, 
+		...)
     # name the elements of the list
     names(res) <- colnames(subpDF)
     return(res)
     }
                 
-getSummary <- function(param, alpha = alpha, coda = coda, 
-        verboseMultimodal=verboseMultimodal, ...){
+getSummary <- function(
+		param, 
+		alpha = alpha, 
+		coda = coda, 
+        verboseMultimodal=verboseMultimodal, 
+		...
+		){
     ######################################
     #
-    HPD <- highestDensityInterval(dataVector = param,
-                alpha = alpha, coda = coda, 
-                verboseMultimodal=verboseMultimodal, ...)
+    HPD <- highestDensityInterval(
+				dataVector = param,
+                alpha = alpha, 
+				coda = coda, 
+                verboseMultimodal=verboseMultimodal, 
+				...)
     output<-list(
         mean = mean(param),
         sd = sd(param),

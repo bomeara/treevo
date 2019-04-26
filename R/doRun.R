@@ -258,8 +258,10 @@
 #' @rdname doRun
 #' @export
 doRun_prc <- function(
-    phy, traits, intrinsicFn, extrinsicFn, startingPriorsValues, startingPriorsFns, 
-    intrinsicPriorsValues, intrinsicPriorsFns, extrinsicPriorsValues, extrinsicPriorsFns, 
+    phy, traits, intrinsicFn, extrinsicFn, 
+	startingPriorsValues, startingPriorsFns, 
+    intrinsicPriorsValues, intrinsicPriorsFns, 
+	extrinsicPriorsValues, extrinsicPriorsFns, 
     #
     # OLD COMMENTING (before DWB):    
     #the doRun_prc function takes input from the user and then automatically guesses optimal parameters, though user overriding is also possible.
@@ -301,7 +303,7 @@ doRun_prc <- function(
     jobName = NA, 
     saveData = FALSE, 
     verboseParticles = TRUE
-    ){                                #, plot = FALSE
+    ){                        
     #
     #
     functionStartTime <- proc.time()[[3]]
@@ -315,31 +317,50 @@ doRun_prc <- function(
         }
     #
     timeStep <- generation.time/TreeYears
-    message(paste0("The effective timeStep for this tree will be ", signif(timeStep, 2), 
+    message(paste0(
+		"The effective timeStep for this tree will be ",
+		signif(timeStep, 2), 
         ", as a proportion of tree height (root to furthest tip)..."))
     #
     edgesRescaled <- phy$edge.length/max(node.depth.edgelength(phy))
     message("Rescaling edge lengths relative to maximum tip-to-root distance...")
-
+	#
     #
     minEdgeRescaled <- min(edgesRescaled)
     minEdgeRescaledNZ <- min(edgesRescaled[edgesRescaled>0])
     #
     if(minEdgeRescaled == 0){
         message("The smallest edge length on the input tree is ZERO LENGTH...")
-        message(paste0("Edge with smallest rescaled NON-ZERO length on tree is ", signif(minEdgeRescaledNZ, 2), " as a proportion of tip-to-root distance"))
-        message(paste0("(This is ", signif(minEdgeRescaledNZ*TreeYears, 2), " in the same TreeYears units as used for the input generation.time ( = ", generation.time, "))"))
+        message(paste0(
+			"Edge with smallest rescaled NON-ZERO length on tree is ",
+			signif(minEdgeRescaledNZ, 2), " as a proportion of tip-to-root distance"
+			))
+        message(paste0(
+			"(This is ",
+			signif(minEdgeRescaledNZ*TreeYears, 2),
+			" in the same TreeYears units as used for the input generation.time ( = ", generation.time, "))"
+			))
     }else{
-        message(paste0("The smallest edge length on the input tree is ", signif(minEdgeRescaled, 2)))
-        message(paste0("(This is ", signif(minEdgeRescaled*TreeYears, 2), " in the same TreeYears units as used for the input generation.time ( = ", generation.time, "))"))
+        message(paste0(
+			"The smallest edge length on the input tree is ", 
+			signif(minEdgeRescaled, 2)
+			))
+        message(paste0(
+			"(This is ", signif(minEdgeRescaled*TreeYears, 2), 
+			" in the same TreeYears units as used for the input generation.time ( = ", generation.time, "))"
+			))
         }
     #
     if(max(edgesRescaled) < timeStep) {
-        stop("Tree has *NO* rescaled branches longer than generation.time/TreeYears, no simulated evol change can occur!")
+        stop(
+			"Tree has *NO* rescaled branches longer than generation.time/TreeYears, no simulated evol change can occur!"
+			)
         }
     #
     if(minEdgeRescaled < timeStep) {
-        warning("Tree has rescaled branches shorter than generation.time/TreeYears; no trait evolution will be simulated on these branches, and thus ML summary stat functions may fail or produce unexpected results.")
+        warning(
+			"Tree has rescaled branches shorter than generation.time/TreeYears; no trait evolution will be simulated on these branches, and thus ML summary stat functions may fail or produce unexpected results."
+			)
         #message("Tree has zero or nearly zero length branches")
         }
     #
@@ -350,14 +371,21 @@ doRun_prc <- function(
     taxonDF <- getTaxonDFWithPossibleExtinction(phy)
     #
     # get freevector
-    freevector <- getFreeVector(startingPriorsFns = startingPriorsFns, startingPriorsValues = startingPriorsValues, 
-                        intrinsicPriorsFns = intrinsicPriorsFns, intrinsicPriorsValues = intrinsicPriorsValues, 
-                        extrinsicPriorsFns = extrinsicPriorsFns, extrinsicPriorsValues = extrinsicPriorsValues)
+    freevector <- getFreeVector(
+		startingPriorsFns = startingPriorsFns, 
+		startingPriorsValues = startingPriorsValues, 
+        intrinsicPriorsFns = intrinsicPriorsFns, 
+		intrinsicPriorsValues = intrinsicPriorsValues, 
+        extrinsicPriorsFns = extrinsicPriorsFns, 
+		extrinsicPriorsValues = extrinsicPriorsValues
+		)
     numberParametersTotal <- length(freevector)
     numberParametersFree <- sum(freevector)
     if(numberParametersFree<1){
-        stop("No freely varying parameters found; analysis cannot continue. Check prior functions and values")
-        }
+      stop(
+		"No freely varying parameters found; analysis cannot continue. Check prior functions and values"
+		)
+      }
     namesParFree <- names(freevector)[freevector]
     #
     # get prior list
@@ -372,36 +400,49 @@ doRun_prc <- function(
         )
     ##    
     #initialize weighted mean sd matrices
-    weightedMeanParam <- matrix(nrow = nStepsPRC, 
-        ncol = numberParametersFree)
+    weightedMeanParam <- matrix(
+		nrow = nStepsPRC, 
+        ncol = numberParametersFree
+		)
     param.stdev <- matrix(nrow = nStepsPRC, ncol = numberParametersFree)
     #
 	colnames(weightedMeanParam) <- colnames(param.stdev) <- namesParFree 
-    rownames(weightedMeanParam) <- rownames(param.stdev) <- paste0("Gen ", c(1: nStepsPRC), sep = "") 
+	genRowNames <- paste0("Gen ", c(1: nStepsPRC), sep = "") 
+    rownames(weightedMeanParam) <- rownames(param.stdev) <- genRowNames
     #
     if (is.null(nInitialSims)) {
         #modified from 1000, which is rather computationally abusive
 		nInitialSims <- nInitialSimsPerParam*numberParametersFree    
 		#
-        message(paste0("Number of initial simulations to be performed (nInitialSims) not given\n", 
+        message(paste0(
+			"Number of initial simulations to be performed (nInitialSims) not given\n", 
             "Number of initial simulations will instead be product of the number of free parameters multiplied by ",
             nInitialSimsPerParam, 
             "\n( = ", nInitialSims, " initial simulations)"))
         }
     #
     # save input data for use later
-    input.data <- rbind(jobName = jobName, nTaxa = Ntip(phy), 
-        nInitialSims = nInitialSims, nInitialSimsPerParam = nInitialSimsPerParam, 
-        generation.time = generation.time, TreeYears = TreeYears, timeStep = timeStep, 
-        totalGenerations = totalGenerations, epsilonProportion = epsilonProportion, 
-        epsilonMultiplier = epsilonMultiplier, nRuns = nRuns, nStepsPRC = nStepsPRC, 
-        numParticles = numParticles, standardDevFactor = standardDevFactor)
+    input.data <- rbind(
+		jobName = jobName, 
+		nTaxa = Ntip(phy), 
+        nInitialSims = nInitialSims, 
+		nInitialSimsPerParam = nInitialSimsPerParam, 
+        generation.time = generation.time, 
+		TreeYears = TreeYears, 
+		timeStep = timeStep, 
+        totalGenerations = totalGenerations, 
+		epsilonProportion = epsilonProportion, 
+        epsilonMultiplier = epsilonMultiplier, 
+		nRuns = nRuns, nStepsPRC = nStepsPRC, 
+        numParticles = numParticles, 
+		standardDevFactor = standardDevFactor)
     #
     # get summary values for observed data
     originalSummaryValues <- summaryStatsLong(
         phy = phy, 
         traits = traits
-        #niter.brown = 200, niter.lambda = 200, niter.delta = 200, niter.OU = 200, niter.white = 200
+        #niter.brown = 200, niter.lambda = 200, niter.delta = 200,
+		#niter.OU = 200, niter.white = 200
         )
     #
     results <- list()
@@ -445,11 +486,16 @@ doRun_prc <- function(
         #------------------ ABC-PRC (Start) ------------------
         message("Beginning partial rejection control algorithm...")
         #
-        nameVector <- c("generation", "attempt", "id", "parentid", "distance", "weight", namesParFree)
+        nameVector <- c(
+			"generation", "attempt",
+			"id", "parentid", "distance",
+			"weight", namesParFree)
         #
         # save before initiating PRC procedure
         if(saveData){
-            save.image(file = paste0("WS", jobName, ".Rdata", sep = ""))
+            save.image(
+				file = paste0("WS", jobName, ".Rdata", sep = "")
+				)
             }
         #
         # here I removed the initial loop (DWB, December 2017)
@@ -494,7 +540,8 @@ doRun_prc <- function(
             expParticleAcceptanceRate <- 0.5
             #
             if(verboseParticles){
-                message("Successes ", 
+                message(
+					"Successes ", 
                     "  Attempts ", 
                     "  Distance   ", 
                     paste0(namesParFree, "  ", collapse = "")
@@ -764,6 +811,7 @@ doRun_prc <- function(
         prcResults$input.data <- input.data
         prcResults$priorList <- priorList
         prcResults$particleDataFrame <- particleDataFrame
+		doRunOutput$freeVector <- freeVector
         #names(prcResults$particleDataFrame) <- nameVector
         prcResults$toleranceVector <- initialSimsRes$toleranceVector
         prcResults$phy <- phy
@@ -775,8 +823,10 @@ doRun_prc <- function(
             prcResults$postSummary  <- summarizePosterior(particleDataFrame, verboseMultimodal = FALSE)
 			prcResults$parMeansList  <- getSummaryMeans(prcResults$postSummary)
         }else{
-            warning("Posterior Summaries were not calculated as the number of accepted particles was less than 2")
-            }
+          warning(
+			"Posterior Summaries were not calculated as number of accepted particles was less than 2"
+			 )
+          }
         ######################################
         if(identical(nRuns, 1)){
             results <- prcResults

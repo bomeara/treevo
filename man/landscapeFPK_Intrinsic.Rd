@@ -6,12 +6,13 @@
 \alias{plot_landscapeFPK_model}
 \title{Intrinsic Trait Evolution Model for a Macroevolutionary Landscape on a Fokker-Planck-Kolmogorov Potential Surface (Boucher et al., 2018)}
 \usage{
-landscapeFPK_Intrinsic(params, states, timefrompresent, grainScaleFPK = 100)
+landscapeFPK_Intrinsic(params, states, timefrompresent,
+  grainScaleFPK = 100)
 
 getTraitBoundsFPK(traitData)
 
-plot_landscapeFPK_model(params, grainScaleFPK = 1000, traitName = "Trait",
-  plotLandscape = TRUE)
+plot_landscapeFPK_model(params, grainScaleFPK = 1000,
+  traitName = "Trait", plotLandscape = TRUE)
 }
 \arguments{
 \item{params}{A vector containing input parameters for the given model (see \emph{Description} below on what parameters).}

@@ -154,7 +154,7 @@ nullIntrinsic <- function(params, states, timefrompresent) {
 #' @rdname intrinsicModels
 #' @export
 brownianIntrinsic <- function(params, states, timefrompresent) {
-    newdisplacement <- rpgm::rpgm.rnorm(
+    newdisplacement <- rnormFastZig(
 		#mean = 0 because we ADD this to existing values
 		n = length(states), 
 		mean = 0, 
@@ -167,7 +167,7 @@ brownianIntrinsic <- function(params, states, timefrompresent) {
 #' @export
 boundaryIntrinsic <- function(params, states, timefrompresent) {
     #params[1] is sd, params[2] is min, params[3] is max. params[2] could be 0 or -Inf, for example
-    newdisplacement <- rpgm::rpgm.rnorm(n = length(states), mean = 0, sd = params[1])
+    newdisplacement <- rnormFastZig(n = length(states), mean = 0, sd = params[1])
     for (i in 1:length(newdisplacement)) {
         newstate <- newdisplacement[i]+states[i]
         if (newstate<params[2]) { #newstate less than min
@@ -184,7 +184,7 @@ boundaryIntrinsic <- function(params, states, timefrompresent) {
 #' @export
 boundaryMinIntrinsic  <- function(params, states, timefrompresent) {
     #params[1] is sd, params[2] is min boundary
-    newdisplacement <- rpgm::rpgm.rnorm(n = length(states), mean = 0, sd = params[1])
+    newdisplacement <- rnormFastZig(n = length(states), mean = 0, sd = params[1])
     for (i in 1:length(newdisplacement)) {
         newstate <- newdisplacement[i]+states[i]
         if (newstate<params[2]) { #newstate less than min
@@ -198,7 +198,7 @@ boundaryMinIntrinsic  <- function(params, states, timefrompresent) {
 #' @export
 boundaryMaxIntrinsic  <- function(params, states, timefrompresent) {
     #params[1] is sd, params[2] is max boundary
-    newdisplacement <- rpgm::rpgm.rnorm(n = length(states), mean = 0, sd = params[1])
+    newdisplacement <- rnormFastZig(n = length(states), mean = 0, sd = params[1])
     for (i in 1:length(newdisplacement)) {
         newstate <- newdisplacement[i]+states[i]
         if (newstate>params[2]) { #newstate MORE than MAX
@@ -218,7 +218,7 @@ autoregressiveIntrinsic <- function(params, states, timefrompresent) {
     attractor <- params[2]
     attraction <- params[3]    #in this model, this should be between zero and one
     #subtract current states because we want displacement
-	newdisplacement <- rpgm::rpgm.rnorm(
+	newdisplacement <- rnormFastZig(
 					n = length(states), 
 					mean = (attractor-states)*attraction, 
 					sd = sd) 
@@ -237,7 +237,7 @@ maxBoundaryAutoregressiveIntrinsic <- function(params, states, timefrompresent) 
     attractor <- params[2]
     attraction <- params[3]    #in this model, this should be between zero and one
     minBound <- params[4]
-    newdisplacement <- rpgm::rpgm.rnorm(
+    newdisplacement <- rnormFastZig(
 		n = length(states), 
 		mean = (attractor-states)*attraction, 
 		sd = sd) #subtract current states because we want displacement
@@ -263,7 +263,7 @@ minBoundaryAutoregressiveIntrinsic <- function(params, states, timefrompresent) 
     attractor <- params[2]
     attraction <- params[3]    #in this model, this should be between zero and one
     minBound <- params[4]
-    newdisplacement <- rpgm::rpgm.rnorm(
+    newdisplacement <- rnormFastZig(
 		n = length(states), 
 		mean = (attractor-states)*attraction, 
 		sd = sd) #subtract current states because we want displacement
@@ -313,7 +313,7 @@ autoregressiveIntrinsicTimeSlices <- function(params, states, timefrompresent) {
     }
     #message(paste("sd = ", sd, " attractor = ",
 		# attractor, " attraction = ", attraction))
-    newdisplacement <- rpgm::rpgm.rnorm(n = length(states),
+    newdisplacement <- rnormFastZig(n = length(states),
 		mean = (attractor-states)*attraction, sd = sd)
     return(newdisplacement)
     }
@@ -341,7 +341,7 @@ autoregressiveIntrinsicTimeSlicesConstantMean <- function(params, states, timefr
         }
         previousThresholdTime <- thresholdTime
     }
-    newdisplacement <- rpgm::rpgm.rnorm(
+    newdisplacement <- rnormFastZig(
 			n = length(states),
 			mean = attraction*states + attractor,
 			sd = sd
@@ -387,7 +387,7 @@ autoregressiveIntrinsicTimeSlicesConstantSigma <- function(params, states, timef
         }
     }
     #message(paste("sd = ", sd, " attractor = ", attractor, " attraction = ", attraction))
-    newdisplacement <- rpgm::rpgm.rnorm(n = length(states), mean = (attractor-states)*attraction, sd = sd)
+    newdisplacement <- rnormFastZig(n = length(states), mean = (attractor-states)*attraction, sd = sd)
     return(newdisplacement)
     }
 
@@ -424,7 +424,7 @@ varyingBoundariesFixedSigmaIntrinsic <- function(params, states, timefrompresent
         }
     }
     #message(paste("sd = ", sd, " attractor = ", attractor, " attraction = ", attraction))
-    newdisplacement <- rpgm::rpgm.rnorm(n = length(states), mean = 0, sd = sd)
+    newdisplacement <- rnormFastZig(n = length(states), mean = 0, sd = sd)
         for (i in 1:length(newdisplacement)) {
         newstate <- newdisplacement[i]+states[i]
         if (newstate<minBound) { #newstate less than min
@@ -469,7 +469,7 @@ varyingBoundariesVaryingSigmaIntrinsic <- function(params, states, timefromprese
         }
     }
     #message(paste("sd = ", sd, " attractor = ", attractor, " attraction = ", attraction))
-    newdisplacement <- rpgm::rpgm.rnorm(n = length(states), mean = 0, sd = sd)
+    newdisplacement <- rnormFastZig(n = length(states), mean = 0, sd = sd)
         for (i in 1:length(newdisplacement)) {
         newstate <- newdisplacement[i]+states[i]
         if (newstate<minBound) { #newstate less than min
@@ -490,7 +490,7 @@ genomeDuplicationAttraction <- function(params, states, timefrompresent) {
     attractor <- params[2]
     attraction <- params[3]    #in this model, this should be between zero and one
     doubling.prob <- params[4]
-    newdisplacement <- rpgm::rpgm.rnorm(n = length(states), mean = (attractor-states)*attraction, sd = sd) #subtract current states because we want displacement
+    newdisplacement <- rnormFastZig(n = length(states), mean = (attractor-states)*attraction, sd = sd) #subtract current states because we want displacement
     for (i in 1:length(newdisplacement)) {
         newstate <- newdisplacement[i]+states[i]
         if (newstate<0) { #newstate less than min
@@ -511,7 +511,7 @@ genomeDuplicationAttractionLogScale <- function(params, states, timefrompresent)
     attractor <- params[2]
     attraction <- params[3]    #in this model, this should be between zero and one
     doubling.prob <- params[4]
-    newdisplacement <- rpgm::rpgm.rnorm(n = length(states), mean = (attractor-states)*attraction, sd = sd) #subtract current states because we want displacement
+    newdisplacement <- rnormFastZig(n = length(states), mean = (attractor-states)*attraction, sd = sd) #subtract current states because we want displacement
     if (runif(1, 0, 1)<doubling.prob) { #we double
         newdisplacement <- log(2*exp(states))-states
     }
@@ -527,7 +527,7 @@ genomeDuplicationPartialDoublingLogScale <- function(params, states, timefrompre
     sd <- params[1]
     beta.shape1 <- params[2] #the larger this is, the more the duplication is exactly a doubling. To see what this looks like, plot(density(1+rbeta(10000, beta.shape1, 1)))
     duplication.prob <- params[3]
-    newdisplacement <- rpgm::rpgm.rnorm(n = length(states), mean = 0, sd = sd)
+    newdisplacement <- rnormFastZig(n = length(states), mean = 0, sd = sd)
     if (runif(1, 0, 1)<duplication.prob) { #we duplicate
         newdisplacement <- log((1+rbeta(1, beta.shape1, 1))*exp(states))-states
     }

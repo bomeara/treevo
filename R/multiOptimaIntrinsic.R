@@ -150,7 +150,7 @@ multiOptimaIntrinsic <- function(params, states, timefrompresent) {
 	theta<-sample(theta,1,prob=thetaWeights)
 	# now 
 	#subtract current states because we want displacement
-    newdisplacement <- rpgm::rpgm.rnorm(n = length(states), mean = (theta-states)*alpha, sd = sd) 
+    newdisplacement <- rnormFastZig(n = length(states), mean = (theta-states)*alpha, sd = sd) 
     return(newdisplacement)
     }
 

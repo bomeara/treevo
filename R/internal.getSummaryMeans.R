@@ -21,7 +21,7 @@ getSummaryMeans<-function(doRunOutput){
 	
 	
 	# need to sort into intrinsic, extrinsic, starting
-		# this should be indicated easily by other aspects of the outut
+		# this should be indicated easily by other aspects of the output
 
 	
 	
