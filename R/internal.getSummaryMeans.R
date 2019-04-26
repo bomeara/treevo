@@ -18,6 +18,8 @@
 getSummaryMeans<-function(doRunOutput){
 	# this contains means for unfixed parameters
 	sumPostOutput<-doRunOutput$postSummary
+	# this tells us which parameters are fixed
+	freeVector <- doRunOutput$freeVector
 	
 	
 	# need to sort into intrinsic, extrinsic, starting
@@ -33,6 +35,16 @@ getSummaryMeans<-function(doRunOutput){
 
 
 	# output list of vectors for starting, intrinsic, extrinsic
-
+	list(
+		starting = ,
+		intrinsic = ,
+		extrinsic = ,
+		)
 
 	}
+	
+	
+# a function that would take means of parameters
+  # and then simulate data using those means as fixed priors
+  
+ 

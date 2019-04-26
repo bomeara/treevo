@@ -100,7 +100,7 @@
 #' @importFrom grDevices dev.off gray pdf rgb
 #' @importFrom methods as setAs
 #' @importFrom utils capture.output
-#' @importFrom RcppZiggurat znorm
+#' @importFrom RcppZiggurat zrnorm
 
 # package rpgm deprecated on CRAN as of Jan 2019 (04-25-19)
 # @importFrom rpgm rpgm.rnorm

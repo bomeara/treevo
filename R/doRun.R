@@ -811,7 +811,7 @@ doRun_prc <- function(
         prcResults$input.data <- input.data
         prcResults$priorList <- priorList
         prcResults$particleDataFrame <- particleDataFrame
-		doRunOutput$freeVector <- freeVector
+		prcResults$freeVector <- freeVector
         #names(prcResults$particleDataFrame) <- nameVector
         prcResults$toleranceVector <- initialSimsRes$toleranceVector
         prcResults$phy <- phy
@@ -820,8 +820,12 @@ doRun_prc <- function(
         prcResults$time.per.gen <- genTimes
         #######################################
         if(nrow(particleDataFrame)>2){
-            prcResults$postSummary  <- summarizePosterior(particleDataFrame, verboseMultimodal = FALSE)
-			prcResults$parMeansList  <- getSummaryMeans(prcResults$postSummary)
+            prcResults$postSummary  <- summarizePosterior(
+				particleDataFrame, 
+				verboseMultimodal = FALSE)
+			prcResults$parMeansList  <- getSummaryMeans(
+				prcResults$postSummary, 
+				freeVector = freeVector)
         }else{
           warning(
 			"Posterior Summaries were not calculated as number of accepted particles was less than 2"
