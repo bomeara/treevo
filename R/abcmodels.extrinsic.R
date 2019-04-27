@@ -120,7 +120,14 @@ nearestNeighborDisplacementExtrinsic <- function(params, selfstates, otherstates
     if(localsign == 0) {
         localsign = sign(rnormFastZig(n = 1))    
     }
-    newdisplacement <- rnormFastZig(n = 1, mean = localsign*min(c(abs(springK/((selfstates[1]-repulsorValue)*(selfstates[1]-repulsorValue))), maxforce), na.rm = TRUE), sd = sd)
+    newdisplacement <- rnormFastZig(
+		n = 1, 
+		mean = localsign * min(
+			c( abs(
+				springK/((selfstates[1] - repulsorValue)*
+					(selfstates[1] - repulsorValue))), maxforce), 
+			na.rm = TRUE), 
+		sd = sd)
     return(newdisplacement)
 }
 
