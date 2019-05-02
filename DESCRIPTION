@@ -41,6 +41,7 @@ BugReports: https://github.com/bomeara/TreEvo/issues
 LazyData: yes
 Description: Various functions for estimating parameters of trait evolution in comparative analyses using Approximate Bayesian Computation.
 License: GPL
+Encoding: UTF-8
 URL: https://github.com/bomeara/treevo
 Repository: CRAN
 Packaged: 2012-07-02 16:00:00; BCO

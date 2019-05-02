@@ -15,36 +15,56 @@
 
 
 
-getSummaryMeans<-function(doRunOutput){
-	# this contains means for unfixed parameters
-	sumPostOutput<-doRunOutput$postSummary
+getSummaryMeans<-function(doRunOutput, freeVector){
 	# this tells us which parameters are fixed
-	freeVector <- doRunOutput$freeVector
 	
 	
-	# need to sort into intrinsic, extrinsic, starting
+	
+	# need to sort into intrinsic, extrinsic, starting (and which are fixed)
 		# this should be indicated easily by other aspects of the output
-
 	
 	
+	# this contains means for unfixed parameters
+	sumPostOutput<-doRunOutput$postSummary	
 	# need to get out both fixed and unfixed parameters
+	
 	
 	sumPostOutput 
 	
 
 
-
+	startingPar <- 
+	intrinsicPar <- 
+	extrinsicPar <- 
 	# output list of vectors for starting, intrinsic, extrinsic
-	list(
-		starting = ,
-		intrinsic = ,
-		extrinsic = ,
+	res <- list(
+		starting = startingPar,
+		intrinsic = intrinsicPar,
+		extrinsic = extrinsicPar,
 		)
-
+	return(res)
 	}
 	
 	
-# a function that would take means of parameters
+# a function that would take a tree, models and means of parameters
   # and then simulate data using those means as fixed priors
+  
+#
+
+function(){
+	
+	
+	char <- doSimulation(
+		phy = tree, 
+		generation.time = 100000, 
+		intrinsicFn = brownianIntrinsic, 
+		extrinsicFn = nullExtrinsic, 
+		startingValues = c(10), #root state
+		intrinsicValues = c(0.01), 
+		extrinsicValues = c(0)
+		)
+	res(char)
+	}
+
   
  

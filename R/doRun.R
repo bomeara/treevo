@@ -64,14 +64,20 @@
 
 #' @param nStepsPRC Number of PRC generations to run.
 
-#' @param nRuns Number of independent PRC runs to be performed, each consisting of independent sets of
-#' initial simulations and PRC generations. Note that runs are run \emph{sequentially}, and not in parallel, 
-#' as the generation of particles within each run makes use of the multicore functionality.
-#' If \code{nRuns} is greater than 1, the output from \code{doRun_prc} will be a list object composed of
+#' @param nRuns Number of independent PRC runs to be performed,
+#' each consisting of independent sets of
+#' initial simulations and PRC generations. Note that runs are
+#' run \emph{sequentially}, and not in parallel, 
+#' as the generation of particles within each run
+#' makes use of the multicore functionality.
+#' If \code{nRuns} is greater than 1, the output from
+#' \code{doRun_prc} will be a list object composed of
 #' multiple output lists, as described.
 
-#' @param nInitialSimsPerParam If \code{nInitialSims} is not given by the user, the number of initial simulations
-#' performed to calibrate the particle rejection algorithm will instead be the number of free parameters
+#' @param nInitialSimsPerParam If \code{nInitialSims}
+#' is not given by the user, the number of initial simulations
+#' performed to calibrate the particle rejection algorithm
+#' will instead be the number of free parameters
 #' in the model multiplied by \code{nInitialSimsPerParam}.
 
 #' @param jobName Optional job name.
@@ -83,9 +89,11 @@
 #' @param stopValue Threshold value for terminating an analysis prior to
 #' \code{nStepesPRC}.
 
-#' @param maxAttempts Maximum number attempts made in \code{while} loop within the PRC algorithm.
+#' @param maxAttempts Maximum number attempts made
+#' in \code{while} loop within the PRC algorithm.
 #' If reached, the algorithm will terminate with an error message.
-#' By default, this is infinite, and thus there is no effective limit without user intervention.
+#' By default, this is infinite, and thus there is no
+#' effective limit without user intervention.
 
 #' @param abcTolerance Proportion of accepted simulations.
 
@@ -95,52 +103,72 @@
 
 #' @param savesims Option to save individual simulations, output to a .Rdata file.
 
-#' @param saveData Option to save various run information during the analysis, 
-#' including summary statistics from analyses, output to external .Rdata and .txt files.
+#' @param saveData Option to save various
+#' run information during the analysis, 
+#' including summary statistics from analyses,
+#' output to external .Rdata and .txt files.
 
 
-#' @param verboseParticles If \code{TRUE} (the default), a large amount of information about parameter estimates
-#' and acceptance of particles is output to console via \code{message} as \code{doRun_prc} runs.
+#' @param verboseParticles If \code{TRUE} (the default),
+#' a large amount of information about parameter estimates
+#' and acceptance of particles is output to
+#' console via \code{message} as \code{doRun_prc} runs.
 
-#' @param diagnosticPRCmode If \code{TRUE} (\emph{not} the default), the function will be very noisy about characteristics of
-#' the PRC algorithm as it runs.
+#' @param diagnosticPRCmode If \code{TRUE} 
+#'(\emph{not} the default), the function will be very
+#' noisy about characteristics of the PRC algorithm as it runs.
 
-#' @param multicoreSuppress Argument to suppress multicore code and use a plain vanilla \code{fore()} loop instead
+#' @param multicoreSuppress Argument to suppress
+#' multicore code and use a plain vanilla \code{fore()} loop instead
 #' of \code{doPar}. Mainly to be used for developer diagnostic purposes.
 
 # param niter.goal Adjust number of starting points for package \code{geiger}
 # to return the best parameter estimates this number of times on average.
 
 #' @return
-#' The output of these two functions are lists, composed of multiple objects, 
-#' which differ slightly in their content among the two functions. For \code{doRun_prc}, the output is:
+#' The output of these two functions are lists,
+#' composed of multiple objects, 
+#' which differ slightly in their content among the
+#' two functions. For \code{doRun_prc}, the output is:
 
 #' \describe{
-#' \item{input.data}{Input variables: jobName, number of taxa, nInitialSims, 
-#' generation.time, TreeYears, timeStep, totalGenerations, epsilonProportion, 
-#' epsilonMultiplier, nRuns, nStepsPRC, numParticles, standardDevFactor}
+#' \item{input.data}{Input variables: 
+#' jobName, number of taxa, nInitialSims, 
+#' generation.time, TreeYears, timeStep, totalGenerations,
+#' epsilonProportion, epsilonMultiplier, 
+#' nRuns, nStepsPRC, numParticles, standardDevFactor}
 
-#' \item{priorList}{List of prior distributions. This is used for doing post-analysis comparisons between prior and posterior distributions, such as with function \code{plotPosteriors}}
+#' \item{priorList}{List of prior distributions. This is used
+#' for doing post-analysis comparisons between prior and
+#' posterior distributions, such as with function \code{plotPosteriors}}
 
-#' \item{particleDataFrame}{DataFrame with information from each simulation, 
-#' including generation, attempt, id, parentid, distance, weight, and parameter states}
+#' \item{particleDataFrame}{DataFrame with information from each 
+#' simulation, including generation, attempt, id, parentid,
+#' distance, weight, and parameter states}
 
 #' \item{toleranceVector}{Final tolerance vector}
 
 #' \item{phy}{Input phylogeny}
 
-#' \item{traits}{Input traits} \item{simTime}{Processor time for initial simulations}
+#' \item{traits}{Input traits} \item{simTime}{Processor
+#' time for initial simulations}
 
 #' \item{time.per.gen}{Processor time for subsequent generations}
 
 # \item{whichVip}{Matrix of vip summary statistics for each free parameter}
 
-# \item{credibleInt}{Credible Interval calculation for each free parameter of the final generation}
+# \item{credibleInt}{Credible Interval calculation for
+# each free parameter of the final generation}
 
-#' \item{postSummary}{Summarizes the posterior distribution from the final generation for all free parameters, giving the mean, standard deviation and Highest Posterior Density (at a 0.8 alpha) for each parameter.}
+#' \item{postSummary}{Summarizes the posterior distribution from
+#' the final generation for all free parameters, giving the mean,
+#' standard deviation and Highest Posterior
+#' Density (at a 0.8 alpha) for each parameter.}
 #' }
 #' 
-#' If \code{nRuns} is greater than 1, the output from \code{doRun_prc} will be a list object composed of multiple output lists, as described.
+#' If \code{nRuns} is greater than 1, the output from
+#' \code{doRun_prc} will be a list object composed of
+#' multiple output lists, as described.
 #' 
 
 #' For \code{doRun_rej}, the output is:
@@ -150,28 +178,40 @@
 #' generation.time, TreeYears, timeStep, totalGenerations, epsilonProportion, 
 #' epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor}
 
-#' \item{priorList}{List of prior distributions. This is used for doing post-analysis comparisons between prior and posterior distributions, such as with function \code{plotPosteriors}}
+#' \item{priorList}{List of prior distributions. This is
+#' used for doing post-analysis comparisons between prior
+#' and posterior distributions, such as with function \code{plotPosteriors}}
 
 #' \item{phy}{Input phylogeny}
 
 #' \item{traits}{Input traits}
 
-#' \item{trueFreeValuesANDSummaryValues}{Parameter estimates and summary stats from all sims}
+#' \item{trueFreeValuesANDSummaryValues}{Parameter
+#' estimates and summary stats from all sims}
 
 #' \item{simTime}{Processor time for simulations}
 
-# \item{whichVip}{Matrix of vip summary statistics for each free parameter}
+# \item{whichVip}{Matrix of vip summary
+#' statistics for each free parameter}
 
-#' \item{abcDistancesRaw}{Euclidean distances for each simulation and free parameter}
+#' \item{abcDistancesRaw}{Euclidean distances
+#' for each simulation and free parameter}
 
 #' \item{particleDataFrame}{DataFrame with information from each
-#' simulation, including generation, attempt, id, parentid, distance, weight, and parameter states}
+#' simulation, including generation, attempt, id,
+#' parentid, distance, weight, and parameter states}
 
-# \item{credibleInt}{Credible Interval calculation for each free parameter of the final generation}
+# \item{credibleInt}{Credible Interval calculation for each
+# free parameter of the final generation}
 
-#' \item{postSummary}{Summarizes the posterior distribution from the final generation for all free parameters, giving the mean, standard deviation and Highest Posterior Density (at a 0.8 alpha) for each parameter.}
+#' \item{postSummary}{Summarizes the posterior distribution
+#' from the final generation for all free parameters,
+#' giving the mean, standard deviation and Highest Posterior
+#' Density (at a 0.8 alpha) for each parameter.}
 
-#' \item{parMeansList}{A list of parameter means for both fixed and unfixed parameters, sorted into a list of three vectors (starting, intrinsic, extrinsic).}
+#' \item{parMeansList}{A list of parameter means for both
+#' fixed and unfixed parameters, sorted into a list of
+#' three vectors (starting, intrinsic, extrinsic).}
 #' }
 #' 
 #' 
@@ -181,8 +221,8 @@
 #' @references Sisson et al. 2007, Wegmann et
 #' al. 2009
 
-# @references O'Meara and Banbury, unpublished; Sisson et al. 2007, Wegmann et
-# al. 2009
+# @references O'Meara and Banbury, unpublished;
+# Sisson et al. 2007, Wegmann et al. 2009
 
 #' @examples
 #' 
@@ -192,9 +232,10 @@
 #' 
 #' # NOTE: the example analyses below sample too few particles, 
 #'     # over too few steps, with too few starting simulations
-#'     # - all for the sake of examples that reasonably test the functions
+#'     # - all for the sake of examples that demonstrate these
+#'     # within a reasonable time-frame
 #' 
-#' # Please set these values to more realistic levels for your analyses!
+#' ## Please set these values to more realistic levels for your analyses!
 #' 
 #' resultsPRC <- doRun_prc(
 #'   phy = simPhy, 
@@ -202,7 +243,8 @@
 #'   intrinsicFn = brownianIntrinsic, 
 #'   extrinsicFn = nullExtrinsic, 
 #'   startingPriorsFns = "normal", 
-#'   startingPriorsValues = list(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
+#'   startingPriorsValues = list(c(mean(simChar[, 1]), 
+#'          sd(simChar[, 1]))), 
 #'   intrinsicPriorsFns = c("exponential"), 
 #'   intrinsicPriorsValues = list(10), 
 #'   extrinsicPriorsFns = c("fixed"), 
@@ -228,9 +270,11 @@
 #'     intrinsicFn = brownianIntrinsic, 
 #'     extrinsicFn = nullExtrinsic, 
 #'     startingPriorsFns = "normal", 
-#'     startingPriorsValues = list(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
+#'     startingPriorsValues = list(c(mean(simChar[, 1]),
+#'          sd(simChar[, 1]))), 
 #'     intrinsicPriorsFns = c("exponential"), 
-#'     intrinsicPriorsValues = list(10), #grep for normal in pkg
+#grep for normal in pkg
+#'     intrinsicPriorsValues = list(10), 
 #'     extrinsicPriorsFns = c("fixed"), 
 #'     extrinsicPriorsValues = list(0), 
 #'     generation.time = 10000, 
@@ -321,6 +365,23 @@ doRun_prc <- function(
 		"The effective timeStep for this tree will be ",
 		signif(timeStep, 2), 
         ", as a proportion of tree height (root to furthest tip)..."))
+	#
+    # save input data for use later
+    input.data <- rbind(
+		jobName = jobName, 
+		nTaxa = Ntip(phy), 
+        nInitialSims = nInitialSims, 
+		nInitialSimsPerParam = nInitialSimsPerParam, 
+        generation.time = generation.time, 
+		TreeYears = TreeYears, 
+		timeStep = timeStep, 
+        totalGenerations = totalGenerations, 
+		epsilonProportion = epsilonProportion, 
+        epsilonMultiplier = epsilonMultiplier, 
+		nRuns = nRuns, 
+		nStepsPRC = nStepsPRC, 
+        numParticles = numParticles, 
+		standardDevFactor = standardDevFactor)
     #
     edgesRescaled <- phy$edge.length/max(node.depth.edgelength(phy))
     message("Rescaling edge lengths relative to maximum tip-to-root distance...")
@@ -365,13 +426,16 @@ doRun_prc <- function(
         }
     #
     totalGenerations <- sum(sapply(edgesRescaled, function(x) floor(x/timeStep)))
-    message("Given generation time, a total of ", round(totalGenerations), " generations are expected to occur over this tree")
+    message(paste0( 
+		"Given generation time, a total of ", round(totalGenerations), 
+		" generations are expected to occur over this tree")
+		)
     #
     #splits <- getSimulationSplits(phy) #initialize this info
     taxonDF <- getTaxonDFWithPossibleExtinction(phy)
     #
-    # get freevector
-    freevector <- getFreeVector(
+    # get freeVector
+    freeVector <- getFreeVector(
 		startingPriorsFns = startingPriorsFns, 
 		startingPriorsValues = startingPriorsValues, 
         intrinsicPriorsFns = intrinsicPriorsFns, 
@@ -379,14 +443,15 @@ doRun_prc <- function(
         extrinsicPriorsFns = extrinsicPriorsFns, 
 		extrinsicPriorsValues = extrinsicPriorsValues
 		)
-    numberParametersTotal <- length(freevector)
-    numberParametersFree <- sum(freevector)
+    numberParametersTotal <- length(freeVector)
+    numberParametersFree <- sum(freeVector)
     if(numberParametersFree<1){
-      stop(
-		"No freely varying parameters found; analysis cannot continue. Check prior functions and values"
-		)
+      stop(paste0(
+		"No freely varying parameters found; analysis cannot continue.\n",
+			" Check prior functions and values"
+		))
       }
-    namesParFree <- names(freevector)[freevector]
+    namesParFree <- names(freeVector)[freeVector]
     #
     # get prior list
     priorList <- getPriorList(
@@ -421,22 +486,6 @@ doRun_prc <- function(
             "\n( = ", nInitialSims, " initial simulations)"))
         }
     #
-    # save input data for use later
-    input.data <- rbind(
-		jobName = jobName, 
-		nTaxa = Ntip(phy), 
-        nInitialSims = nInitialSims, 
-		nInitialSimsPerParam = nInitialSimsPerParam, 
-        generation.time = generation.time, 
-		TreeYears = TreeYears, 
-		timeStep = timeStep, 
-        totalGenerations = totalGenerations, 
-		epsilonProportion = epsilonProportion, 
-        epsilonMultiplier = epsilonMultiplier, 
-		nRuns = nRuns, nStepsPRC = nStepsPRC, 
-        numParticles = numParticles, 
-		standardDevFactor = standardDevFactor)
-    #
     # get summary values for observed data
     originalSummaryValues <- summaryStatsLong(
         phy = phy, 
@@ -463,7 +512,7 @@ doRun_prc <- function(
             startingPriorsFns = startingPriorsFns, 
             intrinsicPriorsFns = intrinsicPriorsFns, 
             extrinsicPriorsFns = extrinsicPriorsFns, 
-            freevector = freevector, 
+            freevector = freeVector, 
             timeStep = timeStep, 
             intrinsicFn = intrinsicFn, 
             extrinsicFn = extrinsicFn, 
@@ -669,7 +718,7 @@ doRun_prc <- function(
                 parVector <- c(currParticleList[[i]]$startingValues, 
                     currParticleList[[i]]$intrinsicValues, currParticleList[[i]]$extrinsicValues)
                 # keep only free parameters
-                parVector <- parVector[freevector]
+                parVector <- parVector[freeVector]
                 vectorForDataFrame <- c(dataGenerationStep, attempts, currParticleList[[i]]$id, currParticleList[[i]]$parentid, 
                     currParticleList[[i]]$distance, currParticleList[[i]]$weight, parVector)
                 #    
@@ -812,6 +861,7 @@ doRun_prc <- function(
         prcResults$priorList <- priorList
         prcResults$particleDataFrame <- particleDataFrame
 		prcResults$freeVector <- freeVector
+		prcResults$generation.time <- generation.time
         #names(prcResults$particleDataFrame) <- nameVector
         prcResults$toleranceVector <- initialSimsRes$toleranceVector
         prcResults$phy <- phy
