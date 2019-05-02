@@ -92,16 +92,21 @@ mutateState <- function(startingState, standardDevFactor, priorFn, priorValues) 
 
     while(!validNewState) {
         #
-        # using rnormFastZig seems to result in a hard freeze when function is 'fixed' (and thus sdToUse = 0)
-        # why are we doing this anyway? Doesn't seem like how the prior sampling should be handled (treating everything as rnorm)
+        # using rnormFastZig seems to result in a hard
+			# freeze when function is 'fixed' (and thus sdToUse = 0)
+		#
+        # why are we doing this anyway? Doesn't seem like how
+			# the prior sampling should be handled 
+			#(treating everything as rnorm)
         #
         newState <- rnorm(n = 1, mean = startingState, sd = sdToUse)
         validNewState <- TRUE
         if(is.na(newState)) {
             message(
                 paste("MUTATESTATE_ERROR: newState = ", newState, 
-                    " sdToUse = ", sdToUse, " startingState = ", startingState, 
-                    " priorFn = ", priorFn, " startingState = ", startingState, 
+                    " sdToUse = ", sdToUse, 
+					" startingState = ", startingState, 
+                    " priorFn = ", priorFn,  
                     " priorValues = \n", sep = ""))
             message(priorValues)
             }
@@ -111,9 +116,11 @@ mutateState <- function(startingState, standardDevFactor, priorFn, priorValues) 
         if (newState>maxBound){
             validNewState <- FALSE
             }    			
-#        if (!validNewState)    {
-#            #message("newState ", newState, " does not fit into one of the bounds (", minBound, "--", maxBound, ")\n")
-#        }    
+		#        if (!validNewState)    {
+		#            #message("newState ", newState, 
+		#			" does not fit into one of the bounds (",
+		# 				minBound, 	"--", maxBound, ")\n")
+		#        }    
     }
     newState
     }

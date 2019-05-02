@@ -149,8 +149,12 @@ multiOptimaIntrinsic <- function(params, states, timefrompresent) {
 	# sample a theta
 	theta<-sample(theta,1,prob=thetaWeights)
 	# now 
-	#subtract current states because we want displacement
-    newdisplacement <- rnormFastZig(n = length(states), mean = (theta-states)*alpha, sd = sd) 
+	#subtract current states because we want displacement ? 
+		# we don't seem to be doing that here ? 05/02/19
+    newdisplacement <- rnormFastZig(
+		nZig = length(states), 
+		meanZig = (theta-states)*alpha, 
+		sdZig = sigma) 
     return(newdisplacement)
     }
 
