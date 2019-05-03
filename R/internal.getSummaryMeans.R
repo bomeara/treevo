@@ -51,17 +51,24 @@ getSummaryMeans<-function(doRunOutput, freeVector){
   
 #
 
-function(){
+postsimulate <- function(){
 	
+	
+	
+	intrinsicFn
+	extrinsicFn
+	startingValues
+	intrinsicValues
+	extrinsicValues
 	
 	char <- doSimulation(
 		phy = tree, 
 		generation.time = 100000, 
-		intrinsicFn = brownianIntrinsic, 
-		extrinsicFn = nullExtrinsic, 
-		startingValues = c(10), #root state
-		intrinsicValues = c(0.01), 
-		extrinsicValues = c(0)
+		intrinsicFn = intrinsicFn, 
+		extrinsicFn = extrinsicFn, 
+		startingValues = startingValues, #root state
+		intrinsicValues = intrinsicValues, 
+		extrinsicValues = extrinsicValues
 		)
 	res(char)
 	}

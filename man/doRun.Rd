@@ -39,7 +39,8 @@ If a vector, \code{traits} will be coerced to a matrix, with element names as ro
 traits evolve within a lineage, regardless of the trait values of other taxa.}
 
 \item{extrinsicFn}{Name of (previously-defined) function that governs how
-traits evolve within a lineage, based on their own ('internal') trait vlaue and the trait values
+traits evolve within a lineage, based on their own
+('internal') trait vlaue and the trait values
 of other taxa.}
 
 \item{startingPriorsValues}{A list of the same length as the number of prior distributions specified in
@@ -74,30 +75,44 @@ use for extrinsic function parameters: can be one of \code{"fixed"}, \code{"unif
 
 \item{nStepsPRC}{Number of PRC generations to run.}
 
-\item{nRuns}{Number of independent PRC runs to be performed, each consisting of independent sets of
-initial simulations and PRC generations. Note that runs are run \emph{sequentially}, and not in parallel, 
-as the generation of particles within each run makes use of the multicore functionality.
-If \code{nRuns} is greater than 1, the output from \code{doRun_prc} will be a list object composed of
+\item{nRuns}{Number of independent PRC runs to be performed,
+each consisting of independent sets of
+initial simulations and PRC generations. Note that runs are
+run \emph{sequentially}, and not in parallel, 
+as the generation of particles within each run
+makes use of the multicore functionality.
+If \code{nRuns} is greater than 1, the output from
+\code{doRun_prc} will be a list object composed of
 multiple output lists, as described.}
 
 \item{nInitialSims}{Number of initial simulations used to calibrate particle rejection control algorithm.
 If not given, this will be a function of the number of freely varying parameters.}
 
-\item{nInitialSimsPerParam}{If \code{nInitialSims} is not given by the user, the number of initial simulations
-performed to calibrate the particle rejection algorithm will instead be the number of free parameters
+\item{nInitialSimsPerParam}{If \code{nInitialSims}
+is not given by the user, the number of initial simulations
+performed to calibrate the particle rejection algorithm
+will instead be the number of free parameters
 in the model multiplied by \code{nInitialSimsPerParam}.}
 
-\item{generation.time}{The number of years per generation. This sets the coarseness of the simulation; if it's set to 1000, 
-for example, the population's trait values change every 1000 calender years. Note that this is in calender years (see description
-for argument \code{TreeYears}), and not in millions of years (as is typical for dated trees in macroevolutionary studies).
-Thus, if a branch is 1 million-year time-unit long, and a user applies the default \code{generation.time = 1000}, 
+\item{generation.time}{The number of years per generation.
+This sets the coarseness of the simulation; if it's set to 1000, 
+for example, the population's trait values change every 1000
+calender years. Note that this is in calender years (see description
+for argument \code{TreeYears}), and not in millions of years
+(as is typical for dated trees in macroevolutionary studies).
+Thus, if a branch is 1 million-year time-unit long, and a
+user applies the default \code{generation.time = 1000}, 
 then 1000 evolutionary changes will be simulated along that branch.
 See documentation for \code{\link{doSimulation}} for further details.}
 
-\item{TreeYears}{The amount of calender time from the root to the furthest tip. Most trees in macroevolutionary studies are dated with
-branch lengths in units of millions of years, and thus the default for this argument is \code{max(branching.times(phy)) * 1e6}.
-If your tree has the most recent tip at time zero (i.e., the modern day), this would be the same as the root age of the tree. If your
-branch lengths are not in millions of years, you should alter this argument. Otherwise, leave this argument alone.
+\item{TreeYears}{The amount of calender time from the root
+to the furthest tip. Most trees in macroevolutionary studies are dated with
+branch lengths in units of millions of years, and thus the
+default for this argument is \code{max(branching.times(phy)) * 1e6}.
+If your tree has the most recent tip at time zero (i.e.,
+the modern day), this would be the same as the root age of the tree. If your
+branch lengths are not in millions of years, you should
+alter this argument. Otherwise, leave this argument alone.
 See documentation for \code{\link{doSimulation}} for further details.}
 
 \item{multicore}{Whether to use multicore, default is \code{FALSE}. If \code{TRUE}, one of
@@ -107,7 +122,8 @@ If neither package is installed, this function will fail if \code{multicore = TR
 
 \item{coreLimit}{Maximum number of cores to be used.}
 
-\item{multicoreSuppress}{Argument to suppress multicore code and use a plain vanilla \code{fore()} loop instead
+\item{multicoreSuppress}{Argument to suppress
+multicore code and use a plain vanilla \code{fore()} loop instead
 of \code{doPar}. Mainly to be used for developer diagnostic purposes.}
 
 \item{standardDevFactor}{Standard deviation for mutating states each time a new particle is generated in a PRC generation.}
@@ -136,20 +152,27 @@ next falls below the \code{stopValue}.}
 \item{stopValue}{Threshold value for terminating an analysis prior to
 \code{nStepesPRC}.}
 
-\item{maxAttempts}{Maximum number attempts made in \code{while} loop within the PRC algorithm.
+\item{maxAttempts}{Maximum number attempts made
+in \code{while} loop within the PRC algorithm.
 If reached, the algorithm will terminate with an error message.
-By default, this is infinite, and thus there is no effective limit without user intervention.}
+By default, this is infinite, and thus there is no
+effective limit without user intervention.}
 
-\item{diagnosticPRCmode}{If \code{TRUE} (\emph{not} the default), the function will be very noisy about characteristics of
-the PRC algorithm as it runs.}
+\item{diagnosticPRCmode}{If \code{TRUE} 
+(\emph{not} the default), the function will be very
+noisy about characteristics of the PRC algorithm as it runs.}
 
 \item{jobName}{Optional job name.}
 
-\item{saveData}{Option to save various run information during the analysis, 
-including summary statistics from analyses, output to external .Rdata and .txt files.}
+\item{saveData}{Option to save various
+run information during the analysis, 
+including summary statistics from analyses,
+output to external .Rdata and .txt files.}
 
-\item{verboseParticles}{If \code{TRUE} (the default), a large amount of information about parameter estimates
-and acceptance of particles is output to console via \code{message} as \code{doRun_prc} runs.}
+\item{verboseParticles}{If \code{TRUE} (the default),
+a large amount of information about parameter estimates
+and acceptance of particles is output to
+console via \code{message} as \code{doRun_prc} runs.}
 
 \item{abcTolerance}{Proportion of accepted simulations.}
 
@@ -158,42 +181,6 @@ and acceptance of particles is output to console via \code{message} as \code{doR
 \item{checkpointFreq}{Saving frequency for checkpointing.}
 
 \item{savesims}{Option to save individual simulations, output to a .Rdata file.}
-}
-\value{
-The output of these two functions are lists, composed of multiple objects, 
-which differ slightly in their content among the two functions. For \code{doRun_prc}, the output is:
-\describe{
-\item{input.data}{Input variables: jobName, number of taxa, nInitialSims, 
-generation.time, TreeYears, timeStep, totalGenerations, epsilonProportion, 
-epsilonMultiplier, nRuns, nStepsPRC, numParticles, standardDevFactor}
-\item{priorList}{List of prior distributions. This is used for doing post-analysis comparisons between prior and posterior distributions, such as with function \code{plotPosteriors}}
-\item{particleDataFrame}{DataFrame with information from each simulation, 
-including generation, attempt, id, parentid, distance, weight, and parameter states}
-\item{toleranceVector}{Final tolerance vector}
-\item{phy}{Input phylogeny}
-\item{traits}{Input traits} \item{simTime}{Processor time for initial simulations}
-\item{time.per.gen}{Processor time for subsequent generations}
-\item{postSummary}{Summarizes the posterior distribution from the final generation for all free parameters, giving the mean, standard deviation and Highest Posterior Density (at a 0.8 alpha) for each parameter.}
-}
-
-If \code{nRuns} is greater than 1, the output from \code{doRun_prc} will be a list object composed of multiple output lists, as described.
-
-For \code{doRun_rej}, the output is:
-\describe{
-\item{input.data}{Input variables: jobName, number of taxa, nInitialSims, 
-generation.time, TreeYears, timeStep, totalGenerations, epsilonProportion, 
-epsilonMultiplier, nStepsPRC, numParticles, standardDevFactor}
-\item{priorList}{List of prior distributions. This is used for doing post-analysis comparisons between prior and posterior distributions, such as with function \code{plotPosteriors}}
-\item{phy}{Input phylogeny}
-\item{traits}{Input traits}
-\item{trueFreeValuesANDSummaryValues}{Parameter estimates and summary stats from all sims}
-\item{simTime}{Processor time for simulations}
-\item{abcDistancesRaw}{Euclidean distances for each simulation and free parameter}
-\item{particleDataFrame}{DataFrame with information from each
-simulation, including generation, attempt, id, parentid, distance, weight, and parameter states}
-\item{postSummary}{Summarizes the posterior distribution from the final generation for all free parameters, giving the mean, standard deviation and Highest Posterior Density (at a 0.8 alpha) for each parameter.}
-\item{parMeansList}{A list of parameter means for both fixed and unfixed parameters, sorted into a list of three vectors (starting, intrinsic, extrinsic).}
-}
 }
 \description{
 The \code{doRun} functions are the main interface for \code{TreEvo} users to do Approximate Bayesian Computation (ABC) analysis, 
@@ -237,9 +224,10 @@ data(simRunExample)
 
 # NOTE: the example analyses below sample too few particles, 
     # over too few steps, with too few starting simulations
-    # - all for the sake of examples that reasonably test the functions
+    # - all for the sake of examples that demonstrate these
+    # within a reasonable time-frame
 
-# Please set these values to more realistic levels for your analyses!
+## Please set these values to more realistic levels for your analyses!
 
 resultsPRC <- doRun_prc(
   phy = simPhy, 
@@ -247,7 +235,8 @@ resultsPRC <- doRun_prc(
   intrinsicFn = brownianIntrinsic, 
   extrinsicFn = nullExtrinsic, 
   startingPriorsFns = "normal", 
-  startingPriorsValues = list(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
+  startingPriorsValues = list(c(mean(simChar[, 1]), 
+         sd(simChar[, 1]))), 
   intrinsicPriorsFns = c("exponential"), 
   intrinsicPriorsValues = list(10), 
   extrinsicPriorsFns = c("fixed"), 
@@ -273,9 +262,10 @@ resultsRej <- doRun_rej(
     intrinsicFn = brownianIntrinsic, 
     extrinsicFn = nullExtrinsic, 
     startingPriorsFns = "normal", 
-    startingPriorsValues = list(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
+    startingPriorsValues = list(c(mean(simChar[, 1]),
+         sd(simChar[, 1]))), 
     intrinsicPriorsFns = c("exponential"), 
-    intrinsicPriorsValues = list(10), #grep for normal in pkg
+    intrinsicPriorsValues = list(10), 
     extrinsicPriorsFns = c("fixed"), 
     extrinsicPriorsValues = list(0), 
     generation.time = 10000, 
