@@ -44,11 +44,13 @@ getSummaryMeans<-function(doRunOutput){
 	# need to sort into intrinsic, extrinsic, starting 
 		# this should be indicated easily by name
 		# eg starting_ intrinsic_ extrinsic_
-	parTypeMat <- startsWithMultiple(test = names(freeVector),
+	parTypeMat <- startsWithMultiple(
+		test = names(freeVector),
 		prefixes = c("starting","intrinsic","extrinsic")
+		)
 	# now test
 	# all row sums should be identical to one
-	if(any(rowSums(parTypeMat) != 1){
+	if(any(rowSums(parTypeMat) != 1)){
 		stop("Some parameter labels from freeVector do not uniquely match parameter types")
 		}
 	# now sort into parameter types

@@ -182,35 +182,117 @@ console via \code{message} as \code{doRun_prc} runs.}
 
 \item{savesims}{Option to save individual simulations, output to a .Rdata file.}
 }
+\value{
+The output of these two functions are lists,
+composed of multiple objects, 
+which differ slightly in their content among the
+two functions. For \code{doRun_prc}, the output is:
+\describe{
+\item{input.data}{Input variables: 
+\code{jobName}, \code{nTaxa} (number of taxa),
+\code{nInitialSims}, \code{generation.time}, \code{TreeYears},
+\code{timeStep}, \code{totalGenerations},
+\code{epsilonProportion}, \code{epsilonMultiplier}, 
+\code{nRuns} (number of runs), \code{nStepsPRC},
+\code{numParticles}, \code{standardDevFactor}.}
+\item{priorList}{List of prior distributions. This is used
+for doing post-analysis comparisons between prior and
+posterior distributions, such as with function \code{plotPosteriors}.}
+\item{particleDataFrame}{DataFrame with information from each 
+simulation, including generation, attempt, \code{id}, \code{parentid},
+distance, weight, and parameter states.}
+\item{toleranceVector}{Final tolerance vector.}
+\item{phy}{Input phylogeny.}
+\item{traits}{Input traits.} 
+\item{simTime}{Processor time for initial simulations.}
+\item{time.per.gen}{Processor time for subsequent generations.}
+\item{postSummary}{Summarizes the posterior distribution from
+the final generation for all free parameters, giving the mean,
+standard deviation and Highest Posterior
+Density (at a 0.8 alpha) for each parameter.}
+}
+
+If \code{nRuns} is greater than 1, the output from
+\code{doRun_prc} will be a list object composed of
+multiple output lists, as described.
+
+For \code{doRun_rej}, the output is:
+\describe{
+\item{input.data}{Input variables: 
+\code{jobName}, \code{nTaxa} (number of taxa),
+\code{nInitialSims}, \code{generation.time}, \code{TreeYears},
+\code{timeStep}, \code{totalGenerations},
+\code{epsilonProportion}, \code{epsilonMultiplier}, 
+\code{nRuns} (number of runs), \code{nStepsPRC},
+\code{numParticles}, \code{standardDevFactor}.
+}
+\item{priorList}{List of prior distributions. This is
+used for doing post-analysis comparisons between prior
+and posterior distributions, such as
+with function \code{plotPosteriors}.}
+\item{phy}{Input phylogeny.}
+\item{traits}{Input traits.}
+\item{trueFreeValuesANDSummaryValues}{Parameter
+estimates and summary stats from all sims.}
+\item{simTime}{Processor time for simulations.}
+\item{abcDistancesRaw}{Euclidean distances
+for each simulation and free parameter.}
+\item{particleDataFrame}{DataFrame with information from each
+simulation, including generation, attempt, id,
+parentid, distance, weight, and parameter states.}
+\item{postSummary}{Summarizes the posterior distribution
+from the final generation for all free parameters,
+giving the mean, standard deviation and Highest Posterior
+Density (at a 0.8 alpha) for each parameter.}
+\item{parMeansList}{A list of parameter means for both
+fixed and unfixed parameters, sorted into a list of
+three vectors (starting, intrinsic, extrinsic).}
+}
+}
 \description{
-The \code{doRun} functions are the main interface for \code{TreEvo} users to do Approximate Bayesian Computation (ABC) analysis, 
-effectively wrapping the \code{\link{simulateWithPriors}} functions to perform simulations, which
-themselves are wrappers for the \code{\link{doSimulation}} function. The two current \code{doRun}
-functions are \code{doRun_prc} which applies a partial rejection control(PRC) ABC analysis over multiple generations of simulations, 
+The \code{doRun} functions are the main interface for
+\code{TreEvo} users to do Approximate Bayesian Computation (ABC) analysis, 
+effectively wrapping the \code{\link{simulateWithPriors}} functions
+to perform simulations, which themselves are wrappers for
+the \code{\link{doSimulation}} function. The two current \code{doRun}
+functions are \code{doRun_prc} which applies a partial
+rejection control (PRC) ABC analysis over multiple generations of simulations, 
 and \code{doRun_rej} which performs a full rejection ('rej') ABC analysis.
 }
 \details{
 Both \code{doRun} functions take an input phylogeny (\code{phy}), 
-observed trait data set (\code{traits}), models (\code{intrinsicFn}, \code{extrinsicFn}), and priors
-(\code{startingPriorsValues}, \code{startingPriorsFns}, \code{intrinsicPriorsValues}, 
-\code{intrinsicPriorsFns}, \code{extrinsicPriorsValues}, \code{extrinsicPriorsFns}). Pulling from
-the priors, it simulates an initial set of simulations (\code{nInitialSims}). This set of simulations is
-boxcox transformed , and a PLS regression (see \code{\link{methodsPLS}}) is performed for each free parameter
-to determine the most informative summary statistics (using \code{variance.cutoff}). The euclidean distance is calculated
-between each each initial simulation's most informative summary statistics and the input observed data.
+observed trait data set (\code{traits}), models
+(\code{intrinsicFn}, \code{extrinsicFn}), and priors
+(\code{startingPriorsValues}, \code{startingPriorsFns},
+\code{intrinsicPriorsValues}, 
+\code{intrinsicPriorsFns}, \code{extrinsicPriorsValues},
+\code{extrinsicPriorsFns}). Pulling from the priors, it
+simulates an initial set of simulations (\code{nInitialSims}).
+This set of simulations is boxcox transformed , and a PLS regression (see
+\code{\link{methodsPLS}}) is performed for each free parameter
+to determine the most informative summary statistics (using
+\code{variance.cutoff}). The euclidean distance is calculated
+between each each initial simulation's most informative summary
+statistics and the input observed data.
 
 Following that step, the approach of the two functions diverge drastically.
 
-For function \code{doRun_rej}, those simulations whose most informative summary statistics fall below
-\code{abcTolerance} are kept as accepted 'particles' (simulations runs), describing the
-posterior distribution of parameters. No additional generations of simulations are performed.
+For function \code{doRun_rej}, those simulations whose
+most informative summary statistics fall below
+\code{abcTolerance} are kept as accepted 'particles'
+(simulations runs), describing the
+posterior distribution of parameters. No additional
+generations of simulations are performed.
 
 Coversely, function \code{doRun_prc} performs an ABC-PRC analysis, 
-which follows a much more complicated algorithm with additional generations. In PRC, tolerance is set based on
+which follows a much more complicated algorithm with additional
+generations. In PRC, tolerance is set based on
 \code{epsilonProportion} and \code{epsilonMultiplier}, and the analysis
-begins with generation 1 and continues through a number of generations equal to \code{nStepsPRC}.
+begins with generation 1 and continues through a
+number of generations equal to \code{nStepsPRC}.
 Single simulation runs ('particles') are accepted if the distance of the
-most informative summary stats to the original data is less than this tolerance. A generation
+most informative summary stats to the original data
+is less than this tolerance. A generation
 is complete when enough particles (\code{numParticles}) have been accepted. These
 particles make up the distribution for the next generation. The accepted
 particles from the final generation describe the posterior distributions of
