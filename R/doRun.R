@@ -952,8 +952,8 @@ doRun_prc <- function(
         if(nrow(particleDataFrame)>2){
             prcResults$postSummary  <- summarizePosterior(
 				particleDataFrame, verboseMultimodal = FALSE)
-			#prcResults$parMeansList  <- getSummaryMeans(
-			#	doRunOutput = prcResults)
+			prcResults$parMeansList  <- getSummaryMeans(
+				doRunOutput = prcResults)
         }else{
           warning(paste0(
 			"Posterior Summaries were not calculated as number",
