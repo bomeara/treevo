@@ -1,19 +1,17 @@
+# internal.getSummaryMeans.R
 
-
+# getSummaryMeans
+# internal function
 
 # need function that simply outputs a list with those parameters
-	# (median?) expectations from the last MCMC generation
+	# mean or (median?) expectations from the last MCMC generation
 # this function would be run with doRun such that doRun would include with output
 # these parameter estimates would be given as a list
 	# split into 3 vectors: starting/intrinsic/extrinsic parameters
 	# formatted for immediate use as parameter estimates for doSimulation
 	# with matching intrinsic/extrinsic functions
 	
-# internal function
-
-# this could then be used for easily generating new simulations from the median param values
-
-
+# this could then be used for easily generating new simulations from the mean param values
 
 getSummaryMeans<-function(doRunOutput){
 	# get the data from doRun output
@@ -83,47 +81,5 @@ startsWithMultiple <- function(test, prefixes){
 	colnames(res) <- prefixes
 	return(res)
 	}	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
-# a function that would take a tree, models and means of parameters
-	# and then simulate data using those means as fixed priors
-
-postRunSimulateFromMeans <- function(prcOut, verbose = TRUE){
-	# a function that would take a tree, models and means of parameters
-		# and then simulate data using those means as fixed priors
-	# 
-	# needs to be output from a single Run
-	if ( inherits(prcOut, "multiRun_doRun_prc") ) {
-		if(verbose){
-			message("Multiple runs of doRun_prc found, using means from the first run")
-			}
-        prcOut <- prcOut[[1]]
-        }
-	#
-	startingValues <- prcOut$parMeansList$starting
-	intrinsicValues <- prcOut$parMeansList$intrinsic
-	extrinsicValues <- prcOut$parMeansList$extrinsic
-	#
-	char <- doSimulation(
-		phy = prcOut$phy, 
-		generation.time = prcOut$generation.time, 
-		intrinsicFn = prcOut$intrinsicFn, 
-		extrinsicFn = prcOut$extrinsicFn, 
-		startingValues = startingValues, 
-		intrinsicValues = intrinsicValues, 
-		extrinsicValues = extrinsicValues
-		)
-	res(char)
-	}
-
   
  
