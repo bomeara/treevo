@@ -332,7 +332,6 @@ doRun_prc <- function(
     standardDevFactor = 0.20, 
     epsilonProportion = 0.7, 
     epsilonMultiplier = 0.7, 
-
     #
     validation = "CV", 
     scale = TRUE, 
@@ -359,14 +358,77 @@ doRun_prc <- function(
     if(!is.numeric(maxAttempts)){
         stop("maxAttempts must be numeric")
         }
+	#
+	if(is.numeric(nRuns)){
+		stop("nRuns must be numeric")
+		}
+	if(nRuns < 1){
+		stop("nRuns must 1 or greater")
+		}
     #
     timeStep <- generation.time/TreeYears
     message(paste0(
 		"The effective timeStep for this tree will be ",
-		signif(timeStep, 2), 
-        ", as a proportion of tree height (root to furthest tip)..."))
+		signif(timeStep, 2), ",\n",
+		"     as a proportion of tree height (root to furthest tip)..."))
+    #
+    edgesRescaled <- phy$edge.length/max(node.depth.edgelength(phy))
+    message("Rescaling edge lengths relative to maximum tip-to-root distance...")
 	#
-    # save input data for use later
+    #
+    minEdgeRescaled <- min(edgesRescaled)
+    minEdgeRescaledNZ <- min(edgesRescaled[edgesRescaled>0])
+    #
+    if(minEdgeRescaled == 0){
+        message("The smallest edge length on the input tree is ZERO LENGTH...")
+        message(paste0(
+			"Edge with smallest rescaled NON-ZERO length on tree is ",
+			signif(minEdgeRescaledNZ, 2), 
+			" as a proportion of tip-to-root distance"
+			))
+        message(paste0(
+			"(This is ", signif(minEdgeRescaledNZ*TreeYears, 2),
+			" in the same TreeYears units\n",
+			"     as used for the input generation.time ( = ",
+			generation.time, "))"
+			))
+    }else{
+        message(paste0(
+			"The smallest edge length on the input tree is ", 
+			signif(minEdgeRescaled, 2)
+			))
+        message(paste0(
+			"(This is ", signif(minEdgeRescaled*TreeYears, 2), 
+			" in the same TreeYears units\n",
+			"    as used for the input generation.time ( = ",
+			generation.time, "))"
+			))
+        }
+    #
+    if(max(edgesRescaled) < timeStep) {
+        stop(paste0(
+			"Tree has *NO* rescaled branches longer than generation.time/TreeYears\n",
+			"     thus *NO* simulated evolutionary change can occur!"
+			))
+        }
+    #
+    if(minEdgeRescaled < timeStep) {
+        warning(paste0(
+			"Tree has rescaled branches shorter than generation.time/TreeYears\n",
+			"    No trait evolution will be simulated on these branches and\n",
+			"    thus ML summary statistic functions may fail or produce unexpected results."
+			))
+        #message("Tree has zero or nearly zero length branches")
+        }
+    #
+    totalGenerations <- sum(sapply(edgesRescaled, function(x) floor(x/timeStep)))
+    message(paste0( 
+		"Given generation time, a total of ", round(totalGenerations), 
+		" generations are expected to occur over this tree")
+		)
+	#####################################
+	#
+	# save input data for use later
     input.data <- rbind(
 		jobName = jobName, 
 		nTaxa = Ntip(phy), 
@@ -381,55 +443,10 @@ doRun_prc <- function(
 		nRuns = nRuns, 
 		nStepsPRC = nStepsPRC, 
         numParticles = numParticles, 
-		standardDevFactor = standardDevFactor)
-    #
-    edgesRescaled <- phy$edge.length/max(node.depth.edgelength(phy))
-    message("Rescaling edge lengths relative to maximum tip-to-root distance...")
-	#
-    #
-    minEdgeRescaled <- min(edgesRescaled)
-    minEdgeRescaledNZ <- min(edgesRescaled[edgesRescaled>0])
-    #
-    if(minEdgeRescaled == 0){
-        message("The smallest edge length on the input tree is ZERO LENGTH...")
-        message(paste0(
-			"Edge with smallest rescaled NON-ZERO length on tree is ",
-			signif(minEdgeRescaledNZ, 2), " as a proportion of tip-to-root distance"
-			))
-        message(paste0(
-			"(This is ",
-			signif(minEdgeRescaledNZ*TreeYears, 2),
-			" in the same TreeYears units as used for the input generation.time ( = ", generation.time, "))"
-			))
-    }else{
-        message(paste0(
-			"The smallest edge length on the input tree is ", 
-			signif(minEdgeRescaled, 2)
-			))
-        message(paste0(
-			"(This is ", signif(minEdgeRescaled*TreeYears, 2), 
-			" in the same TreeYears units as used for the input generation.time ( = ", generation.time, "))"
-			))
-        }
-    #
-    if(max(edgesRescaled) < timeStep) {
-        stop(
-			"Tree has *NO* rescaled branches longer than generation.time/TreeYears, no simulated evol change can occur!"
-			)
-        }
-    #
-    if(minEdgeRescaled < timeStep) {
-        warning(
-			"Tree has rescaled branches shorter than generation.time/TreeYears; no trait evolution will be simulated on these branches, and thus ML summary stat functions may fail or produce unexpected results."
-			)
-        #message("Tree has zero or nearly zero length branches")
-        }
-    #
-    totalGenerations <- sum(sapply(edgesRescaled, function(x) floor(x/timeStep)))
-    message(paste0( 
-		"Given generation time, a total of ", round(totalGenerations), 
-		" generations are expected to occur over this tree")
+		standardDevFactor = standardDevFactor
 		)
+	#
+	####################################
     #
     #splits <- getSimulationSplits(phy) #initialize this info
     taxonDF <- getTaxonDFWithPossibleExtinction(phy)
@@ -481,9 +498,10 @@ doRun_prc <- function(
 		#
         message(paste0(
 			"Number of initial simulations to be performed (nInitialSims) not given\n", 
-            "Number of initial simulations will instead be product of the number of free parameters multiplied by ",
-            nInitialSimsPerParam, 
-            "\n( = ", nInitialSims, " initial simulations)"))
+            "    Number of initial simulations will thus be the\n",
+			"    product of the number of free parameters multiplied by ",
+            nInitialSimsPerParam, "\n",
+            "    ( = ", nInitialSims, " initial simulations)\n"))
         }
     #
     # get summary values for observed data
@@ -499,7 +517,8 @@ doRun_prc <- function(
     #
     for(runID in 1:nRuns){
         if(nRuns>1){
-            message(paste0("Beginning PRC Run ", runID, " out of a total of ", nRuns, "..."))
+            message(paste0("Beginning PRC Run ", runID, 
+				" out of a total of ", nRuns, "..."))
             }
         # INITIAL SIMULATIONS
         initialSimsRes <- initialSimsPRC(
@@ -558,35 +577,39 @@ doRun_prc <- function(
                 }
             #
             if(dataGenerationStep == 1){
-                #stores weights for each particle. 
-                    # Initially, assume infinite number of possible particles (so might not apply in discrete case)
-                #particleWeights <- numeric(length = numParticles)
                 particleDataFrame <- data.frame()        
-                prevGenParticleList <- NULL            #prevGenParticleWeights <- 
+                prevGenParticleList <- NULL            
             }else{
-                # why pull particle weights and particle list as this stupid seperate vector - get from particleDataFrame 
-                prevGenParticleList <- currParticleList
+				##
                 #prevGenParticleWeights <- sapply(prevGenParticleList, function(x) x$weight)
+				#
+                #particleWeights <- numeric(length = numParticles)				
                 #stores weights for each particle.
-                    #Initially, assume infinite number of possible particles (so might not apply in discrete case)
-                #particleWeights <- numeric(length = numParticles)
-                
+                    #Initially, assume infinite number of possible particles 
+					# (so might not apply in discrete case)
+				#
+                # why pull particle weights and particle list as this stupid seperate vector
+					# why not just get from particleDataFrame ?
+					# okay let's do that
+                prevGenParticleList <- currParticleList
                 }
             #stores parameters in model for each particle
-            particleParameters <- matrix(nrow = numParticles, 
-                ncol = length(startingPriorsValues) +  length(intrinsicPriorsValues) + length(extrinsicPriorsValues))
+            particleParameters <- matrix(
+				nrow = numParticles, 
+                ncol = (length(startingPriorsValues) +  
+					length(intrinsicPriorsValues) + 
+					length(extrinsicPriorsValues))
+				)
             #
-            weightScaling = 0;
-            #
+            weightScaling = 0
             particleDistance = rep(NA, numParticles)
             particle <- 1
             attempts <- 0        
+            # acceptance rate of particles - reset to 0.5
+            expParticleAcceptanceRate <- 0.5			
             #
             # create a list where we'll save information for each particle for this generation
             currParticleList <- list()
-            #
-            # acceptance rate of particles - reset to 0.5
-            expParticleAcceptanceRate <- 0.5
             #
             if(verboseParticles){
                 message(
@@ -728,12 +751,20 @@ doRun_prc <- function(
                 #print(signif(currParticleList[[i]]$distance, 2))
                 #
                 if(diagnosticPRCmode){
-                    message("\n\nlength of vectorForDataFrame = ", length(vectorForDataFrame), 
-                        "\n", "length of startingValues = ", length(currParticleList[[i]]$startingValues), 
-                        "\nlength of intrinsicValues = ", length(currParticleList[[i]]$intrinsicValues), 
-                        "\nlength of extrinsicValues = ", length(currParticleList[[i]]$extrinsicValues), 
-                        "\ndistance = ", currParticleList[[i]]$distance, 
-                        "\nweight = ", currParticleList[[i]]$weight, "\n", vectorForDataFrame, "\n")
+                    message(
+						"\n\nlength of vectorForDataFrame = ", 
+							length(vectorForDataFrame), 
+                        "\n", "length of startingValues = ", 
+							length(currParticleList[[i]]$startingValues), 
+                        "\nlength of intrinsicValues = ", 
+							length(currParticleList[[i]]$intrinsicValues), 
+                        "\nlength of extrinsicValues = ", 
+							length(currParticleList[[i]]$extrinsicValues), 
+                        "\ndistance = ", 
+							currParticleList[[i]]$distance, 
+                        "\nweight = ", 
+							currParticleList[[i]]$weight, 
+						"\n", vectorForDataFrame, "\n")
                     }
                 #
                 #NOTE THAT WEIGHTS AREN'T NORMALIZED IN THIS DATAFRAME
@@ -743,16 +774,23 @@ doRun_prc <- function(
                     message(
                         paste(
                             i, "         ", attempts, "       "
-                            #floor(nAcceptedParticles*attempts/i), "                    ", 
+                            #floor(nAcceptedParticles*attempts/i), 
+							#"                    ", 
                             , signif(currParticleList[[i]]$distance, 2), "      "
                             , if(!identical(startingPriorsFns, "fixed")){
-                                paste0(signif(currParticleList[[i]]$startingValues, 2), collapse = "       ")
+                                paste0(signif(
+									currParticleList[[i]]$startingValues, 2), 
+									collapse = "       ")
                                 }, "       "
                             , if(!identical(intrinsicPriorsFns, "fixed")){
-                                paste0(signif(currParticleList[[i]]$intrinsicValues, 2), collapse = "        ")
+                                paste0(signif(
+									currParticleList[[i]]$intrinsicValues, 2), 
+									collapse = "        ")
                                 }, "        "
                             , if(!identical(extrinsicPriorsFns, "fixed")){
-                                paste0(signif(currParticleList[[i]]$extrinsicValues, 2), collapse = "        ")
+                                paste0(signif(
+									currParticleList[[i]]$extrinsicValues, 2), 
+									collapse = "        ")
                                 }, "        "
                                                     
                             #, signif(currParticleList[[i]]$distance, 2)
@@ -779,8 +817,10 @@ doRun_prc <- function(
             #    
             timePRCStep <- proc.time()[[3]]-start.time
             time.per.gen[dataGenerationStep] <- timePRCStep
-            #rejects.per.gen <- (dim(subset(particleDataFrame, particleDataFrame$id<0))[1])/(
-                # dim(subset(particleDataFrame[which(particleDataFrame$generation == dataGenerationStep), ], ))[1])
+            #rejects.per.gen <- (dim(subset(particleDataFrame, 
+				# particleDataFrame$id<0))[1])/(
+                # dim(subset(particleDataFrame[which(
+					# particleDataFrame$generation == dataGenerationStep), ], ))[1])
             #
             #rejects <- c(rejects, rejects.per.gen)
             #
@@ -791,7 +831,8 @@ doRun_prc <- function(
             for (i in 1:numberParametersFree){
                 param.stdev[dataGenerationStep, i] <- c(sd(sub2[, 6+i]))
                 weightedMeanParam[dataGenerationStep, i] <- weighted.mean(sub2[, 6+i], sub2[, 6])
-                #c(mean(subset(particleDataFrame, X3>0)[, 7:dim(particleDataFrame)[2]])/subset(particleDataFrame, X3>0)[, 6])
+                #c(mean(subset(particleDataFrame, X3>0)[,
+					# 7:dim(particleDataFrame)[2]])/subset(particleDataFrame, X3>0)[, 6])
                 }        
             #
             if (stopRule){
@@ -807,7 +848,6 @@ doRun_prc <- function(
 							(abs(weightedMeanParam[dataGenerationStep, check.weightedMeanParam] 
 							- weightedMeanParam[dataGenerationStep-1, check.weightedMeanParam])
 							/ mean(weightedMeanParam[dataGenerationStep, check.weightedMeanParam], 
-
 								weightedMeanParam[dataGenerationStep-1, check.weightedMeanParam]
 							))  <=  stopValue
 						#this && is here to make sure any NAs are
@@ -819,7 +859,8 @@ doRun_prc <- function(
 					){
                         FF[check.weightedMeanParam] <- 0
                     }else{
-                        stopValueWeightTest <- abs(weightedMeanParam[dataGenerationStep, check.weightedMeanParam]
+                        stopValueWeightTest <- abs(
+							weightedMeanParam[dataGenerationStep, check.weightedMeanParam]
                             -weightedMeanParam[dataGenerationStep-1, check.weightedMeanParam])
                         stopValueWeightTest <- stopValueWeightTest/
                                 mean(weightedMeanParam[dataGenerationStep, check.weightedMeanParam], 
@@ -831,7 +872,8 @@ doRun_prc <- function(
                     #message(FF)
                     }
                 if (sum(FF) == 0){
-                    message("\n\n\nweightedMeanParam is < ", stopValue, "Analysis is being terminated at", dataGenerationStep
+                    message("\n\n\nweightedMeanParam is < ", stopValue, 
+						"Analysis is being terminated at", dataGenerationStep
                         , "instead of continuing to ", nStepsPRC, "\n\n\n")
                     dataGenerationStep <- nStepsPRC
                     }
@@ -851,7 +893,8 @@ doRun_prc <- function(
                 prcResults$simTime <- initialSimsRes$simTime
                 prcResults$time.per.gen <- time.per.gen
                 #
-                save(prcResults, file = paste0("partialResults", jobName, ".txt", sep = ""))
+                save(prcResults, 
+					file = paste0("partialResults", jobName, ".txt", sep = ""))
                 }
             #
             } #for (dataGenerationStep in 1:nStepsPRC) bracket
@@ -861,7 +904,8 @@ doRun_prc <- function(
         names(particleDataFrame) <- nameVector
         #
         particleTime <- proc.time()[[3]]-particleStartTime
-        message(paste0("Collection of simulation particles under PRC completed in ",
+        message(paste0(
+			"Collection of simulation particles under PRC completed in ",
 			signif(particleTime,2), " seconds..."))
         #---------------------- ABC-PRC (End) --------------------------------
         #
@@ -891,41 +935,51 @@ doRun_prc <- function(
 		#
         prcResults$phy <- phy
         prcResults$traits <- traits
-		#
-        prcResults$priorList <- priorList
-        prcResults$particleDataFrame <- particleDataFrame
-		prcResults$freeVector <- freeVector
 		prcResults$generation.time <- generation.time
+		prcResults$intrinsicFn <- intrinsicFn
+		prcResults$extrinsicFn <- extrinsicFn
+		#
+        prcResults$priorList <- priorList		
+		prcResults$freeVector <- freeVector
+		#
+        prcResults$particleDataFrame <- particleDataFrame
         #names(prcResults$particleDataFrame) <- nameVector
         prcResults$toleranceVector <- initialSimsRes$toleranceVector
+		#
         prcResults$simTime <- initialSimsRes$simTime
         prcResults$time.per.gen <- genTimes
         #######################################
         if(nrow(particleDataFrame)>2){
             prcResults$postSummary  <- summarizePosterior(
 				particleDataFrame, verboseMultimodal = FALSE)
-			prcResults$parMeansList  <- getSummaryMeans(
-				prcResults = prcResults)
+			#prcResults$parMeansList  <- getSummaryMeans(
+			#	doRunOutput = prcResults)
         }else{
-          warning(
-			"Posterior Summaries were not calculated as number of accepted particles was less than 2"
-			 )
+          warning(paste0(
+			"Posterior Summaries were not calculated as number",
+			" of accepted particles was less than 2"
+			))
           }
         ######################################
-        if(identical(nRuns, 1)){
+        if(nRuns>1){
             results <- prcResults
         }else{
             results[[runID]] <- prcResults
             message("Run finished...\n...\n\n")
             }
         }
+	#
+	if(nRuns>1){
+		
+		}
     #
     if(multicore){
         registerMulticoreEnv(nCore = 1)
         }
     #
     functionTime <- proc.time()[[3]]-functionStartTime
-    message(paste0("Function completed in ", signif(functionTime, 2), " seconds."))
+    message(paste0("Function completed in ", 
+		signif(functionTime, 2), " seconds."))
     #
     #message(prcResults)
     return(results)
