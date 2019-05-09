@@ -46,27 +46,25 @@ getSummaryMeans<-function(doRunOutput, freeVector){
 	}
 	
 	
-# a function that would take a tree, models and means of parameters
-  # and then simulate data using those means as fixed priors
-  
-#
 
-postsimulate <- function(){
-	
-	
-	
-	intrinsicFn
-	extrinsicFn
-	startingValues
-	intrinsicValues
-	extrinsicValues
-	
+# a function that would take a tree, models and means of parameters
+	# and then simulate data using those means as fixed priors
+
+
+postRunSimulateFromMeans <- function(prcResults){
+	# a function that would take a tree, models and means of parameters
+		# and then simulate data using those means as fixed priors
+	#
+	startingValues <- prcOut$parMeansList$starting
+	intrinsicValues <- prcOut$parMeansList$intrinsic
+	extrinsicValues <- prcOut$parMeansList$extrinsic
+	#
 	char <- doSimulation(
-		phy = tree, 
-		generation.time = 100000, 
-		intrinsicFn = intrinsicFn, 
-		extrinsicFn = extrinsicFn, 
-		startingValues = startingValues, #root state
+		phy = prcOut$phy, 
+		generation.time = prcOut$generation.time, 
+		intrinsicFn = prcOut$intrinsicFn, 
+		extrinsicFn = prcOut$extrinsicFn, 
+		startingValues = startingValues, 
 		intrinsicValues = intrinsicValues, 
 		extrinsicValues = extrinsicValues
 		)

@@ -794,16 +794,29 @@ doRun_prc <- function(
                 #c(mean(subset(particleDataFrame, X3>0)[, 7:dim(particleDataFrame)[2]])/subset(particleDataFrame, X3>0)[, 6])
                 }        
             #
-            if (stopRule){    #this will stop the PRC from running out to max number of generations if all params are below stopValue
+            if (stopRule){
+				####################################################
+				#this will stop the PRC from running out to max number of generations
+					# if all params are below stopValue
+				#################################################
                 FF <- rep(1, dim(weightedMeanParam)[2])
                 for (check.weightedMeanParam in 1:length(FF)){
                     #
-                    if (is.na(abs(weightedMeanParam[dataGenerationStep, check.weightedMeanParam]-weightedMeanParam[dataGenerationStep-1, 
-                            check.weightedMeanParam])/mean(weightedMeanParam[dataGenerationStep, check.weightedMeanParam], 
-                            #this && is here to make sure any NAs are from fixed params and not miscalculations.
-                            weightedMeanParam[dataGenerationStep-1, check.weightedMeanParam])  <=  stopValue) && mean(
-                            weightedMeanParam[dataGenerationStep, check.weightedMeanParam], weightedMeanParam[dataGenerationStep-1, 
-                            check.weightedMeanParam])  ==  0) {
+                    if (
+						is.na(
+							(abs(weightedMeanParam[dataGenerationStep, check.weightedMeanParam] 
+							- weightedMeanParam[dataGenerationStep-1, check.weightedMeanParam])
+							/ mean(weightedMeanParam[dataGenerationStep, check.weightedMeanParam], 
+
+								weightedMeanParam[dataGenerationStep-1, check.weightedMeanParam]
+							))  <=  stopValue
+						#this && is here to make sure any NAs are
+							# from fixed params and not miscalculations.
+						) && mean(
+                            weightedMeanParam[dataGenerationStep, check.weightedMeanParam],
+							weightedMeanParam[dataGenerationStep-1, check.weightedMeanParam]
+							)  ==  0
+					){
                         FF[check.weightedMeanParam] <- 0
                     }else{
                         stopValueWeightTest <- abs(weightedMeanParam[dataGenerationStep, check.weightedMeanParam]
@@ -857,25 +870,42 @@ doRun_prc <- function(
         #
         # save them to prcResults (this hasn't been done yet if save.data = FALSE)
         prcResults <- list()
+		#
         prcResults$input.data <- input.data
+		#
+		# composition of input.data as of 05/07/19
+			# jobName = jobName, 
+			# nTaxa = Ntip(phy), 
+			# nInitialSims = nInitialSims, 
+			# nInitialSimsPerParam = nInitialSimsPerParam, 
+			# generation.time = generation.time, 
+			# TreeYears = TreeYears, 
+			# timeStep = timeStep, 
+			# totalGenerations = totalGenerations, 
+			# epsilonProportion = epsilonProportion, 
+			# epsilonMultiplier = epsilonMultiplier, 
+			# nRuns = nRuns, 
+			# nStepsPRC = nStepsPRC, 
+			# numParticles = numParticles, 
+			# standardDevFactor = standardDevFactor
+		#
+        prcResults$phy <- phy
+        prcResults$traits <- traits
+		#
         prcResults$priorList <- priorList
         prcResults$particleDataFrame <- particleDataFrame
 		prcResults$freeVector <- freeVector
 		prcResults$generation.time <- generation.time
         #names(prcResults$particleDataFrame) <- nameVector
         prcResults$toleranceVector <- initialSimsRes$toleranceVector
-        prcResults$phy <- phy
-        prcResults$traits <- traits
         prcResults$simTime <- initialSimsRes$simTime
         prcResults$time.per.gen <- genTimes
         #######################################
         if(nrow(particleDataFrame)>2){
             prcResults$postSummary  <- summarizePosterior(
-				particleDataFrame, 
-				verboseMultimodal = FALSE)
+				particleDataFrame, verboseMultimodal = FALSE)
 			prcResults$parMeansList  <- getSummaryMeans(
-				prcResults$postSummary, 
-				freeVector = freeVector)
+				prcResults = prcResults)
         }else{
           warning(
 			"Posterior Summaries were not calculated as number of accepted particles was less than 2"
