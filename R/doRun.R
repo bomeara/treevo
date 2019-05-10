@@ -382,7 +382,7 @@ doRun_prc <- function(
         stop("maxAttempts must be numeric")
         }
 	#
-	if(is.numeric(nRuns)){
+	if(!is.numeric(nRuns)){
 		stop("nRuns must be numeric")
 		}
 	if(nRuns < 1){

@@ -31,5 +31,5 @@ postRunSimulateFromMeans <- function(prcOut, verbose = TRUE){
 		intrinsicValues = intrinsicValues, 
 		extrinsicValues = extrinsicValues
 		)
-	res(char)
+	return(char)
 	}
