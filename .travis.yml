@@ -13,7 +13,7 @@ warnings_are_errors: true
 
 
 before_install:
-- sudo apt-get install libgmp3-dev
+- sudo apt-get install libgslcblas0-dev
 - export RGL_USE_NULL=TRUE
 
 script:
