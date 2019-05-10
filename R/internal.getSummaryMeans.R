@@ -53,17 +53,13 @@ getSummaryMeans<-function(doRunOutput){
 	if(any(rowSums(parTypeMat) != 1)){
 		stop("Some parameter labels from freeVector do not uniquely match parameter types")
 		}
+	#############
 	# now sort into parameter types
-
-	startingPar  <- summaryValues[parTypeMat[,"starting"]]
-	intrinsicPar <- summaryValues[parTypeMat[,"intrinsic"]]
-	extrinsicPar <- summaryValues[parTypeMat[,"extrinsic"]]	
-	#
 	# output list of vectors for starting, intrinsic, extrinsic
 	res <- list(
-		starting = startingPar,
-		intrinsic = intrinsicPar,
-		extrinsic = extrinsicPar
+		starting = summaryValues[parTypeMat[,"starting"]],
+		intrinsic = summaryValues[parTypeMat[,"intrinsic"]],
+		extrinsic = summaryValues[parTypeMat[,"extrinsic"]]
 		)
 	return(res)
 	}

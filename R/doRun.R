@@ -984,7 +984,7 @@ doRun_prc <- function(
 			))
           }
         ######################################
-        if(nRuns>1){
+        if(nRuns<2){
             results <- prcResults
         }else{
             results[[runID]] <- prcResults
