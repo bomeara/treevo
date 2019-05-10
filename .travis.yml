@@ -13,8 +13,8 @@ warnings_are_errors: true
 
 
 before_install:
-- sudo apt-get install libgslcblas0
-- export RGL_USE_NULL=TRUE
+#- sudo apt-get install libgslcblas0
+#- export RGL_USE_NULL=TRUE
 
 script:
 - R CMD build .
