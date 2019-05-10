@@ -63,7 +63,7 @@ getSummaryMeans<-function(doRunOutput){
 	res <- list(
 		starting = startingPar,
 		intrinsic = intrinsicPar,
-		extrinsic = extrinsicPar,
+		extrinsic = extrinsicPar
 		)
 	return(res)
 	}

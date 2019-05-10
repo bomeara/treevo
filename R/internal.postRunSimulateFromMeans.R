@@ -18,18 +18,14 @@ postRunSimulateFromMeans <- function(prcOut, verbose = TRUE){
         prcOut <- prcOut[[1]]
         }
 	#
-	startingValues <- prcOut$parMeansList$starting
-	intrinsicValues <- prcOut$parMeansList$intrinsic
-	extrinsicValues <- prcOut$parMeansList$extrinsic
-	#
 	char <- doSimulation(
 		phy = prcOut$phy, 
 		generation.time = prcOut$generation.time, 
 		intrinsicFn = prcOut$intrinsicFn, 
 		extrinsicFn = prcOut$extrinsicFn, 
-		startingValues = startingValues, 
-		intrinsicValues = intrinsicValues, 
-		extrinsicValues = extrinsicValues
+		startingValues = prcOut$parMeansList$starting, 
+		intrinsicValues = prcOut$parMeansList$intrinsic, 
+		extrinsicValues = prcOut$parMeansList$extrinsic
 		)
 	return(char)
 	}
