@@ -1,7 +1,7 @@
 addons:
   apt:
     packages:
-      - libgsl2
+      - libgslcblas0
       - gsl-bin
       - libgsl-dev
       - libmagick++-dev
@@ -13,8 +13,8 @@ warnings_are_errors: true
 
 
 before_install:
-#- sudo apt-get install libgslcblas0
-#- export RGL_USE_NULL=TRUE
+- sudo apt-get install libgmp3-dev
+- export RGL_USE_NULL=TRUE
 
 script:
 - R CMD build .
