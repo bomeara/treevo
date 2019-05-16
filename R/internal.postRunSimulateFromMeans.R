@@ -27,5 +27,6 @@ postRunSimulateFromMeans <- function(prcOut, verbose = TRUE){
 		intrinsicValues = prcOut$parMeansList$intrinsic, 
 		extrinsicValues = prcOut$parMeansList$extrinsic
 		)
+	#
 	return(char)
 	}

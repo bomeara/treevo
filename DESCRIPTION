@@ -1,7 +1,7 @@
 Package: TreEvo
 Type: Package
 Title: Using ABC to Understand Trait Evolution
-Version: 0.20.2
+Version: 0.20.3
 Date: 2019-05-10
 Authors@R: c(
 	person("Brian", "O'Meara", role=c("aut"), 
