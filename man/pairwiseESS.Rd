@@ -14,7 +14,8 @@ list of data frames}
 Returns a matrix with ESS values of all pairwise runs
 }
 \description{
-This function calculates Effective Sample Size (ESS) on results.  Performs the best when results are
+This function calculates Effective Sample Size (ESS) on results.  
+The ESS algorithm performs best when results are
 from multiple runs.
 }
 \examples{

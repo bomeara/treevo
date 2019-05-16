@@ -12,29 +12,29 @@
 #' 
 #' \code{brownianIntrinsic} describes a model of intrinsic character evolution via
 #' Brownian motion. The input parameters for this model are:
-#' \code{boundaryIntrinsic} with parameters \code{params = sd}
+#' \code{boundaryIntrinsic} with parameters \code{params = sigma}
 #' 
 #' \code{boundaryIntrinsic} describes a model of intrinsic character evolution where character
 #' change is restricted above a minimum and below a maximum threshold.
 #' The input parameters for this model are:
-#' \code{boundaryMinIntrinsic} with parameters \code{params = sd, minimum, maximum}
+#' \code{boundaryMinIntrinsic} with parameters \code{params = sigma, minimum, maximum}
 #' 
 #' \code{boundaryMinIntrinsic} describes a model of intrinsic character evolution where character
 #' change is restricted above a minimum threshold.
 #' The input parameters for this model are:
-#' \code{boundaryMinIntrinsic} with parameters \code{params = sd, minimum}
+#' \code{boundaryMinIntrinsic} with parameters \code{params = sigma, minimum}
 #' 
 #' \code{autoregressiveIntrinsic} describes a model of intrinsic character evolution. New
 #' character values are generated after one time step via a discrete-time OU
 #' process.
 #' The input parameters for this model are:
-#' \code{autoregressiveIntrinsic} with \code{params = sd (sigma), attractor (character mean), attraction (alpha)}
+#' \code{autoregressiveIntrinsic} with \code{params = sigma (sigma), attractor (character mean), attraction (alpha)}
 #' 
 #' \code{minBoundaryAutoregressiveIntrinsic} describes a model of intrinsic character evolution. New
 #' character values are generated after one time step via a discrete-time OU
 #' process with a minimum bound.
 #' The input parameters for this model are:
-#' \code{MinBoundaryAutoregressiveIntrinsic} with parameters \code{params = sd (sigma), attractor
+#' \code{MinBoundaryAutoregressiveIntrinsic} with parameters \code{params = sigma (sigma), attractor
 #' (character mean), attraction (alpha), minimum}
 #' 
 #' \code{autoregressiveIntrinsicTimeSlices} describes a model of intrinsic character evolution. New
@@ -60,7 +60,7 @@
 #' character values are generated after one time step via a discrete-time OU
 #' process with differing means and attraction over time.
 #' The input parameters for this model are:
-#' \code{autoregressiveIntrinsicTimeSlicesConstantSigma} with parameters \code{params = sd (sigma), 
+#' \code{autoregressiveIntrinsicTimeSlicesConstantSigma} with parameters \code{params = sigma (sigma), 
 #' attractor-1 (character mean-1), attraction-1 (alpha-1), time threshold-1, 
 #' attractor-2 (character mean-2), attraction-2 (alpha-2), time threshold-2}
 #' 
@@ -154,11 +154,11 @@ nullIntrinsic <- function(params, states, timefrompresent) {
 #' @rdname intrinsicModels
 #' @export
 brownianIntrinsic <- function(params, states, timefrompresent) {
-    newdisplacement <- rpgm::rpgm.rnorm(
+    newdisplacement <- rnormFastZig(
+		nZig = length(states), 
 		#mean = 0 because we ADD this to existing values
-		n = length(states), 
-		mean = 0, 
-		sd = params
+		meanZig = 0, 
+		sdZig = params
 		) 
     return(newdisplacement)
     }
@@ -166,8 +166,9 @@ brownianIntrinsic <- function(params, states, timefrompresent) {
 #' @rdname intrinsicModels
 #' @export
 boundaryIntrinsic <- function(params, states, timefrompresent) {
-    #params[1] is sd, params[2] is min, params[3] is max. params[2] could be 0 or -Inf, for example
-    newdisplacement <- rpgm::rpgm.rnorm(n = length(states), mean = 0, sd = params[1])
+    #params[1] is sigma, params[2] is min, params[3] is max. params[2] could be 0 or -Inf, for example
+    newdisplacement <- rnormFastZig(nZig = length(states),
+		meanZig = 0, sdZig = params[1])
     for (i in 1:length(newdisplacement)) {
         newstate <- newdisplacement[i]+states[i]
         if (newstate<params[2]) { #newstate less than min
@@ -183,8 +184,11 @@ boundaryIntrinsic <- function(params, states, timefrompresent) {
 #' @rdname intrinsicModels
 #' @export
 boundaryMinIntrinsic  <- function(params, states, timefrompresent) {
-    #params[1] is sd, params[2] is min boundary
-    newdisplacement <- rpgm::rpgm.rnorm(n = length(states), mean = 0, sd = params[1])
+    #params[1] is sigma, params[2] is min boundary
+    newdisplacement <- rnormFastZig(
+		nZig = length(states), 
+		meanZig = 0, sdZig = params[1]
+		)
     for (i in 1:length(newdisplacement)) {
         newstate <- newdisplacement[i]+states[i]
         if (newstate<params[2]) { #newstate less than min
@@ -197,8 +201,10 @@ boundaryMinIntrinsic  <- function(params, states, timefrompresent) {
 #' @rdname intrinsicModels
 #' @export
 boundaryMaxIntrinsic  <- function(params, states, timefrompresent) {
-    #params[1] is sd, params[2] is max boundary
-    newdisplacement <- rpgm::rpgm.rnorm(n = length(states), mean = 0, sd = params[1])
+    #params[1] is sigma, params[2] is max boundary
+    newdisplacement <- rnormFastZig(nZig = length(states),
+		meanZig = 0, sdZig = params[1]
+		)
     for (i in 1:length(newdisplacement)) {
         newstate <- newdisplacement[i]+states[i]
         if (newstate>params[2]) { #newstate MORE than MAX
@@ -212,16 +218,18 @@ boundaryMaxIntrinsic  <- function(params, states, timefrompresent) {
 #' @rdname intrinsicModels
 #' @export
 autoregressiveIntrinsic <- function(params, states, timefrompresent) {
-    #a discrete time OU, same sd, mean, and attraction for all chars
-    #params[1] is sd (sigma), params[2] is attractor (ie. character mean), params[3] is attraction (ie. alpha)
-    sd <- params[1]
+    #a discrete time OU, same sigma, mean, and attraction for all chars
+		# params[1] is sigma (sigma), 
+		# params[2] is attractor (ie. character mean), 
+		# params[3] is attraction (ie. alpha)
+    sigma <- params[1]
     attractor <- params[2]
     attraction <- params[3]    #in this model, this should be between zero and one
     #subtract current states because we want displacement
-	newdisplacement <- rpgm::rpgm.rnorm(
-					n = length(states), 
-					mean = (attractor-states)*attraction, 
-					sd = sd) 
+	newdisplacement <- rnormFastZig(
+					nZig = length(states), 
+					meanZig = (attractor-states)*attraction, 
+					sdZig = sigma) 
     return(newdisplacement)
     }	
 	
@@ -230,17 +238,17 @@ autoregressiveIntrinsic <- function(params, states, timefrompresent) {
 #' @rdname intrinsicModels
 #' @export
 maxBoundaryAutoregressiveIntrinsic <- function(params, states, timefrompresent) {
-    #a discrete time OU, same sd, mean, and attraction for all chars
-    #params[1] is sd (sigma), params[2] is attractor (ie. character mean),
+    #a discrete time OU, same sigma, mean, and attraction for all chars
+    #params[1] is sigma (sigma), params[2] is attractor (ie. character mean),
 		#params[3] is attraction (ie. alpha), params[4] is max bound
-    sd <- params[1]
+    sigma <- params[1]
     attractor <- params[2]
     attraction <- params[3]    #in this model, this should be between zero and one
     minBound <- params[4]
-    newdisplacement <- rpgm::rpgm.rnorm(
-		n = length(states), 
-		mean = (attractor-states)*attraction, 
-		sd = sd) #subtract current states because we want displacement
+    newdisplacement <- rnormFastZig(
+		nZig = length(states), 
+		meanZig = (attractor-states)*attraction, 
+		sdZig = sigma) #subtract current states because we want displacement
     #message(newdisplacement)
     for (i in 1:length(newdisplacement)) {
         newstate <- newdisplacement[i] + states[i]
@@ -256,17 +264,17 @@ maxBoundaryAutoregressiveIntrinsic <- function(params, states, timefrompresent) 
 #' @rdname intrinsicModels
 #' @export
 minBoundaryAutoregressiveIntrinsic <- function(params, states, timefrompresent) {
-    #a discrete time OU, same sd, mean, and attraction for all chars
-    #params[1] is sd (sigma), params[2] is attractor (ie. character mean),
+    #a discrete time OU, same sigma, mean, and attraction for all chars
+    #params[1] is sigma (sigma), params[2] is attractor (ie. character mean),
 		#params[3] is attraction (ie. alpha), params[4] is min bound
-    sd <- params[1]
+    sigma <- params[1]
     attractor <- params[2]
     attraction <- params[3]    #in this model, this should be between zero and one
     minBound <- params[4]
-    newdisplacement <- rpgm::rpgm.rnorm(
-		n = length(states), 
-		mean = (attractor-states)*attraction, 
-		sd = sd) #subtract current states because we want displacement
+    newdisplacement <- rnormFastZig(
+		nZig = length(states), 
+		meanZig = (attractor-states)*attraction, 
+		sdZig = sigma) #subtract current states because we want displacement
     #message(newdisplacement)
     for (i in 1:length(newdisplacement)) {
         newstate <- newdisplacement[i] + states[i]
@@ -291,9 +299,10 @@ autoregressiveIntrinsicTimeSlices <- function(params, states, timefrompresent) {
     numRegimes <- length(params)/4
     timeSliceVector = c(Inf, params[which(c(1:length(params))%%4 == 0)])
     #message(timeSliceVector)
-    sd <- params[1]
+    sigma <- params[1]
     attractor <- params[2]
-    attraction <- params[3]    #in this model, this should be between zero and one
+	#in this model, attraction should be between zero and one
+    attraction <- params[3]    
     #message(paste("timefrompresent = ", timefrompresent))
     for (regime in 1:numRegimes) {
         #message(paste ("tryiing regime = ", regime))
@@ -302,19 +311,21 @@ autoregressiveIntrinsicTimeSlices <- function(params, states, timefrompresent) {
             if (timefrompresent >= timeSliceVector[regime+1]) {
                 #message("timefrompresent <= timeSliceVector[regime+1]  ==  TRUE")
                 #message(paste("choose regime ", regime, " so 4*(regime-1) = ", 4*(regime-1)))
-                sd <- params[1+4*(regime-1)]
+                sigma <- params[1+4*(regime-1)]
                 attractor <- params[2+4*(regime-1)]
                 attraction <- params[3+4*(regime-1)]
-                    #message(paste("sd = ", sd, " attractor = ",
+                    #message(paste("sigma = ", sigma, " attractor = ",
 						# attractor, " attraction = ", attraction))
 
             }
         }
     }
-    #message(paste("sd = ", sd, " attractor = ",
+    #message(paste("sigma = ", sigma, " attractor = ",
 		# attractor, " attraction = ", attraction))
-    newdisplacement <- rpgm::rpgm.rnorm(n = length(states),
-		mean = (attractor-states)*attraction, sd = sd)
+    newdisplacement <- rnormFastZig(
+		nZig = length(states),
+		meanZig = (attractor-states)*attraction,
+		sdZig = sigma)
     return(newdisplacement)
     }
 
@@ -327,7 +338,7 @@ autoregressiveIntrinsicTimeSlicesConstantMean <- function(params, states, timefr
     #time is time before present (i.e., 65 could be 65 MYA).
         # The last time threshold should be 0, one before that is the end of the previous epoch, etc.
     numTimeSlices <- (length(params)-1)/3
-    sd <- params[1]
+    sigma <- params[1]
     attractor <- params[length(params)]
     attraction <- params[2]    #in this model, this should be between zero and one
     previousThresholdTime <- Inf
@@ -335,17 +346,18 @@ autoregressiveIntrinsicTimeSlicesConstantMean <- function(params, states, timefr
         thresholdTime <- params[3+3*slice]
         if (thresholdTime  >=  timefrompresent) {
             if (thresholdTime<previousThresholdTime) {
-                sd <- params[1+3*slice]
+                sigma <- params[1+3*slice]
                 attraction <- params[2+3*slice]
             }
         }
         previousThresholdTime <- thresholdTime
     }
-    newdisplacement <- rpgm::rpgm.rnorm(
-			n = length(states),
-			mean = attraction*states + attractor,
-			sd = sd
-		)-states
+    newdisplacement <- rnormFastZig(
+			nZig = length(states),
+			meanZig = attraction*states + attractor,
+			sdZig = sigma
+		)
+	newdisplacement <- newdisplacement-states
     return(newdisplacement)
     }
 
@@ -356,7 +368,7 @@ autoregressiveIntrinsicTimeSlicesConstantMean <- function(params, states, timefr
 #' @export
 autoregressiveIntrinsicTimeSlicesConstantSigma <- function(params, states, timefrompresent) {
     ##a discrete time OU, differing mean, constant sigma, and attaction with time
-    #params = [sd, attractor1, attraction1, timethreshold1, attractor2, attraction2, timethreshold2, ...]
+    #params = [sigma, attractor1, attraction1, timethreshold1, attractor2, attraction2, timethreshold2, ...]
     #time is time before present (i.e., 65 could be 65 MYA). The
         # last time threshold should be 0, one before that is the end of the previous epoch, etc.
     numRegimes <- (length(params)-1)/3
@@ -367,7 +379,7 @@ autoregressiveIntrinsicTimeSlicesConstantSigma <- function(params, states, timef
     }
     #timeSliceVector = c(Inf, params[which(c(1:length(params))%%4 == 0)])
     #message(timeSliceVector)
-    sd <- params[1]
+    sigma <- params[1]
     attractor <- params[2]
     attraction <- params[3]    #in this model, this should be between zero and one
     #message(paste("timefrompresent = ", timefrompresent))
@@ -378,23 +390,26 @@ autoregressiveIntrinsicTimeSlicesConstantSigma <- function(params, states, timef
             if (timefrompresent >= timeSliceVector[regime+1]) {
                 #message("timefrompresent >= timeSliceVector[regime+1]  ==  TRUE")
                 #message(paste("chose regime ", regime))
-                #sd <- params[1+4*(regime-1)]
+                #sigma <- params[1+4*(regime-1)]
                 attractor <- params[2+3*(regime-1)]
                 attraction <- params[3+3*(regime-1)]
-                #message(paste("sd = ", sd, " attractor = ", attractor, " attraction = ", attraction))
+                #message(paste("sigma = ", sigma, " attractor = ", attractor, " attraction = ", attraction))
 
             }
         }
     }
-    #message(paste("sd = ", sd, " attractor = ", attractor, " attraction = ", attraction))
-    newdisplacement <- rpgm::rpgm.rnorm(n = length(states), mean = (attractor-states)*attraction, sd = sd)
+    #message(paste("sigma = ", sigma, " attractor = ", attractor, " attraction = ", attraction))
+    newdisplacement <- rnormFastZig(
+		nZig = length(states), 
+		meanZig = (attractor-states)*attraction, 
+		sdZig = sigma)
     return(newdisplacement)
     }
 
 
 varyingBoundariesFixedSigmaIntrinsic <- function(params, states, timefrompresent) {
     #differing boundaries with time
-    #params = [sd, min1, max1, timethreshold1, min2, max2, timethreshold2, ...]
+    #params = [sigma, min1, max1, timethreshold1, min2, max2, timethreshold2, ...]
     #time is time before present (i.e., 65 could be 65 MYA). The last time (present)
         # threshold should be 0, one before that is the end of the previous epoch, etc.
     numRegimes <- (length(params)-1)/3
@@ -405,7 +420,7 @@ varyingBoundariesFixedSigmaIntrinsic <- function(params, states, timefrompresent
     }
     #timeSliceVector = c(Inf, params[which(c(1:length(params))%%4 == 0)])
     #message(timeSliceVector)
-    sd <- params[1]
+    sigma <- params[1]
     minBound <- params[2]
     maxBound <- params[3]
     for (regime in 1:numRegimes) {
@@ -415,17 +430,20 @@ varyingBoundariesFixedSigmaIntrinsic <- function(params, states, timefrompresent
             if (timefrompresent >= timeSliceVector[regime+1]) {
                 #message("timefrompresent >= timeSliceVector[regime+1]  ==  TRUE")
                 #message(paste("chose regime ", regime))
-                #sd <- params[1+4*(regime-1)]
+                #sigma <- params[1+4*(regime-1)]
                 minBound <- params[2+3*(regime-1)]
                 maxBound <- params[3+3*(regime-1)]
-                #message(paste("sd = ", sd, " attractor = ", attractor, " attraction = ", attraction))
+                #message(paste("sigma = ", sigma, " attractor = ", attractor, " attraction = ", attraction))
 
             }
         }
     }
-    #message(paste("sd = ", sd, " attractor = ", attractor, " attraction = ", attraction))
-    newdisplacement <- rpgm::rpgm.rnorm(n = length(states), mean = 0, sd = sd)
-        for (i in 1:length(newdisplacement)) {
+    #message(paste("sigma = ", sigma, " attractor = ", attractor, " attraction = ", attraction))
+    newdisplacement <- rnormFastZig(
+		nZig = length(states),
+		meanZig = 0,
+		sdZig = sigma)
+	for (i in 1:length(newdisplacement)) {
         newstate <- newdisplacement[i]+states[i]
         if (newstate<minBound) { #newstate less than min
             newdisplacement[i] <- minBound-states[i] #so, rather than go below the minimum, this moves the new state to the minimum
@@ -449,7 +467,7 @@ varyingBoundariesVaryingSigmaIntrinsic <- function(params, states, timefromprese
     }
     #timeSliceVector = c(Inf, params[which(c(1:length(params))%%4 == 0)])
     #message(timeSliceVector)
-    sd <- params[1]
+    sigma <- params[1]
     minBound <- params[2]
     maxBound <- params[3]
     for (regime in 1:numRegimes) {
@@ -459,18 +477,21 @@ varyingBoundariesVaryingSigmaIntrinsic <- function(params, states, timefromprese
             if (timefrompresent >= timeSliceVector[regime+1]) {
                 #message("timefrompresent >= timeSliceVector[regime+1]  ==  TRUE")
                 #message(paste("chose regime ", regime))
-                #sd <- params[1+4*(regime-1)]
-                sd <- params[1+4*(regime-1)]
+                #sigma <- params[1+4*(regime-1)]
+                sigma <- params[1+4*(regime-1)]
                 minBound <- params[2+4*(regime-1)]
                 maxBound <- params[3+4*(regime-1)]
-                #message(paste("sd = ", sd, " attractor = ", attractor, " attraction = ", attraction))
+                #message(paste("sigma = ", sigma, " attractor = ", attractor, " attraction = ", attraction))
 
             }
         }
     }
-    #message(paste("sd = ", sd, " attractor = ", attractor, " attraction = ", attraction))
-    newdisplacement <- rpgm::rpgm.rnorm(n = length(states), mean = 0, sd = sd)
-        for (i in 1:length(newdisplacement)) {
+    #message(paste("sigma = ", sigma, " attractor = ", attractor, " attraction = ", attraction))
+    newdisplacement <- rnormFastZig(
+		nZig = length(states), 
+		meanZig = 0, 
+		sdZig = sigma)
+	for (i in 1:length(newdisplacement)) {
         newstate <- newdisplacement[i]+states[i]
         if (newstate<minBound) { #newstate less than min
             newdisplacement[i] <- minBound-states[i] #so, rather than go below the minimum, this moves the new state to the minimum
@@ -485,62 +506,79 @@ varyingBoundariesVaryingSigmaIntrinsic <- function(params, states, timefromprese
 #this model assumes a pull (perhaps weak) to a certain genome size, but with
 #    occasional doublings
 genomeDuplicationAttraction <- function(params, states, timefrompresent) {
-    #params = [sd, attractor, attraction, doubling.prob]
-    sd <- params[1]
+    #params = [sigma, attractor, attraction, doubling.prob]
+    sigma <- params[1]
     attractor <- params[2]
     attraction <- params[3]    #in this model, this should be between zero and one
     doubling.prob <- params[4]
-    newdisplacement <- rpgm::rpgm.rnorm(n = length(states), mean = (attractor-states)*attraction, sd = sd) #subtract current states because we want displacement
-    for (i in 1:length(newdisplacement)) {
+    newdisplacement <- rnormFastZig(
+		nZig = length(states), 
+		meanZig = (attractor-states)*attraction, 
+		sdZig = sigma) 
+	#subtract current states because we want displacement ?
+    for (i in 1:length(newdisplacement)){
         newstate <- newdisplacement[i]+states[i]
-        if (newstate<0) { #newstate less than min
-            newdisplacement[i] <- 0-states[i] #so, rather than go below the minimum, this moves the new state to the minimum
-        }
-    }
+        if (newstate<0){ #newstate less than min
+            #so, rather than go below the minimum, this moves the new state to the minimum
+			newdisplacement[i] <- 0-states[i]
+			}
+		}
     if (runif(1, 0, 1)<doubling.prob) { #we double
         newdisplacement <- states
-    }
+		}
     return(newdisplacement)
     }
 
 #This is the same as the above model, but where the states are in log units
 #  The only difference is how doubling occurs
 genomeDuplicationAttractionLogScale <- function(params, states, timefrompresent) {
-    #params = [sd, attractor, attraction, doubling.prob]
-    sd <- params[1]
+    #params = [sigma, attractor, attraction, doubling.prob]
+    sigma <- params[1]
     attractor <- params[2]
     attraction <- params[3]    #in this model, this should be between zero and one
     doubling.prob <- params[4]
-    newdisplacement <- rpgm::rpgm.rnorm(n = length(states), mean = (attractor-states)*attraction, sd = sd) #subtract current states because we want displacement
+    newdisplacement <- rnormFastZig(
+		nZig = length(states),
+		meanZig = (attractor-states)*attraction,
+		sdZig = sigma) 
+	#subtract current states because we want displacement ?
     if (runif(1, 0, 1)<doubling.prob) { #we double
         newdisplacement <- log(2*exp(states))-states
-    }
+		}
     return(newdisplacement)
-}
+	}
 
 
 # Genome duplication, but with no attraction. However, each duplication may shortly result in
     # less than a full doubling. Basically, the increased size is based on a beta distribution. If you want pure doubling only, 
 # shape param 1 = Inf and param 2 = 1
-genomeDuplicationPartialDoublingLogScale <- function(params, states, timefrompresent) {
-    #params = [sd, shape1, doubling.prob]
-    sd <- params[1]
+genomeDuplicationPartialDoublingLogScale <- function(params, states, timefrompresent){
+    #params = [sigma, shape1, doubling.prob]
+    sigma <- params[1]
     beta.shape1 <- params[2] #the larger this is, the more the duplication is exactly a doubling. To see what this looks like, plot(density(1+rbeta(10000, beta.shape1, 1)))
     duplication.prob <- params[3]
-    newdisplacement <- rpgm::rpgm.rnorm(n = length(states), mean = 0, sd = sd)
+    newdisplacement <- rnormFastZig(
+		nZig = length(states), 
+		meanZig = 0, 
+		sdZig = sigma)
     if (runif(1, 0, 1)<duplication.prob) { #we duplicate
         newdisplacement <- log((1+rbeta(1, beta.shape1, 1))*exp(states))-states
-    }
+		}
     return(newdisplacement)
-}
+	}
 
 
 ##Get Genome duplication priors
 GetGenomeDuplicationPriors <- function(numSteps, phy, data) {
     #returns a matrix with 3 priors for genome duplication (genomeDuplicationPartialDoublingLogScale)
     timeStep <- 1/numSteps  #out of doRun_rej code
-    sd <- getBMRatePrior(phy=phy, traits=data, timeStep=timeStep)  #new TreEvo function
-    beta.shape1 <- 1 #for(i in 1:10) {lines(density(1+rbeta(10000, 10^runif(1, 0, 2), 1)), xlim = c(1, 2))}  seems to produce nice distributions, but how to justify using 3?
+    #new TreEvo function
+	sigma <- getBMRatePrior(phy=phy, traits=data, timeStep=timeStep) 
+    beta.shape1 <- 1 
+	#for(i in 1:10) {
+	#  lines(density(1+rbeta(10000, 10^runif(1, 0, 2), 1)), xlim = c(1, 2))
+	#	}  
+	# seems to produce nice distributions, but how to justify using 3?
     duplication.prob <- 2 #exponential, but which rate?
 
-}
+	}

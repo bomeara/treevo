@@ -27,8 +27,11 @@ setupMulticore <- function(multicore, nSim, coreLimit){
         if (is.na(coreLimit)){
             nCores <- c(nSim, parallel::detectCores()) #getDoParWorkers()
         }else{
-            # count number of cores, subtract one for system processes
-            nCoresExist <- parallel::detectCores()-1
+            # count number of *functional* cores
+				# (as opposed to *physical* cores)
+				# subtract one for system processes
+            nCoresExist <- parallel::detectCores(logical = TRUE)-1
+			#
             # don't allow it to take more nCores than exist
             nCores <- c(nSim, coreLimit, nCoresExist)
             }

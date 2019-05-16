@@ -1,6 +1,7 @@
 #' Pairwise Effective Sample Size
 #' 
-#' This function calculates Effective Sample Size (ESS) on results.  Performs the best when results are
+#' This function calculates Effective Sample Size (ESS) on results.  
+#' The ESS algorithm performs best when results are
 #' from multiple runs.
 #' 
 #' 

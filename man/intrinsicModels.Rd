@@ -63,29 +63,29 @@ It has no parameters, really.
 
 \code{brownianIntrinsic} describes a model of intrinsic character evolution via
 Brownian motion. The input parameters for this model are:
-\code{boundaryIntrinsic} with parameters \code{params = sd}
+\code{boundaryIntrinsic} with parameters \code{params = sigma}
 
 \code{boundaryIntrinsic} describes a model of intrinsic character evolution where character
 change is restricted above a minimum and below a maximum threshold.
 The input parameters for this model are:
-\code{boundaryMinIntrinsic} with parameters \code{params = sd, minimum, maximum}
+\code{boundaryMinIntrinsic} with parameters \code{params = sigma, minimum, maximum}
 
 \code{boundaryMinIntrinsic} describes a model of intrinsic character evolution where character
 change is restricted above a minimum threshold.
 The input parameters for this model are:
-\code{boundaryMinIntrinsic} with parameters \code{params = sd, minimum}
+\code{boundaryMinIntrinsic} with parameters \code{params = sigma, minimum}
 
 \code{autoregressiveIntrinsic} describes a model of intrinsic character evolution. New
 character values are generated after one time step via a discrete-time OU
 process.
 The input parameters for this model are:
-\code{autoregressiveIntrinsic} with \code{params = sd (sigma), attractor (character mean), attraction (alpha)}
+\code{autoregressiveIntrinsic} with \code{params = sigma (sigma), attractor (character mean), attraction (alpha)}
 
 \code{minBoundaryAutoregressiveIntrinsic} describes a model of intrinsic character evolution. New
 character values are generated after one time step via a discrete-time OU
 process with a minimum bound.
 The input parameters for this model are:
-\code{MinBoundaryAutoregressiveIntrinsic} with parameters \code{params = sd (sigma), attractor
+\code{MinBoundaryAutoregressiveIntrinsic} with parameters \code{params = sigma (sigma), attractor
 (character mean), attraction (alpha), minimum}
 
 \code{autoregressiveIntrinsicTimeSlices} describes a model of intrinsic character evolution. New
@@ -111,7 +111,7 @@ attraction-2 (alpha-2), time threshold-2, attractor (character mean)}
 character values are generated after one time step via a discrete-time OU
 process with differing means and attraction over time.
 The input parameters for this model are:
-\code{autoregressiveIntrinsicTimeSlicesConstantSigma} with parameters \code{params = sd (sigma), 
+\code{autoregressiveIntrinsicTimeSlicesConstantSigma} with parameters \code{params = sigma (sigma), 
 attractor-1 (character mean-1), attraction-1 (alpha-1), time threshold-1, 
 attractor-2 (character mean-2), attraction-2 (alpha-2), time threshold-2}
 }

@@ -2,7 +2,9 @@
 
 getFreeVector <- function(startingPriorsFns, startingPriorsValues, 
                         intrinsicPriorsFns, intrinsicPriorsValues, 
-                        extrinsicPriorsFns, extrinsicPriorsValues){
+                        extrinsicPriorsFns, extrinsicPriorsValues
+						){
+	################################
     #checks
     if(!is.list(startingPriorsValues)){
         stop("startingPriorsValues must be a list, with elements representing separate prior distributions parameters, and each element a vector consisting of the parameters for those priors")
@@ -38,7 +40,10 @@ getFreeVector <- function(startingPriorsFns, startingPriorsValues,
     for (i in 1:length(startingPriorsValues)) {
         if(length(startingPriorsValues))
         priorFn <- match.arg(arg = startingPriorsFns[i], 
-            choices = c("fixed", "uniform", "normal", "lognormal", "gamma", "exponential"), 
+            choices = c(
+				"fixed", "uniform", "normal", 
+				"lognormal", "gamma", "exponential"
+				), 
             several.ok = FALSE)
         #
         if (priorFn == "fixed") {
@@ -55,7 +60,10 @@ getFreeVector <- function(startingPriorsFns, startingPriorsValues,
         }
     for (j in 1:length(intrinsicPriorsValues)) {
         priorFn <- match.arg(arg = intrinsicPriorsFns[j], 
-            choices = c("fixed", "uniform", "normal", "lognormal", "gamma", "exponential"), 
+            choices = c(
+				"fixed", "uniform", "normal", 
+				"lognormal", "gamma", "exponential"
+				), 
             several.ok = FALSE)
         #
         if (priorFn == "fixed") {
@@ -72,7 +80,9 @@ getFreeVector <- function(startingPriorsFns, startingPriorsValues,
         }
     for (k in 1:length(extrinsicPriorsValues)) {
         priorFn <- match.arg(arg = extrinsicPriorsFns[k], 
-            choices = c("fixed", "uniform", "normal", "lognormal", "gamma", "exponential"), 
+            choices = c(
+				"fixed", "uniform", "normal", 
+				"lognormal", "gamma", "exponential"), 
             several.ok = FALSE)
         #
         if (priorFn == "fixed") {

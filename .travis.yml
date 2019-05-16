@@ -1,6 +1,16 @@
+addons:
+  apt:
+    packages:
+      - libgslcblas0
+      - gsl-bin
+      - libgsl-dev
+      - libmagick++-dev
+
 language: r
-cache: packages
-warnings_are_errors: TRUE
+sudo: required
+# Be strict when checking our package
+warnings_are_errors: true
+
 
 before_install:
 - sudo apt-get install libgmp3-dev
@@ -10,5 +20,12 @@ script:
 - R CMD build .
 - travis_wait 45 R CMD check *tar.gz --as-cran
 
+# for code coverage
+r_packages:
+  - covr
+
 after_success:
   -  travis_wait 45 Rscript -e 'covr::codecov()'
+  
+  
+  

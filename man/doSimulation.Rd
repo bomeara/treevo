@@ -16,7 +16,8 @@ doSimulation(phy = NULL, intrinsicFn, extrinsicFn, startingValues,
 traits evolve within a lineage, regardless of the trait values of other taxa.}
 
 \item{extrinsicFn}{Name of (previously-defined) function that governs how
-traits evolve within a lineage, based on their own ('internal') trait vlaue and the trait values
+traits evolve within a lineage, based on their own
+('internal') trait vlaue and the trait values
 of other taxa.}
 
 \item{startingValues}{State at the root.}
@@ -27,24 +28,37 @@ intrinsic model.}
 \item{extrinsicValues}{Vector of values corresponding to the parameters of the
 extrinsic model.}
 
-\item{generation.time}{The number of years per generation. This sets the coarseness of the simulation; if it's set to 1000, 
-for example, the population's trait values change every 1000 calender years. Note that this is in calender years (see description
-for argument \code{TreeYears}), and not in millions of years (as is typical for dated trees in macroevolutionary studies).
-Thus, if a branch is 1 million-year time-unit long, and a user applies the default \code{generation.time = 1000}, 
+\item{generation.time}{The number of years per generation.
+This sets the coarseness of the simulation; if it's set to 1000, 
+for example, the population's trait values change every 1000
+calender years. Note that this is in calender years (see description
+for argument \code{TreeYears}), and not in millions of years
+(as is typical for dated trees in macroevolutionary studies).
+Thus, if a branch is 1 million-year time-unit long, and a
+user applies the default \code{generation.time = 1000}, 
 then 1000 evolutionary changes will be simulated along that branch.
 See documentation for \code{\link{doSimulation}} for further details.}
 
-\item{TreeYears}{The amount of calender time from the root to the furthest tip. Most trees in macroevolutionary studies are dated with
-branch lengths in units of millions of years, and thus the default for this argument is \code{max(branching.times(phy)) * 1e6}.
-If your tree has the most recent tip at time zero (i.e., the modern day), this would be the same as the root age of the tree. If your
-branch lengths are not in millions of years, you should alter this argument. Otherwise, leave this argument alone.
+\item{TreeYears}{The amount of calender time from the root
+to the furthest tip. Most trees in macroevolutionary studies are dated with
+branch lengths in units of millions of years, and thus the
+default for this argument is \code{max(branching.times(phy)) * 1e6}.
+If your tree has the most recent tip at time zero (i.e.,
+the modern day), this would be the same as the root age of the tree. If your
+branch lengths are not in millions of years, you should
+alter this argument. Otherwise, leave this argument alone.
 See documentation for \code{\link{doSimulation}} for further details.}
 
-\item{timeStep}{This value corresponds to the lenght of intervals between discrete evolutionary events ('generations')
-simulated along branches, relative to a rescaled tree where the root to furthest tip distance is 1. For example, 
-\code{timeStep = 0.01} of would mean 100 (i.e., 1 / 0.01) evolutionary changes would be expected to occur from
-the root to the furthest tip. (Note that the real number simulated will be much less, because simulations start
-over at each branching node.) Ideally, \code{timeStep} (or its effective value, via other arguments) should be
+\item{timeStep}{This value corresponds to the length
+of intervals between discrete evolutionary events ('generations')
+simulated along branches, relative to a rescaled tree
+where the root to furthest tip distance is 1. For example, 
+\code{timeStep = 0.01} of would mean 100 (i.e., 1 / 0.01)
+evolutionary changes would be expected to occur from
+the root to the furthest tip. (Note that the real number
+simulated will be much less, because simulations start
+over at each branching node.) Ideally, \code{timeStep}
+(or its effective value, via other arguments) should be
 as short as is computationally possible.
 Typically \code{NULL} by default and
 determined internally as follows: \code{timeStep = generation.time / TreeYears}.
@@ -52,19 +66,26 @@ Can be provided a value as an alternative to using arguments \code{generation.ti
 and \code{TreeYears}, which would then be overridden.
 See documentation for \code{\link{doSimulation}} for further details.}
 
-\item{returnAll}{If \code{TRUE}, the output returned is a \code{data.frame} containing the values at each node from the simulation.}
+\item{returnAll}{If \code{TRUE}, the output returned is a
+\code{data.frame} containing the values at each node from the simulation.}
 
-\item{taxonDF}{A data.frame containing data on nodes (both tips and internal nodes) output by various internal functions.
+\item{taxonDF}{A data.frame containing data on nodes (both
+tips and internal nodes) output by various internal functions.
 Can be supplied as input to spead up repeated calculations, but by default is
 \code{NULL}, which instead forces a calculation from input \code{phy}.}
 
 \item{checkTimeStep}{If \code{TRUE}, warnings will be issued if \code{TimeStep} is too short.}
 }
 \value{
-If \code{returnAll = FALSE} (the default), this function returns a data frame of species character (tip)
-values in the tree, with column headings \code{taxonid} (representing the index for the corresponding tip label
-the most recent divergence event for that lineage), and \code{statesmatrix} (the simulated trait data).
-If \code{returnAll = TRUE}, the raw \code{data.frame} from the simulation will instead be returned.
+If \code{returnAll = FALSE} (the default),
+this function returns a data frame of species character (tip)
+values in the tree, with column headings \code{taxonid}
+(representing the index for the corresponding tip label
+\code{taxonname}, \code{taxontimesincespeciation}
+(the time to the most recent divergence event for that lineage),
+and \code{statesmatrix} (the simulated trait data).
+If \code{returnAll = TRUE}, the raw \code{data.frame}
+from the simulation will instead be returned.
 }
 \description{
 The function \code{doSimulation} evolves continuous characters under a discrete time process.
@@ -72,23 +93,37 @@ These functions are mainly used as internal components, generating simulations
 within ABC analyses using the \code{\link{doRun}} functions. See \emph{Note} below.
 }
 \details{
-The phylogenetic tree used is rescaled such that the distance from the root to the furthest tip is rescaled to equal 1 time-unit, 
-and it is this rescaled edge lengths to with arguments \code{timeStep} refers to. Typically, this will be determined though
-as a ratio of \code{TreeYears} (which is the number of calender years constituing the root-to-furthest-tip distance, and
-is determined by default as if the user had supplied a tree with edge lengths in time-units of 1 time-unit = 1 million years), and
-\code{generation.time}, which gives the length of \code{timeSteps} in calender years (e.g. \code{generation.time = 1000} means
-an evolutionary change in trait values every 1000 years). Note that the real number of trait change events simulated may be less
-less, because simulations start ver at each branching node, but intervals between changes should be so fine that this
-should be negligible (related, the results should be independent of your choice for \code{generation.time} or \code{timeStep}).
-We recommend that the effective \code{timeStep} should be  as short as is computationally possible.
+The phylogenetic tree used is rescaled such that the
+distance from the root to the furthest tip is rescaled to equal 1 time-unit, 
+and it is this rescaled edge lengths to with arguments
+\code{timeStep} refers to. Typically, this will be determined though
+as a ratio of \code{TreeYears} (which is the number
+of calender years constituing the root-to-furthest-tip distance, and
+is determined by default as if the user had supplied
+a tree with edge lengths in time-units of 1 time-unit = 1 million years), and
+\code{generation.time}, which gives the length of
+\code{timeSteps} in calender years (e.g. \code{generation.time = 1000} means
+an evolutionary change in trait values every 1000 years).
+Note that the real number of trait change events simulated may be less
+less, because simulations start ver at each branching
+node, but intervals between changes should be so fine that this
+should be negligible (related, the results should be
+independent of your choice for \code{generation.time} or \code{timeStep}).
+We recommend that the effective \code{timeStep} should be 
+as short as is computationally possible.
 \code{SaveRealParams} is useful for tracking the \emph{real} true values if simulating
-data to test the performance of ABC analyses.  It is not useful for ABC analyses of empirical data.
+data to test the performance of ABC analyses.  
+It is not useful for ABC analyses of empirical data.
 }
 \note{
-The \code{\link{simulateWithPriors}} functions are effectively the engine that powers the \code{\link{doRun}}
-functions, while the \code{\link{doSimulation}} functions are the pistons within the \code{\link{simulateWithPriors}} engine.
-In general, most users will just drive the car - they will just use \code{\link{doRun}}, but some users may
-want to use \code{\link{simulateWithPriors}} or \code{\link{doSimulation}} functions to do various simulations.
+The \code{\link{simulateWithPriors}} functions are effectively
+the engine that powers the \code{\link{doRun}}
+functions, while the \code{\link{doSimulation}} functions are
+the pistons within the \code{\link{simulateWithPriors}} engine.
+In general, most users will just drive the car - they will just
+use \code{\link{doRun}}, but some users may
+want to use \code{\link{simulateWithPriors}} or
+\code{\link{doSimulation}} functions to do various simulations.
 }
 \examples{
 \donttest{
@@ -112,7 +147,7 @@ char <- doSimulation(
 
 char <- doSimulation(
     phy = tree, 
- generation.time = 100000, 
+    generation.time = 100000, 
     intrinsicFn = boundaryMinIntrinsic, 
     extrinsicFn = ExponentiallyDecayingPushExtrinsic, 
     startingValues = c(10), #root state

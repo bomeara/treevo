@@ -51,18 +51,18 @@ It has no parameters, really.
 \code{nearestNeighborDisplacementExtrinsic} describes a model of extrinsic trait evolution where character
 values of a focal taxon depend on the values of closest relatives on the tree (e.g. competitive exclusion).
 The input parameters for this model are:
-\code{nearestNeighborDisplacementExtrinsic} with parameters \code{params = sd, springK, maximumForce}
+\code{nearestNeighborDisplacementExtrinsic} with parameters \code{params = sigma, springK, maximumForce}
 
 \code{everyoneDisplacementExtrinsic} describes a model of extrinsic trait evolution where the character
 values of a focal taxon depend on the values of all co-extant relatives on the simulated tree.
 The input parameters for this model are:
-\code{everyoneDisplacementExtrinsic} with parameters \code{params = sd, springK, maximumForce}
+\code{everyoneDisplacementExtrinsic} with parameters \code{params = sigma, springK, maximumForce}
 
 \code{ExponentiallyDecayingPushExtrinsic} describes a model of extrinsic trait evolution where the character
 values of a focal taxon is 'pushed' away from other taxa with similar values, but the force of that 'push'
 exponentially decays as lineages diverge and their character values become less similar.
 The input parameters for this model are:
-\code{ExponentiallyDecayingPushExtrinsic} with parameters \code{params = sd, maximumForce, halfDistance}
+\code{ExponentiallyDecayingPushExtrinsic} with parameters \code{params = sigma, maximumForce, halfDistance}
 }
 \examples{
 \donttest{

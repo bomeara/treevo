@@ -1,11 +1,15 @@
 Package: TreEvo
 Type: Package
 Title: Using ABC to Understand Trait Evolution
-Version: 0.10.0
-Date: 2018-10-23
-Authors@R: c(person("Brian", "O'Meara", role=c("aut"), email="omeara.brian@gmail.com"),
-    person("Barb", "Banbury", role=c("aut")), 
-    person("David","Bapst", role=c("aut", "cre"), email="dwbapst@gmail.com"))
+Version: 0.20.3
+Date: 2019-05-10
+Authors@R: c(
+	person("Brian", "O'Meara", role=c("aut"), 
+		email="omeara.brian@gmail.com"),
+	person("David","Bapst", role=c("aut", "cre"), 
+		email="dwbapst@gmail.com"),
+    person("Barb", "Banbury", role=c("aut"))
+	)
 Maintainer: David Bapst <dwbapst@gmail.com>
 Depends:
     R (>= 2.13.0),
@@ -25,7 +29,7 @@ Imports:
     phylolm,
     phytools,
     pls,
-    rpgm,
+    RcppZiggurat,
     stats
 Suggests:
     covr,
@@ -41,9 +45,10 @@ BugReports: https://github.com/bomeara/TreEvo/issues
 LazyData: yes
 Description: Various functions for estimating parameters of trait evolution in comparative analyses using Approximate Bayesian Computation.
 License: GPL
+Encoding: UTF-8
 URL: https://github.com/bomeara/treevo
 Repository: CRAN
 Packaged: 2012-07-02 16:00:00; BCO
 Date/Publication: 2012-07-02 16:00:00
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1
 VignetteBuilder: knitr

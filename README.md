@@ -7,7 +7,7 @@ Currently, TreEvo is adapted only for univariate, continuous traits.
 
 This work was initially written by Barb Banbury and Brian O'Meara, and since July 2017, has been largely editted and maintained by David W. Bapst. The software is open-source licensed under the GNU General Protection License (most recent version).
 
-CRAN submission is hopefully coming soon. The latest pre-release version of TreEvo can be found at github:
+CRAN submission is coming soon. The latest pre-release version of TreEvo can be found at github:
 
 	https://github.com/bomeara/treevo
 	
@@ -22,4 +22,6 @@ The current build status is indicated here:
 
 You can see a version of help created with  at http://bomeara.github.io/treevo/reference/index.html
 
-[![DOI](https://zenodo.org/badge/41578359.svg)](https://zenodo.org/badge/latestdoi/41578359)
+A poster about this work was presented at Geological Society of America 2018 and is available here:
+	https://github.com/bomeara/treevo_paper/raw/master/gsa%20poster%20Nov%202018/poster_TreEvo_11-02-18_final.pdf
+
