@@ -122,8 +122,8 @@ If neither package is installed, this function will fail if \code{multicore = TR
 
 \item{coreLimit}{Maximum number of cores to be used.}
 
-\item{multicoreSuppress}{Argument to suppress
-multicore code and use a plain vanilla \code{fore()} loop instead
+\item{multicoreSuppress}{This argument suppresses the
+multicore code and will apply a plain vanilla serial \code{for()} loop instead
 of \code{doPar}. Mainly to be used for developer diagnostic purposes.}
 
 \item{standardDevFactor}{Standard deviation for mutating states each time a new particle is generated in a PRC generation.}

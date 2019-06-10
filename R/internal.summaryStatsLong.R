@@ -167,7 +167,7 @@ summaryStatsLong <- function(phy, traits
 matchTreeWithTrait <- function(tree, traitsOld, whichTrait = 1){
 	# first, convert trait from a matrix or data.frame, if it is such
 		# refine down to a single trait
-	if(inherits(traitsOld, "matrix", "data.frame")) {
+	if(inherits(traitsOld, c("matrix", "data.frame"))) {
 		my.names <- rownames(traitsOld)
 		trait <- as.numeric(traitsOld[, whichTrait])
 		names(trait) <- my.names
