@@ -84,7 +84,11 @@ summaryStatsLong <- function(phy, traits
     }
 	#
 	# clean, vectorize the trait data, reduce to a single trait
-	traits <- matchTreeWithTrait(tree, traitsOld, whichTrait = 1)
+	traits <- matchTreeWithTrait(
+		tree = phy, 
+		traitsOld = traits, 
+		whichTrait = 1
+		)
 	#
     #    if(is.null(names(traits)))
     #        names(traits) <- rownames(traits)
