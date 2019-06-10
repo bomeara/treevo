@@ -83,40 +83,9 @@ summaryStatsLong <- function(phy, traits
         }
     }
 	#
-	
-	
-	matchTreeWithTrait <- function(tree, traitsOld){
-		# first, convert trait from a matrix or data.frame, if it is such
-			# refine down to a single trait
-		if(inherits(traitsOld, "matrix", "data.frame")) {
-			my.names <- rownames(traitsOld)
-			trait <- as.numeric(traitsOld[, 1])
-			names(trait) <- my.names
-			}
-		# okay now it should be a vector
-		# 
-		# is it named
-		if(is.null(names(trait))){
-			stop("input trait data is not labeled with taxon unit names")
-			}
-		# check length
-			# test that tree and trait has same number of tips / same number of taxa
-		if(Ntip(tree) != length(trait)){
-			warning(
-				"Number of trait values input is not equal to the number of tip taxa used"
-				)
-			
-			
-			}
-		
-		
-		return(trait)
-		}
-
-	
-	
-
-
+	# clean, vectorize the trait data, reduce to a single trait
+	traits <- matchTreeWithTrait(tree, traitsOld, whichTrait = 1)
+	#
     #    if(is.null(names(traits)))
     #        names(traits) <- rownames(traits)
     #    traits <- as.data.frame(traits)
@@ -189,3 +158,38 @@ summaryStatsLong <- function(phy, traits
     #while(sink.number()>0) {sink()}
     summarystats
     }
+
+
+matchTreeWithTrait <- function(tree, traitsOld, whichTrait = 1){
+	# first, convert trait from a matrix or data.frame, if it is such
+		# refine down to a single trait
+	if(inherits(traitsOld, "matrix", "data.frame")) {
+		my.names <- rownames(traitsOld)
+		trait <- as.numeric(traitsOld[, whichTrait])
+		names(trait) <- my.names
+		}
+	# okay now it should be a vector
+	# 
+	# is it named
+	if(is.null(names(trait))){
+		stop("input trait data is not labeled with taxon unit names")
+		}
+	# check length
+		# test that tree and trait has same number of tips / same number of taxa
+	if(Ntip(tree) != length(trait)){
+		warning(
+			"Number of trait values input is not equal to the number of tip taxa used"
+			)
+		trait <- trait[tree$tip.label]			
+		if(Ntip(tree) != length(trait)){
+			stop("Cannot find trait data in input for all tips on the input phylogeny")
+			}
+		}
+	#
+	# any missing values?
+	if(any(is.na(trait))){
+		stop("Some taxa seem to have missing or NA trait values in the input")
+		}
+	#
+	return(trait)
+	}
