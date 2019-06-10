@@ -171,6 +171,12 @@ matchTreeWithTrait <- function(tree, traitsOld, whichTrait = 1){
 		my.names <- rownames(traitsOld)
 		trait <- as.numeric(traitsOld[, whichTrait])
 		names(trait) <- my.names
+	}else{
+		trait <- traitsOld
+		}
+	#if it isn't a vector
+	if(!is.vector(trait)){
+		stop("Cannot coerce the input trait data into a vector form (?!)")
 		}
 	# okay now it should be a vector
 	# 
