@@ -133,8 +133,8 @@
 #'(\emph{not} the default), the function will be very
 #' noisy about characteristics of the PRC algorithm as it runs.
 
-#' @param multicoreSuppress Argument to suppress
-#' multicore code and use a plain vanilla \code{fore()} loop instead
+#' @param multicoreSuppress This argument suppresses the
+#' multicore code and will apply a plain vanilla serial \code{for()} loop instead
 #' of \code{doPar}. Mainly to be used for developer diagnostic purposes.
 
 # param niter.goal Adjust number of starting points for package \code{geiger}
@@ -373,7 +373,7 @@ doRun_prc <- function(
     #
     #
     functionStartTime <- proc.time()[[3]]
-    #
+    #	
     if (!ape::is.binary.phylo(phy)) {
         warning("Tree is not fully dichotomous, this may cause issues!")
         }
@@ -528,11 +528,13 @@ doRun_prc <- function(
         }
     #
     # get summary values for observed data
+		# INCREDIBLY!
+		#
+		# this is really the **ONLY** time when doRun ever really looks at input traits
+		#
     originalSummaryValues <- summaryStatsLong(
         phy = phy, 
         traits = traits
-        #niter.brown = 200, niter.lambda = 200, niter.delta = 200,
-		#niter.OU = 200, niter.white = 200
         )
     #
     results <- list()

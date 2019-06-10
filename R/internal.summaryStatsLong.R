@@ -76,21 +76,53 @@ summaryStatsLong <- function(phy, traits
     if (any(phy$edge.length == 0)){
         if(!any(phy$edge[which(phy$edge.length == 0), 2] %in% phy$edge[, 1])){
         #if(any(phy$edge.length == 0)){
-            return("There are zero branch lengths at the tips of your trees--will not run properly")
+            stop(paste0(
+				"There are zero-length terminal branches in your trees\n",
+				"   Summary statistics cannot be calculated on such trees, please rescale edges."
+				))
         }
     }
-    if(class(traits) == "matrix" | class(traits) == "data.frame") {
-        my.names <- rownames(traits)
-        traits <- as.numeric(traits[, 1])
-        names(traits) <- my.names
-    }
+	#
+	
+	
+	matchTreeWithTrait <- function(tree, traitsOld){
+		# first, convert trait from a matrix or data.frame, if it is such
+			# refine down to a single trait
+		if(inherits(traitsOld, "matrix", "data.frame")) {
+			my.names <- rownames(traitsOld)
+			trait <- as.numeric(traitsOld[, 1])
+			names(trait) <- my.names
+			}
+		# okay now it should be a vector
+		# 
+		# is it named
+		if(is.null(names(trait))){
+			stop("input trait data is not labeled with taxon unit names")
+			}
+		# check length
+			# test that tree and trait has same number of tips / same number of taxa
+		if(Ntip(tree) != length(trait)){
+			warning(
+				"Number of trait values input is not equal to the number of tip taxa used"
+				)
+			
+			
+			}
+		
+		
+		return(trait)
+		}
+
+	
+	
+
 
     #    if(is.null(names(traits)))
     #        names(traits) <- rownames(traits)
     #    traits <- as.data.frame(traits)
-
+	#
     #it actually runs faster without checking for cores. And we parallelize elsewhere
-    
+	#
     brown <- getBM(phy = phy, dat = traits)    #, niterN = niter.brown
     brown.lnl <- brown$lnl
     brown.beta  <- brown$beta
@@ -117,37 +149,41 @@ summaryStatsLong <- function(phy, traits
     white <- getWhite(phy = phy, dat = traits)    #, niterN = niter.white
     white.lnl <- white$lnl
     white.aic  <- white$aic
-
+	#
     raw.mean <- as.numeric(mean(traits))
     raw.max <- as.numeric(max(traits))
     raw.min <- as.numeric(min(traits))
     raw.var <- as.numeric(var(traits))
     raw.median <- as.numeric(median(traits))    #message("summaryStatsLong")
-
+	#
     pic <- makeQuiet(as.vector(pic.ortho(as.matrix(traits), phy)))  #independent contrasts
-
-
+	#
     #aceResults <- makeQuiet(ace(traits, phy))
     #anc.states <- as.vector(aceResults$ace) #ancestral states
     #if(do.CI) {
     #    anc.CIrange <- as.vector(aceResults$CI95[, 2]-aceResults$CI95[, 1]) #range between upper and lower 95% CI
     #    summarystats <- c(summarystats, anc.CIrange)
     #}
-
-    
+	#
+    #
     #fastAnc is much faster than ape's ace for our purposes
     ancResults <- phytools::fastAnc(tree = phy, x = traits, CI = TRUE)
     anc.states <- ancResults$ace
     anc.CIrange <- ancResults$CI
-    
-
+    #
+	#
     #combined summary stats
-    summarystats <- c(brown.lnl, brown.beta, brown.aic, lambda.lnl, lambda.beta, lambda.lambda, lambda.aic, 
-        delta.lnl, delta.beta, delta.delta, delta.aic, ou.lnl, ou.beta, ou.alpha, ou.aic, white.lnl, white.aic, 
-        raw.mean, raw.max, raw.min, raw.var, raw.median, traits[[1]], pic, anc.states, anc.CIrange)
-
-
-
+    summarystats <- c(
+		brown.lnl, brown.beta, brown.aic, 
+		lambda.lnl, lambda.beta, lambda.lambda, lambda.aic, 
+        delta.lnl, delta.beta, delta.delta, delta.aic, 
+		ou.lnl, ou.beta, ou.alpha, ou.aic, 
+		white.lnl, white.aic, 
+        raw.mean, raw.max, raw.min, raw.var, raw.median, 
+		traits[[1]], pic, anc.states, anc.CIrange
+		)
+	#
+	#
     summarystats[which(is.finite(summarystats) == FALSE)] <- NA
     #
     #while(sink.number()>0) {sink()}

@@ -6,6 +6,8 @@ addons:
       - libgsl-dev
       - libmagick++-dev
 
+# replaced libgsl2 with libgslcblas0
+
 language: r
 sudo: required
 # Be strict when checking our package
