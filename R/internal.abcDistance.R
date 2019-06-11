@@ -65,38 +65,66 @@
 #
 
 # # respective lines from doRun_prc:
-#      pls.model.list <- apply(trueFreeValuesMatrix, 2, returnPLSModel, summaryValuesMatrix = summaryValuesMatrix, validation = validation, 
+#      pls.model.list <- apply(trueFreeValuesMatrix, 2, returnPLSModel, 
+#		 summaryValuesMatrix = summaryValuesMatrix, validation = validation, 
 #        scale = scale, variance.cutoff = variance.cutoff)
-#      originalSummaryValues <- summaryStatsLong(phy, traits, niter.brown = 200, niter.lambda = 200, niter.delta = 200, niter.OU = 200, niter.white = 200)
+#      originalSummaryValues <- summaryStatsLong(phy, traits, 
+#        niter.brown = 200, niter.lambda = 200, niter.delta = 200, niter.OU = 200, niter.white = 200)
 #      distanceVector <- abcDistance(summaryValuesMatrix, originalSummaryValues, pls.model.list)
 
 #  @name abcDistance
 #  @rdname abcDistance
 #  @export
 abcDistance <- function(summaryValuesMatrix, originalSummaryValues, pls.model.list) {
-  abcDistancesRaw <- sapply(1:length(pls.model.list), 
-    SingleParameterPLSDistanceSquaredFixedPLS, 
-        pls.model.list = pls.model.list, summaryValuesMatrix = summaryValuesMatrix, 
-        originalSummaryValues = originalSummaryValues, scale = scale
+	abcDistancesRaw <- sapply(1:length(pls.model.list), 
+		SingleParameterPLSDistanceSquaredFixedPLS, 
+		# arguments for pls
+		pls.model.list = pls.model.list, 
+		summaryValuesMatrix = summaryValuesMatrix, 
+		originalSummaryValues = originalSummaryValues, 
+		scale = scale
         )
-  if (class(abcDistancesRaw) != "matrix") { #it must be a vector, but apply likes matrices
-      abcDistancesRaw <- matrix(abcDistancesRaw, nrow = 1)
-  }
-  abcDistancesRawTotal <- apply(abcDistancesRaw, 1, sum)
-  abcDistances <- sqrt(abcDistancesRawTotal) #Euclid rules.
-  return(abcDistances)
-}
+	if (class(abcDistancesRaw) != "matrix") { #it must be a vector, but apply likes matrices
+		abcDistancesRaw <- matrix(abcDistancesRaw, nrow = 1)
+	}
+	abcDistancesRawTotal <- apply(abcDistancesRaw, 1, sum)
+	abcDistances <- sqrt(abcDistancesRawTotal) #Euclid rules.
+	return(abcDistances)
+	}
 
-SingleParameterPLSDistanceSquaredFixedPLS <- function(index, pls.model.list, summaryValuesMatrix, originalSummaryValues, scale = TRUE) {
-  pls.model <- pls.model.list[[index]]
-  summaryValues.transformed <- PLSTransform(summaryValuesMatrix, pls.model)
-  originalSummaryValues.transformed <- PLSTransform(originalSummaryValues, pls.model)
-  distanceByRow <- function(x, originalSummaryValues.transformed) {
-    return(dist(matrix(c(x, originalSummaryValues.transformed), byrow = TRUE, nrow = 2))[1])
-  }
-  if (class(summaryValues.transformed) != "matrix") {
-      summaryValues.transformed <- matrix(summaryValues.transformed, nrow = 1)
-  }
-  raw.distances <- apply(summaryValues.transformed, 1, distanceByRow, originalSummaryValues.transformed = originalSummaryValues.transformed)
-  return(raw.distances^2)
-}
+SingleParameterPLSDistanceSquaredFixedPLS <- function(
+		index, 
+		pls.model.list, 
+		summaryValuesMatrix, 
+		originalSummaryValues, 
+		scale = TRUE
+		) {
+	#######################
+	pls.model <- pls.model.list[[index]]
+	summaryValues.transformed <- PLSTransform(summaryValuesMatrix, pls.model)
+	originalSummaryValues.transformed <- PLSTransform(originalSummaryValues, pls.model)
+	#
+	if (class(summaryValues.transformed) != "matrix") {
+		summaryValues.transformed <- matrix(summaryValues.transformed, nrow = 1)
+		}
+	raw.distances <- apply(
+		summaryValues.transformed, 1, 
+		distanceByRow, 
+		originalSummaryValues.transformed = originalSummaryValues.transformed
+		)
+	res <- raw.distances^2
+	return(res)
+	}
+
+distanceByRow <- function(x, originalSummaryValues.transformed) {
+	res <- dist(
+		matrix(
+			c(x, originalSummaryValues.transformed),
+			byrow = TRUE, 
+			nrow = 2
+			)
+		)
+	res <- res[1]
+	return(res)
+	}
+

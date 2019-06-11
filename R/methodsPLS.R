@@ -112,7 +112,13 @@ returnPLSModel <- function(trueFreeValuesMatrix, summaryValuesMatrix, validation
   }
   #
   #scaling is important
-  pls.model <- makeQuiet(pls::plsr(trueFreeValuesMatrix~summaryValuesMatrix, validation = validation, scale = scale, ...))
+  pls.model <- makeQuiet(
+	pls::plsr(
+		trueFreeValuesMatrix~summaryValuesMatrix,
+		validation = validation, 
+		scale = scale, ...
+		)
+	)
   explained.variance  <- cumsum(sort(attr(scores(pls.model), "explvar"), decreasing = TRUE))
   ncomp.final <- min(c(as.numeric(which(explained.variance >= variance.cutoff)[1]), 
     length(explained.variance)), na.rm = TRUE) #min is to deal with case of never explaining >95%
