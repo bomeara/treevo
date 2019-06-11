@@ -111,7 +111,8 @@
 #' 
 #' PLSTransform(
 #'           summaryValuesMatrix = summaryValuesMat, 
-#'           pls.model = PLSmodel)
+#'           pls.model = PLSmodel
+#'           )
 #' }
 #' 
 
@@ -135,7 +136,7 @@ returnPLSModel <- function(
 	if (dim(summaryValuesMatrix)[2]>1 & verbose) {
 		warning(paste0(
 			"in practice, doing PLS works best if\n",
-			"you do each free parameter separately, so one parameter does not dominate"
+			" you do each free parameter separately, so one parameter does not dominate"
 			))
 		}
 	if (class(trueFreeValuesMatrix) != "matrix") {

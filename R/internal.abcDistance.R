@@ -101,16 +101,21 @@ SingleParameterPLSDistanceSquaredFixedPLS <- function(
 		) {
 	#######################
 	pls.model <- pls.model.list[[index]]
-	summaryValues.transformed <- PLSTransform(summaryValuesMatrix, pls.model)
-	originalSummaryValues.transformed <- PLSTransform(originalSummaryValues, pls.model)
+	summaryValues.transformed <- PLSTransform(
+		summaryValuesMatrix, pls.model)
+	originalSummaryValues.transformed <- PLSTransform(
+		originalSummaryValues, pls.model)
 	#
 	if (class(summaryValues.transformed) != "matrix") {
-		summaryValues.transformed <- matrix(summaryValues.transformed, nrow = 1)
+		summaryValues.transformed <- matrix(
+			summaryValues.transformed, nrow = 1
+			)
 		}
 	raw.distances <- apply(
 		summaryValues.transformed, 1, 
 		distanceByRow, 
-		originalSummaryValues.transformed = originalSummaryValues.transformed
+		originalSummaryValues.transformed = 
+			originalSummaryValues.transformed
 		)
 	res <- raw.distances^2
 	return(res)
@@ -127,8 +132,8 @@ distanceByRow <- function(x, originalSummaryValues.transformed) {
 	res <- res[1]
 	return(res)
 	}
-
-# related to PLSrejection
+	
+	
 SingleParameterPLSDistanceSquared <- function(
 		index, 
 		summaryValuesMatrix, 
@@ -139,6 +144,8 @@ SingleParameterPLSDistanceSquared <- function(
 		variance.cutoff = 95
 		){
 	####################################
+	# related to PLSrejection
+	#
 	trueFreeValuesMatrix <- trueFreeValuesMatrix[, index]
 	pls.model <- returnPLSModel(
 		trueFreeValuesMatrix, 
@@ -147,8 +154,12 @@ SingleParameterPLSDistanceSquared <- function(
 		scale = scale, 
 		variance.cutoff = variance.cutoff
 		)
-	summaryValues.transformed <- PLSTransform(summaryValuesMatrix, pls.model)
-	originalSummaryValues.transformed <- PLSTransform(originalSummaryValues, pls.model)
+	summaryValues.transformed <- PLSTransform(
+		summaryValuesMatrix, pls.model
+		)
+	originalSummaryValues.transformed <- PLSTransform(
+		originalSummaryValues, pls.model
+		)
 	#
 	#distanceByRow <- function(x, originalSummaryValues.transformed) {
 	#  return(dist(matrix(c(x, originalSummaryValues.transformed),
@@ -158,7 +169,8 @@ SingleParameterPLSDistanceSquared <- function(
 	raw.distances <- apply(
 		summaryValues.transformed, 1, 
 		distanceByRow,
-		originalSummaryValues.transformed = originalSummaryValues.transformed
+		originalSummaryValues.transformed = 
+			originalSummaryValues.transformed
 		)
 	return(raw.distances^2)
 	}

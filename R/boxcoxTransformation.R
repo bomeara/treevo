@@ -31,73 +31,102 @@
 #' # example simulation
 #' 
 #' simDataParallel <- parallelSimulateWithPriors(
-#'   nrepSim = 5, multicore = FALSE, coreLimit = 1, 
+#'   nrepSim = 5, 
+#'   multicore = FALSE, 
+#'   coreLimit = 1, 
 #'   phy = simPhy, 
 #'   intrinsicFn = brownianIntrinsic, 
 #'   extrinsicFn = nullExtrinsic, 
 #'   startingPriorsFns = "normal", 
-#'   startingPriorsValues = list(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
+#'   startingPriorsValues = list(c(
+#'      mean(simChar[, 1]), sd(simChar[, 1]))), 
 #'   intrinsicPriorsFns = c("exponential"), 
 #'   intrinsicPriorsValues = list(10), 
 #'   extrinsicPriorsFns = c("fixed"), 
 #'   extrinsicPriorsValues = list(0), 
 #'   generation.time = 100000, 
-#'   checkpointFile = NULL, checkpointFreq = 24, 
+#'   checkpointFile = NULL, 
+#'   checkpointFreq = 24, 
 #'   verbose = FALSE, 
 #'   freevector = NULL, taxonDF = NULL)
 #' 
 #' nParFree <- sum(attr(simDataParallel, "freevector"))
 #' 
-#' #separate the simulation results: 'true' generating parameter values from the summary values
+#' # separate the simulation results: 
+#'   # 'true' generating parameter values from the summary values
 #' summaryValuesMat <- simDataParallel[, -1:-nParFree]
 #' 
-#' boxTranMat <- boxcoxTransformationMatrix(summaryValuesMatrix = summaryValuesMat)
+#' boxTranMat <- boxcoxTransformationMatrix(
+#'   summaryValuesMatrix = summaryValuesMat
+#'   )
 #' boxTranMat
 #' 
-#' boxcoxTransformation(summaryValuesVector = summaryValuesMat[, 1], 
-#'  boxcoxAddition = boxTranMat$boxcoxAddition, boxcoxLambda = boxTranMat$boxcoxLambda)
+#' boxcoxTransformation(
+#'   summaryValuesVector = summaryValuesMat[, 1], 
+#'   boxcoxAddition = boxTranMat$boxcoxAddition, 
+#'   boxcoxLambda = boxTranMat$boxcoxLambda
+#'   )
 #' }
 
 
 #' @name boxcoxTransformation
 #' @rdname boxcoxTransformation
 #' @export
-boxcoxTransformation <- function(summaryValuesVector, boxcoxAddition, boxcoxLambda) {
-    #yes, a row of summary values
-    for (summaryValueIndex in 1:length(summaryValuesVector)) {
-        summaryValuesVector[summaryValueIndex] <- (summaryValuesVector[summaryValueIndex] +
-            boxcoxAddition[summaryValueIndex])^boxcoxLambda[summaryValueIndex]
-    }
+boxcoxTransformation <- function(
+		summaryValuesVector, 
+		boxcoxAddition, 
+		boxcoxLambda
+		) {
+	###################################
+	#yes, a row of summary values
+    for (i in 1:length(summaryValuesVector)) {
+		addValue <- summaryValuesVector[i] + boxcoxAddition[i]
+        summaryValuesVector[i] <- addValue^boxcoxLambda[i]
+		}
     return(summaryValuesVector)
-}
+	}
 
 #' @rdname boxcoxTransformation
 #' @export
 boxcoxTransformationMatrix <- function (summaryValuesMatrix) {
-  #library("car", quietly = T)
-  boxcoxLambda <- rep(NA, dim(summaryValuesMatrix)[2])
-  boxcoxAddition <- rep(NA, dim(summaryValuesMatrix)[2])
-  for (summaryValueIndex in 1:dim(summaryValuesMatrix)[2]) {
-    boxcoxAddition[summaryValueIndex] <- 0
-    lowValue <- min(summaryValuesMatrix[, summaryValueIndex]) - 4 * sd(summaryValuesMatrix[, summaryValueIndex])
-    if (lowValue  <=  0) {
-      boxcoxAddition[summaryValueIndex] <- 4 * abs(lowValue)
-    }
-    summaryVM <- summaryValuesMatrix[, summaryValueIndex] + boxcoxAddition[summaryValueIndex]
-    boxcoxLambda[summaryValueIndex] <- 1
-    if (sd(summaryValuesMatrix[, summaryValueIndex]) > 0) {
-        # this alternative is thanks to https://stackoverflow.com/questions/33999512/how-to-use-the-box-cox-power-transformation-in-r/34002020
-      #newLambda <- makeQuiet(as.numeric(try(car::powerTransform(summaryVM, method = "Nelder-Mead")$lambda)))
-      bc <- MASS::boxcox(variable ~ 1, data = data.frame(variable = summaryVM), 
-         lambda = seq(-20, 20, 1/10000), plotit = FALSE)
-      newLambda <- bc$x[which(max(bc$y) == bc$y)[1]]
-      if (!is.na(newLambda)) {
-        boxcoxLambda[summaryValueIndex] <- newLambda
-      }
-    }
-    summaryValuesMatrix[, summaryValueIndex] <- summaryVM^boxcoxLambda[summaryValueIndex]
-  }
-  res <- list(boxcoxAddition = boxcoxAddition, boxcoxLambda = boxcoxLambda, 
-       boxcoxSummaryValuesMatrix = summaryValuesMatrix)
-  return(res)
-}
+	#
+	#library("car", quietly = T)
+	#
+	boxcoxLambda <- rep(NA, dim(summaryValuesMatrix)[2])
+	boxcoxAddition <- rep(NA, dim(summaryValuesMatrix)[2])
+	for (i in 1:dim(summaryValuesMatrix)[2]) {
+		boxcoxAddition[i] <- 0
+		lowValue <- min(
+			summaryValuesMatrix[, i]) - 4 * sd(summaryValuesMatrix[, i]
+			)
+		if (lowValue  <=  0) {
+			boxcoxAddition[i] <- 4 * abs(lowValue)
+			}
+		summaryVM <- summaryValuesMatrix[, i] + boxcoxAddition[i]
+		boxcoxLambda[i] <- 1
+		if (sd(summaryValuesMatrix[, i]) > 0) {
+			# this alternative is thanks to:
+			# https://stackoverflow.com/questions/33999512/how-to-use-the-box-cox-power-transformation-in-r/34002020
+			# newLambda <- makeQuiet(as.numeric(try(car::powerTransform(
+				# summaryVM, method = "Nelder-Mead")$lambda
+				# )))
+			#
+			bc <- MASS::boxcox(variable ~ 1, 
+				data = data.frame(variable = summaryVM), 
+				lambda = seq(-20, 20, 1/10000), 
+				plotit = FALSE)
+			newLambda <- bc$x[which(max(bc$y) == bc$y)[1]]
+			if (!is.na(newLambda)) {
+				boxcoxLambda[i] <- newLambda
+				}
+			}
+		summaryValuesMatrix[, i] <- summaryVM^boxcoxLambda[i]
+		}
+	res <- list(
+		boxcoxAddition = boxcoxAddition, 
+		boxcoxLambda = boxcoxLambda, 
+		boxcoxSummaryValuesMatrix = summaryValuesMatrix
+		)
+	return(res)
+	}
+
