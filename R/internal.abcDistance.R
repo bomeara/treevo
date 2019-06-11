@@ -128,3 +128,37 @@ distanceByRow <- function(x, originalSummaryValues.transformed) {
 	return(res)
 	}
 
+# related to PLSrejection
+SingleParameterPLSDistanceSquared <- function(
+		index, 
+		summaryValuesMatrix, 
+		trueFreeValuesMatrix, 
+		originalSummaryValues, 
+		validation = "CV", 
+		scale = TRUE, 
+		variance.cutoff = 95
+		){
+	####################################
+	trueFreeValuesMatrix <- trueFreeValuesMatrix[, index]
+	pls.model <- returnPLSModel(
+		trueFreeValuesMatrix, 
+		summaryValuesMatrix,
+		validation = validation, 
+		scale = scale, 
+		variance.cutoff = variance.cutoff
+		)
+	summaryValues.transformed <- PLSTransform(summaryValuesMatrix, pls.model)
+	originalSummaryValues.transformed <- PLSTransform(originalSummaryValues, pls.model)
+	#
+	#distanceByRow <- function(x, originalSummaryValues.transformed) {
+	#  return(dist(matrix(c(x, originalSummaryValues.transformed),
+	#		byrow = TRUE, nrow = 2))[1])
+	# }
+	#
+	raw.distances <- apply(
+		summaryValues.transformed, 1, 
+		distanceByRow,
+		originalSummaryValues.transformed = originalSummaryValues.transformed
+		)
+	return(raw.distances^2)
+	}
