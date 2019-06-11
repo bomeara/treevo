@@ -331,11 +331,13 @@ doRun_prc <- function(
 	extrinsicPriorsValues, extrinsicPriorsFns, 
     #
     # OLD COMMENTING (before DWB):    
-    #the doRun_prc function takes input from the user and then automatically guesses optimal parameters, though user overriding is also possible.
-    #the guesses are used to do simulations near the expected region. If omitted, they are set to the midpoint of the input parameter matrices
+    #the doRun_prc function takes input from the user and then 
+		# automatically guesses optimal parameters, though user overriding is also possible.
+    #the guesses are used to do simulations near the expected region.
+		# If omitted, they are set to the midpoint of the input parameter matrices
     #
     # DWB :so it seems like the above guess parameters are for the 'override' of this feature
-    # So... I just got rid of them, its too confusing..
+		# So... I just got rid of them, its too confusing..
     #
     #startingValuesGuess = c(), intrinsicValuesGuess = c(), extrinsicValuesGuess = c(), 
     #
@@ -353,8 +355,8 @@ doRun_prc <- function(
     multicoreSuppress = FALSE, 
     #
     standardDevFactor = 0.20, 
-    epsilonProportion = 0.7, 
-    epsilonMultiplier = 0.7, 
+    epsilonProportion = 0.70, 
+    epsilonMultiplier = 0.70, 
     #
     validation = "CV", 
     scale = TRUE, 
