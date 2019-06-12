@@ -978,7 +978,11 @@ doRun_prc <- function(
         #######################################
         if(nrow(particleDataFrame)>2){
             prcResults$postSummary  <- summarizePosterior(
-				particleDataFrame, verboseMultimodal = FALSE)
+				particleDataFrame, 
+				verboseMultimodal = FALSE,
+				# avoid fatal errors due to flat posteriors...
+				stopIfFlat = FALSE
+				)
 			prcResults$parMeansList  <- getSummaryMeans(
 				doRunOutput = prcResults)
         }else{

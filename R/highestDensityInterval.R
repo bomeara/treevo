@@ -35,6 +35,14 @@
 #' @param ... Additional arguments passed to \code{\link{density}}. 
 #' A user may want to mess with this to adjust bandwidth, et cetera.
 
+#' @param stopIfFlat If \code{TRUE} (the default), the function will terminate
+#' and return an error if the distribution appears to be flat, with a
+#' high number of tied values in the posterior. 
+#' If \code{FALSE}, the function will instead attempt to move forward,
+#' while returning a warning instead. The latter option is
+#' mainly implemented so internal calls to \code{highestDensityInterval}
+#' do not block otherwise long-running analyses.
+
 #' @param verboseMultimodal If \code{TRUE}, the function will print a message
 #' indicating when the inferred highest density interval is discontinuous, and
 #' thus likely reflects that the supplied data is multimodal.
@@ -112,17 +120,19 @@
 #' # its shape to exceeding detail. alpha = 0.8 may be more reasonable.
 #' summarizePosterior(results[[1]]$particleDataFrame, alpha = 0.8)
 #' 
-#' 
-
-
-
-
 
 #' @name highestDensityInterval
 #' @rdname highestDensityInterval
 #' @export
-highestDensityInterval <- function(dataVector, alpha,
-        coda = FALSE, verboseMultimodal = TRUE,...){
+highestDensityInterval <- function(
+		dataVector, 
+		alpha,
+        coda = FALSE, 
+		verboseMultimodal = TRUE,
+		stopIfFlat = TRUE,
+		...
+		){
+	#################
     #
     # test that its a vector
     dataVector <- as.numeric(dataVector)
@@ -149,7 +159,16 @@ highestDensityInterval <- function(dataVector, alpha,
         maxTies <- max(table(densityScaled))
         # stop if more than half the dataset is tied
         if(maxTies>(length(dataVector)/2)){
-            stop("Values of distribution are more than half tied with each other, may be flat")}
+			if(stopIfFlat){
+				stop(
+					"Values of distribution are more than half tied with each other, may be flat"
+					)
+			}else{
+				warning(
+					"Values of distribution are more than half tied with each other, may be flat"
+					)
+				}
+            }
         #
         inHPD <- cumsum(-sort(-densityScaled)) <= alpha
         # now reorder

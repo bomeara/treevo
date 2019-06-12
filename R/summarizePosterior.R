@@ -58,6 +58,7 @@ summarizePosterior <- function(particleDataFrame,
         alpha = 0.8, 
         coda = FALSE, 
         verboseMultimodal = TRUE, 
+		stopIfFlat = TRUE,
         ...){
     ########################################################
     #    

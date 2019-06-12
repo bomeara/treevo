@@ -126,7 +126,10 @@
 plotPrior <- function(
     priorFn = match.arg(
         arg = priorFn, 
-        choices = c("fixed", "uniform", "normal", "lognormal", "gamma", "exponential"), 
+        choices = c(
+			"fixed", "uniform", "normal", 
+			"lognormal", "gamma", "exponential"
+			), 
         several.ok = FALSE
         ), 
     priorVariables, 
@@ -178,8 +181,16 @@ plotPrior <- function(
                 mean = priorVariables[1]
                 stdev = priorVariables[2]
                 x <- rnorm(1000, mean, stdev)
-                poly <- curve(dnorm(x, mean, stdev), from = min(x), to = max(x), xlab = "", 
-                    ylab = paste("Density (parameters: mean = ", mean, "; stdev  = ", stdev, ")", sep = ""))
+                poly <- curve(
+					dnorm(x, mean, stdev), 
+					from = min(x), 
+					to = max(x), 
+					xlab = "", 
+                    ylab = paste(
+						"Density (parameters: mean = ", mean, 
+						"; stdev  = ", stdev, ")", sep = ""
+						)
+					)
                 poly$x <- c(min(poly$x), poly$x, max(poly$x))
                 poly$y <- c(min(poly$y), poly$y, min(poly$y))
                 polygon(poly, col = rgb(0, 0, 0, 0.3))  #to include 95%?
@@ -201,8 +212,16 @@ plotPrior <- function(
                     mean = priorVariables[1]
                     stdev = priorVariables[2]
                     x <- rlnorm(1000, mean, stdev)
-                    poly <- curve(dlnorm(x, mean, stdev), from = 0, to = qlnorm(0.99, mean, stdev), 
-                        xlab = "", ylab = paste("Density (parameters: mean = ", mean, "; stdev  = ", stdev, ")", sep = ""))
+                    poly <- curve(
+						dlnorm(x, mean, stdev), 
+						from = 0, 
+						to = qlnorm(0.99, mean, stdev), 
+                        xlab = "", 
+						ylab = paste(
+							"Density (parameters: mean = ", mean, 
+							"; stdev  = ", stdev, ")", sep = ""
+							)
+						)
                     poly$x <- c(poly$x, max(poly$x))
                     poly$y <- c(poly$y, min(poly$y))
                     polygon(poly, col = rgb(0, 0, 0, 0.3))  #to include 95%?
@@ -223,10 +242,17 @@ plotPrior <- function(
                         shape = priorVariables[1]
                         scale = priorVariables[2]
                         x <- rgamma(1000, shape, scale)
-                        poly <- curve(dgamma(x, shape, scale), 
-                            from = 0, to = qgamma(0.99, shape, scale), 
-                            xlab = "", ylab = paste("Density (parameters: shape = ", 
-                            shape, "; scale  = ", scale, ")", sep = ""))
+                        poly <- curve(
+							dgamma(x, shape, scale), 
+                            from = 0, 
+							to = qgamma(0.99, shape, scale), 
+                            xlab = "", 
+							ylab = paste(
+								"Density (parameters: shape = ", 
+								shape, "; scale  = ", scale, ")", 
+								sep = ""
+								)
+							)
                         poly$x <- c(0, poly$x, max(poly$x), 0)
                         poly$y <- c(0, poly$y, min(poly$y), 0)
                         #title(priorFn)
@@ -248,7 +274,10 @@ plotPrior <- function(
                             x <- rexp(1000, rate)
                             poly <- curve(dexp(x, rate), 
                                 from = 0, to = qexp(0.99, rate), xlab = "", 
-                                ylab = paste("Density (parameters: rate = ", rate, ")", sep = ""))
+                                ylab = paste(
+									"Density (parameters: rate = ",
+									rate, ")", sep = "")
+									)
                             poly$x <- c(poly$x, 0)
                             poly$y <- c(poly$y, min(poly$y))
                             polygon(poly, col = rgb(0, 0, 0, 0.3))
@@ -256,7 +285,11 @@ plotPrior <- function(
                                 quant.value[i] <- qexp(quant[i], rate)
                                 if (plotQuants) {
                                     mm[i] <- dexp(quant.value[i], rate)
-                                    segments(quant.value[i], min(poly$y), quant.value[i], mm[i])
+                                    segments(
+										quant.value[i], 
+										min(poly$y), 
+										quant.value[i], mm[i]
+										)
                                     segments(qexp(.5, rate), 
                                         min(poly$y),
                                         qexp(.5, rate),
@@ -311,7 +344,8 @@ plotUnivariatePosteriorVsPrior <- function(posteriorCurve,
         y = c(0, max(c(priorCurve$y, posteriorCurve$y))), 
         col = "gray")
     if(priorMultimodal){
-        message("Prior HPD not plotted as it consists of multiple non-contiguous intervals",
+        message(
+			"Prior HPD not plotted as it consists of multiple non-contiguous intervals",
             "This may suggest a possibly multimodal distribution")
     }else{
         lines(
@@ -326,7 +360,11 @@ plotUnivariatePosteriorVsPrior <- function(posteriorCurve,
     #
     # posterior
     polygon(
-        x = c(posteriorCurve$x, max(posteriorCurve$x), posteriorCurve$x[1]), 
+        x = c(
+			posteriorCurve$x, 
+			max(posteriorCurve$x),
+			posteriorCurve$x[1]
+			), 
         y = c(posteriorCurve$y, 0, 0), 
         col = rgb(1, 0, 0, 0.3), border = rgb(1, 0, 0, 0.3))
     lines(
@@ -334,20 +372,27 @@ plotUnivariatePosteriorVsPrior <- function(posteriorCurve,
         y = c(0, max(c(priorCurve$y, posteriorCurve$y))), 
         col = "red")
     if(posteriorMultimodal){
-        message("Posterior HPD not plotted as it consists of multiple non-contiguous intervals",
+        message(
+			"Posterior HPD not plotted as it consists of multiple non-contiguous intervals",
             "This may suggest a possibly multimodal distribution")
     }else{
         lines(
             x = rep(posteriorCurve$HPD[,1], 2), 
             y = c(0, max(c(priorCurve$y, posteriorCurve$y))), 
-            col = "red", lty = "dotted")
+            col = "red", 
+			lty = "dotted"
+			)
         lines(
             x = rep(posteriorCurve$HPD[,2], 2), 
             y = c(0, max(c(priorCurve$y, posteriorCurve$y))), 
             col = "red", lty = "dotted")
         }
     if (!is.null(trueValue)) {
-        lines(x = rep(trueValue, 2), y = c(0, max(c(priorCurve$y, posteriorCurve$y))), col = "blue")
+        lines(
+			x = rep(trueValue, 2), 
+			y = c(0, max(c(priorCurve$y, posteriorCurve$y))), 
+			col = "blue"
+			)
         }    
     }
 
@@ -374,9 +419,13 @@ getUnivariatePriorCurve <- function(priorFn,
         }
     #
     result <- density(samples, from = from, to = to, ...)
-    hpd.result <- highestDensityInterval(samples, 
+    hpd.result <- highestDensityInterval(
+		samples, 
         alpha = alpha,
-        coda = coda, verboseMultimodal=verboseMultimodal, ...)
+        coda = coda, 
+		verboseMultimodal=verboseMultimodal, 
+		...
+		)
     #
     #
     if (priorFn == "uniform") {
