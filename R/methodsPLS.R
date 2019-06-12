@@ -39,7 +39,7 @@
 #' value for the number of segments - either 10, or the number of rows
 #' in \code{summaryValuesMatrix}. Thus, this is a default value of 
 #' \code{min(10,} \code{nrow(summaryValuesMatrix))}, or can be changed
-#' by the user.
+#' by the user. A hard minimum of 3 is required.
 
 # In particular, if the number of observations is less than
 # 10 (such as for the example below), it may be necessary
@@ -150,6 +150,13 @@ returnPLSModel <- function(
 		...
 		) {
 	######################################
+	# check segments
+	if(segments < 3){
+		stop(paste0(
+			"Less than three segments indicated plsr\n",
+			" (possibly indicating insufficient simulations)"
+			))
+		}
 	#note that this assumes that trueFreeValues is for
 		# a single param at a time, which works MUCH better
 	if (dim(summaryValuesMatrix)[2]>1 & verbose) {
@@ -225,7 +232,8 @@ PLSTransform <- function(
 				na.rm = TRUE
 				)
 			)
-	}
+		}
 	#
 	predict(pls.model, summaryValuesMatrix, type = "scores")
 	}
+
