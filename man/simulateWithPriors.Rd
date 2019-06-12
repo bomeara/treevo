@@ -32,32 +32,46 @@ traits evolve within a lineage, based on their own
 of other taxa.}
 
 \item{startingPriorsFns}{Vector containing names of prior distributions to
-use for root states: can be one of \code{"fixed"}, \code{"uniform"}, \code{"normal"},}
+use for root states: can be one of
+\code{"fixed"}, \code{"uniform"}, \code{"normal"}, 
+\code{"lognormal"}, \code{"gamma"}, \code{"exponential"}.}
 
-\item{startingPriorsValues}{A list of the same length as the number of prior distributions specified in
-\code{startingPriorsFns} (for starting values, this should be one prior function specified for each trait
-- thus one for most univariate trait analyses), with each element of the list a vector the same length
-as the appropriate number of parameters for that prior distribution (1 for \code{"fixed"}, 2 for
-\code{"uniform"}, 2 for \code{"normal"}, 2 for \code{"lognormal"}, 2 for \code{"gamma"}, 1
-for \code{"exponential"}).}
+\item{startingPriorsValues}{A list of the same length as
+the number of prior distributions specified in
+\code{startingPriorsFns} (for starting values, this should
+be one prior function specified for each trait
+- thus one for most univariate trait analyses), with each
+element of the list a vector the same length
+as the appropriate number of parameters for that prior distribution
+(1 for \code{"fixed"}, 2 for \code{"uniform"}, 2 for \code{"normal"},
+2 for \code{"lognormal"}, 2 for \code{"gamma"}, 1 for \code{"exponential"}).}
 
 \item{intrinsicPriorsFns}{Vector containing names of prior distributions to
-use for intrinsic function parameters: can be one of \code{"fixed"}, \code{"uniform"}, \code{"normal"},}
+use for intrinsic function parameters: can be one of
+\code{"fixed"}, \code{"uniform"}, \code{"normal"}, 
+\code{"lognormal"}, \code{"gamma"}, \code{"exponential"}.}
 
-\item{intrinsicPriorsValues}{A list of the same length as the number of prior distributions specified
-in \code{intrinsicPriorsFns} (one prior function specified for each parameter in the intrinsic model),
-with each element of the list a vector the same length as the appropriate number of parameters
-for that prior distribution (1 for \code{"fixed"}, 2 for \code{"uniform"}, 2 for \code{"normal"},
+\item{intrinsicPriorsValues}{A list of the same length
+as the number of prior distributions specified
+in \code{intrinsicPriorsFns} (one prior function specified
+for each parameter in the intrinsic model),
+with each element of the list a vector the same length#
+as the appropriate number of parameters for that prior distribution
+(1 for \code{"fixed"}, 2 for \code{"uniform"}, 2 for \code{"normal"},
 2 for \code{"lognormal"}, 2 for \code{"gamma"}, 1 for \code{"exponential"}).}
 
 \item{extrinsicPriorsFns}{Vector containing names of prior distributions to
-use for extrinsic function parameters: can be one of \code{"fixed"}, \code{"uniform"}, \code{"normal"},}
+use for extrinsic function parameters: can be one of
+\code{"fixed"}, \code{"uniform"}, \code{"normal"}, 
+\code{"lognormal"}, \code{"gamma"}, \code{"exponential"}.}
 
-\item{extrinsicPriorsValues}{A list of the same length as the number of prior distributions
-specified in \code{extrinsicPriorsFns} (one prior function specified for each parameter
-in the extrinsic model), with each element of the list a vector the same length as the appropriate
-number of parameters for that prior distribution (1 for \code{"fixed"}, 2 for \code{"uniform"},
-2 for \code{"normal"}, 2 for \code{"lognormal"}, 2 for \code{"gamma"}, 1 for \code{"exponential"}).}
+\item{extrinsicPriorsValues}{A list of the same length as
+the number of prior distributions specified in \code{extrinsicPriorsFns} 
+(one prior function specified for each parameter in the extrinsic model),
+with each element of the list a vector the same length as the appropriate
+number of parameters for that prior distribution
+(1 for \code{"fixed"}, 2 for \code{"uniform"}, 2 for \code{"normal"},
+2 for \code{"lognormal"}, 2 for \code{"gamma"}, 1 for \code{"exponential"}).}
 
 \item{generation.time}{The number of years per generation.
 This sets the coarseness of the simulation; if it's set to 1000, 
@@ -97,13 +111,18 @@ Can be provided a value as an alternative to using arguments \code{generation.ti
 and \code{TreeYears}, which would then be overridden.
 See documentation for \code{\link{doSimulation}} for further details.}
 
-\item{giveUpAttempts}{Value for when to stop the analysis if \code{NA} values are present.}
+\item{giveUpAttempts}{Value for when to stop the
+analysis if \code{NA} values are present.}
 
-\item{verbose}{If \code{TRUE}, gives messages about how the simulation is progessing via \code{message}.}
+\item{verbose}{If \code{TRUE}, gives messages about how
+the simulation is progessing via \code{message}.}
 
-\item{checks}{If \code{TRUE}, checks inputs for consistency. This activity is skipped (\code{checks = FALSE})
-when run in parallel by \code{parallelSimulateWithPriors}, and instead is only checked once. This
-argument also controls whether \code{simulateWithPriors} assigns \code{freevector} as an attribute to the
+\item{checks}{If \code{TRUE}, checks inputs for consistency.
+This activity is skipped (\code{checks = FALSE})
+when run in parallel by \code{parallelSimulateWithPriors},
+and instead is only checked once. This
+argument also controls whether \code{simulateWithPriors}
+assigns \code{freevector} as an attribute to the
 output produced.}
 
 \item{taxonDF}{A data.frame containing data on nodes (both
@@ -111,13 +130,16 @@ tips and internal nodes) output by various internal functions.
 Can be supplied as input to spead up repeated calculations, but by default is
 \code{NULL}, which instead forces a calculation from input \code{phy}.}
 
-\item{freevector}{A logical vector (with length equal to the number of parameters), indicating free (\code{TRUE}) and
+\item{freevector}{A logical vector
+(with length equal to the number of parameters),
+indicating free (\code{TRUE}) and
 fixed (\code{FALSE}) parameters.}
 
 \item{nrepSim}{Number of replicated simulations to run.}
 
-\item{multicore}{Whether to use multicore, default is \code{FALSE}. If \code{TRUE}, one of
-two suggested packages must be installed, either \code{doMC} (for UNIX systems) or
+\item{multicore}{Whether to use multicore, default is \code{FALSE}.
+If \code{TRUE}, one of two suggested packages must be installed,
+either \code{doMC} (for UNIX systems) or
 \code{doParallel} (for Windows), which are used to activate multithreading.
 If neither package is installed, this function will fail if \code{multicore = TRUE}.}
 
@@ -132,27 +154,40 @@ If neither package is installed, this function will fail if \code{multicore = TR
 \item{verboseNested}{Should looped runs of \code{simulateWithPriors} be verbose?}
 }
 \value{
-Function \code{simulateWithPriors} returns a vector of \code{trueFreeValues}, 
-the true generating parameters used in the simulation
-(a set of values as long as the number of freely varying parameters), concatenated with a set of summary statistics for
-the simulation. Function \code{parallelSimulateWithPriors} returns a matrix of such vectors bound
-together, with each row representing a different simulation. By default, 
-both functions also assign a logical vector named \code{freevector}, indicating the total number of
-parameters and which parameters are freely-varying (have \code{TRUE} values), as an attribute of
-the output.
+Function \code{simulateWithPriors} returns a
+vector of \code{trueFreeValues}, the true generating parameters
+used in the simulation (a set of values as long as
+the number of freely varying parameters), concatenated with
+a set of summary statistics for the simulation.
+
+Function \code{parallelSimulateWithPriors} returns a matrix
+of such vectors bound together, with each row representing
+a different simulation. 
+
+By default, both functions also assign a logical vector named
+\code{freevector}, indicating the total number of parameters and
+which parameters are freely-varying (have \code{TRUE} values),
+as an attribute of the output.
 }
 \description{
-The \code{simulateWithPriors} function pulls parameters from prior distributions and conducts a single simulation of
-continuous trait evolution (using the \code{\link{doSimulation}} function), returning useful summary statistics for ABC.
-\code{parallelSimulateWithPriors} is a wrapper function for \code{simulateWithPriors} that allows for multithreading
-and checkpointing. This family of functions is mostly used as internal components, generating simulations
-within ABC analyses using the \code{\link{doRun}} functions. See \emph{Note} below.
+The \code{simulateWithPriors} function pulls parameters from prior
+distributions and conducts a single simulation of continuous trait evolution
+(using the \code{\link{doSimulation}} function),
+returning useful summary statistics for ABC.
+\code{parallelSimulateWithPriors} is a wrapper function for
+\code{simulateWithPriors} that allows for multithreading and
+checkpointing. This family of functions is mostly used as
+internal components, generating simulations within ABC analyses
+using the \code{\link{doRun}} functions. See \emph{Note} below.
 }
 \note{
-The \code{\link{simulateWithPriors}} functions are effectively the engine that powers the  \code{\link{doRun}}
-functions, while the \code{\link{doSimulation}} function is the pistons within the \code{\link{simulateWithPriors}} engine.
-In general, most users will just drive the car - they will just use \code{\link{doRun}}, but some users may
-want to use \code{\link{simulateWithPriors}} or \code{\link{doSimulation}} to do various simulations.
+The \code{\link{simulateWithPriors}} functions are effectively the
+engine that powers the  \code{\link{doRun}} functions, while the
+\code{\link{doSimulation}} function is the pistons within the
+\code{\link{simulateWithPriors}} engine. In general, most users
+will just drive the car - they will just use \code{\link{doRun}},
+but some users may want to use \code{\link{simulateWithPriors}}
+or \code{\link{doSimulation}} to do various simulations.
 }
 \examples{
 \donttest{
@@ -163,39 +198,47 @@ tree$edge.length <- tree$edge.length*20
 
 # example simulation
 
-# NOTE: the example analyses involve too few simulations, with coarse time-units
-    # - all for the sake of examples that reasonably test the functions
+# NOTE: the example analyses involve too few simulations,
+    # as well as overly coarse time-units...
+    # ...all for the sake of examples that reasonably test the functions
     
-simData <- simulateWithPriors(phy = tree, 
+simData <- simulateWithPriors(
+  phy = tree, 
   intrinsicFn = brownianIntrinsic, 
   extrinsicFn = nullExtrinsic, 
   startingPriorsFns = "normal", 
-  startingPriorsValues = list(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
+  startingPriorsValues = list(
+      c(mean(simChar[, 1]), sd(simChar[, 1]))), 
   intrinsicPriorsFns = c("exponential"), 
   intrinsicPriorsValues = list(10), 
   extrinsicPriorsFns = c("fixed"), 
   extrinsicPriorsValues = list(0), 
   generation.time = 100000, 
-     freevector = NULL,     
-     giveUpAttempts = 10, 
-     verbose = TRUE)
+  freevector = NULL,     
+  giveUpAttempts = 10, 
+  verbose = TRUE)
 
 simData
 
 simDataParallel <- parallelSimulateWithPriors(
-  nrepSim = 2, multicore = FALSE, coreLimit = 1, 
+  nrepSim = 2, 
+  multicore = FALSE, 
+  coreLimit = 1, 
   phy = tree, 
   intrinsicFn = brownianIntrinsic, 
   extrinsicFn = nullExtrinsic, 
   startingPriorsFns = "normal", 
-  startingPriorsValues = list(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
+  startingPriorsValues = list(
+     c(mean(simChar[, 1]), sd(simChar[, 1]))), 
   intrinsicPriorsFns = c("exponential"), 
   intrinsicPriorsValues = list(10), 
   extrinsicPriorsFns = c("fixed"), 
   extrinsicPriorsValues = list(0), 
   generation.time = 100000, 
   checkpointFile = NULL, checkpointFreq = 24, 
-  verbose = TRUE, freevector = NULL, taxonDF = NULL)
+  verbose = TRUE, 
+  freevector = NULL, 
+  taxonDF = NULL)
 
 simDataParallel
 

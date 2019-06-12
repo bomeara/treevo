@@ -31,19 +31,25 @@
 #' number of components included in the final PLS model fit. This value is a
 #' percentage and must be between 0 and 100. Default is 95 percent.
 
-#' @param segments Number of segments of data used for crossvalidaton by \code{pls::cvsegments}. The default number of segments as set for normal use of \code{plsr} is 10, which is problematic if a trial analysis uses fewer than 10 simulations. 
+#' @param segments Number of segments of data used for crossvalidaton
+#' by \code{pls::cvsegments}. The number of segments cannot exceed the
+#' number of simulations. The default number of segments as set for normal
+#' use of \code{plsr} is 10, which leads to issues when a trial analysis
+#' uses fewer than 10 simulations. Instead, we will pass an alternative
+#' value for the number of segments - either 10, or the number of rows
+#' in \code{summaryValuesMatrix}. Thus, this is a default value of 
+#' \code{min(10,} \code{nrow(summaryValuesMatrix))}, or can be changed
+#' by the user.
 
-#' \code{min(10,} \code{nrow(summaryValuesMatrix)} \code{- 1)}
-
-#' In particular, if the number of observations is less than
-#' 10 (such as for the example below), it may be necessary
-#' to pass a revised \code{segments} argument, which
-#' \code{plsr} passes to \code{\link{mvrCv}}, as the default
-#' \code{segments} value is 10 (and there cannot be more segments
-#' than observations). 
-#' Note that this should be an atypical
-#' situation outside of examples, as the number of observations
-#' should often be much greater than 10.
+# In particular, if the number of observations is less than
+# 10 (such as for the example below), it may be necessary
+# to pass a revised \code{segments} argument, which
+# \code{plsr} passes to \code{\link{mvrCv}}, as the default
+# \code{segments} value is 10 (and there cannot be more segments
+# than observations). 
+# Note that this should be an atypical
+# situation outside of examples, as the number of observations
+# should often be much greater than 10.
 
 #' @param ... Additional arguments, passed to \code{\link{plsr}}.
 

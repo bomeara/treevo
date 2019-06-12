@@ -36,31 +36,41 @@ data(simRunExample)
 # example simulation
 
 simDataParallel <- parallelSimulateWithPriors(
-  nrepSim = 5, multicore = FALSE, coreLimit = 1, 
+  nrepSim = 5, 
+  multicore = FALSE, 
+  coreLimit = 1, 
   phy = simPhy, 
   intrinsicFn = brownianIntrinsic, 
   extrinsicFn = nullExtrinsic, 
   startingPriorsFns = "normal", 
-  startingPriorsValues = list(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
+  startingPriorsValues = list(c(
+     mean(simChar[, 1]), sd(simChar[, 1]))), 
   intrinsicPriorsFns = c("exponential"), 
   intrinsicPriorsValues = list(10), 
   extrinsicPriorsFns = c("fixed"), 
   extrinsicPriorsValues = list(0), 
   generation.time = 100000, 
-  checkpointFile = NULL, checkpointFreq = 24, 
+  checkpointFile = NULL, 
+  checkpointFreq = 24, 
   verbose = FALSE, 
   freevector = NULL, taxonDF = NULL)
 
 nParFree <- sum(attr(simDataParallel, "freevector"))
 
-#separate the simulation results: 'true' generating parameter values from the summary values
+# separate the simulation results: 
+  # 'true' generating parameter values from the summary values
 summaryValuesMat <- simDataParallel[, -1:-nParFree]
 
-boxTranMat <- boxcoxTransformationMatrix(summaryValuesMatrix = summaryValuesMat)
+boxTranMat <- boxcoxTransformationMatrix(
+  summaryValuesMatrix = summaryValuesMat
+  )
 boxTranMat
 
-boxcoxTransformation(summaryValuesVector = summaryValuesMat[, 1], 
- boxcoxAddition = boxTranMat$boxcoxAddition, boxcoxLambda = boxTranMat$boxcoxLambda)
+boxcoxTransformation(
+  summaryValuesVector = summaryValuesMat[, 1], 
+  boxcoxAddition = boxTranMat$boxcoxAddition, 
+  boxcoxLambda = boxTranMat$boxcoxLambda
+  )
 }
 }
 \author{
