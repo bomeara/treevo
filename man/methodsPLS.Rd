@@ -45,7 +45,7 @@ uses fewer than 10 simulations. Instead, we will pass an alternative
 value for the number of segments - either 10, or the number of rows
 in \code{summaryValuesMatrix}. Thus, this is a default value of 
 \code{min(10,} \code{nrow(summaryValuesMatrix))}, or can be changed
-by the user.}
+by the user. A hard minimum of 3 is required.}
 
 \item{...}{Additional arguments, passed to \code{\link{plsr}}.}
 
