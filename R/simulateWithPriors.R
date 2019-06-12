@@ -1,17 +1,24 @@
 #' Simulate data for initial TreEvo analysis
 #' 
-#' The \code{simulateWithPriors} function pulls parameters from prior distributions and conducts a single simulation of
-#' continuous trait evolution (using the \code{\link{doSimulation}} function), returning useful summary statistics for ABC.
-#' \code{parallelSimulateWithPriors} is a wrapper function for \code{simulateWithPriors} that allows for multithreading
-#' and checkpointing. This family of functions is mostly used as internal components, generating simulations
-#' within ABC analyses using the \code{\link{doRun}} functions. See \emph{Note} below.
+#' The \code{simulateWithPriors} function pulls parameters from prior
+#' distributions and conducts a single simulation of continuous trait evolution
+#' (using the \code{\link{doSimulation}} function),
+#' returning useful summary statistics for ABC.
+#' \code{parallelSimulateWithPriors} is a wrapper function for
+#' \code{simulateWithPriors} that allows for multithreading and
+#' checkpointing. This family of functions is mostly used as
+#' internal components, generating simulations within ABC analyses
+#' using the \code{\link{doRun}} functions. See \emph{Note} below.
 #' 
 
 #' @note
-#' The \code{\link{simulateWithPriors}} functions are effectively the engine that powers the  \code{\link{doRun}}
-#' functions, while the \code{\link{doSimulation}} function is the pistons within the \code{\link{simulateWithPriors}} engine.
-#' In general, most users will just drive the car - they will just use \code{\link{doRun}}, but some users may
-#' want to use \code{\link{simulateWithPriors}} or \code{\link{doSimulation}} to do various simulations.
+#' The \code{\link{simulateWithPriors}} functions are effectively the
+#' engine that powers the  \code{\link{doRun}} functions, while the
+#' \code{\link{doSimulation}} function is the pistons within the
+#' \code{\link{simulateWithPriors}} engine. In general, most users
+#' will just drive the car - they will just use \code{\link{doRun}},
+#' but some users may want to use \code{\link{simulateWithPriors}}
+#' or \code{\link{doSimulation}} to do various simulations.
 
 #' @inheritParams doSimulation
 
@@ -69,8 +76,9 @@
 
 #' @param coreLimit Maximum number of cores to be used.
 
-#' @param multicore Whether to use multicore, default is \code{FALSE}. If \code{TRUE}, one of
-#' two suggested packages must be installed, either \code{doMC} (for UNIX systems) or
+#' @param multicore Whether to use multicore, default is \code{FALSE}.
+#' If \code{TRUE}, one of two suggested packages must be installed,
+#' either \code{doMC} (for UNIX systems) or
 #' \code{doParallel} (for Windows), which are used to activate multithreading.
 #' If neither package is installed, this function will fail if \code{multicore = TRUE}.
 
@@ -326,19 +334,30 @@ simulateWithPriors <- function(
 #' @rdname simulateWithPriors
 #' @export
 parallelSimulateWithPriors <- function(
-    nrepSim, multicore, coreLimit, phy, 
-    intrinsicFn, extrinsicFn, 
-	startingPriorsFns, startingPriorsValues, 
-    intrinsicPriorsFns, intrinsicPriorsValues, 
-	extrinsicPriorsFns, extrinsicPriorsValues, 
+    nrepSim, 
+	multicore, 
+	coreLimit, 
+	phy, 
+    intrinsicFn, 
+	extrinsicFn, 
+	startingPriorsFns, 
+	startingPriorsValues, 
+    intrinsicPriorsFns, 
+	intrinsicPriorsValues, 
+	extrinsicPriorsFns, 
+	extrinsicPriorsValues, 
     generation.time = 1000, 
 	TreeYears = max(branching.times(phy)) * 1e6, 
 	timeStep = NULL, 
 	#timeStep = 1e-04, 
-    checkpointFile = NULL, checkpointFreq = 24, 
-	verbose = TRUE, checkTimeStep = TRUE, 
-    verboseNested = FALSE, freevector = NULL, 
-	taxonDF = NULL, giveUpAttempts = 10
+    checkpointFile = NULL, 
+	checkpointFreq = 24, 
+	verbose = TRUE, 
+	checkTimeStep = TRUE, 
+    verboseNested = FALSE, 
+	freevector = NULL, 
+	taxonDF = NULL, 
+	giveUpAttempts = 10
     #, niter.brown = 25, niter.lambda = 25, 
 	# niter.delta = 25, niter.OU = 25, niter.white = 25
     ) {
@@ -374,26 +393,43 @@ parallelSimulateWithPriors <- function(
         mininterval <- min(taxonDF$endTime - taxonDF$startTime)
         #
         if (floor(mininterval/timeStep)<50 & floor(mininterval/timeStep) >= 3) {
-            message(paste0("You have only ", floor(mininterval/timeStep), " timeSteps on the shortest branch in this dataset but should probably have a lot more if you expect change on this branch. Please consider decreasing timeStep to no more than ", 
-                signif(mininterval/50, 2)))
+            message(paste0(
+				"You have only ", floor(mininterval/timeStep), 
+				" timeSteps on the shortest branch in this dataset\n",
+				"  but should probably have a lot more if you expect change on this branch.\n",
+				"Please consider decreasing timeStep to no more than ", 
+				signif(mininterval/50, 2)))
         }
         if (floor(mininterval/timeStep)<3) {
-            message(paste0("You have only ", floor(mininterval/timeStep), " timeSteps on the shortest branch in this dataset but should probably have a lot more if you expect change on this branch. Please consider decreasing timeStep to no more than ", 
-                signif(mininterval/50, 2), " or at the very least ", signif(mininterval/3, 2)))
-            #    timeStep <- mininterval/3
+            message(paste0(
+				"You have only ", floor(mininterval/timeStep), 
+				" timeSteps on the shortest branch in this dataset\n",
+				"  but should probably have a lot more if you expect change on this branch.\n",
+				"Please consider decreasing timeStep to no more than ", 
+				signif(mininterval/50, 2), " or at the very least ", 
+				signif(mininterval/3, 2)
+				# timeStep <- mininterval/3
+				))
             }
         }
     #    
     # multicore
     # set up multicore
-    cluster <- setupMulticore(multicore, nSim = nrepSim, coreLimit = coreLimit)
+    cluster <- setupMulticore(
+		multicore, 
+		nSim = nrepSim, 
+		coreLimit = coreLimit
+		)
     #
     # verbosity
     nCores <- attr(cluster, "nCores")
     if(verbose){
         message(paste("Using", nCores, "core(s) for simulations \n\n"))
         if (nrepSim %%nCores  !=  0) {
-            warning("The simulation is most efficient if the number of nrepSim is a multiple of the number of nCores")
+            warning(paste0(
+				"The simulation is most efficient if the number of nrepSim\n",
+				" is a multiple of the number of nCores"
+				))
             }
         message("Doing simulations: ")
         }
@@ -427,7 +463,9 @@ parallelSimulateWithPriors <- function(
 			".trueFreeValuesANDSummaryValues.Rsave", sep = "")
         trueFreeValuesANDSummaryValues <- c()
         checkpointFreqAdjusted <- max(nCores*round(checkpointFreq/nCores), 1)
-        numberSimsInCheckpointRuns <- checkpointFreqAdjusted * floor(nrepSim/checkpointFreqAdjusted)
+        numberSimsInCheckpointRuns <- checkpointFreqAdjusted * floor(
+			nrepSim/checkpointFreqAdjusted
+			)
         numberLoops <- floor(numberSimsInCheckpointRuns/checkpointFreqAdjusted)
         numberSimsPerLoop <- numberSimsInCheckpointRuns/numberLoops
         numberSimsAfterLastCheckpoint <- nrepSim - numberSimsInCheckpointRuns
@@ -458,7 +496,10 @@ parallelSimulateWithPriors <- function(
 					checks = FALSE
 					)
 				)
-            save(trueFreeValuesANDSummaryValues, file = checkpointFileName)
+            save(
+				trueFreeValuesANDSummaryValues, 
+				file = checkpointFileName
+				)
             message(paste(
 				"Just finished", 
 				dim(trueFreeValuesANDSummaryValues)[1], "of", 
@@ -483,12 +524,14 @@ parallelSimulateWithPriors <- function(
 				extrinsicFn = extrinsicFn, 
 				verbose = verboseNested, 
 				checks = FALSE
-				))
-    }
+				)
+			)
+		}
     # stop multicore processes
     stopMulticore(cluster)
     #
     attr(trueFreeValuesANDSummaryValues, "freevector") <- freevector
+	#
     return(trueFreeValuesANDSummaryValues)
     }
 

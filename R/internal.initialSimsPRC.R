@@ -109,8 +109,7 @@ initialSimsPRC <- function(
             validation = validation, 
             scale = scale, 
             variance.cutoff = variance.cutoff, 
-            verbose = FALSE,
-			
+            verbose = FALSE
             )
         )
      #)
