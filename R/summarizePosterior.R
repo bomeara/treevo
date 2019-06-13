@@ -86,10 +86,12 @@ summarizePosterior <- function(particleDataFrame,
         }
     #
     res<-apply(
-		subpDF,2,getSummary,
+		subpDF,2,
+		getSummary,
         alpha = alpha, 
 		coda = coda, 
         verboseMultimodal=verboseMultimodal, 
+		stopIfFlat = stopIfFlat,
 		...)
     # name the elements of the list
     names(res) <- colnames(subpDF)
@@ -110,6 +112,7 @@ getSummary <- function(
                 alpha = alpha, 
 				coda = coda, 
                 verboseMultimodal=verboseMultimodal, 
+				stopIfFlat = stopIfFlat,
 				...)
     output<-list(
         mean = mean(param),
