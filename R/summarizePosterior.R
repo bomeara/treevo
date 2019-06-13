@@ -100,9 +100,10 @@ summarizePosterior <- function(particleDataFrame,
                 
 getSummary <- function(
 		param, 
-		alpha = alpha, 
-		coda = coda, 
-        verboseMultimodal=verboseMultimodal, 
+		alpha, 
+		coda, 
+        verboseMultimodal, 
+		stopIfFlat,
 		...
 		){
     ######################################
