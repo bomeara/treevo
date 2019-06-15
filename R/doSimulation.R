@@ -64,10 +64,6 @@
 #' @param extrinsicValues Vector of values corresponding to the parameters of the
 #' extrinsic model.
 
-# @param maxAttempts How many attempts should be tried if a
-# run produces an \code{NA} result? If \code{maxAttempts}
-# is reached without producing a non-\code{NA} result, the simulation is terminated.
-
 #' @param generation.time The number of years per generation.
 #' This sets the coarseness of the simulation; if it's set to 1000, 
 #' for example, the population's trait values change every 1000
@@ -108,6 +104,14 @@
 
 #' @param checkTimeStep If \code{TRUE}, warnings will be issued if \code{TimeStep} is too short.
 
+#' @param returnAll If \code{TRUE}, the output returned is a
+#' \code{data.frame} containing the values at each node from the simulation.
+
+
+# @param maxAttempts How many attempts should be tried if a
+# run produces an \code{NA} result? If \code{maxAttempts}
+# is reached without producing a non-\code{NA} result, the simulation is terminated.
+
 # @param saveHistory If \code{TRUE}, saves the character history throughout the simulation.
 # When \code{saveHistory} is \code{TRUE}, processor time will increase quite a bit.
 
@@ -115,9 +119,6 @@
 # matrix and a vector to an external .Rdata file.
 
 # @param jobName Optional name for the job.
-
-#' @param returnAll If \code{TRUE}, the output returned is a
-#' \code{data.frame} containing the values at each node from the simulation.
 
 # @param verbose If \code{TRUE}, gives messages about
 # how the simulation is progessing via \code{message}.
@@ -130,29 +131,29 @@
 # @param savePlot Saves the character tree using \code{jobName}.
 
 
-
 #' @return If \code{returnAll = FALSE} (the default),
 #' this function returns a data frame of species character (tip)
-#' values in the tree, with column headings \code{taxonid}
-#' (representing the index for the corresponding tip label
-#" for that taxon, as given in \code{phy$tip.label)),
-#' \code{taxonname}, \code{taxontimesincespeciation}
-#' (the time to the most recent divergence event for that lineage),
-#' and \code{statesmatrix} (the simulated trait data).
+#' values in the tree, as a single column named 'states'
+#' with rownames reflecting the taxon names given in 
+#' \code{phy$tip.label}.
 #' If \code{returnAll = TRUE}, the raw \code{data.frame}
 #' from the simulation will instead be returned.
 
-#' @author Brian O'Meara and Barb Banbury
+# OLD RETURN INFO
+# column headings \code{taxonid}
+# (representing the index for the corresponding tip label
+# for that taxon, as given in \code{phy$tip.label)),
+# \code{taxonname}, \code{taxontimesincespeciation}
+# (the time to the most recent divergence event for that lineage),
+# and \code{statesmatrix} (the simulated trait data).
+
 
 #' @author Brian O'Meara and Barb Banbury
-
-# @references O'Meara and Banbury, unpublished
-# @keywords doSimulation
 
 #' @examples
-#
+#' 
 #' \donttest{
-#
+#' 
 #' set.seed(1)
 #' tree <- rcoal(20)
 #' # get realistic edge lengths
@@ -179,7 +180,7 @@
 #'     startingValues = c(10), #root state
 #'     intrinsicValues = c(0.05, 10, 0.01), 
 #'     extrinsicValues = c(0, .1, .25))
-#
+#' 
 #' }
 
 #' @rdname doSimulation
@@ -204,6 +205,10 @@ doSimulation <- function(
         }
     #
     if(is.null(taxonDF)){
+		if(is.null(phy$edge.length)){
+			stop("Input phylogeny lacks necessary edge lengths")
+			}
+		#
         taxonDF <- getTaxonDFWithPossibleExtinction(phy)
         }
     #

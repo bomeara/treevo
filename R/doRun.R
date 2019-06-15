@@ -379,6 +379,10 @@ doRun_prc <- function(
     if (!ape::is.binary.phylo(phy)) {
         warning("Tree is not fully dichotomous, this may cause issues!")
         }
+	#
+	if(is.null(phy$edge.length)){
+		stop("Input phylogeny lacks necessary edge lengths")
+		}
     #    
     if(!is.numeric(maxAttempts)){
         stop("maxAttempts must be numeric")

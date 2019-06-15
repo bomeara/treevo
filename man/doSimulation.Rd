@@ -79,11 +79,9 @@ Can be supplied as input to spead up repeated calculations, but by default is
 \value{
 If \code{returnAll = FALSE} (the default),
 this function returns a data frame of species character (tip)
-values in the tree, with column headings \code{taxonid}
-(representing the index for the corresponding tip label
-\code{taxonname}, \code{taxontimesincespeciation}
-(the time to the most recent divergence event for that lineage),
-and \code{statesmatrix} (the simulated trait data).
+values in the tree, as a single column named 'states'
+with rownames reflecting the taxon names given in 
+\code{phy$tip.label}.
 If \code{returnAll = TRUE}, the raw \code{data.frame}
 from the simulation will instead be returned.
 }
@@ -126,7 +124,9 @@ want to use \code{\link{simulateWithPriors}} or
 \code{\link{doSimulation}} functions to do various simulations.
 }
 \examples{
+
 \donttest{
+
 set.seed(1)
 tree <- rcoal(20)
 # get realistic edge lengths
@@ -153,10 +153,9 @@ char <- doSimulation(
     startingValues = c(10), #root state
     intrinsicValues = c(0.05, 10, 0.01), 
     extrinsicValues = c(0, .1, .25))
+
 }
 }
 \author{
-Brian O'Meara and Barb Banbury
-
 Brian O'Meara and Barb Banbury
 }
