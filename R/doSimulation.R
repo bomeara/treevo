@@ -195,8 +195,12 @@ doSimulation <- function(
 	returnAll = FALSE, 
 	taxonDF = NULL, 
 	checkTimeStep = TRUE
-    #maxAttempts = 100, saveHistory = FALSE, plot = FALSE, savePlot = FALSE, 
-    #reject.NaN = TRUE, saveRealParams = FALSE, jobName = "", verbose = FALSE, 
+	#
+    #maxAttempts = 100, saveHistory = FALSE, 
+	#plot = FALSE, savePlot = FALSE, 
+    #reject.NaN = TRUE, saveRealParams = FALSE, 
+	#jobName = "", verbose = FALSE, 
+	#
 	) {
     #
     #
