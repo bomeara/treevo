@@ -24,11 +24,11 @@
 #' The input parameters for this model are:
 #' \code{boundaryMinIntrinsic} with parameters \code{params = sigma, minimum}
 #' 
-#' \code{autoregressiveIntrinsic} describes a model of intrinsic character evolution. New
-#' character values are generated after one time step via a discrete-time OU
-#' process.
+#' \code{autoregressiveIntrinsic} describes a model of intrinsic character evolution.
+#' New character values are generated after one time step via a discrete-time OU process.
 #' The input parameters for this model are:
-#' \code{autoregressiveIntrinsic} with \code{params = sigma (sigma), attractor (character mean), attraction (alpha)}
+#' \code{autoregressiveIntrinsic} with
+#' \code{params = sigma (sigma), attractor (character mean), attraction (alpha)}
 #' 
 #' \code{minBoundaryAutoregressiveIntrinsic} describes a model of intrinsic character evolution. New
 #' character values are generated after one time step via a discrete-time OU

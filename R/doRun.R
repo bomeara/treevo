@@ -409,16 +409,19 @@ doRun_prc <- function(
     minEdgeRescaledNZ <- min(edgesRescaled[edgesRescaled>0])
     #
     if(minEdgeRescaled == 0){
-        message("The smallest edge length on the input tree is ZERO LENGTH...")
+        message(
+			"The smallest edge length on the input tree is ZERO LENGTH...\n"
+			)
         message(paste0(
-			"Edge with smallest rescaled NON-ZERO length on tree is ",
+			"  Edge with smallest rescaled NON-ZERO length on tree\n",
+			"      is ",
 			signif(minEdgeRescaledNZ, 2), 
 			" as a proportion of tip-to-root distance"
 			))
         message(paste0(
-			"(This is ", signif(minEdgeRescaledNZ*TreeYears, 2),
+			"   (This is ", signif(minEdgeRescaledNZ*TreeYears, 2),
 			" in the same TreeYears units\n",
-			"     as used for the input generation.time ( = ",
+			"      as used for the input generation.time ( = ",
 			generation.time, "))"
 			))
     }else{
@@ -427,16 +430,16 @@ doRun_prc <- function(
 			signif(minEdgeRescaled, 2)
 			))
         message(paste0(
-			"(This is ", signif(minEdgeRescaled*TreeYears, 2), 
+			"   (This is ", signif(minEdgeRescaled*TreeYears, 2), 
 			" in the same TreeYears units\n",
-			"    as used for the input generation.time ( = ",
+			"      as used for the input generation.time ( = ",
 			generation.time, "))"
 			))
         }
     #
     if(max(edgesRescaled) < timeStep) {
         stop(paste0(
-			"Tree has *NO* rescaled branches longer than generation.time/TreeYears\n",
+			"Tree has *NO* rescaled branches longer than generation.time/TreeYears \n",
 			"     thus *NO* simulated evolutionary change can occur!"
 			))
         }
@@ -453,8 +456,8 @@ doRun_prc <- function(
     totalGenerations <- sum(sapply(edgesRescaled, function(x) floor(x/timeStep)))
     message(paste0( 
 		"Given generation time, a total of ", round(totalGenerations), 
-		" generations are expected to occur over this tree")
-		)
+		" generations are\n", "     expected to occur over this tree"
+		))
 	#####################################
 	#
 	# save input data for use later
@@ -494,7 +497,7 @@ doRun_prc <- function(
     if(numberParametersFree<1){
       stop(paste0(
 		"No freely varying parameters found; analysis cannot continue.\n",
-			" Check prior functions and values"
+		"    Check prior functions and values."
 		))
       }
     namesParFree <- names(freeVector)[freeVector]
