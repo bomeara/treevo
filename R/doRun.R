@@ -410,7 +410,7 @@ doRun_prc <- function(
     #
     if(minEdgeRescaled == 0){
         message(
-			"The smallest edge length on the input tree is ZERO LENGTH...\n"
+			"The smallest edge length on the input tree is ZERO LENGTH..."
 			)
         message(paste0(
 			"  Edge with smallest rescaled NON-ZERO length on tree\n",
