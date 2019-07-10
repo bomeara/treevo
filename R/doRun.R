@@ -133,8 +133,8 @@
 #'(\emph{not} the default), the function will be very
 #' noisy about characteristics of the PRC algorithm as it runs.
 
-#' @param multicoreSuppress Argument to suppress
-#' multicore code and use a plain vanilla \code{fore()} loop instead
+#' @param multicoreSuppress This argument suppresses the
+#' multicore code and will apply a plain vanilla serial \code{for()} loop instead
 #' of \code{doPar}. Mainly to be used for developer diagnostic purposes.
 
 # param niter.goal Adjust number of starting points for package \code{geiger}
@@ -331,11 +331,13 @@ doRun_prc <- function(
 	extrinsicPriorsValues, extrinsicPriorsFns, 
     #
     # OLD COMMENTING (before DWB):    
-    #the doRun_prc function takes input from the user and then automatically guesses optimal parameters, though user overriding is also possible.
-    #the guesses are used to do simulations near the expected region. If omitted, they are set to the midpoint of the input parameter matrices
+    #the doRun_prc function takes input from the user and then 
+		# automatically guesses optimal parameters, though user overriding is also possible.
+    #the guesses are used to do simulations near the expected region.
+		# If omitted, they are set to the midpoint of the input parameter matrices
     #
     # DWB :so it seems like the above guess parameters are for the 'override' of this feature
-    # So... I just got rid of them, its too confusing..
+		# So... I just got rid of them, its too confusing..
     #
     #startingValuesGuess = c(), intrinsicValuesGuess = c(), extrinsicValuesGuess = c(), 
     #
@@ -353,8 +355,8 @@ doRun_prc <- function(
     multicoreSuppress = FALSE, 
     #
     standardDevFactor = 0.20, 
-    epsilonProportion = 0.7, 
-    epsilonMultiplier = 0.7, 
+    epsilonProportion = 0.70, 
+    epsilonMultiplier = 0.70, 
     #
     validation = "CV", 
     scale = TRUE, 
@@ -373,10 +375,14 @@ doRun_prc <- function(
     #
     #
     functionStartTime <- proc.time()[[3]]
-    #
+    #	
     if (!ape::is.binary.phylo(phy)) {
         warning("Tree is not fully dichotomous, this may cause issues!")
         }
+	#
+	if(is.null(phy$edge.length)){
+		stop("Input phylogeny lacks necessary edge lengths")
+		}
     #    
     if(!is.numeric(maxAttempts)){
         stop("maxAttempts must be numeric")
@@ -403,16 +409,19 @@ doRun_prc <- function(
     minEdgeRescaledNZ <- min(edgesRescaled[edgesRescaled>0])
     #
     if(minEdgeRescaled == 0){
-        message("The smallest edge length on the input tree is ZERO LENGTH...")
+        message(
+			"The smallest edge length on the input tree is ZERO LENGTH..."
+			)
         message(paste0(
-			"Edge with smallest rescaled NON-ZERO length on tree is ",
+			"  Edge with smallest rescaled NON-ZERO length on tree\n",
+			"      is ",
 			signif(minEdgeRescaledNZ, 2), 
 			" as a proportion of tip-to-root distance"
 			))
         message(paste0(
-			"(This is ", signif(minEdgeRescaledNZ*TreeYears, 2),
+			"   (This is ", signif(minEdgeRescaledNZ*TreeYears, 2),
 			" in the same TreeYears units\n",
-			"     as used for the input generation.time ( = ",
+			"      as used for the input generation.time ( = ",
 			generation.time, "))"
 			))
     }else{
@@ -421,16 +430,16 @@ doRun_prc <- function(
 			signif(minEdgeRescaled, 2)
 			))
         message(paste0(
-			"(This is ", signif(minEdgeRescaled*TreeYears, 2), 
+			"   (This is ", signif(minEdgeRescaled*TreeYears, 2), 
 			" in the same TreeYears units\n",
-			"    as used for the input generation.time ( = ",
+			"      as used for the input generation.time ( = ",
 			generation.time, "))"
 			))
         }
     #
     if(max(edgesRescaled) < timeStep) {
         stop(paste0(
-			"Tree has *NO* rescaled branches longer than generation.time/TreeYears\n",
+			"Tree has *NO* rescaled branches longer than generation.time/TreeYears \n",
 			"     thus *NO* simulated evolutionary change can occur!"
 			))
         }
@@ -447,8 +456,8 @@ doRun_prc <- function(
     totalGenerations <- sum(sapply(edgesRescaled, function(x) floor(x/timeStep)))
     message(paste0( 
 		"Given generation time, a total of ", round(totalGenerations), 
-		" generations are expected to occur over this tree")
-		)
+		" generations are\n", "     expected to occur over this tree"
+		))
 	#####################################
 	#
 	# save input data for use later
@@ -488,7 +497,7 @@ doRun_prc <- function(
     if(numberParametersFree<1){
       stop(paste0(
 		"No freely varying parameters found; analysis cannot continue.\n",
-			" Check prior functions and values"
+		"    Check prior functions and values."
 		))
       }
     namesParFree <- names(freeVector)[freeVector]
@@ -528,11 +537,13 @@ doRun_prc <- function(
         }
     #
     # get summary values for observed data
+		# INCREDIBLY!
+		#
+		# this is really the **ONLY** time when doRun ever really looks at input traits
+		#
     originalSummaryValues <- summaryStatsLong(
         phy = phy, 
         traits = traits
-        #niter.brown = 200, niter.lambda = 200, niter.delta = 200,
-		#niter.OU = 200, niter.white = 200
         )
     #
     results <- list()
@@ -974,7 +985,11 @@ doRun_prc <- function(
         #######################################
         if(nrow(particleDataFrame)>2){
             prcResults$postSummary  <- summarizePosterior(
-				particleDataFrame, verboseMultimodal = FALSE)
+				particleDataFrame, 
+				verboseMultimodal = FALSE,
+				# avoid fatal errors due to flat posteriors...
+				stopIfFlat = FALSE
+				)
 			prcResults$parMeansList  <- getSummaryMeans(
 				doRunOutput = prcResults)
         }else{

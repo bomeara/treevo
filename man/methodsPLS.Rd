@@ -8,7 +8,8 @@
 \usage{
 returnPLSModel(trueFreeValuesMatrix, summaryValuesMatrix,
   validation = "CV", scale = TRUE, variance.cutoff = 95,
-  verbose = TRUE, ...)
+  verbose = TRUE, segments = min(10, nrow(summaryValuesMatrix) - 1),
+  ...)
 
 PLSTransform(summaryValuesMatrix, pls.model)
 }
@@ -17,12 +18,15 @@ PLSTransform(summaryValuesMatrix, pls.model)
 
 \item{summaryValuesMatrix}{Matrix of summary statistics from simulations.}
 
-\item{validation}{Character argument controlling what validation procedure is used by \code{\link{plsr}}.
+\item{validation}{Character argument controlling what
+validation procedure is used by \code{\link{plsr}}.
 Default is \code{"CV"} for cross-validation.}
 
-\item{scale}{This argument is passed to \code{\link{plsr}}.  It may be a numeric vector, or logical. If numeric vector, 
+\item{scale}{This argument is passed to \code{\link{plsr}}.
+It may be a numeric vector, or logical. If numeric vector, 
 the input is scaled by dividing each variable with the corresponding element of scale.
-If \code{scale = TRUE}, the inpus is scaled by dividing each variable by its sample standard deviation.
+If \code{scale = TRUE}, the inpus is scaled by dividing
+each variable by its sample standard deviation.
 If cross-validation is selected (the default for \code{returnPLSModel}), 
 scaling by the standard deviation is done for every segment.}
 
@@ -30,18 +34,26 @@ scaling by the standard deviation is done for every segment.}
 number of components included in the final PLS model fit. This value is a
 percentage and must be between 0 and 100. Default is 95 percent.}
 
-\item{verbose}{If \code{TRUE}, helpful warning messages will be made when you make questionable decisions.}
+\item{verbose}{If \code{TRUE}, helpful warning messages
+will be made when you make questionable decisions.}
 
-\item{...}{Additional arguments, passed to \code{\link{plsr}}. In particular, if the number of observations is less than
-10 (such as for the example below), it may be necessary to pass a revised \code{segments} argument, which
-\code{plsr} passes to \code{\link{mvrCv}}, as the default \code{segments} value is 10 (and there cannot be more segments
-than observations). Note that this should be an atypical situation outside of examples, as the number of observations
-should often be much greater than 10.}
+\item{segments}{Number of segments of data used for crossvalidaton
+by \code{pls::cvsegments}. The number of segments cannot exceed the
+number of simulations. The default number of segments as set for normal
+use of \code{plsr} is 10, which leads to issues when a trial analysis
+uses fewer than 10 simulations. Instead, we will pass an alternative
+value for the number of segments - either 10, or the number of rows
+in \code{summaryValuesMatrix}. Thus, this is a default value of 
+\code{min(10,} \code{nrow(summaryValuesMatrix))}, or can be changed
+by the user. A hard minimum of 3 is required.}
+
+\item{...}{Additional arguments, passed to \code{\link{plsr}}.}
 
 \item{pls.model}{Output from \code{\link{returnPLSModel}}.}
 }
 \value{
-Function \code{returnPLSModel} returns a PLS model, and function \code{PLSTransform} returns transformed summary statistics.
+Function \code{returnPLSModel} returns a PLS model, and
+function \code{PLSTransform} returns transformed summary statistics.
 }
 \description{
 Function \code{returnPLSModel} fits a PLS regression (using
@@ -66,37 +78,50 @@ simPhy$edge.length <- simPhy$edge.length * 20
 nSimulations <- 6
 
 simDataParallel <- parallelSimulateWithPriors(
-  nrepSim = nSimulations, 
-  multicore = FALSE, 
-  coreLimit = 1, 
-  phy = simPhy, 
-  intrinsicFn = brownianIntrinsic, 
-  extrinsicFn = nullExtrinsic, 
-  startingPriorsFns = "normal", 
-  startingPriorsValues = list(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
-  intrinsicPriorsFns = c("exponential"), 
-  intrinsicPriorsValues = list(10), 
-  extrinsicPriorsFns = c("fixed"), 
-  extrinsicPriorsValues = list(0), 
-  generation.time = 10000, 
-  checkpointFile = NULL, 
-  checkpointFreq = 24, 
-  verbose = FALSE, 
-  freevector = NULL, taxonDF = NULL)
+   nrepSim = nSimulations, 
+   multicore = FALSE, 
+   coreLimit = 1, 
+   phy = simPhy, 
+   intrinsicFn = brownianIntrinsic, 
+   extrinsicFn = nullExtrinsic, 
+   startingPriorsFns = "normal", 
+   startingPriorsValues = list(
+       c(mean(simChar[, 1]), 
+       sd(simChar[, 1]))), 
+   intrinsicPriorsFns = c("exponential"), 
+   intrinsicPriorsValues = list(10), 
+   extrinsicPriorsFns = c("fixed"), 
+   extrinsicPriorsValues = list(0), 
+   generation.time = 10000, 
+   checkpointFile = NULL, 
+   checkpointFreq = 24, 
+   verbose = FALSE, 
+   freevector = NULL, 
+   taxonDF = NULL
+   )
 
 nParFree <- sum(attr(simDataParallel, "freevector"))
 
-#separate the simulation results: 'true' generating parameter values from the summary values
+# separate the simulation results: 
+   # 'true' generating parameter values from the summary values
 trueFreeValuesMat <- simDataParallel[, 1:nParFree]
 summaryValuesMat <- simDataParallel[, -1:-nParFree]
 
-PLSmodel <- returnPLSModel(trueFreeValuesMatrix = trueFreeValuesMat, 
-          summaryValuesMatrix = summaryValuesMat, 
-       validation = "CV", scale = TRUE, variance.cutoff = 95 , segments = nSimulations)
+PLSmodel <- returnPLSModel(
+    trueFreeValuesMatrix = trueFreeValuesMat, 
+    summaryValuesMatrix = summaryValuesMat, 
+    validation = "CV", 
+    scale = TRUE, 
+    variance.cutoff = 95 , 
+    segments = nSimulations
+    )
 
 PLSmodel
 
-PLSTransform(summaryValuesMatrix = summaryValuesMat, pls.model = PLSmodel)
+PLSTransform(
+    summaryValuesMatrix = summaryValuesMat, 
+    pls.model = PLSmodel
+    )
 }
 
 }

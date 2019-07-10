@@ -5,7 +5,7 @@
 \title{Highest Density Interval}
 \usage{
 highestDensityInterval(dataVector, alpha, coda = FALSE,
-  verboseMultimodal = TRUE, ...)
+  verboseMultimodal = TRUE, stopIfFlat = TRUE, ...)
 }
 \arguments{
 \item{dataVector}{A vector of data, which can be reasonably assumed to
@@ -24,6 +24,14 @@ similar to the function \code{quantile} in that it calculates only a single inte
 \item{verboseMultimodal}{If \code{TRUE}, the function will print a message
 indicating when the inferred highest density interval is discontinuous, and
 thus likely reflects that the supplied data is multimodal.}
+
+\item{stopIfFlat}{If \code{TRUE} (the default), the function will terminate
+and return an error if the distribution appears to be flat, with a
+high number of tied values in the posterior. 
+If \code{FALSE}, the function will instead attempt to move forward,
+while returning a warning instead. The latter option is
+mainly implemented so internal calls to \code{highestDensityInterval}
+do not block otherwise long-running analyses.}
 
 \item{...}{Additional arguments passed to \code{\link{density}}. 
 A user may want to mess with this to adjust bandwidth, et cetera.}
@@ -112,7 +120,6 @@ summarizePosterior(results[[1]]$particleDataFrame, alpha = 0.95)
 # we often don't sample the distribution well enough to know
 # its shape to exceeding detail. alpha = 0.8 may be more reasonable.
 summarizePosterior(results[[1]]$particleDataFrame, alpha = 0.8)
-
 
 }
 \references{

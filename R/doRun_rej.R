@@ -189,9 +189,14 @@ doRun_rej <- function(
     rejectionResults$particleDataFrame <- res$particleDataFrame
     #rejectionResults$credibleInt <- credibleInt(res$particleDataFrame)
     if(nAcceptedSims>2){
-        rejectionResults$postSummary  <- summarizePosterior(res$particleDataFrame, verboseMultimodal = FALSE)
+        rejectionResults$postSummary  <- summarizePosterior(
+			res$particleDataFrame, 
+			verboseMultimodal = FALSE,
+			stopIfFlat = FALSE
+			)
     }else{
-        warning("Posterior Summaries were not calculated as the number of accepted particles was less than 2")
+        warning(
+			"Posterior Summaries were not calculated as the number of accepted particles was less than 2")
         }
     #
     return(rejectionResults)

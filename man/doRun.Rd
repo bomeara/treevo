@@ -43,33 +43,47 @@ traits evolve within a lineage, based on their own
 ('internal') trait vlaue and the trait values
 of other taxa.}
 
-\item{startingPriorsValues}{A list of the same length as the number of prior distributions specified in
-\code{startingPriorsFns} (for starting values, this should be one prior function specified for each trait
-- thus one for most univariate trait analyses), with each element of the list a vector the same length
-as the appropriate number of parameters for that prior distribution (1 for \code{"fixed"}, 2 for
-\code{"uniform"}, 2 for \code{"normal"}, 2 for \code{"lognormal"}, 2 for \code{"gamma"}, 1
-for \code{"exponential"}).}
+\item{startingPriorsValues}{A list of the same length as
+the number of prior distributions specified in
+\code{startingPriorsFns} (for starting values, this should
+be one prior function specified for each trait
+- thus one for most univariate trait analyses), with each
+element of the list a vector the same length
+as the appropriate number of parameters for that prior distribution
+(1 for \code{"fixed"}, 2 for \code{"uniform"}, 2 for \code{"normal"},
+2 for \code{"lognormal"}, 2 for \code{"gamma"}, 1 for \code{"exponential"}).}
 
 \item{startingPriorsFns}{Vector containing names of prior distributions to
-use for root states: can be one of \code{"fixed"}, \code{"uniform"}, \code{"normal"},}
+use for root states: can be one of
+\code{"fixed"}, \code{"uniform"}, \code{"normal"}, 
+\code{"lognormal"}, \code{"gamma"}, \code{"exponential"}.}
 
-\item{intrinsicPriorsValues}{A list of the same length as the number of prior distributions specified
-in \code{intrinsicPriorsFns} (one prior function specified for each parameter in the intrinsic model),
-with each element of the list a vector the same length as the appropriate number of parameters
-for that prior distribution (1 for \code{"fixed"}, 2 for \code{"uniform"}, 2 for \code{"normal"},
+\item{intrinsicPriorsValues}{A list of the same length
+as the number of prior distributions specified
+in \code{intrinsicPriorsFns} (one prior function specified
+for each parameter in the intrinsic model),
+with each element of the list a vector the same length#
+as the appropriate number of parameters for that prior distribution
+(1 for \code{"fixed"}, 2 for \code{"uniform"}, 2 for \code{"normal"},
 2 for \code{"lognormal"}, 2 for \code{"gamma"}, 1 for \code{"exponential"}).}
 
 \item{intrinsicPriorsFns}{Vector containing names of prior distributions to
-use for intrinsic function parameters: can be one of \code{"fixed"}, \code{"uniform"}, \code{"normal"},}
+use for intrinsic function parameters: can be one of
+\code{"fixed"}, \code{"uniform"}, \code{"normal"}, 
+\code{"lognormal"}, \code{"gamma"}, \code{"exponential"}.}
 
-\item{extrinsicPriorsValues}{A list of the same length as the number of prior distributions
-specified in \code{extrinsicPriorsFns} (one prior function specified for each parameter
-in the extrinsic model), with each element of the list a vector the same length as the appropriate
-number of parameters for that prior distribution (1 for \code{"fixed"}, 2 for \code{"uniform"},
-2 for \code{"normal"}, 2 for \code{"lognormal"}, 2 for \code{"gamma"}, 1 for \code{"exponential"}).}
+\item{extrinsicPriorsValues}{A list of the same length as
+the number of prior distributions specified in \code{extrinsicPriorsFns} 
+(one prior function specified for each parameter in the extrinsic model),
+with each element of the list a vector the same length as the appropriate
+number of parameters for that prior distribution
+(1 for \code{"fixed"}, 2 for \code{"uniform"}, 2 for \code{"normal"},
+2 for \code{"lognormal"}, 2 for \code{"gamma"}, 1 for \code{"exponential"}).}
 
 \item{extrinsicPriorsFns}{Vector containing names of prior distributions to
-use for extrinsic function parameters: can be one of \code{"fixed"}, \code{"uniform"}, \code{"normal"},}
+use for extrinsic function parameters: can be one of
+\code{"fixed"}, \code{"uniform"}, \code{"normal"}, 
+\code{"lognormal"}, \code{"gamma"}, \code{"exponential"}.}
 
 \item{numParticles}{Number of accepted particles per PRC generation.}
 
@@ -115,15 +129,16 @@ branch lengths are not in millions of years, you should
 alter this argument. Otherwise, leave this argument alone.
 See documentation for \code{\link{doSimulation}} for further details.}
 
-\item{multicore}{Whether to use multicore, default is \code{FALSE}. If \code{TRUE}, one of
-two suggested packages must be installed, either \code{doMC} (for UNIX systems) or
+\item{multicore}{Whether to use multicore, default is \code{FALSE}.
+If \code{TRUE}, one of two suggested packages must be installed,
+either \code{doMC} (for UNIX systems) or
 \code{doParallel} (for Windows), which are used to activate multithreading.
 If neither package is installed, this function will fail if \code{multicore = TRUE}.}
 
 \item{coreLimit}{Maximum number of cores to be used.}
 
-\item{multicoreSuppress}{Argument to suppress
-multicore code and use a plain vanilla \code{fore()} loop instead
+\item{multicoreSuppress}{This argument suppresses the
+multicore code and will apply a plain vanilla serial \code{for()} loop instead
 of \code{doPar}. Mainly to be used for developer diagnostic purposes.}
 
 \item{standardDevFactor}{Standard deviation for mutating states each time a new particle is generated in a PRC generation.}
@@ -132,12 +147,15 @@ of \code{doPar}. Mainly to be used for developer diagnostic purposes.}
 
 \item{epsilonMultiplier}{Sets tolerance on subsequent PRC generations.}
 
-\item{validation}{Character argument controlling what validation procedure is used by \code{\link{plsr}}.
+\item{validation}{Character argument controlling what
+validation procedure is used by \code{\link{plsr}}.
 Default is \code{"CV"} for cross-validation.}
 
-\item{scale}{This argument is passed to \code{\link{plsr}}.  It may be a numeric vector, or logical. If numeric vector, 
+\item{scale}{This argument is passed to \code{\link{plsr}}.
+It may be a numeric vector, or logical. If numeric vector, 
 the input is scaled by dividing each variable with the corresponding element of scale.
-If \code{scale = TRUE}, the inpus is scaled by dividing each variable by its sample standard deviation.
+If \code{scale = TRUE}, the inpus is scaled by dividing
+each variable by its sample standard deviation.
 If cross-validation is selected (the default for \code{returnPLSModel}), 
 scaling by the standard deviation is done for every segment.}
 
