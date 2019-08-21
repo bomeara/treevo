@@ -55,6 +55,12 @@
 	# again testMultivarOutlierHDR
 # but that's just TRUE or FALSE, no percentage
 
+#####
+
+# We can use `bayesCoverageProb` to compare true / generating parameter values to the posteriors of analyses done on that data. This function calculates what percent of the time the real parameter falls into the HPD. However, this function might be problematic, as it basically asks about coverage for each parameter as if they were indep of each other, and reports the percentage of parameters that fall within the already-calculated HPD. This is fundamentally troublesome, as explained in `testMultivarOutlierHDR`. It'd be better to ask if a particular particle was within the multivariate data cloud or not. See `testMultivarOutlierHDR` for more discussion.
+
+#####
+
 #* @name bayesCoverageProb
 #* @rdname bayesCoverageProb
 #* @export

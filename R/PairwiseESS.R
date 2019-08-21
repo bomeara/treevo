@@ -79,8 +79,12 @@ pairwiseESS <- function(inputData) {
                 }
             # get ESS
             ESS[[combination]] <- coda::effectiveSize(data2[, 7:dim(data2)[2]])
+			# name by combinging runNames
             names(ESS)[[combination]] <- paste(runNames, collapse = ".")
+			#
+			# define ESS matrix
             ESSmatrix[, combination] <- c(as.numeric(ESS[[combination]]))
+			# give column names to ESSmatrix
             colnames(ESSmatrix)[combination] <- paste(runNames, collapse = ".")
             }
         }
