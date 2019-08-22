@@ -2,18 +2,13 @@
 #' 
 #' Assorted functions for visualizing and summarizing the prior and posterior probability distributions associated with ABC analyses.
 #' 
-#' Function \code{plotPrior} visualizes the shape of various prior probability distributions available in TreEvo ABC analyses, and
-#' \code{getUnivariatePriorCurve} returns density coordinates and summary statistics from user-selected prior probability
-#' distribution. Similarly, function \code{getUnivariatePosteriorCurve} returns density coordinates and summary
-#' statistics from the posterior distribution of an ABC analysis. Both \code{getUnivariatePriorCurve} and \code{getUnivariatePosteriorCurve} also calculate the highest density intervals for their respective parameters, using the function \code{\link{highestDensityInterval}}.
+#' Function \code{plotPrior} visualizes the shape of various prior probability distributions available in TreEvo ABC analyses, and \code{getUnivariatePriorCurve} returns density coordinates and summary statistics from user-selected prior probability distribution. Similarly, function \code{getUnivariatePosteriorCurve} returns density coordinates and summary statistics from the posterior distribution of an ABC analysis. Both \code{getUnivariatePriorCurve} and \code{getUnivariatePosteriorCurve} also calculate the highest density intervals for their respective parameters, using the function \code{\link{highestDensityInterval}}.
 #'
 #' Function \code{plotUnivariatePosteriorVsPrior} plots the univariate density distributions from the prior and posterior against each other for comparison, along with the highest density intervals (HDI) for both. 
 
 
 #' @details
-#' The summaries calculated from \code{getUnivariatePriorCurve} and \code{getUnivariatePosteriorCurve} are used
-#' as the input for \code{plotUnivariatePosteriorVsPrior}, hence the relationship of these functions
-#' to each other, and why they are listed together here.
+#' The summaries calculated from \code{getUnivariatePriorCurve} and \code{getUnivariatePosteriorCurve} are used as the input for \code{plotUnivariatePosteriorVsPrior}, hence the relationship of these functions to each other, and why they are listed together here.
 #' 
 
 #' @param priorFn Prior Shape of the distribution; one of either "fixed", "uniform", "normal", 
@@ -49,9 +44,14 @@
 
 #' @inheritParams highestDensityInterval
 
-#' @param ... Additional arguments passed to \code{\link{density}}, for use in both
+#' @param ... For \{codegetUnivariatePriorCurve} and \code{getUnivariatePosteriorCurve},
+#' this can contain additional arguments passed to \code{\link{density}}, for use in both
 #' calculating the kernal density estimate for finding the curve, and for estimating
-#' the highest density interval. A user may want to mess with this to adjust bandwidth, et cetera.
+#' the highest density interval. 
+#' A user may want to mess with this to adjust bandwidth, et cetera.
+#' For \code{plotUnivariatePosteriorVsPrior}, this passes additional commands to the initial
+#' call \code{plot}, and thus can set things like a \code{main} plotting title, among
+#' other things.
 
 #' @param acceptedValues Vector of accepted particle values.
 
@@ -139,18 +139,18 @@
 #' @rdname plotPriorPost
 #' @export
 plotPrior <- function(
-    priorFn = match.arg(
-        arg = priorFn, 
-        choices = c(
-			"fixed", "uniform", "normal", 
-			"lognormal", "gamma", "exponential"
+		priorFn = match.arg(
+			arg = priorFn, 
+			choices = c(
+				"fixed", "uniform", "normal", 
+				"lognormal", "gamma", "exponential"
+				), 
+			several.ok = FALSE
 			), 
-        several.ok = FALSE
-        ), 
-    priorVariables, 
-    plotQuants = TRUE, 
-    plotLegend = TRUE){
-    #
+		priorVariables, 
+		plotQuants = TRUE, 
+		plotLegend = TRUE
+		){
     ###############################################
     # priorVariables depend on priorFn. 
     # uniform = c(min, max); 
@@ -333,8 +333,13 @@ plotPrior <- function(
 
 #' @rdname plotPriorPost
 #' @export
-plotUnivariatePosteriorVsPrior <- function(posteriorCurve, 
-        priorCurve, label = "parameter", trueValue = NULL) {
+plotUnivariatePosteriorVsPrior <- function(
+		posteriorCurve, 
+        priorCurve, 
+		label = "parameter", 
+		trueValue = NULL,
+		...
+		) {
     ####################################################################
     # are priors and posteriors potentially multimodal?
     priorMultimodal <- nrow(priorCurve$HPD)>1
@@ -346,8 +351,12 @@ plotUnivariatePosteriorVsPrior <- function(posteriorCurve,
         x = range(c(posteriorCurve$x, priorCurve$x)), 
         y = range(c(posteriorCurve$y, priorCurve$y)), 
         type = "n", 
-        xlab = label, ylab = "", 
-        bty = "n", yaxt = "n")
+        xlab = label, 
+		ylab = "Kernal Density", 
+        bty = "n", 
+		yaxt = "n",
+		...
+		)
     #
     polygon(
         x = c(priorCurve$x, max(priorCurve$x), priorCurve$x[1]), 
@@ -416,7 +425,8 @@ plotUnivariatePosteriorVsPrior <- function(posteriorCurve,
 
 #' @rdname plotPriorPost
 #' @export
-getUnivariatePriorCurve <- function(priorFn, 
+getUnivariatePriorCurve <- function(
+		priorFn, 
         priorVariables, 
         nPoints = 100000, 
         from = NULL, to = NULL, 
@@ -424,6 +434,7 @@ getUnivariatePriorCurve <- function(priorFn,
         coda = FALSE,
         verboseMultimodal=TRUE,
         ...) {
+	##################################################
     #
     samples <- replicate(nPoints, pullFromPrior(priorVariables, priorFn))
     if (is.null(from)) {
@@ -459,9 +470,17 @@ getUnivariatePriorCurve <- function(priorFn,
 
 #' @rdname plotPriorPost
 #' @export
-getUnivariatePosteriorCurve <- function(acceptedValues, 
-        from = NULL, to = NULL, 
-        alpha = 0.8, ..., coda = FALSE, verboseMultimodal=TRUE) {
+getUnivariatePosteriorCurve <- function(
+		acceptedValues, 
+        from = NULL, 
+		to = NULL, 
+        alpha = 0.8, 
+		coda = FALSE, 
+		verboseMultimodal=TRUE
+		..., 
+
+		) {
+	################################
     #
     if (is.null(from)) {
         from <- min(acceptedValues)
