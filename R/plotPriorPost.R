@@ -369,8 +369,8 @@ plotUnivariatePosteriorVsPrior <- function(
         col = "gray")
     if(priorMultimodal){
         message(
-			"Prior HPD not plotted as it consists of multiple non-contiguous intervals",
-            "This may suggest a possibly multimodal distribution")
+			"Prior HPD not plotted as it consists of multiple non-contiguous intervals.",
+            "\n This may suggest a possibly multimodal distribution."))
     }else{
         lines(
             x = rep(priorCurve$HPD[,1], 2), 
@@ -397,8 +397,8 @@ plotUnivariatePosteriorVsPrior <- function(
         col = "red")
     if(posteriorMultimodal){
         message(
-			"Posterior HPD not plotted as it consists of multiple non-contiguous intervals",
-            "This may suggest a possibly multimodal distribution")
+			"Posterior HPD not plotted as it consists of multiple non-contiguous intervals.",
+            "\n This may suggest a possibly multimodal distribution.")
     }else{
         lines(
             x = rep(posteriorCurve$HPD[,1], 2), 
@@ -502,9 +502,4 @@ getUnivariatePosteriorCurve <- function(
         )
     return(output)
     }
-
-
-
-
-
 

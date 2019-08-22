@@ -8,7 +8,8 @@
 #' 
 #' @name simRunExample
 
-#' @aliases simRunExample simPhy simChar results resultsBound genRate ancState 
+#' @aliases simRunExample simPhyExample simCharExample
+#' resultsBMExample resultsBoundExample genRateExample ancStateExample
 #simCharOut
 
 #' @docType data
@@ -18,32 +19,28 @@
 #' 
 #' \describe{
 
-#' \item{\code{simPhy}}{A simulated 30-tip coalescent phylogeny in typical \code{phylo} format.}
+#' \item{\code{simPhyExample}}{A simulated 30-tip coalescent phylogeny in typical \code{phylo} format.}
 
-#' \item{\code{ancState}}{The starting ancestral value, 
+#' \item{\code{ancStateExample}}{The starting ancestral value, 
 #' used for generating the simulated continuous trait data.}
 
-#' \item{\code{genRate}}{The true rate of trait change under Brownian Motion, 
+#' \item{\code{genRateExample}}{The true rate of trait change under Brownian Motion, 
 #' used for generating the simulated continuous trait data.}
 
-# \item{\code{simCharOut}}{The raw output of \code{\link{doSimulation}} on \code{simPhy}, 
+# \item{\code{simCharOutExample}}{The raw output of \code{\link{doSimulation}} on \code{simPhy}, 
 # under the model \code{\link{brownianIntrinsic}}.}
 
-#' \item{\code{simChar}}{The output of \code{\link{doSimulation}} on \code{simPhy}, 
+#' \item{\code{simCharExample}}{The output of \code{\link{doSimulation}} on \code{simPhy}, 
 #'  under the model \code{\link{brownianIntrinsic}}. composed of just the simulated
 #' trait values as a one-column matrix with row names indicating tip labels, as desired by \code{doRun} functions.}
 
-#' \item{\code{results}}{The results of \code{\link{doRun_prc}}, under the generating model of \code{\link{brownianIntrinsic}}}
+#' \item{\code{resultsBMExample}}{The results of \code{\link{doRun_prc}}, under the generating model of \code{\link{brownianIntrinsic}}}
 
-#' \item{\code{resultsBound}}{The results of \code{\link{doRun_prc}}, under the incorrect model of \code{\link{boundaryMinIntrinsic}}}
+#' \item{\code{resultsBoundExample}}{The results of \code{\link{doRun_prc}}, under the incorrect model of \code{\link{boundaryMinIntrinsic}}}
 
 #' }
 #' 
-#' The objects \code{results} and \code{resultsBound} are lists composed of a number
-#' of elements (see the documentation for the \code{\link{doRun_prc}} function for more detail). These elements are
-#' respectively \code{input.data}, \code{priorList}, \code{particleDataFrame}, \code{toleranceVector}, \code{phy}, 
-#' \code{traits}, \code{simTime}, \code{time.per.gen}, and \code{postSummary}.
-#' 
+#' The objects \code{resultsBMExample} and \code{resultsBoundExample} are lists composed of a number of elements (see the documentation for the \code{\link{doRun_prc}} function for more detail).
 
 
 #' @examples
@@ -61,19 +58,19 @@
 #' library(TreEvo)
 #' 
 #' set.seed(1)
-#' simPhy <- rcoal(20)
+#' simPhyExample <- rcoal(20)
 #' # get realistic edge lengths
-#' simPhy$edge.length <- simPhy$edge.length*20
+#' simPhyExample$edge.length <- simPhyExample$edge.length*20
 #' 
 #' # plot with time axis (root is about ~15 Ma)
-#' plot(simPhy)
+#' plot(simPhyExample)
 #' axisPhylo()
 #' 
-#' genRate <- c(0.001)
-#' ancState <- c(10)
+#' genRateExample <- c(0.001)
+#' ancStateExample <- c(10)
 #' 
 #' #Simple Brownian motion
-#' simChar <- doSimulation(
+#' simCharExample <- doSimulation(
 #'     phy = simPhy, 
 #'     intrinsicFn = brownianIntrinsic, 
 #'     extrinsicFn = nullExtrinsic, 
@@ -83,7 +80,7 @@
 #'     generation.time = 10000
 #'     )
 #' 
-#' results <- doRun_prc(
+#' resultsBMExample <- doRun_prc(
 #'     phy = simPhy, 
 #'     traits = simChar, 
 #'     intrinsicFn = brownianIntrinsic, 
@@ -106,7 +103,7 @@
 #'     coreLimit = 1
 #'     )
 #' 
-#' resultsBound <- doRun_prc(
+#' resultsBoundExample <- doRun_prc(
 #'     phy = simPhy, 
 #'     traits = simChar, 
 #'     intrinsicFn = boundaryMinIntrinsic, 
