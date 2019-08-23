@@ -70,8 +70,8 @@ model fit with \code{returnPLSModel} to transform summary values.
 \examples{
 \donttest{
 set.seed(1)
-simPhy <- rcoal(20)
-simPhy$edge.length <- simPhy$edge.length * 20
+simPhyExample <- rcoal(20)
+simPhyExample$edge.length <- simPhyExample$edge.length * 20
 
 # example simulation
 
@@ -81,13 +81,13 @@ simDataParallel <- parallelSimulateWithPriors(
    nrepSim = nSimulations, 
    multicore = FALSE, 
    coreLimit = 1, 
-   phy = simPhy, 
+   phy = simPhyExample, 
    intrinsicFn = brownianIntrinsic, 
    extrinsicFn = nullExtrinsic, 
    startingPriorsFns = "normal", 
    startingPriorsValues = list(
-       c(mean(simChar[, 1]), 
-       sd(simChar[, 1]))), 
+       c(mean(simCharExample[, 1]), 
+       sd(simCharExample[, 1]))), 
    intrinsicPriorsFns = c("exponential"), 
    intrinsicPriorsValues = list(10), 
    extrinsicPriorsFns = c("fixed"), 

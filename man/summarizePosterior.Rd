@@ -57,15 +57,23 @@ Density (at a 0.8 alpha) for each parameter.
 data(simRunExample)
 
 # alpha = 0.95
-summarizePosterior(results[[1]]$particleDataFrame, alpha = 0.95)
+summarizePosterior(
+     resultsBMExample[[1]]$particleDataFrame, 
+     alpha = 0.95)
 
-# you might be tempted to use alphas like 95\%, but with bayesian statistics
+# you might be tempted to use alphas like 95\%, 
+    # but with bayesian statistics
 # we often don't sample the distribution well enough to know
-# its shape to exceeding detail. alpha = 0.8 may be more reasonable.
-summarizePosterior(results[[1]]$particleDataFrame, alpha = 0.8)
+    # its shape to exceeding detail. 
+    # alpha = 0.8 may be more reasonable.
+summarizePosterior(
+    resultsBMExample[[1]]$particleDataFrame, 
+    alpha = 0.8)
 
 # or even better, for coverage purposes, maybe 0.5
-summarizePosterior(results[[1]]$particleDataFrame, alpha = 0.5)
+summarizePosterior(
+    resultsBMExample[[1]]$particleDataFrame, 
+    alpha = 0.5)
 
 }
 \seealso{

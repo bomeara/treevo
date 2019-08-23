@@ -23,14 +23,17 @@ from multiple runs.
 data(simRunExample)
 
 # this will give a warning
-pairwiseESS(results[[1]]$particleDataFrame)
+pairwiseESS(resultsBMExample[[1]]$particleDataFrame)
 
 # ESS should be calculated over multiple runs
-pairwiseESS(results)
+pairwiseESS(resultsBMExample)
 
 # you can also manually assemble a list of particleDataFrame tables
     # and use this as the input
-inputList <- list(results[[2]]$particleDataFrame, results[[1]]$particleDataFrame)
+inputList <- list(
+    resultsBMExample[[2]]$particleDataFrame, 
+    resultsBMExample[[1]]$particleDataFrame
+    )
 pairwiseESS(inputList)
 }
 \author{

@@ -47,7 +47,7 @@ posterior distribution from \code{getUnivariatePosteriorCurve}.}
 \item{priorCurve}{Kernal density estimates for the 
 prior distribution from \code{getUnivariatePriorCurve}.}
 
-\item{label}{X label for plot.}
+\item{label}{Horizontal X-axis label for the plot.}
 
 \item{trueValue}{True parameter value, if any such exists and 
 is known (usually only true of simulations).}
@@ -158,7 +158,7 @@ priorKernal <- getUnivariatePriorCurve(
 
 postKernal <- getUnivariatePosteriorCurve(
     acceptedValues = 
-        results[[1]]$particleDataFrame$starting_1, 
+        resultsBMExample[[1]]$particleDataFrame$starting_1, 
     from = NULL, 
     to = NULL, 
     alpha = 0.95)

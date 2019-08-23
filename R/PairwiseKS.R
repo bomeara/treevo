@@ -17,8 +17,10 @@
 #' 
 #' data(simRunExample)
 #' 
-#' pdfList <- list(Brownian = results[[1]]$particleDataFrame,
-#'    Bounded = resultsBound[[1]]$particleDataFrame)
+#' pdfList <- list(
+#'    Brownian = resultsBMExample[[1]]$particleDataFrame,
+#'    Bounded = resultsBoundExample[[1]]$particleDataFrame
+#'    )
 #' 
 #' pairwiseKS(particleDataFrameList = pdfList)
 

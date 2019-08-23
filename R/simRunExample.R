@@ -8,18 +8,24 @@
 #' 
 #' @name simRunExample
 
-#' @aliases simRunExample simPhyExample simCharExample
-#' resultsBMExample resultsBoundExample genRateExample ancStateExample
+#' @aliases 
+#' simRunExample 
+#' simPhyExample simCharExample
+#' resultsBMExample resultsBoundExample
+#' genRateExample ancStateExample
+
 #simCharOut
 
 #' @docType data
 
 #' @format
-#' Loading the \code{simRunExample} example dataset adds seven new objects to the namespace:
+#' Loading the \code{simRunExample} example dataset adds seven new 
+#' objects to the namespace:
 #' 
 #' \describe{
 
-#' \item{\code{simPhyExample}}{A simulated 30-tip coalescent phylogeny in typical \code{phylo} format.}
+#' \item{\code{simPhyExample}}{A simulated 30-tip coalescent
+#' phylogeny in typical \code{phylo} format.}
 
 #' \item{\code{ancStateExample}}{The starting ancestral value, 
 #' used for generating the simulated continuous trait data.}
@@ -27,20 +33,27 @@
 #' \item{\code{genRateExample}}{The true rate of trait change under Brownian Motion, 
 #' used for generating the simulated continuous trait data.}
 
-# \item{\code{simCharOutExample}}{The raw output of \code{\link{doSimulation}} on \code{simPhy}, 
+# \item{\code{simCharOutExample}}{The raw output 
+# of \code{\link{doSimulation}} on \code{simPhyExample}, 
 # under the model \code{\link{brownianIntrinsic}}.}
 
-#' \item{\code{simCharExample}}{The output of \code{\link{doSimulation}} on \code{simPhy}, 
+#' \item{\code{simCharExample}}{The output of \code{\link{doSimulation}} on \code{simPhyExample}, 
 #'  under the model \code{\link{brownianIntrinsic}}. composed of just the simulated
-#' trait values as a one-column matrix with row names indicating tip labels, as desired by \code{doRun} functions.}
+#' trait values as a one-column matrix with row names indicating tip 
+#' labels, as desired by \code{doRun} functions.}
 
-#' \item{\code{resultsBMExample}}{The results of \code{\link{doRun_prc}}, under the generating model of \code{\link{brownianIntrinsic}}}
+#' \item{\code{resultsBMExample}}{The results of \code{\link{doRun_prc}},
+#'  under the generating model of \code{\link{brownianIntrinsic}}}
 
-#' \item{\code{resultsBoundExample}}{The results of \code{\link{doRun_prc}}, under the incorrect model of \code{\link{boundaryMinIntrinsic}}}
+#' \item{\code{resultsBoundExample}}{The results of 
+#' \code{\link{doRun_prc}}, under the incorrect model
+#'  of \code{\link{boundaryMinIntrinsic}}}
 
 #' }
 #' 
-#' The objects \code{resultsBMExample} and \code{resultsBoundExample} are lists composed of a number of elements (see the documentation for the \code{\link{doRun_prc}} function for more detail).
+#' The objects \code{resultsBMExample} and \code{resultsBoundExample} 
+#' are lists composed of a number of elements (see the documentation 
+#' for the \code{\link{doRun_prc}} function for more detail).
 
 
 #' @examples
@@ -71,22 +84,22 @@
 #' 
 #' #Simple Brownian motion
 #' simCharExample <- doSimulation(
-#'     phy = simPhy, 
+#'     phy = simPhyExample, 
 #'     intrinsicFn = brownianIntrinsic, 
 #'     extrinsicFn = nullExtrinsic, 
-#'     startingValues = ancState, #root state
-#'     intrinsicValues = genRate, 
+#'     startingValues = ancStateExample, #root state
+#'     intrinsicValues = genRateExample, 
 #'     extrinsicValues = c(0), 
 #'     generation.time = 10000
 #'     )
 #' 
 #' resultsBMExample <- doRun_prc(
-#'     phy = simPhy, 
-#'     traits = simChar, 
+#'     phy = simPhyExample, 
+#'     traits = simCharExample, 
 #'     intrinsicFn = brownianIntrinsic, 
 #'     extrinsicFn = nullExtrinsic, 
 #'     startingPriorsFns = "normal", 
-#'     startingPriorsValues = list(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
+#'     startingPriorsValues = list(c(mean(simCharExample[, 1]), sd(simCharExample[, 1]))), 
 #'     intrinsicPriorsFns = c("exponential"), 
 #'     intrinsicPriorsValues = list(10), 
 #'     extrinsicPriorsFns = c("fixed"), 
@@ -104,12 +117,12 @@
 #'     )
 #' 
 #' resultsBoundExample <- doRun_prc(
-#'     phy = simPhy, 
-#'     traits = simChar, 
+#'     phy = simPhyExample, 
+#'     traits = simCharExample, 
 #'     intrinsicFn = boundaryMinIntrinsic, 
 #'     extrinsicFn = nullExtrinsic, 
 #'     startingPriorsFns = "normal", 
-#'     startingPriorsValues = list(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
+#'     startingPriorsValues = list(c(mean(simCharExample[, 1]), sd(simCharExample[, 1]))), 
 #'     intrinsicPriorsFns = c("exponential", "normal"), 
 #'     intrinsicPriorsValues = list(10,c(-10,1)), 
 #'     extrinsicPriorsFns = c("fixed"), 

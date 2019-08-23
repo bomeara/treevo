@@ -20,7 +20,8 @@
 #' 
 #' data(simRunExample)
 #' 
-#' pdfList <- list(results[[1]]$particleDataFrame, resultsBound[[1]]$particleDataFrame)
+#' pdfList <- list(resultsBMExample[[1]]$particleDataFrame, 
+#'      resultsBoundExample[[1]]$particleDataFrame)
 #' 
 #' compareListIPD(particleDataFrameList = pdfList, verbose = TRUE)
 #' 

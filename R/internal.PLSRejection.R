@@ -31,9 +31,13 @@
 
 # @examples
 #
-# PLSRejection(summaryValuesMatrix, 
+# PLSRejection(
+#   summaryValuesMatrix, 
 #   trueFreeValuesMatrix, 
-#      phy = simPhy, traits = simChar, abcTolerance = results[[1]]$abcTolerance)
+#   phy = simPhyExample, 
+#   traits = simCharExample, 
+#   abcTolerance = resultsBMExample[[1]]$abcTolerance
+#   )
 #
 
 # This is a difficult function to write an example for, as mainly an algorithm for doRun_rej; unclear if even needs to be exported

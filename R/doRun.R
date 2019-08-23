@@ -261,13 +261,13 @@
 #' ## Please set these values to more realistic levels for your analyses!
 #' 
 #' resultsPRC <- doRun_prc(
-#'   phy = simPhy, 
-#'   traits = simChar, 
+#'   phy = simPhyExample, 
+#'   traits = simCharExample, 
 #'   intrinsicFn = brownianIntrinsic, 
 #'   extrinsicFn = nullExtrinsic, 
 #'   startingPriorsFns = "normal", 
-#'   startingPriorsValues = list(c(mean(simChar[, 1]), 
-#'          sd(simChar[, 1]))), 
+#'   startingPriorsValues = list(c(mean(simCharExample[, 1]), 
+#'          sd(simCharExample[, 1]))), 
 #'   intrinsicPriorsFns = c("exponential"), 
 #'   intrinsicPriorsValues = list(10), 
 #'   extrinsicPriorsFns = c("fixed"), 
@@ -288,13 +288,13 @@
 #' #one should make sure priors are uniform with doRun_rej!
 #' 
 #' resultsRej <- doRun_rej(
-#'     phy = simPhy, 
-#'     traits = simChar, 
+#'     phy = simPhyExample, 
+#'     traits = simCharExample, 
 #'     intrinsicFn = brownianIntrinsic, 
 #'     extrinsicFn = nullExtrinsic, 
 #'     startingPriorsFns = "normal", 
-#'     startingPriorsValues = list(c(mean(simChar[, 1]),
-#'          sd(simChar[, 1]))), 
+#'     startingPriorsValues = list(c(mean(simCharExample[, 1]),
+#'          sd(simCharExample[, 1]))), 
 #'     intrinsicPriorsFns = c("exponential"), 
 #grep for normal in pkg
 #'     intrinsicPriorsValues = list(10), 

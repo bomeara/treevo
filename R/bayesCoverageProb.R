@@ -30,9 +30,10 @@
 #* data(simRunExample)
 #* 
 #* # real (generating) parameters
-#* genPar <- c(ancState, genRate)
+#* genPar <- c(ancStateExample, genRateExample)
 #* 
-#* HPDs <- list(results[[1]]$HPD, resultsBound[[1]]$HPD)
+#* HPDs <- list(resultsBMExample[[1]]$HPD, 
+#*    resultsBoundExample[[1]]$HPD)
 #* 
 #* bayesCoverageProb(
 #*    RealParam = genPar, HPD = HPDs, verbose = TRUE

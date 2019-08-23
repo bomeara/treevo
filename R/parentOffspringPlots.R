@@ -28,7 +28,7 @@
 #' @examples
 #' 
 #' data(simRunExample)
-#' parentOffspringPlots(results[[1]]$particleDataFrame)
+#' parentOffspringPlots(resultsBMExample[[1]]$particleDataFrame)
 #' 
 
 #' @name parentOffspringPlots
