@@ -7,11 +7,11 @@
 pairwiseESS(inputData)
 }
 \arguments{
-\item{inputData}{inputData can be a single data frame or a
-list of data frames}
+\item{inputData}{The input dataset can be a single data frame or a
+list of data frames.}
 }
 \value{
-Returns a matrix with ESS values of all pairwise runs
+Returns a matrix with ESS values of all pairwise runs.
 }
 \description{
 This function calculates Effective Sample Size (ESS) on results.  

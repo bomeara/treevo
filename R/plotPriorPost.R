@@ -1,23 +1,42 @@
 #' Plotting, Summarizing and Comparing the Prior and Posterior Distributions
 #' 
-#' Assorted functions for visualizing and summarizing the prior and posterior probability distributions associated with ABC analyses.
+#' Assorted functions for visualizing and summarizing the
+#' prior and posterior probability distributions associated with ABC analyses.
 #' 
-#' Function \code{plotPrior} visualizes the shape of various prior probability distributions available in TreEvo ABC analyses, and \code{getUnivariatePriorCurve} returns density coordinates and summary statistics from user-selected prior probability distribution. Similarly, function \code{getUnivariatePosteriorCurve} returns density coordinates and summary statistics from the posterior distribution of an ABC analysis. Both \code{getUnivariatePriorCurve} and \code{getUnivariatePosteriorCurve} also calculate the highest density intervals for their respective parameters, using the function \code{\link{highestDensityInterval}}.
+#' Function \code{plotPrior} visualizes the shape of various 
+#' prior probability distributions available in TreEvo ABC analyses, 
+#' while \code{getUnivariatePriorCurve} returns density coordinates and 
+#' summary statistics from user-selected prior probability distribution. 
+#' 
+#' Similarly, function \code{getUnivariatePosteriorCurve} returns 
+#' density coordinates and summary statistics from the posterior distribution 
+#' of an ABC analysis. 
+#' 
+#' Both \code{getUnivariatePriorCurve} and 
+#' \code{getUnivariatePosteriorCurve} also calculate the highest 
+#' density intervals for their respective parameters, 
+#' using the function \code{\link{highestDensityInterval}}.
 #'
-#' Function \code{plotUnivariatePosteriorVsPrior} plots the univariate density distributions from the prior and posterior against each other for comparison, along with the highest density intervals (HDI) for both. 
+#' Function \code{plotUnivariatePosteriorVsPrior} plots the 
+#' univariate density distributions from the prior and 
+#' posterior against each other for comparison, along with the 
+#' highest density intervals (HDI) for both. 
 
 
 #' @details
-#' The summaries calculated from \code{getUnivariatePriorCurve} and \code{getUnivariatePosteriorCurve} are used as the input for \code{plotUnivariatePosteriorVsPrior}, hence the relationship of these functions to each other, and why they are listed together here.
+#' The summaries calculated from \code{getUnivariatePriorCurve} 
+#' and \code{getUnivariatePosteriorCurve} are used as the input 
+#' for \code{plotUnivariatePosteriorVsPrior}, hence the relationship of 
+#' these functions to each other, and why they are listed together here.
 #' 
 
-#' @param priorFn Prior Shape of the distribution; one of either "fixed", "uniform", "normal", 
+#' @param priorFn Prior Shape of the distribution; one of either 
+#' "fixed", "uniform", "normal", 
 #' "lognormal", "gamma", or "exponential".
 
 #' @param priorVariables Variables needed to describe the shape of the
 #' distribution, dependent on \code{priorFn}:
 #' \describe{
-
 #' \item{priorFn = "uniform"}{priorVariables = c(min, max)}
 
 #' \item{priorFn = "normal"}{priorVariables = c(mean, standard deviation)}
@@ -28,9 +47,9 @@
 
 #' \item{priorFn = "exponential"}{priorVariables = c(rate)}
 
-# \item{priorFn = "fixed"}{priorVariables = c(x)}
-
+###   \item{priorFn = "fixed"}{priorVariables = c(x)}
 #' }
+
 
 #' @param plotQuants If \code{TRUE}, plots line segments at the quantiles
 
@@ -44,7 +63,7 @@
 
 #' @inheritParams highestDensityInterval
 
-#' @param ... For \{codegetUnivariatePriorCurve} and \code{getUnivariatePosteriorCurve},
+#' @param ... For \code{getUnivariatePriorCurve} and \code{getUnivariatePosteriorCurve},
 #' this can contain additional arguments passed to \code{\link{density}}, for use in both
 #' calculating the kernal density estimate for finding the curve, and for estimating
 #' the highest density interval. 
@@ -55,27 +74,37 @@
 
 #' @param acceptedValues Vector of accepted particle values.
 
-#' @param posteriorCurve Kernal density estimates for the posterior distribution from \code{getUnivariatePosteriorCurve}.
+#' @param posteriorCurve Kernal density estimates for the
+#' posterior distribution from \code{getUnivariatePosteriorCurve}.
 
-#' @param priorCurve Kernal density estimates for the prior distribution from \code{getUnivariatePriorCurve}.
+#' @param priorCurve Kernal density estimates for the 
+#' prior distribution from \code{getUnivariatePriorCurve}.
 
 #' @param label X label for plot.
 
-#' @param trueValue True parameter value, if any such exists and is known (usually only true of simulations).
+#' @param trueValue True parameter value, if any such exists and 
+#' is known (usually only true of simulations).
 
 #' @return
-#' \code{plotPrior} and \code{plotUnivariatePosteriorVsPrior} produce plots of the respective distributions (see above).
+#' \code{plotPrior} and \code{plotUnivariatePosteriorVsPrior} 
+#' produce plots of the respective distributions (see above).
 #' 
-#' \code{getUnivariatePriorCurve} returns a list of x and y density coordinates, mean, and the highest density intervals (HDI) for their respective distribution.
+#' \code{getUnivariatePriorCurve} returns a list of x and y density
+#' coordinates, mean, and the highest density intervals (HDI) for
+#' their respective distribution.
 #' 
-#' #' \code{getUnivariatePosteriorCurve} does the same for a posterior sample of parameter estimates, returning a list of x and y density coordinates, mean, and the highest posterior density intervals (HPD).
-
+#' \code{getUnivariatePosteriorCurve} does the same for a 
+#' posterior sample of parameter estimates, returning a 
+#' list of x and y density coordinates, mean, and the 
+#' highest posterior density intervals (HPD).
 #' 
 
 #' @seealso
-#' Highest posterior densities are calculated via \code{\link{highestDensityInterval}}.
+#' Highest posterior densities are calculated via
+#' \code{\link{highestDensityInterval}}.
 #' 
-#' \code{\link{plotPosteriors}} Plots multiple posteriors against their priors and potential known values.
+#' \code{\link{plotPosteriors}} Plots multiple posteriors
+#' against their priors and potential known values.
 
 
 #' @author Brian O'Meara and Barb Banbury
@@ -101,7 +130,8 @@
 #'     plotQuants = FALSE, 
 #'     plotLegend = FALSE)
 #' 
-#' # examples of getting density coordinates and summary statistics from distributions
+#' # examples of getting density coordinates and
+#'   # summary statistics from distributions
 #' 
 #' priorKernal <- getUnivariatePriorCurve(
 #'     priorFn = "normal", 
@@ -112,7 +142,8 @@
 #'     alpha = 0.95)
 #' 
 #' postKernal <- getUnivariatePosteriorCurve(
-#'     acceptedValues = results[[1]]$particleDataFrame$starting_1, 
+#'     acceptedValues = 
+#'         results[[1]]$particleDataFrame$starting_1, 
 #'     from = NULL, 
 #'     to = NULL, 
 #'     alpha = 0.95)
@@ -120,7 +151,8 @@
 #' priorKernal
 #' postKernal
 #' 
-#' # let's compare this (supposed) prior against the posterior in a plot
+#' # let's compare this (supposed) prior
+#'   # against the posterior in a plot
 #' 
 #' plotUnivariatePosteriorVsPrior(
 #'     posteriorCurve = postKernal, 
@@ -177,7 +209,8 @@ plotPrior <- function(
                 ylim = c(0, 1.5), 
                 type = "n", xlab = "", 
                 ylab = paste(
-                    "Density (parameters: min = ", min, "; max  = ", max, ")", sep = ""
+                    "Density (parameters: min = ", min, 
+					"; max  = ", max, ")", sep = ""
                     )
                     )
             #title(priorFn)
@@ -187,8 +220,19 @@ plotPrior <- function(
                 
                 if (plotQuants) {
                     #mm[i] <- dunif(quant.value[i], min, max)
-                    segments(quant.value[i], 0, quant.value[i], 1)
-                    segments(qunif(.5, min, max), 0, qunif(.5, min, max), 1, lwd = 2)
+                    segments(
+						quant.value[i], 
+						0, 
+						quant.value[i], 
+						1
+						)
+                    segments(
+						qunif(.5, min, max), 
+						0, 
+						qunif(.5, min, max), 
+						1, 
+						lwd = 2
+						)
                 }
             }
         }else{
@@ -206,24 +250,42 @@ plotPrior <- function(
 						"; stdev  = ", stdev, ")", sep = ""
 						)
 					)
-                poly$x <- c(min(poly$x), poly$x, max(poly$x))
-                poly$y <- c(min(poly$y), poly$y, min(poly$y))
-                polygon(poly, col = rgb(0, 0, 0, 0.3))  #to include 95%?
+                poly$x <- c(
+					min(poly$x), poly$x, max(poly$x)
+					)
+                poly$y <- c(
+					min(poly$y), poly$y, min(poly$y)
+					)
+				#
+				#to include 95%?
+                polygon(poly, col = rgb(0, 0, 0, 0.3))
+				#
                 for (i in 1:length(quant)) {
                     quant.value[i] <- qnorm(quant[i], mean, stdev)
                     if (plotQuants) {
                         mm[i] <- dnorm(quant.value[i], mean, stdev)
-                        segments(quant.value[i], min(poly$y), quant.value[i], mm[i])
+                        segments(
+							quant.value[i], 
+							min(poly$y), 
+							quant.value[i], 
+							mm[i]
+							)
                         segments(
                             qnorm(.5, mean, stdev), 
                             min(poly$y), 
                             qnorm(.5, mean, stdev), 
-                            dnorm(qnorm(.5, mean, stdev), mean, stdev), 
-                        lwd = 2)
+                            dnorm(
+								qnorm(.5, mean, stdev),
+								mean, 
+								stdev
+								), 
+							lwd = 2)
                     }
                 }
             }else{
-                if (priorFn == "lognormal") {  #messed up quant lines and polygon
+				#
+				#messed up quant lines and polygon
+                if (priorFn == "lognormal") {  
                     mean = priorVariables[1]
                     stdev = priorVariables[2]
                     x <- rlnorm(1000, mean, stdev)
@@ -244,7 +306,12 @@ plotPrior <- function(
                         quant.value[i] <- qlnorm(quant[i], mean, stdev)
                         if(plotQuants) {
                             mm[i] <- dlnorm(quant.value[i], mean, stdev)
-                            segments(quant.value[i], min(poly$y), quant.value[i], mm[i])
+                            segments(
+								quant.value[i], 
+								min(poly$y), 
+								quant.value[i], 
+								mm[i]
+								)
                             segments(
                                 qlnorm(.5, mean, stdev), 
                                 min(poly$y), qlnorm(.5, mean, stdev), 
@@ -276,10 +343,18 @@ plotPrior <- function(
                             quant.value[i] <- qgamma(quant[i], shape, scale)
                             if (plotQuants) {
                                 mm[i] <- dgamma(quant.value[i], shape, scale)
-                                segments(quant.value[i], min(poly$y), quant.value[i], mm[i])
-                                segments(qgamma(.5, shape, scale), 
-                                    min(poly$y), qgamma(.5, shape, scale), 
-                                    dgamma(qgamma(.5, shape, scale), shape, scale), 
+                                segments(
+									quant.value[i], 
+									min(poly$y), 
+									quant.value[i],
+									mm[i]
+									)
+                                segments(
+									qgamma(.5, shape, scale), 
+                                    min(poly$y), 
+									qgamma(.5, shape, scale), 
+                                    dgamma(
+										qgamma(.5, shape, scale), shape, scale), 
                                     lwd = 2)
                             }
                         }
@@ -324,7 +399,9 @@ plotPrior <- function(
     if (plotLegend){
         legend(
             "topright", 
-            legend = paste(c(quant, signif(quant.value, digits = 3))), 
+            legend = paste(
+				c(quant, signif(quant.value, digits = 3))
+				), 
             title = "Quantiles", ncol = 2, bty = "n")
         }
     #
@@ -368,7 +445,7 @@ plotUnivariatePosteriorVsPrior <- function(
         y = c(0, max(c(priorCurve$y, posteriorCurve$y))), 
         col = "gray")
     if(priorMultimodal){
-        message(
+        message(paste0(
 			"Prior HPD not plotted as it consists of multiple non-contiguous intervals.",
             "\n This may suggest a possibly multimodal distribution."))
     }else{
@@ -396,9 +473,9 @@ plotUnivariatePosteriorVsPrior <- function(
         y = c(0, max(c(priorCurve$y, posteriorCurve$y))), 
         col = "red")
     if(posteriorMultimodal){
-        message(
+        message(paste0(
 			"Posterior HPD not plotted as it consists of multiple non-contiguous intervals.",
-            "\n This may suggest a possibly multimodal distribution.")
+            "\n This may suggest a possibly multimodal distribution."))
     }else{
         lines(
             x = rep(posteriorCurve$HPD[,1], 2), 
@@ -433,7 +510,8 @@ getUnivariatePriorCurve <- function(
         alpha = 0.8,
         coda = FALSE,
         verboseMultimodal=TRUE,
-        ...) {
+        ...
+		) {
 	##################################################
     #
     samples <- replicate(nPoints, pullFromPrior(priorVariables, priorFn))
@@ -476,9 +554,8 @@ getUnivariatePosteriorCurve <- function(
 		to = NULL, 
         alpha = 0.8, 
 		coda = FALSE, 
-		verboseMultimodal=TRUE
-		..., 
-
+		verboseMultimodal=TRUE,
+		... 
 		) {
 	################################
     #
@@ -490,9 +567,12 @@ getUnivariatePosteriorCurve <- function(
         }
     result <- density(acceptedValues, from = from, to = to, ...)
     hpd.result <- highestDensityInterval(
-        acceptedValues, alpha = alpha, 
+        acceptedValues, 
+		alpha = alpha, 
         coda = coda, 
-        verboseMultimodal=verboseMultimodal, ...)
+        verboseMultimodal=verboseMultimodal, 
+		...
+		)
     #
     output<-list(
         x = result$x, 
