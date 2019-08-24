@@ -4,12 +4,12 @@ test_that("doRun_prc runs correctly in parallel", {
     set.seed(1)
     expect_warning(
     results <- doRun_prc(
-      phy = simPhy,
-      traits = simChar,
+      phy = simPhyExample,
+      traits = simCharExample,
       intrinsicFn=brownianIntrinsic,
       extrinsicFn=nullExtrinsic,
       startingPriorsFns="normal",
-		startingPriorsValues = list(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
+		startingPriorsValues = list(c(mean(simCharExample[, 1]), sd(simCharExample[, 1]))), 
 		intrinsicPriorsFns = c("exponential"),
 		intrinsicPriorsValues = list(10),
 		extrinsicPriorsFns = c("fixed"),

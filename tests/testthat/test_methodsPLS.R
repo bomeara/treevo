@@ -1,8 +1,8 @@
 test_that("methodsPLS works", {
 
   set.seed(1)
-  simPhy <- rcoal(5)
-  simPhy$edge.length <- simPhy$edge.length * 20
+  simPhyExample <- rcoal(5)
+  simPhyExample$edge.length <- simPhyExample$edge.length * 20
 
   nSimulations <- 6
 
@@ -11,11 +11,11 @@ test_that("methodsPLS works", {
     nrepSim = nSimulations,
     multicore = FALSE,
     coreLimit = 1,
-    phy = simPhy,
+    phy = simPhyExample,
     intrinsicFn = brownianIntrinsic,
     extrinsicFn = nullExtrinsic,
     startingPriorsFns = "normal",
-	startingPriorsValues = list(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
+	startingPriorsValues = list(c(mean(simCharExample[, 1]), sd(simCharExample[, 1]))), 
 	intrinsicPriorsFns = c("exponential"),
 	intrinsicPriorsValues = list(10),
 	extrinsicPriorsFns = c("fixed"),

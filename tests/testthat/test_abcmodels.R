@@ -1,7 +1,7 @@
 test_that("ABC intrinsicModels works", {
   set.seed(1)
   tree <- rcoal(5)
-  simPhy$edge.length <- simPhy$edge.length * 20
+  simPhyExample$edge.length <- simPhyExample$edge.length * 20
   #
   expect_warning(
   char <- doSimulation(phy = tree, intrinsicFn = brownianIntrinsic,
@@ -26,7 +26,7 @@ test_that("ABC intrinsicModels works", {
 test_that("ABC extrinsicModels works", {
   set.seed(1)
   tree <- rcoal(5)
-  simPhy$edge.length <- simPhy$edge.length * 20
+  simPhyExample$edge.length <- simPhyExample$edge.length * 20
   #
   
     expect_warning(

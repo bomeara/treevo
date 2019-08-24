@@ -2,12 +2,12 @@ test_that("simParticlePRCParallel run correctly", {
     data(simRunExample)
     set.seed(1)
     #
-    phy = simPhy
-    traits = simChar
+    phy = simPhyExample
+    traits = simCharExample
     intrinsicFn=brownianIntrinsic
     extrinsicFn=nullExtrinsic
     startingPriorsFns="normal"
-	startingPriorsValues = list(c(mean(simChar[, 1]), sd(simChar[, 1])))
+	startingPriorsValues = list(c(mean(simCharExample[, 1]), sd(simCharExample[, 1])))
 	intrinsicPriorsFns = c("exponential")
 	intrinsicPriorsValues = list(10)
 	extrinsicPriorsFns = c("fixed")
@@ -140,12 +140,12 @@ test_that("simParticlePRC run correctly", {
     data(simRunExample)
     set.seed(1)
     #
-    phy = simPhy
-    traits = simChar
+    phy = simPhyExample
+    traits = simCharExample
     intrinsicFn=brownianIntrinsic
     extrinsicFn=nullExtrinsic
     startingPriorsFns="normal"
-	startingPriorsValues = list(c(mean(simChar[, 1]), sd(simChar[, 1]))) 
+	startingPriorsValues = list(c(mean(simCharExample[, 1]), sd(simCharExample[, 1]))) 
 	intrinsicPriorsFns = c("exponential")
 	intrinsicPriorsValues = list(10)
 	extrinsicPriorsFns = c("fixed")
