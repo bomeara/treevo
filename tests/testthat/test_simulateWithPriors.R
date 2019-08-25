@@ -48,7 +48,7 @@ test_that("simulateWithPriors works", {
 		taxonDF = NULL
 		)
 
-	expect_is(simData, "matrix")
+	expect_is(simData, "numeric")
 	expect_is(simDataParallel, "matrix")
 	
 	})
