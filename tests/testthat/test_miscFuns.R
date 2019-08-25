@@ -10,17 +10,22 @@
 #})
 
 test_that("compareListIPD works", {
-  set.seed(1)
-  data(simRunExample)
-  pdfList <- list(
-	resultsBMExample[[1]]$particleDataFrame, 
-	resultsBoundExample[[1]]$particleDataFrame
-	)
-  result<-compareListIPD(
-	particleDataFrameList = pdfList, 
-	verbose = FALSE
-	)
-})
+	
+	set.seed(1)
+	data(simRunExample)
+	
+	pdfList <- list(
+		resultsBMExample[[1]]$particleDataFrame, 
+		resultsBoundExample[[1]]$particleDataFrame
+		)
+		
+	result<-compareListIPD(
+		particleDataFrameList = pdfList, 
+		verbose = FALSE
+		)
+		
+	expect_is(result, "integer")
+	})
 
 #test_that("credibleInt works", {
 #  set.seed(1)

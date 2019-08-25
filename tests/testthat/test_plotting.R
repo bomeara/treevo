@@ -1,23 +1,26 @@
 test_that("plotABC_3D works", {
-    set.seed(1)
-  if (requireNamespace("gpclib", quietly = TRUE) 
+
+	if (requireNamespace("gpclib", quietly = TRUE) 
 		& requireNamespace("rgl", quietly = TRUE
 		)) {
+
+		set.seed(1)		
+		data(simRunExample)
 		
-    data(simRunExample)
-	
-    plotABC_3D(
-        particleDataFrame = resultsBMExample[[1]]$particleDataFrame,
-        parameter = 7,
-        show.particles = "none",
-        plot.parent = FALSE,
-        realParam = FALSE,
-        realParamValues = NA)
-		
-  }
-})
+		plotABC_3D(
+			particleDataFrame = resultsBMExample[[1]]$particleDataFrame,
+			parameter = 7,
+			show.particles = "none",
+			plot.parent = FALSE,
+			realParam = FALSE,
+			realParamValues = NA
+			)	
+			
+		}
+	})
 
 test_that("plotPosteriors works", {
+
     set.seed(1)
     data(simRunExample)
     plotPosteriors(
@@ -26,6 +29,7 @@ test_that("plotPosteriors works", {
         realParam = TRUE,
         realParamValues = c(ancStateExample, genRateExample)
         )		
+		
 })
 
 test_that("plotPosteriors correctly gives an error", {
