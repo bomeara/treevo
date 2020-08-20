@@ -126,7 +126,11 @@ Let's use TreEvo!
 
 ```{r}
 library(TreEvo)
+packageVersion("TreEvo")
+```
 
+
+```{r}
 # character data for doRun must be in matrix form
   # with rows labeled with taxon names
 

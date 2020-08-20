@@ -7,11 +7,11 @@
 pairwiseESS(inputData)
 }
 \arguments{
-\item{inputData}{inputData can be a single data frame or a
-list of data frames}
+\item{inputData}{The input dataset can be a single data frame or a
+list of data frames.}
 }
 \value{
-Returns a matrix with ESS values of all pairwise runs
+Returns a matrix with ESS values of all pairwise runs.
 }
 \description{
 This function calculates Effective Sample Size (ESS) on results.  
@@ -23,14 +23,17 @@ from multiple runs.
 data(simRunExample)
 
 # this will give a warning
-pairwiseESS(results[[1]]$particleDataFrame)
+pairwiseESS(resultsBMExample[[1]]$particleDataFrame)
 
 # ESS should be calculated over multiple runs
-pairwiseESS(results)
+pairwiseESS(resultsBMExample)
 
 # you can also manually assemble a list of particleDataFrame tables
     # and use this as the input
-inputList <- list(results[[2]]$particleDataFrame, results[[1]]$particleDataFrame)
+inputList <- list(
+    resultsBMExample[[2]]$particleDataFrame, 
+    resultsBMExample[[1]]$particleDataFrame
+    )
 pairwiseESS(inputList)
 }
 \author{

@@ -145,7 +145,7 @@
 #'   extrinsicFn = nullExtrinsic, 
 #'   startingPriorsFns = "normal", 
 #'   startingPriorsValues = list(
-#'       c(mean(simChar[, 1]), sd(simChar[, 1]))), 
+#'       c(mean(simCharExample[, 1]), sd(simCharExample[, 1]))), 
 #'   intrinsicPriorsFns = c("exponential"), 
 #'   intrinsicPriorsValues = list(10), 
 #'   extrinsicPriorsFns = c("fixed"), 
@@ -166,7 +166,7 @@
 #'   extrinsicFn = nullExtrinsic, 
 #'   startingPriorsFns = "normal", 
 #'   startingPriorsValues = list(
-#'      c(mean(simChar[, 1]), sd(simChar[, 1]))), 
+#'      c(mean(simCharExample[, 1]), sd(simCharExample[, 1]))), 
 #'   intrinsicPriorsFns = c("exponential"), 
 #'   intrinsicPriorsValues = list(10), 
 #'   extrinsicPriorsFns = c("fixed"), 

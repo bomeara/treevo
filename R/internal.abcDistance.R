@@ -34,11 +34,11 @@
 #
 #  simDataParallel <- parallelSimulateWithPriors(
 #    nrepSim = 10, multicore = FALSE, coreLimit = 1, 
-#    phy = simPhy, 
+#    phy = simPhyExample, 
 #    intrinsicFn = brownianIntrinsic, 
 #    extrinsicFn = nullExtrinsic, 
 #    startingPriorsFns = "normal", 
-#    startingPriorsValues = list(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
+#    startingPriorsValues = list(c(mean(simCharExample[, 1]), sd(simCharExample[, 1]))), 
 #    intrinsicPriorsFns = c("exponential"), 
 #    intrinsicPriorsValues = list(10), 
 #    extrinsicPriorsFns = c("fixed"), 

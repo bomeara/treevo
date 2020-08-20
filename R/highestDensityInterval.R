@@ -113,12 +113,16 @@
 #'   # the last generation, and freely-varying parameters for HDRs 
 #'
 #' # alpha = 0.95
-#' summarizePosterior(results[[1]]$particleDataFrame, alpha = 0.95)
+#' summarizePosterior(
+#'    resultsBMExample[[1]]$particleDataFrame, 
+#'    alpha = 0.95)
 #' 
 #' # you might be tempted to use alphas like 95%, but with bayesian statistics
 #' # we often don't sample the distribution well enough to know
 #' # its shape to exceeding detail. alpha = 0.8 may be more reasonable.
-#' summarizePosterior(results[[1]]$particleDataFrame, alpha = 0.8)
+#' summarizePosterior(
+#'    resultsBMExample[[1]]$particleDataFrame, 
+#'    alpha = 0.8)
 #' 
 
 #' @name highestDensityInterval

@@ -5,12 +5,12 @@ test_that("doRun_prc runs correctly", {
     expect_warning(
 	#
     results <- doRun_prc(
-		phy = simPhy,
-		traits = simChar,
+		phy = simPhyExample,
+		traits = simCharExample,
 		intrinsicFn=brownianIntrinsic,
 		extrinsicFn=nullExtrinsic,
 		startingPriorsFns="normal",
-		startingPriorsValues = list(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
+		startingPriorsValues = list(c(mean(simCharExample[, 1]), sd(simCharExample[, 1]))), 
 		intrinsicPriorsFns = c("exponential"),
 		intrinsicPriorsValues = list(10),
 		extrinsicPriorsFns = c("fixed"),
@@ -38,27 +38,29 @@ test_that("doRun_prc runs correctly", {
 
 
 test_that("doRun_rej works", {
-  data(simRunExample)
-    set.seed(1)
-   expect_warning(
-   resultsRej <- doRun_rej(
-    phy = simPhy,
-    traits = simChar,
-    intrinsicFn = brownianIntrinsic,
-    extrinsicFn = nullExtrinsic,
-    startingPriorsFns = "normal",
-	startingPriorsValues = list(c(mean(simChar[, 1]), sd(simChar[, 1]))), 
-	intrinsicPriorsFns = c("exponential"),
-	intrinsicPriorsValues = list(10),
-	extrinsicPriorsFns = c("fixed"),
-	extrinsicPriorsValues = list(0),
-    nInitialSims = 10,
-    generation.time=1000000,
-    jobName = "examplerun_rej",
-    abcTolerance = 0.05,
-    multicore = FALSE,
-    coreLimit = 1)
-    )
+	data(simRunExample)
+	set.seed(1)
+	
+	expect_warning(
+		resultsRej <- doRun_rej(
+			phy = simPhyExample,
+			traits = simCharExample,
+			intrinsicFn = brownianIntrinsic,
+			extrinsicFn = nullExtrinsic,
+			startingPriorsFns = "normal",
+			startingPriorsValues = list(c(mean(simCharExample[, 1]), sd(simCharExample[, 1]))), 
+			intrinsicPriorsFns = c("exponential"),
+			intrinsicPriorsValues = list(10),
+			extrinsicPriorsFns = c("fixed"),
+			extrinsicPriorsValues = list(0),
+			nInitialSims = 10,
+			generation.time=1000000,
+			jobName = "examplerun_rej",
+			abcTolerance = 0.05,
+			multicore = FALSE,
+			coreLimit = 1
+			)
+		)
     expect_is(resultsRej, "list")
 })
 

@@ -13,17 +13,18 @@ plotPrior(priorFn = match.arg(arg = priorFn, choices = c("fixed",
   FALSE), priorVariables, plotQuants = TRUE, plotLegend = TRUE)
 
 plotUnivariatePosteriorVsPrior(posteriorCurve, priorCurve,
-  label = "parameter", trueValue = NULL)
+  label = "parameter", trueValue = NULL, ...)
 
 getUnivariatePriorCurve(priorFn, priorVariables, nPoints = 1e+05,
   from = NULL, to = NULL, alpha = 0.8, coda = FALSE,
   verboseMultimodal = TRUE, ...)
 
 getUnivariatePosteriorCurve(acceptedValues, from = NULL, to = NULL,
-  alpha = 0.8, ..., coda = FALSE, verboseMultimodal = TRUE)
+  alpha = 0.8, coda = FALSE, verboseMultimodal = TRUE, ...)
 }
 \arguments{
-\item{priorFn}{Prior Shape of the distribution; one of either "fixed", "uniform", "normal", 
+\item{priorFn}{Prior Shape of the distribution; one of either 
+"fixed", "uniform", "normal", 
 "lognormal", "gamma", or "exponential".}
 
 \item{priorVariables}{Variables needed to describe the shape of the
@@ -40,13 +41,25 @@ distribution, dependent on \code{priorFn}:
 
 \item{plotLegend}{If \code{TRUE}, plots legend box with quantile values}
 
-\item{posteriorCurve}{Kernal density estimates for the posterior distribution from \code{getUnivariatePosteriorCurve}.}
+\item{posteriorCurve}{Kernal density estimates for the
+posterior distribution from \code{getUnivariatePosteriorCurve}.}
 
-\item{priorCurve}{Kernal density estimates for the prior distribution from \code{getUnivariatePriorCurve}.}
+\item{priorCurve}{Kernal density estimates for the 
+prior distribution from \code{getUnivariatePriorCurve}.}
 
-\item{label}{X label for plot.}
+\item{label}{Horizontal X-axis label for the plot.}
 
-\item{trueValue}{True parameter value, if any such exists and is known (usually only true of simulations).}
+\item{trueValue}{True parameter value, if any such exists and 
+is known (usually only true of simulations).}
+
+\item{...}{For \code{getUnivariatePriorCurve} and \code{getUnivariatePosteriorCurve},
+this can contain additional arguments passed to \code{\link{density}}, for use in both
+calculating the kernal density estimate for finding the curve, and for estimating
+the highest density interval. 
+A user may want to mess with this to adjust bandwidth, et cetera.
+For \code{plotUnivariatePosteriorVsPrior}, this passes additional commands to the initial
+call \code{plot}, and thus can set things like a \code{main} plotting title, among
+other things.}
 
 \item{nPoints}{Number of points to draw.}
 
@@ -67,34 +80,50 @@ similar to the function \code{quantile} in that it calculates only a single inte
 indicating when the inferred highest density interval is discontinuous, and
 thus likely reflects that the supplied data is multimodal.}
 
-\item{...}{Additional arguments passed to \code{\link{density}}, for use in both
-calculating the kernal density estimate for finding the curve, and for estimating
-the highest density interval. A user may want to mess with this to adjust bandwidth, et cetera.}
-
 \item{acceptedValues}{Vector of accepted particle values.}
 }
 \value{
-\code{plotPrior} and \code{plotUnivariatePosteriorVsPrior} produce plots of the respective distributions (see above).
+\code{plotPrior} and \code{plotUnivariatePosteriorVsPrior} 
+produce plots of the respective distributions (see above).
 
-\code{getUnivariatePriorCurve} returns a list of x and y density coordinates, mean, and the highest density intervals (HDI) for their respective distribution.
+\code{getUnivariatePriorCurve} returns a list of x and y density
+coordinates, mean, and the highest density intervals (HDI) for
+their respective distribution.
 
-#' \code{getUnivariatePosteriorCurve} does the same for a posterior sample of parameter estimates, returning a list of x and y density coordinates, mean, and the highest posterior density intervals (HPD).
+\code{getUnivariatePosteriorCurve} does the same for a 
+posterior sample of parameter estimates, returning a 
+list of x and y density coordinates, mean, and the 
+highest posterior density intervals (HPD).
 }
 \description{
-Assorted functions for visualizing and summarizing the prior and posterior probability distributions associated with ABC analyses.
+Assorted functions for visualizing and summarizing the
+prior and posterior probability distributions associated with ABC analyses.
 }
 \details{
-Function \code{plotPrior} visualizes the shape of various prior probability distributions available in TreEvo ABC analyses, and
-\code{getUnivariatePriorCurve} returns density coordinates and summary statistics from user-selected prior probability
-distribution. Similarly, function \code{getUnivariatePosteriorCurve} returns density coordinates and summary
-statistics from the posterior distribution of an ABC analysis. Both \code{getUnivariatePriorCurve} and \code{getUnivariatePosteriorCurve} also calculate the highest density intervals for their respective parameters, using the function \code{\link{highestDensityInterval}}.
+Function \code{plotPrior} visualizes the shape of various 
+prior probability distributions available in TreEvo ABC analyses, 
+while \code{getUnivariatePriorCurve} returns density coordinates and 
+summary statistics from user-selected prior probability distribution.
 
-Function \code{plotUnivariatePosteriorVsPrior} plots the univariate density distributions from the prior and posterior against each other for comparison, along with the highest density intervals (HDI) for both.
+Similarly, function \code{getUnivariatePosteriorCurve} returns 
+density coordinates and summary statistics from the posterior distribution 
+of an ABC analysis.
+
+Both \code{getUnivariatePriorCurve} and 
+\code{getUnivariatePosteriorCurve} also calculate the highest 
+density intervals for their respective parameters, 
+using the function \code{\link{highestDensityInterval}}.
+
+Function \code{plotUnivariatePosteriorVsPrior} plots the 
+univariate density distributions from the prior and 
+posterior against each other for comparison, along with the 
+highest density intervals (HDI) for both.
 
 
-The summaries calculated from \code{getUnivariatePriorCurve} and \code{getUnivariatePosteriorCurve} are used
-as the input for \code{plotUnivariatePosteriorVsPrior}, hence the relationship of these functions
-to each other, and why they are listed together here.
+The summaries calculated from \code{getUnivariatePriorCurve} 
+and \code{getUnivariatePosteriorCurve} are used as the input 
+for \code{plotUnivariatePosteriorVsPrior}, hence the relationship of 
+these functions to each other, and why they are listed together here.
 }
 \examples{
 
@@ -102,39 +131,59 @@ data(simRunExample)
 
 # examples with plotPrior
 
-plotPrior(priorFn = "exponential", priorVariables = c(10))
+plotPrior(
+    priorFn = "exponential", 
+    priorVariables = c(10))
     
-plotPrior(priorFn = "normal", priorVariables = c(1, 2))
+plotPrior(
+    priorFn = "normal", 
+    priorVariables = c(1, 2))
     
-plotPrior(priorFn = "gamma", priorVariables = c(2, .2),
-   plotQuants = FALSE, plotLegend = FALSE)
+plotPrior(
+    priorFn = "gamma", 
+    priorVariables = c(2, .2),
+    plotQuants = FALSE, 
+    plotLegend = FALSE)
 
-# examples of getting density coordinates and summary statistics from distributions
+# examples of getting density coordinates and
+  # summary statistics from distributions
 
 priorKernal <- getUnivariatePriorCurve(
-    priorFn = "normal", priorVariables = c(28, 2), 
-    nPoints = 100000, from = NULL, to = NULL, alpha = 0.95)
+    priorFn = "normal", 
+    priorVariables = c(28, 2), 
+    nPoints = 100000, 
+    from = NULL, 
+    to = NULL, 
+    alpha = 0.95)
 
 postKernal <- getUnivariatePosteriorCurve(
-  acceptedValues = results[[1]]$particleDataFrame$starting_1, 
-     from = NULL, to = NULL, alpha = 0.95)
+    acceptedValues = 
+        resultsBMExample[[1]]$particleDataFrame$starting_1, 
+    from = NULL, 
+    to = NULL, 
+    alpha = 0.95)
 
 priorKernal
 postKernal
 
-# let's compare this (supposed) prior against the posterior in a plot
+# let's compare this (supposed) prior
+  # against the posterior in a plot
 
 plotUnivariatePosteriorVsPrior(
-  posteriorCurve = postKernal, priorCurve = priorKernal, 
-     label = "parameter", trueValue = NULL)
+    posteriorCurve = postKernal, 
+    priorCurve = priorKernal, 
+    label = "parameter", 
+    trueValue = NULL)
 
 # cool!
 
 }
 \seealso{
-Highest posterior densities are calculated via \code{\link{highestDensityInterval}}.
+Highest posterior densities are calculated via
+\code{\link{highestDensityInterval}}.
 
-\code{\link{plotPosteriors}} Plots multiple posteriors against their priors and potential known values.
+\code{\link{plotPosteriors}} Plots multiple posteriors
+against their priors and potential known values.
 }
 \author{
 Brian O'Meara and Barb Banbury

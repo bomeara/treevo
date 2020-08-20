@@ -45,12 +45,14 @@
 #' data(simRunExample)
 #' 
 #' # make a list of particleDataFrames to plot multiple runs
-#' resultsPDFlist <- lapply(results, function(x) x$particleDataFrame)
+#' resultsPDFlist <- lapply(resultsBMExample, function(x) x$particleDataFrame)
 #' 
-#' plotPosteriors(resultsPDFlist, 
-#'    priorsList = results[[1]]$priorList, 
+#' plotPosteriors(
+#'    resultsPDFlist, 
+#'    priorsList = resultsBMExample[[1]]$priorList, 
 #'    realParam = TRUE, 
-#'    realParamValues = c(ancState, genRate))
+#'    realParamValues = c(ancStateExample, genRateExample)
+#'    )
 #' 
 
 
