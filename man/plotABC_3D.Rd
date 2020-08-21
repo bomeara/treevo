@@ -4,8 +4,14 @@
 \alias{plotABC_3D}
 \title{3D ABCplots}
 \usage{
-plotABC_3D(particleDataFrame, parameter, show.particles = "none",
-  plot.parent = FALSE, realParam = FALSE, realParamValues = NA)
+plotABC_3D(
+  particleDataFrame,
+  parameter,
+  show.particles = "none",
+  plot.parent = FALSE,
+  realParam = FALSE,
+  realParamValues = NA
+)
 }
 \arguments{
 \item{particleDataFrame}{A \code{particleDataFrame} object, as found among the output from \code{\link{doRun}} functions.}

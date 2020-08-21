@@ -4,10 +4,20 @@
 \alias{doSimulation}
 \title{Discrete-Time Character Simulation}
 \usage{
-doSimulation(phy = NULL, intrinsicFn, extrinsicFn, startingValues,
-  intrinsicValues, extrinsicValues, generation.time = 1000,
-  TreeYears = max(branching.times(phy)) * 1e+06, timeStep = NULL,
-  returnAll = FALSE, taxonDF = NULL, checkTimeStep = TRUE)
+doSimulation(
+  phy = NULL,
+  intrinsicFn,
+  extrinsicFn,
+  startingValues,
+  intrinsicValues,
+  extrinsicValues,
+  generation.time = 1000,
+  TreeYears = max(branching.times(phy)) * 1e+06,
+  timeStep = NULL,
+  returnAll = FALSE,
+  taxonDF = NULL,
+  checkTimeStep = TRUE
+)
 }
 \arguments{
 \item{phy}{A phylogenetic tree, in package \code{ape}'s \code{phylo} format.}

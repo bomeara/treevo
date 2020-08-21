@@ -10,7 +10,8 @@
 \alias{genRateExample}
 \alias{ancStateExample}
 \title{Example Analysis Output of a Simulated Dataset}
-\format{Loading the \code{simRunExample} example dataset adds seven new 
+\format{
+Loading the \code{simRunExample} example dataset adds seven new 
 objects to the namespace:
 
 \describe{
@@ -33,7 +34,8 @@ labels, as desired by \code{doRun} functions.}
 
 The objects \code{resultsBMExample} and \code{resultsBoundExample} 
 are lists composed of a number of elements (see the documentation 
-for the \code{\link{doRun_prc}} function for more detail).}
+for the \code{\link{doRun_prc}} function for more detail).
+}
 \description{
 Simulated 30-taxon coalescent tree and simulated character data from a Brownian Motion
 intrinsic model (\code{\link{brownianIntrinsic}}), with saved generating parameters.

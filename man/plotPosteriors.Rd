@@ -4,8 +4,12 @@
 \alias{plotPosteriors}
 \title{Plot posterior distributions}
 \usage{
-plotPosteriors(particleDataFrame, priorsList, realParam = FALSE,
-  realParamValues = NA)
+plotPosteriors(
+  particleDataFrame,
+  priorsList,
+  realParam = FALSE,
+  realParamValues = NA
+)
 }
 \arguments{
 \item{particleDataFrame}{A \code{particleDataFrame} object returned by TreEvo ABC analyses, can be a

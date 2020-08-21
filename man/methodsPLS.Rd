@@ -6,10 +6,16 @@
 \alias{PLSTransform}
 \title{Fitting Univariate Partial Least Squares Models to Free Parameters in ABC}
 \usage{
-returnPLSModel(trueFreeValuesMatrix, summaryValuesMatrix,
-  validation = "CV", scale = TRUE, variance.cutoff = 95,
-  verbose = TRUE, segments = min(10, nrow(summaryValuesMatrix) - 1),
-  ...)
+returnPLSModel(
+  trueFreeValuesMatrix,
+  summaryValuesMatrix,
+  validation = "CV",
+  scale = TRUE,
+  variance.cutoff = 95,
+  verbose = TRUE,
+  segments = min(10, nrow(summaryValuesMatrix) - 1),
+  ...
+)
 
 PLSTransform(summaryValuesMatrix, pls.model)
 }

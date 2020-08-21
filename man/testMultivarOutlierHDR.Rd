@@ -4,8 +4,15 @@
 \alias{testMultivarOutlierHDR}
 \title{Test If an Outlier Is Within a Highest Density Region of a Multivariate Cloud of Data Points}
 \usage{
-testMultivarOutlierHDR(dataMatrix, outlier, alpha, coda = FALSE,
-  verboseMultimodal = FALSE, pca = TRUE, ...)
+testMultivarOutlierHDR(
+  dataMatrix,
+  outlier,
+  alpha,
+  coda = FALSE,
+  verboseMultimodal = FALSE,
+  pca = TRUE,
+  ...
+)
 }
 \arguments{
 \item{dataMatrix}{A matrix consisting of rows of data observations, 

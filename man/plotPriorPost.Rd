@@ -8,19 +8,43 @@
 \alias{getUnivariatePosteriorCurve}
 \title{Plotting, Summarizing and Comparing the Prior and Posterior Distributions}
 \usage{
-plotPrior(priorFn = match.arg(arg = priorFn, choices = c("fixed",
-  "uniform", "normal", "lognormal", "gamma", "exponential"), several.ok =
-  FALSE), priorVariables, plotQuants = TRUE, plotLegend = TRUE)
+plotPrior(
+  priorFn = match.arg(arg = priorFn, choices = c("fixed", "uniform", "normal",
+    "lognormal", "gamma", "exponential"), several.ok = FALSE),
+  priorVariables,
+  plotQuants = TRUE,
+  plotLegend = TRUE
+)
 
-plotUnivariatePosteriorVsPrior(posteriorCurve, priorCurve,
-  label = "parameter", trueValue = NULL, ...)
+plotUnivariatePosteriorVsPrior(
+  posteriorCurve,
+  priorCurve,
+  label = "parameter",
+  trueValue = NULL,
+  ...
+)
 
-getUnivariatePriorCurve(priorFn, priorVariables, nPoints = 1e+05,
-  from = NULL, to = NULL, alpha = 0.8, coda = FALSE,
-  verboseMultimodal = TRUE, ...)
+getUnivariatePriorCurve(
+  priorFn,
+  priorVariables,
+  nPoints = 1e+05,
+  from = NULL,
+  to = NULL,
+  alpha = 0.8,
+  coda = FALSE,
+  verboseMultimodal = TRUE,
+  ...
+)
 
-getUnivariatePosteriorCurve(acceptedValues, from = NULL, to = NULL,
-  alpha = 0.8, coda = FALSE, verboseMultimodal = TRUE, ...)
+getUnivariatePosteriorCurve(
+  acceptedValues,
+  from = NULL,
+  to = NULL,
+  alpha = 0.8,
+  coda = FALSE,
+  verboseMultimodal = TRUE,
+  ...
+)
 }
 \arguments{
 \item{priorFn}{Prior Shape of the distribution; one of either 
@@ -103,11 +127,11 @@ prior and posterior probability distributions associated with ABC analyses.
 Function \code{plotPrior} visualizes the shape of various 
 prior probability distributions available in TreEvo ABC analyses, 
 while \code{getUnivariatePriorCurve} returns density coordinates and 
-summary statistics from user-selected prior probability distribution.
+summary statistics from user-selected prior probability distribution. 
 
 Similarly, function \code{getUnivariatePosteriorCurve} returns 
 density coordinates and summary statistics from the posterior distribution 
-of an ABC analysis.
+of an ABC analysis. 
 
 Both \code{getUnivariatePriorCurve} and 
 \code{getUnivariatePosteriorCurve} also calculate the highest 

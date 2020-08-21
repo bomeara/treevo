@@ -11,14 +11,21 @@
 \usage{
 nullExtrinsic(params, selfstates, otherstates, timefrompresent)
 
-nearestNeighborDisplacementExtrinsic(params, selfstates, otherstates,
-  timefrompresent)
+nearestNeighborDisplacementExtrinsic(
+  params,
+  selfstates,
+  otherstates,
+  timefrompresent
+)
 
-everyoneDisplacementExtrinsic(params, selfstates, otherstates,
-  timefrompresent)
+everyoneDisplacementExtrinsic(params, selfstates, otherstates, timefrompresent)
 
-ExponentiallyDecayingPushExtrinsic(params, selfstates, otherstates,
-  timefrompresent)
+ExponentiallyDecayingPushExtrinsic(
+  params,
+  selfstates,
+  otherstates,
+  timefrompresent
+)
 }
 \arguments{
 \item{params}{A vector containing input parameters for the given model (see \emph{Description} below on what parameters).}

@@ -4,8 +4,14 @@
 \alias{highestDensityInterval}
 \title{Highest Density Interval}
 \usage{
-highestDensityInterval(dataVector, alpha, coda = FALSE,
-  verboseMultimodal = TRUE, stopIfFlat = TRUE, ...)
+highestDensityInterval(
+  dataVector,
+  alpha,
+  coda = FALSE,
+  verboseMultimodal = TRUE,
+  stopIfFlat = TRUE,
+  ...
+)
 }
 \arguments{
 \item{dataVector}{A vector of data, which can be reasonably assumed to

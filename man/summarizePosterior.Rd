@@ -4,8 +4,14 @@
 \alias{summarizePosterior}
 \title{Summarize Posterior Distribution for a Free Parameter}
 \usage{
-summarizePosterior(particleDataFrame, alpha = 0.8, coda = FALSE,
-  verboseMultimodal = TRUE, stopIfFlat = TRUE, ...)
+summarizePosterior(
+  particleDataFrame,
+  alpha = 0.8,
+  coda = FALSE,
+  verboseMultimodal = TRUE,
+  stopIfFlat = TRUE,
+  ...
+)
 }
 \arguments{
 \item{particleDataFrame}{A \code{particleDataFrame} object, as
