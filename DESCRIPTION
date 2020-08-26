@@ -23,7 +23,7 @@ License: GPL
 URL: https://github.com/bomeara/treevo
 BugReports: https://github.com/bomeara/TreEvo/issues
 Depends:
-    R (>= 2.13.0),
+    R (>= 3.5.0),
     ape
 Imports:
     coda,
