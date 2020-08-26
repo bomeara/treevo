@@ -165,7 +165,7 @@ returnPLSModel <- function(
 			" you do each free parameter separately, so one parameter does not dominate"
 			))
 		}
-	if (class(trueFreeValuesMatrix) != "matrix") {
+	if (!inherits(trueFreeValuesMatrix,"matrix")) {
 		trueFreeValuesMatrix <- matrix(
 			trueFreeValuesMatrix, 
 			nrow = max(
@@ -187,7 +187,7 @@ returnPLSModel <- function(
 		)
 	explained.variance  <- cumsum(
 		sort(
-			attr(scores(pls.model), "explvar"), 
+			attr(pls::scores(pls.model), "explvar"), 
 			decreasing = TRUE
 			)
 		)
@@ -224,7 +224,7 @@ PLSTransform <- function(
 		pls.model
 		) {
 	######################
-	if (class(summaryValuesMatrix) != "matrix") {
+	if (!inherits(summaryValuesMatrix, "matrix")) {
 		summaryValuesMatrix <- matrix(
 			summaryValuesMatrix, 
 			ncol = max(

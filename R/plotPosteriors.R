@@ -74,7 +74,7 @@ plotPosteriors <- function(particleDataFrame, priorsList, realParam = FALSE, rea
     #
     # fix this function so it works when "fixed" params are not last (ie the second param)
 
-	if(class(particleDataFrame) == "data.frame"){
+	if(inherits(particleDataFrame, "data.frame")){
          # ugh ugh
         #generation <- NULL #to appease R CMD CHECK
         # yes??? I think this is right, not sure
@@ -88,7 +88,7 @@ plotPosteriors <- function(particleDataFrame, priorsList, realParam = FALSE, rea
         all <- cbind(run, data1)
         }
         
-    if(class(particleDataFrame) == "list"){
+    if(inherits(particleDataFrame, "list")){
         all <- data.frame()
         for (list in 1:length(particleDataFrame)) {
             #make generation and other names by column so it works for partial and complete

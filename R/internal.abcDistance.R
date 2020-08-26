@@ -84,7 +84,7 @@ abcDistance <- function(summaryValuesMatrix, originalSummaryValues, pls.model.li
 		originalSummaryValues = originalSummaryValues, 
 		scale = scale
         )
-	if (class(abcDistancesRaw) != "matrix") { #it must be a vector, but apply likes matrices
+	if (!inherits(abcDistancesRaw, "matrix")) { #it must be a vector, but apply likes matrices
 		abcDistancesRaw <- matrix(abcDistancesRaw, nrow = 1)
 	}
 	abcDistancesRawTotal <- apply(abcDistancesRaw, 1, sum)
@@ -106,7 +106,7 @@ SingleParameterPLSDistanceSquaredFixedPLS <- function(
 	originalSummaryValues.transformed <- PLSTransform(
 		originalSummaryValues, pls.model)
 	#
-	if (class(summaryValues.transformed) != "matrix") {
+	if (!inherits(summaryValues.transformed,"matrix")) {
 		summaryValues.transformed <- matrix(
 			summaryValues.transformed, nrow = 1
 			)

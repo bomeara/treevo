@@ -34,7 +34,7 @@ pairwiseKS <- function(particleDataFrameList) {
 
     #source("/Users/Barb/Desktop/treevo/pkg/R/pairings.R")
         
-    if(class(particleDataFrameList) == "data.frame" | class(particleDataFrameList) != "list" ){
+    if(inherits(particleDataFrameList, "data.frame") | !inherits(particleDataFrameList, "list" )){
                     # | length(particleDataFrameList) != 2
         warning("KS test requires a list, composed of particleDataFrameList objects from two ABC runs")
     }

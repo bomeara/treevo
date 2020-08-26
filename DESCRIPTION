@@ -1,54 +1,63 @@
-Package: TreEvo
 Type: Package
+Package: TreEvo
 Title: Using ABC to Understand Trait Evolution
 Version: 0.22.0
 Date: 2020-08-20
-Authors@R: c(
-	person("Brian", "O'Meara", role=c("aut"), 
-		email="omeara.brian@gmail.com"),
-	person("David","Bapst", role=c("aut", "cre"), 
-		email="dwbapst@gmail.com"),
-    person("Barb", "Banbury", role=c("aut"))
-	)
+Authors@R: 
+    c(person(given = "Brian",
+             family = "O'Meara",
+             role = "aut",
+             email = "omeara.brian@gmail.com"),
+      person(given = "David",
+             family = "Bapst",
+             role = c("aut", "cre"),
+             email = "dwbapst@gmail.com"),
+      person(given = "Barb",
+             family = "Banbury",
+             role = "aut"))
 Maintainer: Brian C. O'Meara <omeara.brian@gmail.com>
+Description: Various functions for estimating parameters of
+    trait evolution in comparative analyses using Approximate Bayesian
+    Computation.
+License: GPL
+URL: https://github.com/bomeara/treevo
+BugReports: https://github.com/bomeara/TreEvo/issues
 Depends:
     R (>= 2.13.0),
     ape
 Imports:
-    corpcor,
     coda,
+    doMC,
+    doParallel,
     fastmatch,
     foreach,
-    grDevices,
+    gpclib,
     graphics,
+    grDevices,
     MASS,
-    mvtnorm,
     methods,
-	parallel,
+    parallel,
     partitions,
     phylolm,
     phytools,
     pls,
     RcppZiggurat,
-    stats
-Suggests:
-    covr,
-    doMC,
-    doParallel,
-    gpclib,
     rgl,
-    testthat,
-    paleotree,
+    stats,
+    utils,
+    corpcor, 
+    mvtnorm, 
+    covr
+Suggests:
     knitr,
-    rmarkdown
-BugReports: https://github.com/bomeara/TreEvo/issues
-LazyData: yes
-Description: Various functions for estimating parameters of trait evolution in comparative analyses using Approximate Bayesian Computation.
-License: GPL
-Encoding: UTF-8
-URL: https://github.com/bomeara/treevo
-Repository: CRAN
-Packaged: 2012-07-02 16:00:00; BCO
+    paleotree,
+    rmarkdown,
+    testthat
+VignetteBuilder: 
+    knitr
 Date/Publication: 2012-07-02 16:00:00
+Encoding: UTF-8
+LazyData: yes
+Packaged: 2012-07-02 16:00:00; BCO
+Repository: CRAN
 RoxygenNote: 7.1.1
-VignetteBuilder: knitr

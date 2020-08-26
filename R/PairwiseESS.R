@@ -57,7 +57,7 @@ pairwiseESS <- function(inputData) {
     #
     ESSmatrix <- NA
     #
-    if(class(particleInput) == "data.frame"){
+    if(inherits(particleInput,"data.frame")){
         warning(
 			"ESS on a single run should be high; consider combining several runs"
 			)
@@ -75,7 +75,7 @@ pairwiseESS <- function(inputData) {
         colnames(ESSmatrix) <- "ESS"
         }
     #
-    if(class(particleInput) == "list"){
+    if(inherits(particleInput, "list")){
 		if(length(particleInput) < 2){
 			stop(
 				"The number of runs provided is less than two - no pairwise comparisons possible."

@@ -66,7 +66,7 @@
 #* @rdname bayesCoverageProb
 #* @export
 bayesCoverageProb <- function(RealParam, HPD, verbose = FALSE){
-    if(class(RealParam) == "numeric"){
+    if(inherits(RealParam, "numeric")){
         rps <- vector("list", length = length(HPD))
         for (i in 1: length(HPD)){
             rps[[i]] <- RealParam
