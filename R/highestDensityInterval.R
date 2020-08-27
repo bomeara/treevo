@@ -189,7 +189,7 @@ highestDensityInterval <- function(
         }
     # name the columns and rows
         # paste("LowerHPD_", alpha, sep = ""), paste("UpperHPD_", alpha, sep = "")
-    colLabels <- c(paste0(c("LowerBound_alpha=", "UpperBound__alpha="), alpha))
+    colLabels <- c(paste0(c("LowerBound_alpha=", "UpperBound_alpha="), alpha))
     colnames(resMatrix) <- colLabels
     #
     if(nrow(resMatrix)>1 & verboseMultimodal){

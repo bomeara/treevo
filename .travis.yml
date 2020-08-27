@@ -1,38 +1,68 @@
-# addons:
-#   apt:
-#     packages:
-#       - libgsl2
-#       - gsl-bin
-#       - libgsl-dev
-#       - libmagick++-dev
+# # addons:
+# #   apt:
+# #     packages:
+# #       - libgsl2
+# #       - gsl-bin
+# #       - libgsl-dev
+# #       - libmagick++-dev
 
-# Undid replacement of replaced libgsl2 with libgslcblas0
+# # Undid replacement of replaced libgsl2 with libgslcblas0
 
+# language: r
+# cache: packages
+# sudo: required
+# # Be strict when checking our package
+
+# # Eh, let's be less strict at first
+# warnings_are_errors: false
+
+
+# before_install:
+# - sudo apt-get -qq update
+# - sudo apt-get install -y libmagick++-dev
+# - sudo apt-get install libgmp3-dev
+# - export RGL_USE_NULL=TRUE
+
+# script:
+# - R CMD build .
+# - travis_wait 45 R CMD check *tar.gz --as-cran
+
+# # for code coverage
+# r_packages:
+#   - covr
+
+# after_success:
+#   -  travis_wait 45 Rscript -e 'covr::codecov()'
+  
+  
 language: r
 cache: packages
-sudo: required
-# Be strict when checking our package
+latex: false
+fortran: false
+pandoc: false
 
-# Eh, let's be less strict at first
-warnings_are_errors: false
+matrix:
+  include:
+    - os: linux
+      env: R_CODECOV=true
+    - os: osx
+      osx_image: xcode9.3
 
+addons:
+  apt:
+    packages:
+      - libpoppler-cpp-dev
 
-before_install:
-- sudo apt-get -qq update
-- sudo apt-get install -y libmagick++-dev
-- sudo apt-get install libgmp3-dev
-- export RGL_USE_NULL=TRUE
+r_github_packages:
+  - jimhester/covr
 
-script:
-- R CMD build .
-- travis_wait 45 R CMD check *tar.gz --as-cran
+warnings_are_errors: 1
+#r_check_revdep: true
 
-# for code coverage
-r_packages:
-  - covr
+notifications:
+  email:
+    on_success: change
+    on_failure: change
 
 after_success:
-  -  travis_wait 45 Rscript -e 'covr::codecov()'
-  
-  
-  
+  - if [[ "${R_CODECOV}" ]]; then R -e 'covr::codecov(type = "all")'; fi
