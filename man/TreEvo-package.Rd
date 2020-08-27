@@ -4,6 +4,8 @@
 \name{TreEvo-package}
 \alias{TreEvo-package}
 \alias{treevo}
+\alias{TreEvo}
+\alias{Treevo}
 \title{TreEvo--abc for comparative methods}
 \description{
 A package for applying Approximate Bayesian Computation to estimating parameters of trait evolution in comparative analyses.
@@ -20,7 +22,7 @@ A package for applying Approximate Bayesian Computation to estimating parameters
 
 set.seed(1)
 # let's simulate some data, and then try to infer the parameters using ABC
-# get a 30-taxon coalescent tree
+# get a 20-taxon coalescent tree
 tree <- rcoal(20)
 # get realistic edge lengths
 tree$edge.length <- tree$edge.length*20
