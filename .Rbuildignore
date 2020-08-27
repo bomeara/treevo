@@ -8,3 +8,6 @@ vignettes/.constructing_treevo_vignette.R
 
 ^vignette\\\.construct_vignette\.txt
 ^vignette\\\.constructing_treevo_vignette\.R
+^\.ccache$
+^\.github$
+^tic\.R$
