@@ -9,6 +9,7 @@
 # Undid replacement of replaced libgsl2 with libgslcblas0
 
 language: r
+cache: packages
 sudo: required
 # Be strict when checking our package
 
