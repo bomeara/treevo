@@ -1,12 +1,12 @@
 addons:
   apt:
     packages:
-      - libgslcblas0
+      - libgsl2
       - gsl-bin
       - libgsl-dev
       - libmagick++-dev
 
-# replaced libgsl2 with libgslcblas0
+# Undid replacement of replaced libgsl2 with libgslcblas0
 
 language: r
 sudo: required
