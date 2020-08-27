@@ -47,7 +47,7 @@ test_that("methodsPLS works", {
     variance.cutoff = 95,
     segments = nSimulations)
    )
-  expect_warning(
+  expect_silent(
     PLSTransform(
       summaryValuesMatrix = summaryValuesMat,
       pls.model = PLSmodel
