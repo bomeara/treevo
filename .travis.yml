@@ -1,20 +1,24 @@
-addons:
-  apt:
-    packages:
-      - libgsl2
-      - gsl-bin
-      - libgsl-dev
-      - libmagick++-dev
+# addons:
+#   apt:
+#     packages:
+#       - libgsl2
+#       - gsl-bin
+#       - libgsl-dev
+#       - libmagick++-dev
 
 # Undid replacement of replaced libgsl2 with libgslcblas0
 
 language: r
 sudo: required
 # Be strict when checking our package
-warnings_are_errors: true
+
+# Eh, let's be less strict at first
+warnings_are_errors: false
 
 
 before_install:
+- sudo apt-get -qq update
+- sudo apt-get install -y libmagick++-dev
 - sudo apt-get install libgmp3-dev
 - export RGL_USE_NULL=TRUE
 
