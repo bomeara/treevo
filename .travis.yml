@@ -48,10 +48,17 @@ matrix:
     - os: osx
       osx_image: xcode9.3
 
+
+
 addons:
   apt:
+    update: true
+    sources:
+      - sourceline: 'ppa:opencpu/imagemagick'
     packages:
+      - libmagick++-dev
       - libpoppler-cpp-dev
+
 
 r_github_packages:
   - jimhester/covr
