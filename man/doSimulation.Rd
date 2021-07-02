@@ -41,7 +41,7 @@ extrinsic model.}
 \item{generation.time}{The number of years per generation.
 This sets the coarseness of the simulation; if it's set to 1000, 
 for example, the population's trait values change every 1000
-calender years. Note that this is in calender years (see description
+calendar years. Note that this is in calendar years (see description
 for argument \code{TreeYears}), and not in millions of years
 (as is typical for dated trees in macroevolutionary studies).
 Thus, if a branch is 1 million-year time-unit long, and a
@@ -49,7 +49,7 @@ user applies the default \code{generation.time = 1000},
 then 1000 evolutionary changes will be simulated along that branch.
 See documentation for \code{\link{doSimulation}} for further details.}
 
-\item{TreeYears}{The amount of calender time from the root
+\item{TreeYears}{The amount of calendar time from the root
 to the furthest tip. Most trees in macroevolutionary studies are dated with
 branch lengths in units of millions of years, and thus the
 default for this argument is \code{max(branching.times(phy)) * 1e6}.
@@ -106,11 +106,11 @@ distance from the root to the furthest tip is rescaled to equal 1 time-unit,
 and it is this rescaled edge lengths to with arguments
 \code{timeStep} refers to. Typically, this will be determined though
 as a ratio of \code{TreeYears} (which is the number
-of calender years constituing the root-to-furthest-tip distance, and
+of calendar years constituing the root-to-furthest-tip distance, and
 is determined by default as if the user had supplied
 a tree with edge lengths in time-units of 1 time-unit = 1 million years), and
 \code{generation.time}, which gives the length of
-\code{timeSteps} in calender years (e.g. \code{generation.time = 1000} means
+\code{timeSteps} in calendar years (e.g. \code{generation.time = 1000} means
 an evolutionary change in trait values every 1000 years).
 Note that the real number of trait change events simulated may be less
 less, because simulations start ver at each branching
