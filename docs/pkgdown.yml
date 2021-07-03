@@ -1,6 +1,7 @@
-pandoc: 2.2.3.2
-pkgdown: 1.1.0
+pandoc: '2.13'
+pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
   treevo_ABC_vignette: treevo_ABC_vignette.html
+last_built: 2021-07-02T22:28Z
 
