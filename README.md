@@ -21,8 +21,8 @@ You can install the latest stable development version using the R function insta
 	
 More experimental, less stable versions can be found on other branches of this github repo.
 
-The current build status is indicated here:
-	[![Build Status](https://travis-ci.org/bomeara/treevo.svg)](https://travis-ci.org/bomeara/treevo) [![codecov](https://codecov.io/gh/bomeara/treevo/branch/master/graph/badge.svg)](https://codecov.io/gh/bomeara/treevo)
+The current code coverage is indicated here:
+	[![codecov](https://codecov.io/gh/bomeara/treevo/branch/master/graph/badge.svg)](https://codecov.io/gh/bomeara/treevo)
 
 You can see a version of help created with  at http://bomeara.github.io/treevo/reference/index.html
 
