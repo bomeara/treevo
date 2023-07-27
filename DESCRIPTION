@@ -31,7 +31,6 @@ Imports:
     doParallel,
     fastmatch,
     foreach,
-    gpclib,
     graphics,
     grDevices,
     MASS,
@@ -53,6 +52,8 @@ Suggests:
     paleotree,
     rmarkdown,
     testthat
+Remotes: 
+	rdpeng/gpclib
 VignetteBuilder: 
     knitr
 Date/Publication: 2012-07-02 16:00:00
