@@ -113,7 +113,7 @@ a tree with edge lengths in time-units of 1 time-unit = 1 million years), and
 \code{timeSteps} in calendar years (e.g. \code{generation.time = 1000} means
 an evolutionary change in trait values every 1000 years).
 Note that the real number of trait change events simulated may be less
-less, because simulations start ver at each branching
+less, because simulations start over at each branching
 node, but intervals between changes should be so fine that this
 should be negligible (related, the results should be
 independent of your choice for \code{generation.time} or \code{timeStep}).
