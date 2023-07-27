@@ -27,8 +27,6 @@ Depends:
     ape
 Imports:
     coda,
-    doMC,
-    doParallel,
     fastmatch,
     foreach,
     graphics,
@@ -51,7 +49,9 @@ Suggests:
     knitr,
     paleotree,
     rmarkdown,
-    testthat
+    testthat,
+	doMC,
+	doParallel
 Remotes: 
 	rdpeng/gpclib
 VignetteBuilder: 
